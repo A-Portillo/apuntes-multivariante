@@ -40,6 +40,10 @@ book:
       chapters:
         - 12-casos-integradores.qmd
 
+    - part: "Ejercicios"
+      chapters:
+        - ejercicios.qmd
+
     - part: "Apéndice práctico"
       chapters:
         - tidyverse.qmd
