@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>15&nbsp; Guía rápida de tidyverse y dplyr – Técnicas Multivariantes Aplicadas con R</title>
+<title>16&nbsp; Guía rápida de tidyverse y dplyr – Técnicas Multivariantes Aplicadas con R</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -69,7 +69,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
 <link href="./references.html" rel="next">
-<link href="./12-casos-integradores.html" rel="prev">
+<link href="./ejercicios.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
@@ -120,7 +120,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./tidyverse.html">Apéndice práctico</a></li><li class="breadcrumb-item"><a href="./tidyverse.html"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Guía rápida de tidyverse y dplyr</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./tidyverse.html">Apéndice práctico</a></li><li class="breadcrumb-item"><a href="./tidyverse.html"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Guía rápida de tidyverse y dplyr</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Buscar" onclick="window.quartoOpenSearch();">
@@ -287,7 +287,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
- <span class="menu-text">Apéndice práctico</span></a>
+ <span class="menu-text">Ejercicios</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Alternar sección">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -295,8 +295,25 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="./ejercicios.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Ejercicios conceptuales</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true">
+ <span class="menu-text">Apéndice práctico</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="./tidyverse.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Guía rápida de tidyverse y dplyr</span></span></a>
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Guía rápida de tidyverse y dplyr</span></span></a>
   </div>
 </li>
       </ul>
@@ -317,42 +334,42 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">Tabla de contenidos</h2>
    
   <ul>
-  <li><a href="#objetivo-del-capítulo" id="toc-objetivo-del-capítulo" class="nav-link active" data-scroll-target="#objetivo-del-capítulo"><span class="header-section-number">15.1</span> Objetivo del capítulo</a></li>
-  <li><a href="#la-tubería" id="toc-la-tubería" class="nav-link" data-scroll-target="#la-tubería"><span class="header-section-number">15.2</span> La tubería</a></li>
-  <li><a href="#select-elegir-columnas" id="toc-select-elegir-columnas" class="nav-link" data-scroll-target="#select-elegir-columnas"><span class="header-section-number">15.3</span> <code>select()</code>: elegir columnas</a></li>
-  <li><a href="#filter-filtrar-filas" id="toc-filter-filtrar-filas" class="nav-link" data-scroll-target="#filter-filtrar-filas"><span class="header-section-number">15.4</span> <code>filter()</code>: filtrar filas</a></li>
-  <li><a href="#arrange-ordenar-filas" id="toc-arrange-ordenar-filas" class="nav-link" data-scroll-target="#arrange-ordenar-filas"><span class="header-section-number">15.5</span> <code>arrange()</code>: ordenar filas</a></li>
-  <li><a href="#mutate-crear-columnas" id="toc-mutate-crear-columnas" class="nav-link" data-scroll-target="#mutate-crear-columnas"><span class="header-section-number">15.6</span> <code>mutate()</code>: crear columnas</a></li>
-  <li><a href="#case_when-crear-categorías-con-varias-reglas" id="toc-case_when-crear-categorías-con-varias-reglas" class="nav-link" data-scroll-target="#case_when-crear-categorías-con-varias-reglas"><span class="header-section-number">15.7</span> <code>case_when()</code>: crear categorías con varias reglas</a></li>
-  <li><a href="#summarise-y-group_by-resumir" id="toc-summarise-y-group_by-resumir" class="nav-link" data-scroll-target="#summarise-y-group_by-resumir"><span class="header-section-number">15.8</span> <code>summarise()</code> y <code>group_by()</code>: resumir</a></li>
-  <li><a href="#count-contar-combinaciones" id="toc-count-contar-combinaciones" class="nav-link" data-scroll-target="#count-contar-combinaciones"><span class="header-section-number">15.9</span> <code>count()</code>: contar combinaciones</a></li>
-  <li><a href="#across-aplicar-lo-mismo-a-varias-columnas" id="toc-across-aplicar-lo-mismo-a-varias-columnas" class="nav-link" data-scroll-target="#across-aplicar-lo-mismo-a-varias-columnas"><span class="header-section-number">15.10</span> <code>across()</code>: aplicar lo mismo a varias columnas</a></li>
-  <li><a href="#pull-extraer-una-columna-como-vector" id="toc-pull-extraer-una-columna-como-vector" class="nav-link" data-scroll-target="#pull-extraer-una-columna-como-vector"><span class="header-section-number">15.11</span> <code>pull()</code>: extraer una columna como vector</a></li>
-  <li><a href="#slice-elegir-filas-por-posición" id="toc-slice-elegir-filas-por-posición" class="nav-link" data-scroll-target="#slice-elegir-filas-por-posición"><span class="header-section-number">15.12</span> <code>slice()</code>: elegir filas por posición</a></li>
-  <li><a href="#pivot_longer-formato-largo" id="toc-pivot_longer-formato-largo" class="nav-link" data-scroll-target="#pivot_longer-formato-largo"><span class="header-section-number">15.13</span> <code>pivot_longer()</code>: formato largo</a></li>
-  <li><a href="#pivot_wider-formato-ancho" id="toc-pivot_wider-formato-ancho" class="nav-link" data-scroll-target="#pivot_wider-formato-ancho"><span class="header-section-number">15.14</span> <code>pivot_wider()</code>: formato ancho</a></li>
-  <li><a href="#left_join-unir-tablas" id="toc-left_join-unir-tablas" class="nav-link" data-scroll-target="#left_join-unir-tablas"><span class="header-section-number">15.15</span> <code>left_join()</code>: unir tablas</a></li>
-  <li><a href="#ggplot-dentro-de-pipelines" id="toc-ggplot-dentro-de-pipelines" class="nav-link" data-scroll-target="#ggplot-dentro-de-pipelines"><span class="header-section-number">15.16</span> <code>ggplot()</code> dentro de pipelines</a></li>
-  <li><a href="#patrones-que-aparecen-en-los-apuntes" id="toc-patrones-que-aparecen-en-los-apuntes" class="nav-link" data-scroll-target="#patrones-que-aparecen-en-los-apuntes"><span class="header-section-number">15.17</span> Patrones que aparecen en los apuntes</a>
+  <li><a href="#objetivo-del-capítulo" id="toc-objetivo-del-capítulo" class="nav-link active" data-scroll-target="#objetivo-del-capítulo"><span class="header-section-number">16.1</span> Objetivo del capítulo</a></li>
+  <li><a href="#la-tubería" id="toc-la-tubería" class="nav-link" data-scroll-target="#la-tubería"><span class="header-section-number">16.2</span> La tubería</a></li>
+  <li><a href="#select-elegir-columnas" id="toc-select-elegir-columnas" class="nav-link" data-scroll-target="#select-elegir-columnas"><span class="header-section-number">16.3</span> <code>select()</code>: elegir columnas</a></li>
+  <li><a href="#filter-filtrar-filas" id="toc-filter-filtrar-filas" class="nav-link" data-scroll-target="#filter-filtrar-filas"><span class="header-section-number">16.4</span> <code>filter()</code>: filtrar filas</a></li>
+  <li><a href="#arrange-ordenar-filas" id="toc-arrange-ordenar-filas" class="nav-link" data-scroll-target="#arrange-ordenar-filas"><span class="header-section-number">16.5</span> <code>arrange()</code>: ordenar filas</a></li>
+  <li><a href="#mutate-crear-columnas" id="toc-mutate-crear-columnas" class="nav-link" data-scroll-target="#mutate-crear-columnas"><span class="header-section-number">16.6</span> <code>mutate()</code>: crear columnas</a></li>
+  <li><a href="#case_when-crear-categorías-con-varias-reglas" id="toc-case_when-crear-categorías-con-varias-reglas" class="nav-link" data-scroll-target="#case_when-crear-categorías-con-varias-reglas"><span class="header-section-number">16.7</span> <code>case_when()</code>: crear categorías con varias reglas</a></li>
+  <li><a href="#summarise-y-group_by-resumir" id="toc-summarise-y-group_by-resumir" class="nav-link" data-scroll-target="#summarise-y-group_by-resumir"><span class="header-section-number">16.8</span> <code>summarise()</code> y <code>group_by()</code>: resumir</a></li>
+  <li><a href="#count-contar-combinaciones" id="toc-count-contar-combinaciones" class="nav-link" data-scroll-target="#count-contar-combinaciones"><span class="header-section-number">16.9</span> <code>count()</code>: contar combinaciones</a></li>
+  <li><a href="#across-aplicar-lo-mismo-a-varias-columnas" id="toc-across-aplicar-lo-mismo-a-varias-columnas" class="nav-link" data-scroll-target="#across-aplicar-lo-mismo-a-varias-columnas"><span class="header-section-number">16.10</span> <code>across()</code>: aplicar lo mismo a varias columnas</a></li>
+  <li><a href="#pull-extraer-una-columna-como-vector" id="toc-pull-extraer-una-columna-como-vector" class="nav-link" data-scroll-target="#pull-extraer-una-columna-como-vector"><span class="header-section-number">16.11</span> <code>pull()</code>: extraer una columna como vector</a></li>
+  <li><a href="#slice-elegir-filas-por-posición" id="toc-slice-elegir-filas-por-posición" class="nav-link" data-scroll-target="#slice-elegir-filas-por-posición"><span class="header-section-number">16.12</span> <code>slice()</code>: elegir filas por posición</a></li>
+  <li><a href="#pivot_longer-formato-largo" id="toc-pivot_longer-formato-largo" class="nav-link" data-scroll-target="#pivot_longer-formato-largo"><span class="header-section-number">16.13</span> <code>pivot_longer()</code>: formato largo</a></li>
+  <li><a href="#pivot_wider-formato-ancho" id="toc-pivot_wider-formato-ancho" class="nav-link" data-scroll-target="#pivot_wider-formato-ancho"><span class="header-section-number">16.14</span> <code>pivot_wider()</code>: formato ancho</a></li>
+  <li><a href="#left_join-unir-tablas" id="toc-left_join-unir-tablas" class="nav-link" data-scroll-target="#left_join-unir-tablas"><span class="header-section-number">16.15</span> <code>left_join()</code>: unir tablas</a></li>
+  <li><a href="#ggplot-dentro-de-pipelines" id="toc-ggplot-dentro-de-pipelines" class="nav-link" data-scroll-target="#ggplot-dentro-de-pipelines"><span class="header-section-number">16.16</span> <code>ggplot()</code> dentro de pipelines</a></li>
+  <li><a href="#patrones-que-aparecen-en-los-apuntes" id="toc-patrones-que-aparecen-en-los-apuntes" class="nav-link" data-scroll-target="#patrones-que-aparecen-en-los-apuntes"><span class="header-section-number">16.17</span> Patrones que aparecen en los apuntes</a>
   <ul class="collapse">
-  <li><a href="#preparar-variables-activas" id="toc-preparar-variables-activas" class="nav-link" data-scroll-target="#preparar-variables-activas"><span class="header-section-number">15.17.1</span> Preparar variables activas</a></li>
-  <li><a href="#añadir-resultados-de-un-modelo" id="toc-añadir-resultados-de-un-modelo" class="nav-link" data-scroll-target="#añadir-resultados-de-un-modelo"><span class="header-section-number">15.17.2</span> Añadir resultados de un modelo</a></li>
-  <li><a href="#resumir-perfiles-de-grupo" id="toc-resumir-perfiles-de-grupo" class="nav-link" data-scroll-target="#resumir-perfiles-de-grupo"><span class="header-section-number">15.17.3</span> Resumir perfiles de grupo</a></li>
-  <li><a href="#comparar-con-una-variable-suplementaria" id="toc-comparar-con-una-variable-suplementaria" class="nav-link" data-scroll-target="#comparar-con-una-variable-suplementaria"><span class="header-section-number">15.17.4</span> Comparar con una variable suplementaria</a></li>
-  <li><a href="#preparar-datos-para-un-mapa-factorial" id="toc-preparar-datos-para-un-mapa-factorial" class="nav-link" data-scroll-target="#preparar-datos-para-un-mapa-factorial"><span class="header-section-number">15.17.5</span> Preparar datos para un mapa factorial</a></li>
+  <li><a href="#preparar-variables-activas" id="toc-preparar-variables-activas" class="nav-link" data-scroll-target="#preparar-variables-activas"><span class="header-section-number">16.17.1</span> Preparar variables activas</a></li>
+  <li><a href="#añadir-resultados-de-un-modelo" id="toc-añadir-resultados-de-un-modelo" class="nav-link" data-scroll-target="#añadir-resultados-de-un-modelo"><span class="header-section-number">16.17.2</span> Añadir resultados de un modelo</a></li>
+  <li><a href="#resumir-perfiles-de-grupo" id="toc-resumir-perfiles-de-grupo" class="nav-link" data-scroll-target="#resumir-perfiles-de-grupo"><span class="header-section-number">16.17.3</span> Resumir perfiles de grupo</a></li>
+  <li><a href="#comparar-con-una-variable-suplementaria" id="toc-comparar-con-una-variable-suplementaria" class="nav-link" data-scroll-target="#comparar-con-una-variable-suplementaria"><span class="header-section-number">16.17.4</span> Comparar con una variable suplementaria</a></li>
+  <li><a href="#preparar-datos-para-un-mapa-factorial" id="toc-preparar-datos-para-un-mapa-factorial" class="nav-link" data-scroll-target="#preparar-datos-para-un-mapa-factorial"><span class="header-section-number">16.17.5</span> Preparar datos para un mapa factorial</a></li>
   </ul></li>
-  <li><a href="#errores-frecuentes" id="toc-errores-frecuentes" class="nav-link" data-scroll-target="#errores-frecuentes"><span class="header-section-number">15.18</span> Errores frecuentes</a></li>
-  <li><a href="#resumen-del-capítulo" id="toc-resumen-del-capítulo" class="nav-link" data-scroll-target="#resumen-del-capítulo"><span class="header-section-number">15.19</span> Resumen del capítulo</a></li>
-  <li><a href="#ejercicios-propuestos" id="toc-ejercicios-propuestos" class="nav-link" data-scroll-target="#ejercicios-propuestos"><span class="header-section-number">15.20</span> Ejercicios propuestos</a></li>
+  <li><a href="#errores-frecuentes" id="toc-errores-frecuentes" class="nav-link" data-scroll-target="#errores-frecuentes"><span class="header-section-number">16.18</span> Errores frecuentes</a></li>
+  <li><a href="#resumen-del-capítulo" id="toc-resumen-del-capítulo" class="nav-link" data-scroll-target="#resumen-del-capítulo"><span class="header-section-number">16.19</span> Resumen del capítulo</a></li>
+  <li><a href="#ejercicios-propuestos" id="toc-ejercicios-propuestos" class="nav-link" data-scroll-target="#ejercicios-propuestos"><span class="header-section-number">16.20</span> Ejercicios propuestos</a></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./tidyverse.html">Apéndice práctico</a></li><li class="breadcrumb-item"><a href="./tidyverse.html"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Guía rápida de tidyverse y dplyr</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./tidyverse.html">Apéndice práctico</a></li><li class="breadcrumb-item"><a href="./tidyverse.html"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Guía rápida de tidyverse y dplyr</span></a></li></ol></nav>
 <div class="quarto-title">
-<div class="quarto-title-block"><div><h1 class="title"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Guía rápida de tidyverse y dplyr</span></h1><button type="button" class="btn code-tools-button dropdown-toggle" id="quarto-code-tools-menu" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi"></i> Código</button><ul class="dropdown-menu dropdown-menu-end" aria-labelelledby="quarto-code-tools-menu"><li><a id="quarto-show-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Mostrar todo el código</a></li><li><a id="quarto-hide-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Ocultar todo el código</a></li><li><hr class="dropdown-divider"></li><li><a id="quarto-view-source" class="dropdown-item" href="javascript:void(0)" role="button">Ver el código fuente</a></li></ul></div></div>
+<div class="quarto-title-block"><div><h1 class="title"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Guía rápida de tidyverse y dplyr</span></h1><button type="button" class="btn code-tools-button dropdown-toggle" id="quarto-code-tools-menu" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi"></i> Código</button><ul class="dropdown-menu dropdown-menu-end" aria-labelelledby="quarto-code-tools-menu"><li><a id="quarto-show-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Mostrar todo el código</a></li><li><a id="quarto-hide-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Ocultar todo el código</a></li><li><hr class="dropdown-divider"></li><li><a id="quarto-view-source" class="dropdown-item" href="javascript:void(0)" role="button">Ver el código fuente</a></li></ul></div></div>
 </div>
 
 
@@ -376,8 +393,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(knitr)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
-<section id="objetivo-del-capítulo" class="level2" data-number="15.1">
-<h2 data-number="15.1" class="anchored" data-anchor-id="objetivo-del-capítulo"><span class="header-section-number">15.1</span> Objetivo del capítulo</h2>
+<section id="objetivo-del-capítulo" class="level2" data-number="16.1">
+<h2 data-number="16.1" class="anchored" data-anchor-id="objetivo-del-capítulo"><span class="header-section-number">16.1</span> Objetivo del capítulo</h2>
 <p>En los apuntes usamos mucho <code>tidyverse</code> porque permite escribir análisis de datos como una secuencia legible de transformaciones. Este capítulo resume las funciones más frecuentes, especialmente las que aparecen en los ejemplos del libro.</p>
 <p>La idea central es trabajar con tablas y encadenar pasos:</p>
 <ol type="1">
@@ -478,8 +495,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </section>
-<section id="la-tubería" class="level2" data-number="15.2">
-<h2 data-number="15.2" class="anchored" data-anchor-id="la-tubería"><span class="header-section-number">15.2</span> La tubería</h2>
+<section id="la-tubería" class="level2" data-number="16.2">
+<h2 data-number="16.2" class="anchored" data-anchor-id="la-tubería"><span class="header-section-number">16.2</span> La tubería</h2>
 <p>La tubería <code>|&gt;</code> lee el código de izquierda a derecha. El resultado de una línea entra como primer argumento de la función siguiente.</p>
 <div class="cell">
 <details class="code-fold">
@@ -600,8 +617,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <p>En estos apuntes usamos principalmente <code>|&gt;</code>, la tubería nativa de R. También existe <code>%&gt;%</code>, del paquete <code>magrittr</code>, muy común en código tidyverse más antiguo. Para la mayoría de usos básicos, ambas permiten escribir cadenas de transformación similares.</p>
 </section>
-<section id="select-elegir-columnas" class="level2" data-number="15.3">
-<h2 data-number="15.3" class="anchored" data-anchor-id="select-elegir-columnas"><span class="header-section-number">15.3</span> <code>select()</code>: elegir columnas</h2>
+<section id="select-elegir-columnas" class="level2" data-number="16.3">
+<h2 data-number="16.3" class="anchored" data-anchor-id="select-elegir-columnas"><span class="header-section-number">16.3</span> <code>select()</code>: elegir columnas</h2>
 <p><code>select()</code> conserva, reordena o descarta variables.</p>
 <div class="cell">
 <details class="code-fold">
@@ -876,8 +893,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </section>
-<section id="filter-filtrar-filas" class="level2" data-number="15.4">
-<h2 data-number="15.4" class="anchored" data-anchor-id="filter-filtrar-filas"><span class="header-section-number">15.4</span> <code>filter()</code>: filtrar filas</h2>
+<section id="filter-filtrar-filas" class="level2" data-number="16.4">
+<h2 data-number="16.4" class="anchored" data-anchor-id="filter-filtrar-filas"><span class="header-section-number">16.4</span> <code>filter()</code>: filtrar filas</h2>
 <p><code>filter()</code> conserva observaciones que cumplen una condición lógica.</p>
 <div class="cell">
 <details class="code-fold">
@@ -1091,8 +1108,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </section>
-<section id="arrange-ordenar-filas" class="level2" data-number="15.5">
-<h2 data-number="15.5" class="anchored" data-anchor-id="arrange-ordenar-filas"><span class="header-section-number">15.5</span> <code>arrange()</code>: ordenar filas</h2>
+<section id="arrange-ordenar-filas" class="level2" data-number="16.5">
+<h2 data-number="16.5" class="anchored" data-anchor-id="arrange-ordenar-filas"><span class="header-section-number">16.5</span> <code>arrange()</code>: ordenar filas</h2>
 <p><code>arrange()</code> ordena una tabla según una o varias columnas.</p>
 <div class="cell">
 <details class="code-fold">
@@ -1204,8 +1221,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </section>
-<section id="mutate-crear-columnas" class="level2" data-number="15.6">
-<h2 data-number="15.6" class="anchored" data-anchor-id="mutate-crear-columnas"><span class="header-section-number">15.6</span> <code>mutate()</code>: crear columnas</h2>
+<section id="mutate-crear-columnas" class="level2" data-number="16.6">
+<h2 data-number="16.6" class="anchored" data-anchor-id="mutate-crear-columnas"><span class="header-section-number">16.6</span> <code>mutate()</code>: crear columnas</h2>
 <p><code>mutate()</code> añade nuevas variables o modifica variables existentes.</p>
 <div class="cell">
 <details class="code-fold">
@@ -1317,8 +1334,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </section>
-<section id="case_when-crear-categorías-con-varias-reglas" class="level2" data-number="15.7">
-<h2 data-number="15.7" class="anchored" data-anchor-id="case_when-crear-categorías-con-varias-reglas"><span class="header-section-number">15.7</span> <code>case_when()</code>: crear categorías con varias reglas</h2>
+<section id="case_when-crear-categorías-con-varias-reglas" class="level2" data-number="16.7">
+<h2 data-number="16.7" class="anchored" data-anchor-id="case_when-crear-categorías-con-varias-reglas"><span class="header-section-number">16.7</span> <code>case_when()</code>: crear categorías con varias reglas</h2>
 <p><code>case_when()</code> es útil cuando una nueva variable depende de varias condiciones.</p>
 <div class="cell">
 <details class="code-fold">
@@ -1361,8 +1378,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <p>El caso <code>TRUE ~ ...</code> funciona como opción por defecto.</p>
 </section>
-<section id="summarise-y-group_by-resumir" class="level2" data-number="15.8">
-<h2 data-number="15.8" class="anchored" data-anchor-id="summarise-y-group_by-resumir"><span class="header-section-number">15.8</span> <code>summarise()</code> y <code>group_by()</code>: resumir</h2>
+<section id="summarise-y-group_by-resumir" class="level2" data-number="16.8">
+<h2 data-number="16.8" class="anchored" data-anchor-id="summarise-y-group_by-resumir"><span class="header-section-number">16.8</span> <code>summarise()</code> y <code>group_by()</code>: resumir</h2>
 <p><code>summarise()</code> reduce una tabla a estadísticas resumen.</p>
 <div class="cell">
 <details class="code-fold">
@@ -1507,8 +1524,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </section>
-<section id="count-contar-combinaciones" class="level2" data-number="15.9">
-<h2 data-number="15.9" class="anchored" data-anchor-id="count-contar-combinaciones"><span class="header-section-number">15.9</span> <code>count()</code>: contar combinaciones</h2>
+<section id="count-contar-combinaciones" class="level2" data-number="16.9">
+<h2 data-number="16.9" class="anchored" data-anchor-id="count-contar-combinaciones"><span class="header-section-number">16.9</span> <code>count()</code>: contar combinaciones</h2>
 <p><code>count()</code> es una abreviatura de <code>group_by()</code> seguido de <code>summarise(n = n())</code>.</p>
 <div class="cell">
 <details class="code-fold">
@@ -1615,8 +1632,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <p>En capítulos de correspondencias y MCA usamos con frecuencia tablas de conteos porque la información categórica se resume mediante frecuencias.</p>
 </section>
-<section id="across-aplicar-lo-mismo-a-varias-columnas" class="level2" data-number="15.10">
-<h2 data-number="15.10" class="anchored" data-anchor-id="across-aplicar-lo-mismo-a-varias-columnas"><span class="header-section-number">15.10</span> <code>across()</code>: aplicar lo mismo a varias columnas</h2>
+<section id="across-aplicar-lo-mismo-a-varias-columnas" class="level2" data-number="16.10">
+<h2 data-number="16.10" class="anchored" data-anchor-id="across-aplicar-lo-mismo-a-varias-columnas"><span class="header-section-number">16.10</span> <code>across()</code>: aplicar lo mismo a varias columnas</h2>
 <p><code>across()</code> permite aplicar una función a varias variables dentro de <code>summarise()</code> o <code>mutate()</code>.</p>
 <div class="cell">
 <details class="code-fold">
@@ -1757,8 +1774,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <p>Para análisis multivariante suele ser más claro construir directamente la matriz escalada con <code>scale()</code>, pero <code>across()</code> es cómodo cuando queremos conservar la tabla completa.</p>
 </section>
-<section id="pull-extraer-una-columna-como-vector" class="level2" data-number="15.11">
-<h2 data-number="15.11" class="anchored" data-anchor-id="pull-extraer-una-columna-como-vector"><span class="header-section-number">15.11</span> <code>pull()</code>: extraer una columna como vector</h2>
+<section id="pull-extraer-una-columna-como-vector" class="level2" data-number="16.11">
+<h2 data-number="16.11" class="anchored" data-anchor-id="pull-extraer-una-columna-como-vector"><span class="header-section-number">16.11</span> <code>pull()</code>: extraer una columna como vector</h2>
 <p><code>pull()</code> extrae una columna de una tabla. Es útil cuando una función espera un vector.</p>
 <div class="cell">
 <details class="code-fold">
@@ -1792,8 +1809,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <p>En los apuntes aparece esta idea al guardar una variable suplementaria, por ejemplo una etiqueta externa para interpretar clusters o ejes factoriales.</p>
 </section>
-<section id="slice-elegir-filas-por-posición" class="level2" data-number="15.12">
-<h2 data-number="15.12" class="anchored" data-anchor-id="slice-elegir-filas-por-posición"><span class="header-section-number">15.12</span> <code>slice()</code>: elegir filas por posición</h2>
+<section id="slice-elegir-filas-por-posición" class="level2" data-number="16.12">
+<h2 data-number="16.12" class="anchored" data-anchor-id="slice-elegir-filas-por-posición"><span class="header-section-number">16.12</span> <code>slice()</code>: elegir filas por posición</h2>
 <p><code>slice()</code> selecciona filas por posición. Algunas variantes útiles son <code>slice_head()</code>, <code>slice_max()</code> y <code>slice_sample()</code>.</p>
 <div class="cell">
 <details class="code-fold">
@@ -1956,8 +1973,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </section>
-<section id="pivot_longer-formato-largo" class="level2" data-number="15.13">
-<h2 data-number="15.13" class="anchored" data-anchor-id="pivot_longer-formato-largo"><span class="header-section-number">15.13</span> <code>pivot_longer()</code>: formato largo</h2>
+<section id="pivot_longer-formato-largo" class="level2" data-number="16.13">
+<h2 data-number="16.13" class="anchored" data-anchor-id="pivot_longer-formato-largo"><span class="header-section-number">16.13</span> <code>pivot_longer()</code>: formato largo</h2>
 <p>Muchas gráficas con <code>ggplot2</code> funcionan mejor en formato largo: una columna indica la variable y otra el valor.</p>
 <div class="cell">
 <details class="code-fold">
@@ -2057,8 +2074,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </section>
-<section id="pivot_wider-formato-ancho" class="level2" data-number="15.14">
-<h2 data-number="15.14" class="anchored" data-anchor-id="pivot_wider-formato-ancho"><span class="header-section-number">15.14</span> <code>pivot_wider()</code>: formato ancho</h2>
+<section id="pivot_wider-formato-ancho" class="level2" data-number="16.14">
+<h2 data-number="16.14" class="anchored" data-anchor-id="pivot_wider-formato-ancho"><span class="header-section-number">16.14</span> <code>pivot_wider()</code>: formato ancho</h2>
 <p><code>pivot_wider()</code> hace la operación inversa: reparte valores de una columna en varias columnas.</p>
 <div class="cell">
 <details class="code-fold">
@@ -2114,8 +2131,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </section>
-<section id="left_join-unir-tablas" class="level2" data-number="15.15">
-<h2 data-number="15.15" class="anchored" data-anchor-id="left_join-unir-tablas"><span class="header-section-number">15.15</span> <code>left_join()</code>: unir tablas</h2>
+<section id="left_join-unir-tablas" class="level2" data-number="16.15">
+<h2 data-number="16.15" class="anchored" data-anchor-id="left_join-unir-tablas"><span class="header-section-number">16.15</span> <code>left_join()</code>: unir tablas</h2>
 <p>Los <code>join</code> combinan tablas usando una o varias claves. En análisis aplicado esto aparece al unir resultados de un modelo con información original.</p>
 <div class="cell">
 <details class="code-fold">
@@ -2196,8 +2213,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <p><code>left_join(x, y, by = "clave")</code> conserva todas las filas de <code>x</code> y añade las columnas de <code>y</code> cuando encuentra coincidencias.</p>
 </section>
-<section id="ggplot-dentro-de-pipelines" class="level2" data-number="15.16">
-<h2 data-number="15.16" class="anchored" data-anchor-id="ggplot-dentro-de-pipelines"><span class="header-section-number">15.16</span> <code>ggplot()</code> dentro de pipelines</h2>
+<section id="ggplot-dentro-de-pipelines" class="level2" data-number="16.16">
+<h2 data-number="16.16" class="anchored" data-anchor-id="ggplot-dentro-de-pipelines"><span class="header-section-number">16.16</span> <code>ggplot()</code> dentro de pipelines</h2>
 <p><code>ggplot2</code> también encaja bien con tuberías. Primero transformamos la tabla y luego la enviamos a <code>ggplot()</code>.</p>
 <div class="cell">
 <details class="code-fold">
@@ -2225,10 +2242,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <p>Una regla práctica: si una gráfica necesita una tabla transformada, conviene preparar esa tabla con <code>select()</code>, <code>filter()</code>, <code>mutate()</code> o <code>summarise()</code> antes de llamar a <code>ggplot()</code>.</p>
 </section>
-<section id="patrones-que-aparecen-en-los-apuntes" class="level2" data-number="15.17">
-<h2 data-number="15.17" class="anchored" data-anchor-id="patrones-que-aparecen-en-los-apuntes"><span class="header-section-number">15.17</span> Patrones que aparecen en los apuntes</h2>
-<section id="preparar-variables-activas" class="level3" data-number="15.17.1">
-<h3 data-number="15.17.1" class="anchored" data-anchor-id="preparar-variables-activas"><span class="header-section-number">15.17.1</span> Preparar variables activas</h3>
+<section id="patrones-que-aparecen-en-los-apuntes" class="level2" data-number="16.17">
+<h2 data-number="16.17" class="anchored" data-anchor-id="patrones-que-aparecen-en-los-apuntes"><span class="header-section-number">16.17</span> Patrones que aparecen en los apuntes</h2>
+<section id="preparar-variables-activas" class="level3" data-number="16.17.1">
+<h3 data-number="16.17.1" class="anchored" data-anchor-id="preparar-variables-activas"><span class="header-section-number">16.17.1</span> Preparar variables activas</h3>
 <div class="cell">
 <details class="code-fold">
 <summary>Código</summary>
@@ -2243,8 +2260,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </section>
-<section id="añadir-resultados-de-un-modelo" class="level3" data-number="15.17.2">
-<h3 data-number="15.17.2" class="anchored" data-anchor-id="añadir-resultados-de-un-modelo"><span class="header-section-number">15.17.2</span> Añadir resultados de un modelo</h3>
+<section id="añadir-resultados-de-un-modelo" class="level3" data-number="16.17.2">
+<h3 data-number="16.17.2" class="anchored" data-anchor-id="añadir-resultados-de-un-modelo"><span class="header-section-number">16.17.2</span> Añadir resultados de un modelo</h3>
 <div class="cell">
 <details class="code-fold">
 <summary>Código</summary>
@@ -2332,8 +2349,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </section>
-<section id="resumir-perfiles-de-grupo" class="level3" data-number="15.17.3">
-<h3 data-number="15.17.3" class="anchored" data-anchor-id="resumir-perfiles-de-grupo"><span class="header-section-number">15.17.3</span> Resumir perfiles de grupo</h3>
+<section id="resumir-perfiles-de-grupo" class="level3" data-number="16.17.3">
+<h3 data-number="16.17.3" class="anchored" data-anchor-id="resumir-perfiles-de-grupo"><span class="header-section-number">16.17.3</span> Resumir perfiles de grupo</h3>
 <div class="cell">
 <details class="code-fold">
 <summary>Código</summary>
@@ -2388,8 +2405,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </section>
-<section id="comparar-con-una-variable-suplementaria" class="level3" data-number="15.17.4">
-<h3 data-number="15.17.4" class="anchored" data-anchor-id="comparar-con-una-variable-suplementaria"><span class="header-section-number">15.17.4</span> Comparar con una variable suplementaria</h3>
+<section id="comparar-con-una-variable-suplementaria" class="level3" data-number="16.17.4">
+<h3 data-number="16.17.4" class="anchored" data-anchor-id="comparar-con-una-variable-suplementaria"><span class="header-section-number">16.17.4</span> Comparar con una variable suplementaria</h3>
 <div class="cell">
 <details class="code-fold">
 <summary>Código</summary>
@@ -2437,8 +2454,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </section>
-<section id="preparar-datos-para-un-mapa-factorial" class="level3" data-number="15.17.5">
-<h3 data-number="15.17.5" class="anchored" data-anchor-id="preparar-datos-para-un-mapa-factorial"><span class="header-section-number">15.17.5</span> Preparar datos para un mapa factorial</h3>
+<section id="preparar-datos-para-un-mapa-factorial" class="level3" data-number="16.17.5">
+<h3 data-number="16.17.5" class="anchored" data-anchor-id="preparar-datos-para-un-mapa-factorial"><span class="header-section-number">16.17.5</span> Preparar datos para un mapa factorial</h3>
 <div class="cell">
 <details class="code-fold">
 <summary>Código</summary>
@@ -2466,8 +2483,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </section>
 </section>
-<section id="errores-frecuentes" class="level2" data-number="15.18">
-<h2 data-number="15.18" class="anchored" data-anchor-id="errores-frecuentes"><span class="header-section-number">15.18</span> Errores frecuentes</h2>
+<section id="errores-frecuentes" class="level2" data-number="16.18">
+<h2 data-number="16.18" class="anchored" data-anchor-id="errores-frecuentes"><span class="header-section-number">16.18</span> Errores frecuentes</h2>
 <ul>
 <li>Usar <code>select()</code> cuando se quieren filtrar filas; para filas se usa <code>filter()</code>.</li>
 <li>Olvidar que <code>filter()</code> necesita condiciones lógicas, como <code>mpg &gt; 20</code>.</li>
@@ -2477,12 +2494,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>Perder una variable suplementaria antes de usarla para interpretar resultados.</li>
 </ul>
 </section>
-<section id="resumen-del-capítulo" class="level2" data-number="15.19">
-<h2 data-number="15.19" class="anchored" data-anchor-id="resumen-del-capítulo"><span class="header-section-number">15.19</span> Resumen del capítulo</h2>
+<section id="resumen-del-capítulo" class="level2" data-number="16.19">
+<h2 data-number="16.19" class="anchored" data-anchor-id="resumen-del-capítulo"><span class="header-section-number">16.19</span> Resumen del capítulo</h2>
 <p>El flujo tidyverse se basa en transformar tablas de forma explícita y legible. Para los apuntes, las funciones más importantes son <code>select()</code>, <code>filter()</code>, <code>mutate()</code>, <code>arrange()</code>, <code>group_by()</code>, <code>summarise()</code>, <code>count()</code>, <code>across()</code>, <code>pivot_longer()</code>, <code>pivot_wider()</code>, <code>pull()</code> y los <code>join</code>. La tubería <code>|&gt;</code> permite encadenarlas como una receta de análisis.</p>
 </section>
-<section id="ejercicios-propuestos" class="level2" data-number="15.20">
-<h2 data-number="15.20" class="anchored" data-anchor-id="ejercicios-propuestos"><span class="header-section-number">15.20</span> Ejercicios propuestos</h2>
+<section id="ejercicios-propuestos" class="level2" data-number="16.20">
+<h2 data-number="16.20" class="anchored" data-anchor-id="ejercicios-propuestos"><span class="header-section-number">16.20</span> Ejercicios propuestos</h2>
 <ol type="1">
 <li>Con <code>mtcars</code>, crea una tabla con <code>modelo</code>, <code>mpg</code>, <code>hp</code>, <code>wt</code> y una variable categórica que indique si el coche es ligero o pesado.</li>
 <li>Calcula medias de <code>mpg</code>, <code>hp</code> y <code>wt</code> por tipo de transmisión usando <code>group_by()</code> y <code>summarise()</code>.</li>
@@ -2950,8 +2967,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./12-casos-integradores.html" class="pagination-link" aria-label="Casos integradores">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Casos integradores</span></span>
+      <a href="./ejercicios.html" class="pagination-link" aria-label="Ejercicios conceptuales">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Ejercicios conceptuales</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">

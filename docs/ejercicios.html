@@ -1,0 +1,1557 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.38">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>15&nbsp; Ejercicios conceptuales – Técnicas Multivariantes Aplicadas con R</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./tidyverse.html" rel="next">
+<link href="./12-casos-integradores.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-d05e536813708dc17bf3d3bf7c238df9.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No se han encontrado resultados",
+    "search-matching-documents-text": "documentos encontrados",
+    "search-copy-link-title": "Copiar el enlace en la búsqueda",
+    "search-hide-matches-text": "Ocultar resultados adicionales",
+    "search-more-match-text": "resultado adicional en este documento",
+    "search-more-matches-text": "resultados adicionales en este documento",
+    "search-clear-button-title": "Borrar",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancelar",
+    "search-submit-button-title": "Enviar",
+    "search-label": "Buscar"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar floating quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./ejercicios.html">Ejercicios</a></li><li class="breadcrumb-item"><a href="./ejercicios.html"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Ejercicios conceptuales</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Buscar" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Técnicas Multivariantes Aplicadas con R</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Buscar"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Técnicas Multivariantes Aplicadas con R</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./00-presentacion.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Presentación de la asignatura</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01-introduccion.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Introducción conceptual</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Bloque 1. Análisis cluster</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02-distancias.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Distancias y similitud</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03-clustering-jerarquico.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Clustering jerárquico</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04-kmeans-pam.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">k-means y PAM</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./05-interpretacion-clusters.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Interpretación de clusters</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Bloque 2. Reducción de dimensión</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./06-pca.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Análisis de componentes principales</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./07-analisis-factorial.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Análisis factorial exploratorio</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Bloque 3. Análisis de correspondencias y datos mixtos</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./09-correspondencias.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Análisis de correspondencias simple</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./10-mca.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Análisis de correspondencias múltiples</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./08-famd.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">FAMD para datos mixtos</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
+ <span class="menu-text">Bloque 4. Análisis discriminante</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./11-discriminante.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Análisis discriminante</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
+ <span class="menu-text">Casos integradores</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./12-casos-integradores.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Casos integradores</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
+ <span class="menu-text">Ejercicios</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ejercicios.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Ejercicios conceptuales</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true">
+ <span class="menu-text">Apéndice práctico</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./tidyverse.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Guía rápida de tidyverse y dplyr</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Referencias</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Tabla de contenidos</h2>
+   
+  <ul>
+  <li><a href="#cómo-trabajar-con-este-capítulo" id="toc-cómo-trabajar-con-este-capítulo" class="nav-link active" data-scroll-target="#cómo-trabajar-con-este-capítulo"><span class="header-section-number">15.1</span> Cómo trabajar con este capítulo</a></li>
+  <li><a href="#presentación-de-la-asignatura" id="toc-presentación-de-la-asignatura" class="nav-link" data-scroll-target="#presentación-de-la-asignatura"><span class="header-section-number">15.2</span> Presentación de la asignatura</a></li>
+  <li><a href="#introducción-conceptual" id="toc-introducción-conceptual" class="nav-link" data-scroll-target="#introducción-conceptual"><span class="header-section-number">15.3</span> Introducción conceptual</a></li>
+  <li><a href="#distancias-y-similitud" id="toc-distancias-y-similitud" class="nav-link" data-scroll-target="#distancias-y-similitud"><span class="header-section-number">15.4</span> Distancias y similitud</a></li>
+  <li><a href="#clustering-jerárquico" id="toc-clustering-jerárquico" class="nav-link" data-scroll-target="#clustering-jerárquico"><span class="header-section-number">15.5</span> Clustering jerárquico</a></li>
+  <li><a href="#k-means-y-pam" id="toc-k-means-y-pam" class="nav-link" data-scroll-target="#k-means-y-pam"><span class="header-section-number">15.6</span> k-means y PAM</a></li>
+  <li><a href="#interpretación-de-clusters" id="toc-interpretación-de-clusters" class="nav-link" data-scroll-target="#interpretación-de-clusters"><span class="header-section-number">15.7</span> Interpretación de clusters</a></li>
+  <li><a href="#análisis-de-componentes-principales" id="toc-análisis-de-componentes-principales" class="nav-link" data-scroll-target="#análisis-de-componentes-principales"><span class="header-section-number">15.8</span> Análisis de componentes principales</a></li>
+  <li><a href="#análisis-factorial-exploratorio" id="toc-análisis-factorial-exploratorio" class="nav-link" data-scroll-target="#análisis-factorial-exploratorio"><span class="header-section-number">15.9</span> Análisis factorial exploratorio</a></li>
+  <li><a href="#análisis-de-correspondencias-simple" id="toc-análisis-de-correspondencias-simple" class="nav-link" data-scroll-target="#análisis-de-correspondencias-simple"><span class="header-section-number">15.10</span> Análisis de correspondencias simple</a></li>
+  <li><a href="#análisis-de-correspondencias-múltiples" id="toc-análisis-de-correspondencias-múltiples" class="nav-link" data-scroll-target="#análisis-de-correspondencias-múltiples"><span class="header-section-number">15.11</span> Análisis de correspondencias múltiples</a></li>
+  <li><a href="#famd-para-datos-mixtos" id="toc-famd-para-datos-mixtos" class="nav-link" data-scroll-target="#famd-para-datos-mixtos"><span class="header-section-number">15.12</span> FAMD para datos mixtos</a></li>
+  <li><a href="#análisis-discriminante" id="toc-análisis-discriminante" class="nav-link" data-scroll-target="#análisis-discriminante"><span class="header-section-number">15.13</span> Análisis discriminante</a></li>
+  <li><a href="#casos-integradores" id="toc-casos-integradores" class="nav-link" data-scroll-target="#casos-integradores"><span class="header-section-number">15.14</span> Casos integradores</a></li>
+  <li><a href="#guía-práctica-de-tidyverse-y-dplyr" id="toc-guía-práctica-de-tidyverse-y-dplyr" class="nav-link" data-scroll-target="#guía-práctica-de-tidyverse-y-dplyr"><span class="header-section-number">15.15</span> Guía práctica de tidyverse y dplyr</a></li>
+  <li><a href="#proyecto-de-síntesis" id="toc-proyecto-de-síntesis" class="nav-link" data-scroll-target="#proyecto-de-síntesis"><span class="header-section-number">15.16</span> Proyecto de síntesis</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./ejercicios.html">Ejercicios</a></li><li class="breadcrumb-item"><a href="./ejercicios.html"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Ejercicios conceptuales</span></a></li></ol></nav>
+<div class="quarto-title">
+<div class="quarto-title-block"><div><h1 class="title"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Ejercicios conceptuales</span></h1><button type="button" class="btn code-tools-button dropdown-toggle" id="quarto-code-tools-menu" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi"></i> Código</button><ul class="dropdown-menu dropdown-menu-end" aria-labelelledby="quarto-code-tools-menu"><li><a id="quarto-show-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Mostrar todo el código</a></li><li><a id="quarto-hide-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Ocultar todo el código</a></li><li><hr class="dropdown-divider"></li><li><a id="quarto-view-source" class="dropdown-item" href="javascript:void(0)" role="button">Ver el código fuente</a></li></ul></div></div>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div class="cell">
+<details class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(knitr)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">theme_set</span>(<span class="fu">theme_minimal</span>())</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>mtcars_ex <span class="ot">&lt;-</span> mtcars <span class="sc">|&gt;</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as_tibble</span>(<span class="at">rownames =</span> <span class="st">"modelo"</span>)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>mtcars_mixed_ex <span class="ot">&lt;-</span> mtcars_ex <span class="sc">|&gt;</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">cyl =</span> <span class="fu">factor</span>(cyl),</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">vs =</span> <span class="fu">factor</span>(vs, <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"V"</span>, <span class="st">"recto"</span>)),</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">am =</span> <span class="fu">factor</span>(am, <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"automatico"</span>, <span class="st">"manual"</span>)),</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">gear =</span> <span class="fu">factor</span>(gear),</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">carb =</span> <span class="fu">factor</span>(carb)</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>titanic_ex <span class="ot">&lt;-</span> Titanic <span class="sc">|&gt;</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.data.frame</span>() <span class="sc">|&gt;</span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">uncount</span>(Freq)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<section id="cómo-trabajar-con-este-capítulo" class="level2" data-number="15.1">
+<h2 data-number="15.1" class="anchored" data-anchor-id="cómo-trabajar-con-este-capítulo"><span class="header-section-number">15.1</span> Cómo trabajar con este capítulo</h2>
+<p>Estos ejercicios están pensados para discutir, experimentar y justificar. Una respuesta no está completa por incluir una cifra o un gráfico: debe explicar qué decisión metodológica se tomó, qué evidencia la respalda y qué limitación conserva la conclusión.</p>
+<p>Salvo que se indique otra cosa, cada entrega debería contener:</p>
+<ol type="1">
+<li>una respuesta breve a la pregunta sustantiva;</li>
+<li>una justificación de las variables, transformaciones y método elegidos;</li>
+<li>una tabla o figura que aporte evidencia;</li>
+<li>una limitación o una explicación alternativa.</li>
+</ol>
+<p>En los ejercicios de construcción de datos no se busca encontrar el único ejemplo posible. El objetivo es producir un ejemplo reproducible que muestre con claridad el fenómeno pedido.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Nota
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Una simulación es una demostración empírica, no una prueba general. Cuando se use una simulación, hay que distinguir qué se ha observado en esos datos de qué se afirma que ocurre en general.</p>
+</div>
+</div>
+</section>
+<section id="presentación-de-la-asignatura" class="level2" data-number="15.2">
+<h2 data-number="15.2" class="anchored" data-anchor-id="presentación-de-la-asignatura"><span class="header-section-number">15.2</span> Presentación de la asignatura</h2>
+<p><strong>Ejercicio 0.1. La misma tabla, preguntas distintas.</strong> Imagina una tabla con información sobre canciones: duración, tempo, energía, tonalidad, género y popularidad. Formula cuatro preguntas diferentes que requieran, respectivamente, agrupamiento, reducción de dimensión, estudio de asociación y clasificación supervisada. Para cada pregunta, identifica la unidad de análisis, la variable respuesta si existe y el tipo de conclusión que sería legítimo comunicar.</p>
+<p><strong>Ejercicio 0.2. De la pregunta al método.</strong> Un equipo afirma: «Aplicaremos PCA porque tenemos muchas variables». Escribe una respuesta de revisión de unas 150 palabras. Explica qué información falta antes de recomendar una técnica y propón al menos dos preguntas para las que PCA no sería la elección natural aun cuando hubiera muchas columnas.</p>
+<p><strong>Ejercicio 0.3. Una conclusión demasiado fuerte.</strong> Reescribe de forma estadísticamente honesta la frase «el algoritmo ha descubierto tres tipos reales de consumidores». Da tres explicaciones alternativas para que aparezcan tres clusters y especifica qué evidencia adicional ayudaría a distinguirlas.</p>
+</section>
+<section id="introducción-conceptual" class="level2" data-number="15.3">
+<h2 data-number="15.3" class="anchored" data-anchor-id="introducción-conceptual"><span class="header-section-number">15.3</span> Introducción conceptual</h2>
+<p><strong>Ejercicio 1.1. ¿Qué representa una fila?</strong> Una encuesta musical contiene una fila por reproducción, pero también un identificador de oyente y otro de canción. Explica cómo cambiarían la matriz de datos, las dependencias entre filas y la pregunta científica si la unidad de análisis fuera: a) una reproducción, b) una canción, o c) un oyente. Indica una técnica del curso que podría ser razonable en cada caso.</p>
+<p><strong>Ejercicio 1.2. Tipos de variables que dependen de la pregunta.</strong> Clasifica <code>cyl</code>, <code>gear</code>, <code>carb</code> y <code>am</code> de <code>mtcars</code> según su tipo estadístico. Después plantea dos análisis en los que una misma columna se trate de maneras diferentes. La respuesta debe justificar la codificación por el significado de la comparación, no por cómo R almacena la columna.</p>
+<p><strong>Ejercicio 1.3. Misma proyección, estructuras distintas.</strong> Construye dos datasets tridimensionales que tengan prácticamente la misma representación al proyectarlos sobre los ejes <span class="math inline">\(x_1\)</span> y <span class="math inline">\(x_2\)</span>, pero estructuras claramente distintas al considerar <span class="math inline">\(x_3\)</span>. Muéstralos con gráficos y explica por qué una representación de baja dimensión siempre puede ocultar información.</p>
+<p><strong>Ejercicio 1.4. Diseñar una estructura multivariante.</strong> Genera un dataset con cinco variables en el que haya simultáneamente: dos variables redundantes, una variable con escala dominante, una variable irrelevante y una variable que separe dos grupos. No apliques todavía ningún método. Argumenta qué problemas anticipas para distancias, PCA y clustering.</p>
+</section>
+<section id="distancias-y-similitud" class="level2" data-number="15.4">
+<h2 data-number="15.4" class="anchored" data-anchor-id="distancias-y-similitud"><span class="header-section-number">15.4</span> Distancias y similitud</h2>
+<p><strong>Ejercicio 2.1. La dirección importa.</strong> Usa <code>disp</code> y <code>wt</code> estandarizadas de <code>mtcars</code>. Calcula sus componentes principales y construye dos pares de puntos con la misma distancia euclídea: un par separado solamente en la dirección de PC1 y otro solamente en PC2. Representa los datos y los cuatro puntos antes de calcular distancias. Compara euclídea y Mahalanobis y explica el resultado a partir de los autovalores y de la correlación, no de las unidades originales.</p>
+<p><strong>Ejercicio 2.2. Vecinos que dependen de la pregunta.</strong> Elige un coche de <code>mtcars</code> y encuentra sus tres vecinos más próximos usando, sobre las mismas variables estandarizadas, distancia euclídea, Manhattan y Chebyshev. No te limites a listar vecinos: identifica qué diferencias entre coches está enfatizando cada geometría y decide cuál usarías en un sistema de recomendación donde una discrepancia extrema en una sola característica sea inaceptable.</p>
+<p><strong>Ejercicio 2.3. Una variable ordinal no equiespaciada.</strong> Diseña una variable de satisfacción con cinco categorías ordenadas para la que no sea razonable suponer saltos iguales. Propón posiciones numéricas para sus niveles, construye una distancia normalizada y compárala con: a) desacuerdo nominal y b) rangos equiespaciados. Explica qué conocimiento sustantivo introducen tus posiciones.</p>
+<p><strong>Ejercicio 2.4. Tonalidades musicales.</strong> Las doce clases cromáticas pueden codificarse como enteros de 0 a 11, pero forman un ciclo. Define una disimilitud entre tonalidades que haga próximas a <code>B</code> y <code>C</code>. Después discute por qué la proximidad cromática no representa necesariamente similitud armónica completa. Propón una extensión que distinga, al menos, modo mayor y menor.</p>
+<p><strong>Ejercicio 2.5. Gower no decide por nosotros.</strong> Selecciona cuatro variables numéricas y tres categóricas de <code>mtcars_mixed_ex</code>. Calcula distancias de Gower bajo dos sistemas de pesos que respondan a preguntas aplicadas diferentes. Busca un coche cuyo vecino más próximo cambie y explica exactamente qué contribuciones parciales producen el cambio.</p>
+<p><strong>Ejercicio 2.6. Construir un contraejemplo.</strong> Crea un dataset de entre cuatro y ocho individuos en el que duplicar una variable cambie el vecino más próximo de al menos un individuo con distancia euclídea. Muestra que estandarizar no elimina necesariamente este problema y explica la diferencia entre escala y redundancia.</p>
+</section>
+<section id="clustering-jerárquico" class="level2" data-number="15.5">
+<h2 data-number="15.5" class="anchored" data-anchor-id="clustering-jerárquico"><span class="header-section-number">15.5</span> Clustering jerárquico</h2>
+<p>El siguiente dataset contiene dos grupos compactos unidos por una cadena de puntos.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">31</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>datos_puente <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>(</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">id =</span> <span class="fu">paste0</span>(<span class="st">"I"</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">12</span>),</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="fu">rnorm</span>(<span class="dv">12</span>, <span class="sc">-</span><span class="dv">3</span>, <span class="fl">0.35</span>),</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="fu">rnorm</span>(<span class="dv">12</span>, <span class="dv">0</span>, <span class="fl">0.35</span>),</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">tipo =</span> <span class="st">"nube izquierda"</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>(</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">id =</span> <span class="fu">paste0</span>(<span class="st">"D"</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">12</span>),</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="fu">rnorm</span>(<span class="dv">12</span>, <span class="dv">3</span>, <span class="fl">0.35</span>),</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="fu">rnorm</span>(<span class="dv">12</span>, <span class="dv">0</span>, <span class="fl">0.35</span>),</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">tipo =</span> <span class="st">"nube derecha"</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>(</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">id =</span> <span class="fu">paste0</span>(<span class="st">"P"</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">7</span>),</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="fu">seq</span>(<span class="sc">-</span><span class="fl">2.1</span>, <span class="fl">2.1</span>, <span class="at">length.out =</span> <span class="dv">7</span>),</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="fu">rnorm</span>(<span class="dv">7</span>, <span class="dv">0</span>, <span class="fl">0.08</span>),</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">tipo =</span> <span class="st">"puente"</span></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>datos_puente <span class="sc">|&gt;</span></span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(x, y, <span class="at">color =</span> tipo, <span class="at">label =</span> id)) <span class="sc">+</span></span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="fl">2.5</span>) <span class="sc">+</span></span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="at">nudge_y =</span> <span class="fl">0.18</span>, <span class="at">size =</span> <span class="dv">3</span>, <span class="at">show.legend =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_equal</span>() <span class="sc">+</span></span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Dos nubes conectadas por un puente"</span>, <span class="at">color =</span> <span class="cn">NULL</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="ejercicios_files/figure-html/datos-puente-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 3.1. El efecto cadena.</strong> Aplica single, complete, average y Ward a <code>datos_puente</code>. Antes de cortar los dendrogramas, predice qué método será más sensible al puente. Contrasta la predicción y explica el resultado usando la definición matemática del linkage.</p>
+<p><strong>Ejercicio 3.2. El dendrograma no es un mapa.</strong> Permuta el orden de las filas de <code>datos_puente</code> y vuelve a dibujar el dendrograma con el mismo método. Investiga qué puede cambiar visualmente aunque las fusiones y las alturas representen la misma jerarquía. Escribe tres reglas para evitar interpretar como distancia horizontal lo que solo es una disposición gráfica.</p>
+<p><strong>Ejercicio 3.3. Una fusión irreversible.</strong> Construye un ejemplo pequeño donde una de las primeras fusiones de un algoritmo aglomerativo resulte poco conveniente al observar la estructura global. Explica por qué el algoritmo no puede corregirla. Describe cómo plantearía el mismo problema un método divisivo y qué nueva decisión difícil aparecería.</p>
+<p><strong>Ejercicio 3.4. Ward y la geometría elegida.</strong> Compara Ward sobre variables originales y estandarizadas de <code>mtcars</code>. Identifica una fusión que cambie pronto en el árbol y explica qué variable o conjunto de variables la provoca. ¿Tendría sentido usar Ward directamente con una distancia de Gower? Responde atendiendo a su criterio de incremento de suma de cuadrados.</p>
+<p><strong>Ejercicio 3.5. ¿Dónde cortar?</strong> Elige dos cortes plausibles de un mismo dendrograma de <code>mtcars</code>. Defiende cada corte como si respondiera a una pregunta aplicada diferente. Usa perfiles y silhouette, pero explica por qué ninguno de esos elementos convierte automáticamente un corte en el «verdadero».</p>
+</section>
+<section id="k-means-y-pam" class="level2" data-number="15.6">
+<h2 data-number="15.6" class="anchored" data-anchor-id="k-means-y-pam"><span class="header-section-number">15.6</span> k-means y PAM</h2>
+<p>Este dataset tiene dos grupos curvos y permite estudiar una limitación geométrica de k-means.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">42</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>n_luna <span class="ot">&lt;-</span> <span class="dv">80</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>angulo <span class="ot">&lt;-</span> <span class="fu">runif</span>(n_luna, <span class="dv">0</span>, pi)</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>datos_lunas <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>(</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="fu">cos</span>(angulo) <span class="sc">+</span> <span class="fu">rnorm</span>(n_luna, <span class="dv">0</span>, <span class="fl">0.06</span>),</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="fu">sin</span>(angulo) <span class="sc">+</span> <span class="fu">rnorm</span>(n_luna, <span class="dv">0</span>, <span class="fl">0.06</span>),</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">grupo_generador =</span> <span class="st">"superior"</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>(</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="dv">1</span> <span class="sc">-</span> <span class="fu">cos</span>(angulo) <span class="sc">+</span> <span class="fu">rnorm</span>(n_luna, <span class="dv">0</span>, <span class="fl">0.06</span>),</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="fl">0.45</span> <span class="sc">-</span> <span class="fu">sin</span>(angulo) <span class="sc">+</span> <span class="fu">rnorm</span>(n_luna, <span class="dv">0</span>, <span class="fl">0.06</span>),</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">grupo_generador =</span> <span class="st">"inferior"</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>datos_lunas <span class="sc">|&gt;</span></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(x, y, <span class="at">color =</span> grupo_generador)) <span class="sc">+</span></span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.8</span>) <span class="sc">+</span></span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_equal</span>() <span class="sc">+</span></span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Dos grupos no convexos"</span>, <span class="at">color =</span> <span class="st">"Grupo generador"</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="ejercicios_files/figure-html/datos-lunas-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 4.1. Narrar una iteración.</strong> Selecciona seis puntos bidimensionales y dos centroides iniciales para que, después de una iteración de Lloyd, al menos un punto cambie de cluster en la iteración siguiente. Representa asignación y actualización en gráficos sucesivos. Explica por qué cada paso no aumenta la suma de cuadrados intracluster.</p>
+<p><strong>Ejercicio 4.2. Un mínimo local visible.</strong> Busca dos inicializaciones de k-means sobre un mismo dataset que terminen en particiones diferentes. Compara sus funciones objetivo y representa ambas soluciones. A partir del ejemplo, explica qué resuelve <code>nstart</code> y qué no resuelve.</p>
+<p><strong>Ejercicio 4.3. El outlier como centroide.</strong> Añade progresivamente un punto extremo a un dataset con dos grupos compactos. Compara cómo cambian los centroides de k-means y los medoides de PAM. No basta con afirmar que PAM es robusto: cuantifica el desplazamiento de los representantes y explica por qué el uso de un objeto observado limita la influencia.</p>
+<p><strong>Ejercicio 4.4. La geometría de las lunas.</strong> Aplica k-means y PAM euclídeo a <code>datos_lunas</code>. Explica por qué ambos pueden fallar aunque uno use centroides y otro medoides. Propón una distancia o representación alternativa que haga accesible la estructura curva, sin usar las etiquetas <code>grupo_generador</code> para construirla.</p>
+<p><strong>Ejercicio 4.5. Tres criterios, tres mensajes.</strong> Sobre <code>mtcars</code>, compara codo, silhouette y gap statistic para varios valores de <span class="math inline">\(k\)</span>. Si coinciden, modifica razonablemente las variables o añade observaciones para producir desacuerdo. La entrega debe explicar qué aspecto de la partición mide cada criterio y por qué el desacuerdo es información útil.</p>
+</section>
+<section id="interpretación-de-clusters" class="level2" data-number="15.7">
+<h2 data-number="15.7" class="anchored" data-anchor-id="interpretación-de-clusters"><span class="header-section-number">15.7</span> Interpretación de clusters</h2>
+<p><strong>Ejercicio 5.1. Nombrar sin caricaturizar.</strong> Obtén una partición de <code>mtcars</code> y construye perfiles con medias estandarizadas. Propón un nombre descriptivo para cada cluster y después escribe una versión deliberadamente exagerada de esos nombres. Explica qué afirmaciones de la segunda versión no están respaldadas por las variables observadas.</p>
+<p><strong>Ejercicio 5.2. La media oculta individuos.</strong> Construye dos clusters con medias casi idénticas en una variable pero distribuciones muy diferentes. Demuestra con boxplots o violines por qué una tabla de medias sería insuficiente. Añade una segunda variable en la que ocurra lo contrario: medias distintas pero gran solapamiento.</p>
+<p><strong>Ejercicio 5.3. Variable activa o suplementaria.</strong> Usa <code>am</code> de <code>mtcars</code> primero como parte activa de una representación mixta y después como variable suplementaria para interpretar clusters numéricos. Compara las preguntas que responde cada análisis. Explica por qué una asociación fuerte con <code>am</code> tiene distinto significado en ambos casos.</p>
+<p><strong>Ejercicio 5.4. Estabilidad localizada.</strong> Repite un clustering de <code>mtcars</code> sobre muestras bootstrap y estima con qué frecuencia dos coches aparecen juntos. Busca un coche con pertenencia inestable. ¿La solución adecuada es eliminarlo, asignarlo por mayoría o comunicar incertidumbre? Defiende una opción según un contexto aplicado inventado.</p>
+<p><strong>Ejercicio 5.5. Auditoría de un informe.</strong> Escribe un mini-informe de cinco frases sobre una partición y pásalo por esta auditoría: ¿declara variables activas?, ¿explica escalado y distancia?, ¿justifica <span class="math inline">\(k\)</span>?, ¿describe heterogeneidad interna?, ¿evita presentar clusters como clases naturales? Reescribe el informe después de la auditoría.</p>
+</section>
+<section id="análisis-de-componentes-principales" class="level2" data-number="15.8">
+<h2 data-number="15.8" class="anchored" data-anchor-id="análisis-de-componentes-principales"><span class="header-section-number">15.8</span> Análisis de componentes principales</h2>
+<p><strong>Ejercicio 6.1. Dígitos y características.</strong> Una imagen MNIST tiene 784 intensidades de píxel. Propón entre cinco y ocho características construidas que podrían ser más informativas para distinguir formas, como número de bucles, simetría o centro de masa. Indica cuáles son lineales y cuáles no. Explica por qué PCA puede descubrir una superficie lineal de baja dimensión, pero no necesariamente esas características semánticas.</p>
+<p><strong>Ejercicio 6.2. Mucha varianza, poca información.</strong> Construye un dataset con dos clases conocidas en el que la dirección de máxima varianza no ayude a separarlas y una dirección de poca varianza sí lo haga. Ajusta PCA sin usar la clase y representa PC1 y PC2 coloreando a posteriori. Explica por qué «varianza explicada» no significa «información predictiva».</p>
+<p><strong>Ejercicio 6.3. Preservación de varianza total.</strong> Usa una matriz de covarianzas <span class="math inline">\(3\times3\)</span> no diagonal. Calcula su traza, los autovalores y la varianza de los datos expresados en las tres componentes. Comprueba la igualdad numérica y explícala mediante el cambio de base ortonormal. Después conserva solo dos componentes y distingue entre varianza total preservada por la rotación y varianza retenida por la reducción.</p>
+<p><strong>Ejercicio 6.4. Escalar es elegir una pregunta.</strong> Compara PCA de covarianzas y PCA de correlaciones en <code>mtcars</code>. Identifica qué variables dominan cada primera componente. Formula una pregunta aplicada para la que cada análisis sea defendible; evita presentar el escalado como un trámite automático.</p>
+<p><strong>Ejercicio 6.5. Signo y orientación.</strong> Cambia el signo de todos los loadings y scores de una componente principal. Comprueba qué cantidades permanecen iguales y qué elementos del gráfico se reflejan. Explica por qué dos programas pueden mostrar ejes con sentidos opuestos sin discrepar estadísticamente.</p>
+<p><strong>Ejercicio 6.6. Calidad frente a contribución.</strong> Encuentra en un PCA de <code>mtcars</code>: a) un coche bien representado en el plano pero con contribución modesta y b) un coche con contribución alta a un eje. Explica por qué cos² y contribución responden a preguntas distintas.</p>
+</section>
+<section id="análisis-factorial-exploratorio" class="level2" data-number="15.9">
+<h2 data-number="15.9" class="anchored" data-anchor-id="análisis-factorial-exploratorio"><span class="header-section-number">15.9</span> Análisis factorial exploratorio</h2>
+<p><strong>Ejercicio 7.1. Del modelo a la covarianza.</strong> Parte de <span class="math inline">\(X = \Lambda F + \varepsilon\)</span> y deriva cada paso hasta <span class="math inline">\(\Sigma = \Lambda\Phi\Lambda^\mathsf{T} + \Psi\)</span>. Debes indicar qué términos cruzados desaparecen y bajo qué supuestos. Explica por qué, si los errores específicos son independientes y <span class="math inline">\(\varepsilon_i\sim N(0,\psi_i)\)</span>, entonces <span class="math inline">\(\Psi\)</span> es diagonal. Discute qué cambiaría si dos errores específicos estuvieran correlacionados.</p>
+<p><strong>Ejercicio 7.2. La misma covarianza, cargas distintas.</strong> Parte de una matriz de cargas con dos factores ortogonales y aplícale una rotación ortogonal. Comprueba que <span class="math inline">\(\Lambda\Lambda^\mathsf{T}\)</span> no cambia. Explica qué implica esto para la identificabilidad de los factores y por qué una rotación puede mejorar la interpretación sin mejorar el ajuste.</p>
+<p><strong>Ejercicio 7.3. Diseñar una estructura simple.</strong> Construye una matriz de cargas para ocho variables y dos factores que tenga estructura simple. Después introduce dos cargas cruzadas y una unicidad muy alta. Simula datos a partir del modelo y estudia si el análisis recupera las dificultades que diseñaste.</p>
+<p><strong>Ejercicio 7.4. PCA o factores.</strong> Imagina seis preguntas de un cuestionario influidas por dos rasgos latentes y, además, por errores de medición. Compara qué objeto intenta reproducir PCA y qué objeto intenta reproducir el análisis factorial. Diseña una situación en la que dos componentes describan bien los datos pero no deban interpretarse como dos causas latentes.</p>
+<p><strong>Ejercicio 7.5. ¿Cuántos factores?</strong> Busca o simula un caso donde scree plot, análisis paralelo e interpretabilidad sugieran números diferentes de factores. Redacta una decisión razonada que no consista en votar entre criterios. Indica qué análisis de sensibilidad presentarías.</p>
+<p><strong>Ejercicio 7.6. Normalidad y significado.</strong> Explica qué papel desempeña la normalidad en la estimación e inferencia factorial y qué partes descriptivas del modelo pueden seguir siendo útiles sin normalidad exacta. Propón dos diagnósticos y una alternativa para datos claramente ordinales.</p>
+</section>
+<section id="análisis-de-correspondencias-simple" class="level2" data-number="15.10">
+<h2 data-number="15.10" class="anchored" data-anchor-id="análisis-de-correspondencias-simple"><span class="header-section-number">15.10</span> Análisis de correspondencias simple</h2>
+<p>Usaremos esta tabla para varios ejercicios. Las filas representan franjas de escucha y las columnas, tipos de contenido.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>tabla_escucha <span class="ot">&lt;-</span> <span class="fu">matrix</span>(</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">c</span>(</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="dv">48</span>, <span class="dv">18</span>,  <span class="dv">6</span>, <span class="dv">28</span>,</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    <span class="dv">24</span>, <span class="dv">36</span>, <span class="dv">18</span>, <span class="dv">22</span>,</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>     <span class="dv">8</span>, <span class="dv">22</span>, <span class="dv">46</span>, <span class="dv">24</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">nrow =</span> <span class="dv">3</span>,</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">byrow =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">dimnames =</span> <span class="fu">list</span>(</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">franja =</span> <span class="fu">c</span>(<span class="st">"mañana"</span>, <span class="st">"tarde"</span>, <span class="st">"noche"</span>),</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">contenido =</span> <span class="fu">c</span>(<span class="st">"noticias"</span>, <span class="st">"listas"</span>, <span class="st">"albumes"</span>, <span class="st">"podcasts"</span>)</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(tabla_escucha)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: right;">noticias</th>
+<th style="text-align: right;">listas</th>
+<th style="text-align: right;">albumes</th>
+<th style="text-align: right;">podcasts</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">mañana</td>
+<td style="text-align: right;">48</td>
+<td style="text-align: right;">18</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">28</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">tarde</td>
+<td style="text-align: right;">24</td>
+<td style="text-align: right;">36</td>
+<td style="text-align: right;">18</td>
+<td style="text-align: right;">22</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">noche</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">22</td>
+<td style="text-align: right;">46</td>
+<td style="text-align: right;">24</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><strong>Ejercicio 9.1. Perfiles antes que frecuencias.</strong> Duplica todos los recuentos de una fila de <code>tabla_escucha</code> y compara las frecuencias, los perfiles fila y su posición en un análisis de correspondencias. Explica qué cambia y qué no cambia. ¿Por qué la masa de la fila sigue siendo relevante aunque su perfil permanezca igual?</p>
+<p><strong>Ejercicio 9.2. La distancia chi-cuadrado pondera.</strong> Añade una categoría columna muy frecuente y otra muy rara, ambas con pequeñas desviaciones relativas entre filas. Compara su influencia en la distancia chi-cuadrado. Explica por qué dividir por el perfil marginal hace visibles categorías raras y cuándo esto puede resultar problemático.</p>
+<p><strong>Ejercicio 9.3. De independencia a estructura.</strong> Construye primero una tabla exactamente independiente a partir de unos marginales elegidos. Modifica después una única celda conservando el total mediante cambios compensatorios. Sigue cómo cambian residuos, estadístico chi-cuadrado, inercia y coordenadas. Identifica qué magnitudes expresan la misma desviación en escalas distintas.</p>
+<p><strong>Ejercicio 9.4. Leer un mapa sin inventar proximidades.</strong> Realiza CA sobre <code>tabla_escucha</code> y redacta cinco interpretaciones del mapa: dos correctas, dos incorrectas y una que necesite información adicional. Intercambia la lista con otra persona para que identifique cada tipo y lo justifique usando perfiles, contribuciones y cos².</p>
+<p><strong>Ejercicio 9.5. Una categoría extrema pero poco fiable.</strong> Añade una fila con masa muy pequeña y perfil extremo. Estudia su contribución y calidad de representación. Decide si debe ser activa, agruparse con otra o tratarse como suplementaria, y justifica la decisión desde el contexto, no solo desde el gráfico.</p>
+</section>
+<section id="análisis-de-correspondencias-múltiples" class="level2" data-number="15.11">
+<h2 data-number="15.11" class="anchored" data-anchor-id="análisis-de-correspondencias-múltiples"><span class="header-section-number">15.11</span> Análisis de correspondencias múltiples</h2>
+<p><strong>Ejercicio 10.1. Distancias en la tabla indicadora.</strong> Selecciona dos pasajeros de <code>titanic_ex</code> que difieran en una sola variable y otros dos que difieran en varias. Construye sus filas de la tabla indicadora y relaciona la distancia entre ellas con el número y la frecuencia de las modalidades en desacuerdo.</p>
+<p><strong>Ejercicio 10.2. Inercia generada por la codificación.</strong> Añade a <code>titanic_ex</code> una variable categórica aleatoria con dos niveles y después otra con diez niveles. Repite MCA y estudia cómo cambia la inercia bruta. Explica por qué añadir modalidades aumenta inercia aunque no aporte estructura sustantiva y qué pretende corregir Benzécri.</p>
+<p><strong>Ejercicio 10.3. Modalidad rara.</strong> Crea una modalidad que aparezca en muy pocos individuos y observa su distancia al origen, contribución y cos². Explica por qué estar lejos no basta para convertirla en el hallazgo principal. Propón una regla de revisión que combine frecuencia, contribución y estabilidad.</p>
+<p><strong>Ejercicio 10.4. Activa o suplementaria.</strong> Compara dos MCA de <code>titanic_ex</code>: uno con <code>Survived</code> activa y otro con <code>Survived</code> suplementaria. Explica con precisión por qué las asociaciones observadas no tienen el mismo estatus en ambos mapas y cuál usarías para explorar perfiles previos al desenlace.</p>
+<p><strong>Ejercicio 10.5. Clustering sobre coordenadas.</strong> Agrupa pasajeros usando un número pequeño y después uno grande de dimensiones MCA. Compara estabilidad e interpretación de los clusters. Explica qué información se pierde al usar pocas dimensiones y qué ruido o inercia trivial puede reintroducirse al usar demasiadas.</p>
+</section>
+<section id="famd-para-datos-mixtos" class="level2" data-number="15.12">
+<h2 data-number="15.12" class="anchored" data-anchor-id="famd-para-datos-mixtos"><span class="header-section-number">15.12</span> FAMD para datos mixtos</h2>
+<p><strong>Ejercicio 8.1. Equilibrar bloques.</strong> Crea dos versiones de <code>mtcars_mixed_ex</code>: una con seis variables numéricas y una categórica, y otra donde esa categórica se duplique varias veces. Compara una concatenación ingenua de variables estandarizadas e indicadoras con FAMD. Explica qué normalización evita que un bloque domine únicamente por su número de columnas o modalidades.</p>
+<p><strong>Ejercicio 8.2. Una dimensión mixta.</strong> Interpreta una dimensión FAMD de <code>mtcars_mixed_ex</code> que relacione simultáneamente variables numéricas y modalidades categóricas. La interpretación debe incluir contribuciones, coordenadas y cos², además de al menos dos coches bien representados. Propón un nombre para el eje y señala qué parte de ese nombre es inferencia sustantiva.</p>
+<p><strong>Ejercicio 8.3. FAMD frente a Gower.</strong> Compara vecinos obtenidos con distancia de Gower y con distancia euclídea en varias dimensiones FAMD. Busca un individuo para el que difieran. Explica qué decisiones de ponderación y qué pérdida por truncamiento pueden producir la discrepancia.</p>
+<p><strong>Ejercicio 8.4. Categoría informativa o etiqueta encubierta.</strong> Añade a un dataset mixto una categoría casi idéntica a una variable que luego quieras usar para interpretar o predecir. Estudia cómo domina la representación. Explica por qué declarar una variable suplementaria puede evitar circularidad, pero no arregla otras variables activas que filtren la misma información.</p>
+<p><strong>Ejercicio 8.5. Diseñar datos mixtos.</strong> Construye un dataset reproducible de al menos 30 individuos con dos numéricas, una ordinal, una nominal y una binaria asimétrica. Introduce deliberadamente una relación entre bloques. Antes de ejecutar FAMD, predice qué variables definirán las dos primeras dimensiones; después revisa la predicción con contribuciones.</p>
+</section>
+<section id="análisis-discriminante" class="level2" data-number="15.13">
+<h2 data-number="15.13" class="anchored" data-anchor-id="análisis-discriminante"><span class="header-section-number">15.13</span> Análisis discriminante</h2>
+<p>El siguiente dataset contiene dos clases separadas sobre todo en una dirección de varianza pequeña.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">73</span>)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>n_clase <span class="ot">&lt;-</span> <span class="dv">100</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>datos_discriminantes <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">clase =</span> <span class="fu">factor</span>(<span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">"A"</span>, <span class="st">"B"</span>), <span class="at">each =</span> n_clase)),</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">x_ruido =</span> <span class="fu">rnorm</span>(<span class="dv">2</span> <span class="sc">*</span> n_clase, <span class="at">sd =</span> <span class="dv">4</span>),</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  x_señal <span class="ot">=</span> <span class="fu">c</span>(</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rnorm</span>(n_clase, <span class="sc">-</span><span class="fl">0.65</span>, <span class="fl">0.35</span>),</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rnorm</span>(n_clase,  <span class="fl">0.65</span>, <span class="fl">0.35</span>)</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>datos_discriminantes <span class="sc">|&gt;</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(x_ruido, x_señal, <span class="at">color =</span> clase)) <span class="sc">+</span></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.65</span>) <span class="sc">+</span></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"La separación no coincide con la máxima varianza"</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="ejercicios_files/figure-html/datos-discriminantes-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 11.1. PCA no es LDA.</strong> Aplica PCA a las variables de <code>datos_discriminantes</code> sin usar <code>clase</code> y compara su primera dirección con la dirección discriminante de LDA. Explica las funciones objetivo distintas y por qué descartar componentes de poca varianza antes de clasificar puede eliminar la señal.</p>
+<p><strong>Ejercicio 11.2. LDA o QDA por la geometría.</strong> Simula dos escenarios: uno con covarianzas de clase iguales y otro con covarianzas claramente diferentes. Compara fronteras LDA y QDA con muestras pequeñas y grandes. Describe el compromiso entre sesgo y varianza sin decidir solo por la accuracy de una partición concreta.</p>
+<p><strong>Ejercicio 11.3. Los errores no cuestan lo mismo.</strong> Diseña un problema binario donde un falso negativo cueste diez veces más que un falso positivo. A partir de probabilidades posteriores, compara la regla de máximo posterior con una regla basada en coste esperado. Construye dos matrices de confusión con la misma accuracy pero consecuencias muy distintas.</p>
+<p><strong>Ejercicio 11.4. Fuga de información.</strong> Inventa tres ejemplos de data leakage en un análisis discriminante: uno producido por una variable, otro por el preprocesamiento y otro por la forma de dividir los datos. Para cada uno, explica por qué la estimación del error es optimista y cómo rediseñarías el flujo de validación.</p>
+<p><strong>Ejercicio 11.5. Una clase minoritaria.</strong> Crea un test con un 95% de una clase y muestra que clasificar siempre en la mayoritaria consigue alta accuracy. Propón métricas y una política de validación más informativas. La respuesta debe conectar cada métrica con una consecuencia aplicada.</p>
+</section>
+<section id="casos-integradores" class="level2" data-number="15.14">
+<h2 data-number="15.14" class="anchored" data-anchor-id="casos-integradores"><span class="header-section-number">15.14</span> Casos integradores</h2>
+<p><strong>Ejercicio 12.1. La técnica depende de la pregunta.</strong> Formula sobre <code>mtcars_mixed_ex</code> tres preguntas que usen exactamente las mismas filas y columnas pero conduzcan razonablemente a PCA, FAMD y análisis discriminante. Explica qué papel es activo, suplementario o respuesta en cada análisis.</p>
+<p><strong>Ejercicio 12.2. Dos representaciones que discrepan.</strong> Analiza un mismo dataset mediante clustering sobre variables originales estandarizadas y clustering sobre unas pocas componentes principales. Busca una observación cuya asignación cambie. Investiga si el cambio se debe a reducción de ruido, pérdida de una dirección relevante o geometría del algoritmo.</p>
+<p><strong>Ejercicio 12.3. Informe con decisión.</strong> Elige una pregunta aplicada y redacta un informe de dos páginas con esta secuencia: pregunta, unidad de análisis, variables, preprocesamiento, método, selección de complejidad, resultado, validación y limitaciones. Solo puede incluir dos figuras y una tabla; justifica por qué son las evidencias más informativas.</p>
+<p><strong>Ejercicio 12.4. Revisión por pares adversarial.</strong> Intercambia el informe anterior con otra persona. La revisión debe intentar refutar la conclusión mediante: una codificación alternativa, una elección distinta de distancia o escalado, una perturbación de la muestra y una interpretación alternativa. El informe final debe indicar qué conclusiones sobrevivieron.</p>
+<p><strong>Ejercicio 12.5. Diseñar un caso donde el método falle.</strong> Elige una técnica del curso y construye datos que violen de forma visible uno de sus supuestos o intuiciones geométricas. Muestra el resultado engañoso y propón un diagnóstico que permita detectarlo sin conocer el mecanismo generador.</p>
+<p><strong>Ejercicio 12.6. Mapa de decisiones.</strong> Construye un diagrama de decisión para elegir entre clustering, PCA, análisis factorial, CA, MCA, FAMD y análisis discriminante. Debe incluir tipo de variables, existencia de respuesta, objetivo del análisis y al menos una advertencia por técnica. Prueba el diagrama con tres casos ambiguos y documenta dónde necesita juicio experto.</p>
+</section>
+<section id="guía-práctica-de-tidyverse-y-dplyr" class="level2" data-number="15.15">
+<h2 data-number="15.15" class="anchored" data-anchor-id="guía-práctica-de-tidyverse-y-dplyr"><span class="header-section-number">15.15</span> Guía práctica de tidyverse y dplyr</h2>
+<p><strong>Ejercicio T.1. Una tubería legible.</strong> Toma un análisis de <code>mtcars</code> escrito como una sucesión de objetos intermedios o llamadas anidadas. Reescríbelo como pipeline y después divide la tubería en dos objetos con nombres sustantivos. Compara las tres versiones atendiendo a facilidad de depuración, no a número de líneas.</p>
+<p><strong>Ejercicio T.2. El estado oculto de <code>group_by()</code>.</strong> Construye un ejemplo donde olvidar un agrupamiento activo cambie el resultado de un <code>mutate()</code> posterior. Diagnostica el problema con <code>group_vars()</code> y corrígelo con <code>.groups</code> o <code>ungroup()</code>. Explica por qué el código puede ejecutarse sin error y aun así responder otra pregunta.</p>
+<p><strong>Ejercicio T.3. Un join que multiplica filas.</strong> Crea dos tablas con claves duplicadas y realiza un <code>left_join()</code> que aumente inesperadamente el número de filas. Explica la relación muchos-a-muchos, diseña comprobaciones previas de unicidad y decide si el problema se corrige agregando, deduplicando o ampliando la clave.</p>
+<p><strong>Ejercicio T.4. Ancho, largo y unidad de observación.</strong> Construye una tabla de medidas repetidas en formato ancho y transfórmala a largo con <code>pivot_longer()</code>. Explica qué representa una fila antes y después. Vuelve a formato ancho y verifica qué identificadores hacen reversible la operación.</p>
+<p><strong>Ejercicio T.5. Un pipeline estadísticamente incorrecto.</strong> Escribe código tidyverse sintácticamente impecable que produzca una comparación sesgada, por ejemplo filtrando después de observar la respuesta o resumiendo con denominadores inadecuados. Pide a otra persona que encuentre el problema conceptual. La moraleja debe distinguir código limpio de análisis válido.</p>
+</section>
+<section id="proyecto-de-síntesis" class="level2" data-number="15.16">
+<h2 data-number="15.16" class="anchored" data-anchor-id="proyecto-de-síntesis"><span class="header-section-number">15.16</span> Proyecto de síntesis</h2>
+<p>Construye o elige un dataset pequeño que permita formular al menos tres preguntas multivariantes distintas. Una de ellas debe ser no supervisada, otra debe usar variables categóricas o mixtas y otra debe ser supervisada. El proyecto debe:</p>
+<ol type="1">
+<li>justificar la unidad de análisis y el origen de cada variable;</li>
+<li>anticipar la geometría o estructura que se espera encontrar;</li>
+<li>comparar al menos dos decisiones metodológicas razonables;</li>
+<li>incluir un análisis de estabilidad, sensibilidad o validación;</li>
+<li>separar resultados observados de interpretación sustantiva;</li>
+<li>terminar con una conclusión que podría cambiar si se obtuvieran nuevos datos.</li>
+</ol>
+<p>El dataset puede ser simulado. En ese caso, el mecanismo generador debe escribirse en R y la evaluación debe distinguir entre recuperar una estructura que se introdujo deliberadamente y descubrir una estructura desconocida.</p>
+
+
+<!-- -->
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copiado");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copiado");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+    const viewSource = window.document.getElementById('quarto-view-source') ||
+                       window.document.getElementById('quarto-code-tools-source');
+    if (viewSource) {
+      const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+      viewSource.addEventListener("click", function(e) {
+        if (sourceUrl) {
+          // rstudio viewer pane
+          if (/\bcapabilities=\b/.test(window.location)) {
+            window.open(sourceUrl);
+          } else {
+            window.location.href = sourceUrl;
+          }
+        } else {
+          const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+          modal.show();
+        }
+        return false;
+      });
+    }
+    function toggleCodeHandler(show) {
+      return function(e) {
+        const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
+        for (let i=0; i<detailsSrc.length; i++) {
+          const details = detailsSrc[i].parentElement;
+          if (show) {
+            details.open = true;
+          } else {
+            details.removeAttribute("open");
+          }
+        }
+        const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+        const fromCls = show ? "hidden" : "unhidden";
+        const toCls = show ? "unhidden" : "hidden";
+        for (let i=0; i<cellCodeDivs.length; i++) {
+          const codeDiv = cellCodeDivs[i];
+          if (codeDiv.classList.contains(fromCls)) {
+            codeDiv.classList.remove(fromCls);
+            codeDiv.classList.add(toCls);
+          } 
+        }
+        return false;
+      }
+    }
+    const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+    if (hideAllCode) {
+      hideAllCode.addEventListener("click", toggleCodeHandler(false));
+    }
+    const showAllCode = window.document.getElementById("quarto-show-all-code");
+    if (showAllCode) {
+      showAllCode.addEventListener("click", toggleCodeHandler(true));
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./12-casos-integradores.html" class="pagination-link" aria-label="Casos integradores">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Casos integradores</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./tidyverse.html" class="pagination-link" aria-label="Guía rápida de tidyverse y dplyr">
+        <span class="nav-page-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Guía rápida de tidyverse y dplyr</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Ejecutar el código</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu"># Ejercicios conceptuales</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: setup</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: false</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(knitr)</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a><span class="fu">theme_set</span>(<span class="fu">theme_minimal</span>())</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>mtcars_ex <span class="ot">&lt;-</span> mtcars <span class="sc">|&gt;</span></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as_tibble</span>(<span class="at">rownames =</span> <span class="st">"modelo"</span>)</span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>mtcars_mixed_ex <span class="ot">&lt;-</span> mtcars_ex <span class="sc">|&gt;</span></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">cyl =</span> <span class="fu">factor</span>(cyl),</span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">vs =</span> <span class="fu">factor</span>(vs, <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"V"</span>, <span class="st">"recto"</span>)),</span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">am =</span> <span class="fu">factor</span>(am, <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"automatico"</span>, <span class="st">"manual"</span>)),</span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">gear =</span> <span class="fu">factor</span>(gear),</span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">carb =</span> <span class="fu">factor</span>(carb)</span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>titanic_ex <span class="ot">&lt;-</span> Titanic <span class="sc">|&gt;</span></span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.data.frame</span>() <span class="sc">|&gt;</span></span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">uncount</span>(Freq)</span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a><span class="fu">## Cómo trabajar con este capítulo</span></span>
+<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a>Estos ejercicios están pensados para discutir, experimentar y justificar. Una respuesta no está completa por incluir una cifra o un gráfico: debe explicar qué decisión metodológica se tomó, qué evidencia la respalda y qué limitación conserva la conclusión.</span>
+<span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-35"><a href="#cb6-35" aria-hidden="true" tabindex="-1"></a>Salvo que se indique otra cosa, cada entrega debería contener:</span>
+<span id="cb6-36"><a href="#cb6-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-37"><a href="#cb6-37" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>una respuesta breve a la pregunta sustantiva;</span>
+<span id="cb6-38"><a href="#cb6-38" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>una justificación de las variables, transformaciones y método elegidos;</span>
+<span id="cb6-39"><a href="#cb6-39" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>una tabla o figura que aporte evidencia;</span>
+<span id="cb6-40"><a href="#cb6-40" aria-hidden="true" tabindex="-1"></a><span class="ss">4. </span>una limitación o una explicación alternativa.</span>
+<span id="cb6-41"><a href="#cb6-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-42"><a href="#cb6-42" aria-hidden="true" tabindex="-1"></a>En los ejercicios de construcción de datos no se busca encontrar el único ejemplo posible. El objetivo es producir un ejemplo reproducible que muestre con claridad el fenómeno pedido.</span>
+<span id="cb6-43"><a href="#cb6-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-44"><a href="#cb6-44" aria-hidden="true" tabindex="-1"></a>::: {.callout-note}</span>
+<span id="cb6-45"><a href="#cb6-45" aria-hidden="true" tabindex="-1"></a>Una simulación es una demostración empírica, no una prueba general. Cuando se use una simulación, hay que distinguir qué se ha observado en esos datos de qué se afirma que ocurre en general.</span>
+<span id="cb6-46"><a href="#cb6-46" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb6-47"><a href="#cb6-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-48"><a href="#cb6-48" aria-hidden="true" tabindex="-1"></a><span class="fu">## Presentación de la asignatura</span></span>
+<span id="cb6-49"><a href="#cb6-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-50"><a href="#cb6-50" aria-hidden="true" tabindex="-1"></a>**Ejercicio 0.1. La misma tabla, preguntas distintas.** Imagina una tabla con información sobre canciones: duración, tempo, energía, tonalidad, género y popularidad. Formula cuatro preguntas diferentes que requieran, respectivamente, agrupamiento, reducción de dimensión, estudio de asociación y clasificación supervisada. Para cada pregunta, identifica la unidad de análisis, la variable respuesta si existe y el tipo de conclusión que sería legítimo comunicar.</span>
+<span id="cb6-51"><a href="#cb6-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-52"><a href="#cb6-52" aria-hidden="true" tabindex="-1"></a>**Ejercicio 0.2. De la pregunta al método.** Un equipo afirma: «Aplicaremos PCA porque tenemos muchas variables». Escribe una respuesta de revisión de unas 150 palabras. Explica qué información falta antes de recomendar una técnica y propón al menos dos preguntas para las que PCA no sería la elección natural aun cuando hubiera muchas columnas.</span>
+<span id="cb6-53"><a href="#cb6-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-54"><a href="#cb6-54" aria-hidden="true" tabindex="-1"></a>**Ejercicio 0.3. Una conclusión demasiado fuerte.** Reescribe de forma estadísticamente honesta la frase «el algoritmo ha descubierto tres tipos reales de consumidores». Da tres explicaciones alternativas para que aparezcan tres clusters y especifica qué evidencia adicional ayudaría a distinguirlas.</span>
+<span id="cb6-55"><a href="#cb6-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-56"><a href="#cb6-56" aria-hidden="true" tabindex="-1"></a><span class="fu">## Introducción conceptual</span></span>
+<span id="cb6-57"><a href="#cb6-57" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-58"><a href="#cb6-58" aria-hidden="true" tabindex="-1"></a>**Ejercicio 1.1. ¿Qué representa una fila?** Una encuesta musical contiene una fila por reproducción, pero también un identificador de oyente y otro de canción. Explica cómo cambiarían la matriz de datos, las dependencias entre filas y la pregunta científica si la unidad de análisis fuera: a) una reproducción, b) una canción, o c) un oyente. Indica una técnica del curso que podría ser razonable en cada caso.</span>
+<span id="cb6-59"><a href="#cb6-59" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-60"><a href="#cb6-60" aria-hidden="true" tabindex="-1"></a>**Ejercicio 1.2. Tipos de variables que dependen de la pregunta.** Clasifica <span class="in">`cyl`</span>, <span class="in">`gear`</span>, <span class="in">`carb`</span> y <span class="in">`am`</span> de <span class="in">`mtcars`</span> según su tipo estadístico. Después plantea dos análisis en los que una misma columna se trate de maneras diferentes. La respuesta debe justificar la codificación por el significado de la comparación, no por cómo R almacena la columna.</span>
+<span id="cb6-61"><a href="#cb6-61" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-62"><a href="#cb6-62" aria-hidden="true" tabindex="-1"></a>**Ejercicio 1.3. Misma proyección, estructuras distintas.** Construye dos datasets tridimensionales que tengan prácticamente la misma representación al proyectarlos sobre los ejes $x_1$ y $x_2$, pero estructuras claramente distintas al considerar $x_3$. Muéstralos con gráficos y explica por qué una representación de baja dimensión siempre puede ocultar información.</span>
+<span id="cb6-63"><a href="#cb6-63" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-64"><a href="#cb6-64" aria-hidden="true" tabindex="-1"></a>**Ejercicio 1.4. Diseñar una estructura multivariante.** Genera un dataset con cinco variables en el que haya simultáneamente: dos variables redundantes, una variable con escala dominante, una variable irrelevante y una variable que separe dos grupos. No apliques todavía ningún método. Argumenta qué problemas anticipas para distancias, PCA y clustering.</span>
+<span id="cb6-65"><a href="#cb6-65" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-66"><a href="#cb6-66" aria-hidden="true" tabindex="-1"></a><span class="fu">## Distancias y similitud</span></span>
+<span id="cb6-67"><a href="#cb6-67" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-68"><a href="#cb6-68" aria-hidden="true" tabindex="-1"></a>**Ejercicio 2.1. La dirección importa.** Usa <span class="in">`disp`</span> y <span class="in">`wt`</span> estandarizadas de <span class="in">`mtcars`</span>. Calcula sus componentes principales y construye dos pares de puntos con la misma distancia euclídea: un par separado solamente en la dirección de PC1 y otro solamente en PC2. Representa los datos y los cuatro puntos antes de calcular distancias. Compara euclídea y Mahalanobis y explica el resultado a partir de los autovalores y de la correlación, no de las unidades originales.</span>
+<span id="cb6-69"><a href="#cb6-69" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-70"><a href="#cb6-70" aria-hidden="true" tabindex="-1"></a>**Ejercicio 2.2. Vecinos que dependen de la pregunta.** Elige un coche de <span class="in">`mtcars`</span> y encuentra sus tres vecinos más próximos usando, sobre las mismas variables estandarizadas, distancia euclídea, Manhattan y Chebyshev. No te limites a listar vecinos: identifica qué diferencias entre coches está enfatizando cada geometría y decide cuál usarías en un sistema de recomendación donde una discrepancia extrema en una sola característica sea inaceptable.</span>
+<span id="cb6-71"><a href="#cb6-71" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-72"><a href="#cb6-72" aria-hidden="true" tabindex="-1"></a>**Ejercicio 2.3. Una variable ordinal no equiespaciada.** Diseña una variable de satisfacción con cinco categorías ordenadas para la que no sea razonable suponer saltos iguales. Propón posiciones numéricas para sus niveles, construye una distancia normalizada y compárala con: a) desacuerdo nominal y b) rangos equiespaciados. Explica qué conocimiento sustantivo introducen tus posiciones.</span>
+<span id="cb6-73"><a href="#cb6-73" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-74"><a href="#cb6-74" aria-hidden="true" tabindex="-1"></a>**Ejercicio 2.4. Tonalidades musicales.** Las doce clases cromáticas pueden codificarse como enteros de 0 a 11, pero forman un ciclo. Define una disimilitud entre tonalidades que haga próximas a <span class="in">`B`</span> y <span class="in">`C`</span>. Después discute por qué la proximidad cromática no representa necesariamente similitud armónica completa. Propón una extensión que distinga, al menos, modo mayor y menor.</span>
+<span id="cb6-75"><a href="#cb6-75" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-76"><a href="#cb6-76" aria-hidden="true" tabindex="-1"></a>**Ejercicio 2.5. Gower no decide por nosotros.** Selecciona cuatro variables numéricas y tres categóricas de <span class="in">`mtcars_mixed_ex`</span>. Calcula distancias de Gower bajo dos sistemas de pesos que respondan a preguntas aplicadas diferentes. Busca un coche cuyo vecino más próximo cambie y explica exactamente qué contribuciones parciales producen el cambio.</span>
+<span id="cb6-77"><a href="#cb6-77" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-78"><a href="#cb6-78" aria-hidden="true" tabindex="-1"></a>**Ejercicio 2.6. Construir un contraejemplo.** Crea un dataset de entre cuatro y ocho individuos en el que duplicar una variable cambie el vecino más próximo de al menos un individuo con distancia euclídea. Muestra que estandarizar no elimina necesariamente este problema y explica la diferencia entre escala y redundancia.</span>
+<span id="cb6-79"><a href="#cb6-79" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-80"><a href="#cb6-80" aria-hidden="true" tabindex="-1"></a><span class="fu">## Clustering jerárquico</span></span>
+<span id="cb6-81"><a href="#cb6-81" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-82"><a href="#cb6-82" aria-hidden="true" tabindex="-1"></a>El siguiente dataset contiene dos grupos compactos unidos por una cadena de puntos.</span>
+<span id="cb6-83"><a href="#cb6-83" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-86"><a href="#cb6-86" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb6-87"><a href="#cb6-87" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: datos-puente</span></span>
+<span id="cb6-88"><a href="#cb6-88" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">31</span>)</span>
+<span id="cb6-89"><a href="#cb6-89" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-90"><a href="#cb6-90" aria-hidden="true" tabindex="-1"></a>datos_puente <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(</span>
+<span id="cb6-91"><a href="#cb6-91" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>(</span>
+<span id="cb6-92"><a href="#cb6-92" aria-hidden="true" tabindex="-1"></a>    <span class="at">id =</span> <span class="fu">paste0</span>(<span class="st">"I"</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">12</span>),</span>
+<span id="cb6-93"><a href="#cb6-93" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="fu">rnorm</span>(<span class="dv">12</span>, <span class="sc">-</span><span class="dv">3</span>, <span class="fl">0.35</span>),</span>
+<span id="cb6-94"><a href="#cb6-94" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="fu">rnorm</span>(<span class="dv">12</span>, <span class="dv">0</span>, <span class="fl">0.35</span>),</span>
+<span id="cb6-95"><a href="#cb6-95" aria-hidden="true" tabindex="-1"></a>    <span class="at">tipo =</span> <span class="st">"nube izquierda"</span></span>
+<span id="cb6-96"><a href="#cb6-96" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb6-97"><a href="#cb6-97" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>(</span>
+<span id="cb6-98"><a href="#cb6-98" aria-hidden="true" tabindex="-1"></a>    <span class="at">id =</span> <span class="fu">paste0</span>(<span class="st">"D"</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">12</span>),</span>
+<span id="cb6-99"><a href="#cb6-99" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="fu">rnorm</span>(<span class="dv">12</span>, <span class="dv">3</span>, <span class="fl">0.35</span>),</span>
+<span id="cb6-100"><a href="#cb6-100" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="fu">rnorm</span>(<span class="dv">12</span>, <span class="dv">0</span>, <span class="fl">0.35</span>),</span>
+<span id="cb6-101"><a href="#cb6-101" aria-hidden="true" tabindex="-1"></a>    <span class="at">tipo =</span> <span class="st">"nube derecha"</span></span>
+<span id="cb6-102"><a href="#cb6-102" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb6-103"><a href="#cb6-103" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>(</span>
+<span id="cb6-104"><a href="#cb6-104" aria-hidden="true" tabindex="-1"></a>    <span class="at">id =</span> <span class="fu">paste0</span>(<span class="st">"P"</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">7</span>),</span>
+<span id="cb6-105"><a href="#cb6-105" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="fu">seq</span>(<span class="sc">-</span><span class="fl">2.1</span>, <span class="fl">2.1</span>, <span class="at">length.out =</span> <span class="dv">7</span>),</span>
+<span id="cb6-106"><a href="#cb6-106" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="fu">rnorm</span>(<span class="dv">7</span>, <span class="dv">0</span>, <span class="fl">0.08</span>),</span>
+<span id="cb6-107"><a href="#cb6-107" aria-hidden="true" tabindex="-1"></a>    <span class="at">tipo =</span> <span class="st">"puente"</span></span>
+<span id="cb6-108"><a href="#cb6-108" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb6-109"><a href="#cb6-109" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb6-110"><a href="#cb6-110" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-111"><a href="#cb6-111" aria-hidden="true" tabindex="-1"></a>datos_puente <span class="sc">|&gt;</span></span>
+<span id="cb6-112"><a href="#cb6-112" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(x, y, <span class="at">color =</span> tipo, <span class="at">label =</span> id)) <span class="sc">+</span></span>
+<span id="cb6-113"><a href="#cb6-113" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="fl">2.5</span>) <span class="sc">+</span></span>
+<span id="cb6-114"><a href="#cb6-114" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="at">nudge_y =</span> <span class="fl">0.18</span>, <span class="at">size =</span> <span class="dv">3</span>, <span class="at">show.legend =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb6-115"><a href="#cb6-115" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_equal</span>() <span class="sc">+</span></span>
+<span id="cb6-116"><a href="#cb6-116" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Dos nubes conectadas por un puente"</span>, <span class="at">color =</span> <span class="cn">NULL</span>)</span>
+<span id="cb6-117"><a href="#cb6-117" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb6-118"><a href="#cb6-118" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-119"><a href="#cb6-119" aria-hidden="true" tabindex="-1"></a>**Ejercicio 3.1. El efecto cadena.** Aplica single, complete, average y Ward a <span class="in">`datos_puente`</span>. Antes de cortar los dendrogramas, predice qué método será más sensible al puente. Contrasta la predicción y explica el resultado usando la definición matemática del linkage.</span>
+<span id="cb6-120"><a href="#cb6-120" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-121"><a href="#cb6-121" aria-hidden="true" tabindex="-1"></a>**Ejercicio 3.2. El dendrograma no es un mapa.** Permuta el orden de las filas de <span class="in">`datos_puente`</span> y vuelve a dibujar el dendrograma con el mismo método. Investiga qué puede cambiar visualmente aunque las fusiones y las alturas representen la misma jerarquía. Escribe tres reglas para evitar interpretar como distancia horizontal lo que solo es una disposición gráfica.</span>
+<span id="cb6-122"><a href="#cb6-122" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-123"><a href="#cb6-123" aria-hidden="true" tabindex="-1"></a>**Ejercicio 3.3. Una fusión irreversible.** Construye un ejemplo pequeño donde una de las primeras fusiones de un algoritmo aglomerativo resulte poco conveniente al observar la estructura global. Explica por qué el algoritmo no puede corregirla. Describe cómo plantearía el mismo problema un método divisivo y qué nueva decisión difícil aparecería.</span>
+<span id="cb6-124"><a href="#cb6-124" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-125"><a href="#cb6-125" aria-hidden="true" tabindex="-1"></a>**Ejercicio 3.4. Ward y la geometría elegida.** Compara Ward sobre variables originales y estandarizadas de <span class="in">`mtcars`</span>. Identifica una fusión que cambie pronto en el árbol y explica qué variable o conjunto de variables la provoca. ¿Tendría sentido usar Ward directamente con una distancia de Gower? Responde atendiendo a su criterio de incremento de suma de cuadrados.</span>
+<span id="cb6-126"><a href="#cb6-126" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-127"><a href="#cb6-127" aria-hidden="true" tabindex="-1"></a>**Ejercicio 3.5. ¿Dónde cortar?** Elige dos cortes plausibles de un mismo dendrograma de <span class="in">`mtcars`</span>. Defiende cada corte como si respondiera a una pregunta aplicada diferente. Usa perfiles y silhouette, pero explica por qué ninguno de esos elementos convierte automáticamente un corte en el «verdadero».</span>
+<span id="cb6-128"><a href="#cb6-128" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-129"><a href="#cb6-129" aria-hidden="true" tabindex="-1"></a><span class="fu">## k-means y PAM</span></span>
+<span id="cb6-130"><a href="#cb6-130" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-131"><a href="#cb6-131" aria-hidden="true" tabindex="-1"></a>Este dataset tiene dos grupos curvos y permite estudiar una limitación geométrica de k-means.</span>
+<span id="cb6-132"><a href="#cb6-132" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-135"><a href="#cb6-135" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb6-136"><a href="#cb6-136" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: datos-lunas</span></span>
+<span id="cb6-137"><a href="#cb6-137" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">42</span>)</span>
+<span id="cb6-138"><a href="#cb6-138" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-139"><a href="#cb6-139" aria-hidden="true" tabindex="-1"></a>n_luna <span class="ot">&lt;-</span> <span class="dv">80</span></span>
+<span id="cb6-140"><a href="#cb6-140" aria-hidden="true" tabindex="-1"></a>angulo <span class="ot">&lt;-</span> <span class="fu">runif</span>(n_luna, <span class="dv">0</span>, pi)</span>
+<span id="cb6-141"><a href="#cb6-141" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-142"><a href="#cb6-142" aria-hidden="true" tabindex="-1"></a>datos_lunas <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(</span>
+<span id="cb6-143"><a href="#cb6-143" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>(</span>
+<span id="cb6-144"><a href="#cb6-144" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="fu">cos</span>(angulo) <span class="sc">+</span> <span class="fu">rnorm</span>(n_luna, <span class="dv">0</span>, <span class="fl">0.06</span>),</span>
+<span id="cb6-145"><a href="#cb6-145" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="fu">sin</span>(angulo) <span class="sc">+</span> <span class="fu">rnorm</span>(n_luna, <span class="dv">0</span>, <span class="fl">0.06</span>),</span>
+<span id="cb6-146"><a href="#cb6-146" aria-hidden="true" tabindex="-1"></a>    <span class="at">grupo_generador =</span> <span class="st">"superior"</span></span>
+<span id="cb6-147"><a href="#cb6-147" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb6-148"><a href="#cb6-148" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>(</span>
+<span id="cb6-149"><a href="#cb6-149" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="dv">1</span> <span class="sc">-</span> <span class="fu">cos</span>(angulo) <span class="sc">+</span> <span class="fu">rnorm</span>(n_luna, <span class="dv">0</span>, <span class="fl">0.06</span>),</span>
+<span id="cb6-150"><a href="#cb6-150" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="fl">0.45</span> <span class="sc">-</span> <span class="fu">sin</span>(angulo) <span class="sc">+</span> <span class="fu">rnorm</span>(n_luna, <span class="dv">0</span>, <span class="fl">0.06</span>),</span>
+<span id="cb6-151"><a href="#cb6-151" aria-hidden="true" tabindex="-1"></a>    <span class="at">grupo_generador =</span> <span class="st">"inferior"</span></span>
+<span id="cb6-152"><a href="#cb6-152" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb6-153"><a href="#cb6-153" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb6-154"><a href="#cb6-154" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-155"><a href="#cb6-155" aria-hidden="true" tabindex="-1"></a>datos_lunas <span class="sc">|&gt;</span></span>
+<span id="cb6-156"><a href="#cb6-156" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(x, y, <span class="at">color =</span> grupo_generador)) <span class="sc">+</span></span>
+<span id="cb6-157"><a href="#cb6-157" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.8</span>) <span class="sc">+</span></span>
+<span id="cb6-158"><a href="#cb6-158" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_equal</span>() <span class="sc">+</span></span>
+<span id="cb6-159"><a href="#cb6-159" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Dos grupos no convexos"</span>, <span class="at">color =</span> <span class="st">"Grupo generador"</span>)</span>
+<span id="cb6-160"><a href="#cb6-160" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb6-161"><a href="#cb6-161" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-162"><a href="#cb6-162" aria-hidden="true" tabindex="-1"></a>**Ejercicio 4.1. Narrar una iteración.** Selecciona seis puntos bidimensionales y dos centroides iniciales para que, después de una iteración de Lloyd, al menos un punto cambie de cluster en la iteración siguiente. Representa asignación y actualización en gráficos sucesivos. Explica por qué cada paso no aumenta la suma de cuadrados intracluster.</span>
+<span id="cb6-163"><a href="#cb6-163" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-164"><a href="#cb6-164" aria-hidden="true" tabindex="-1"></a>**Ejercicio 4.2. Un mínimo local visible.** Busca dos inicializaciones de k-means sobre un mismo dataset que terminen en particiones diferentes. Compara sus funciones objetivo y representa ambas soluciones. A partir del ejemplo, explica qué resuelve <span class="in">`nstart`</span> y qué no resuelve.</span>
+<span id="cb6-165"><a href="#cb6-165" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-166"><a href="#cb6-166" aria-hidden="true" tabindex="-1"></a>**Ejercicio 4.3. El outlier como centroide.** Añade progresivamente un punto extremo a un dataset con dos grupos compactos. Compara cómo cambian los centroides de k-means y los medoides de PAM. No basta con afirmar que PAM es robusto: cuantifica el desplazamiento de los representantes y explica por qué el uso de un objeto observado limita la influencia.</span>
+<span id="cb6-167"><a href="#cb6-167" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-168"><a href="#cb6-168" aria-hidden="true" tabindex="-1"></a>**Ejercicio 4.4. La geometría de las lunas.** Aplica k-means y PAM euclídeo a <span class="in">`datos_lunas`</span>. Explica por qué ambos pueden fallar aunque uno use centroides y otro medoides. Propón una distancia o representación alternativa que haga accesible la estructura curva, sin usar las etiquetas <span class="in">`grupo_generador`</span> para construirla.</span>
+<span id="cb6-169"><a href="#cb6-169" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-170"><a href="#cb6-170" aria-hidden="true" tabindex="-1"></a>**Ejercicio 4.5. Tres criterios, tres mensajes.** Sobre <span class="in">`mtcars`</span>, compara codo, silhouette y gap statistic para varios valores de $k$. Si coinciden, modifica razonablemente las variables o añade observaciones para producir desacuerdo. La entrega debe explicar qué aspecto de la partición mide cada criterio y por qué el desacuerdo es información útil.</span>
+<span id="cb6-171"><a href="#cb6-171" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-172"><a href="#cb6-172" aria-hidden="true" tabindex="-1"></a><span class="fu">## Interpretación de clusters</span></span>
+<span id="cb6-173"><a href="#cb6-173" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-174"><a href="#cb6-174" aria-hidden="true" tabindex="-1"></a>**Ejercicio 5.1. Nombrar sin caricaturizar.** Obtén una partición de <span class="in">`mtcars`</span> y construye perfiles con medias estandarizadas. Propón un nombre descriptivo para cada cluster y después escribe una versión deliberadamente exagerada de esos nombres. Explica qué afirmaciones de la segunda versión no están respaldadas por las variables observadas.</span>
+<span id="cb6-175"><a href="#cb6-175" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-176"><a href="#cb6-176" aria-hidden="true" tabindex="-1"></a>**Ejercicio 5.2. La media oculta individuos.** Construye dos clusters con medias casi idénticas en una variable pero distribuciones muy diferentes. Demuestra con boxplots o violines por qué una tabla de medias sería insuficiente. Añade una segunda variable en la que ocurra lo contrario: medias distintas pero gran solapamiento.</span>
+<span id="cb6-177"><a href="#cb6-177" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-178"><a href="#cb6-178" aria-hidden="true" tabindex="-1"></a>**Ejercicio 5.3. Variable activa o suplementaria.** Usa <span class="in">`am`</span> de <span class="in">`mtcars`</span> primero como parte activa de una representación mixta y después como variable suplementaria para interpretar clusters numéricos. Compara las preguntas que responde cada análisis. Explica por qué una asociación fuerte con <span class="in">`am`</span> tiene distinto significado en ambos casos.</span>
+<span id="cb6-179"><a href="#cb6-179" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-180"><a href="#cb6-180" aria-hidden="true" tabindex="-1"></a>**Ejercicio 5.4. Estabilidad localizada.** Repite un clustering de <span class="in">`mtcars`</span> sobre muestras bootstrap y estima con qué frecuencia dos coches aparecen juntos. Busca un coche con pertenencia inestable. ¿La solución adecuada es eliminarlo, asignarlo por mayoría o comunicar incertidumbre? Defiende una opción según un contexto aplicado inventado.</span>
+<span id="cb6-181"><a href="#cb6-181" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-182"><a href="#cb6-182" aria-hidden="true" tabindex="-1"></a>**Ejercicio 5.5. Auditoría de un informe.** Escribe un mini-informe de cinco frases sobre una partición y pásalo por esta auditoría: ¿declara variables activas?, ¿explica escalado y distancia?, ¿justifica $k$?, ¿describe heterogeneidad interna?, ¿evita presentar clusters como clases naturales? Reescribe el informe después de la auditoría.</span>
+<span id="cb6-183"><a href="#cb6-183" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-184"><a href="#cb6-184" aria-hidden="true" tabindex="-1"></a><span class="fu">## Análisis de componentes principales</span></span>
+<span id="cb6-185"><a href="#cb6-185" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-186"><a href="#cb6-186" aria-hidden="true" tabindex="-1"></a>**Ejercicio 6.1. Dígitos y características.** Una imagen MNIST tiene 784 intensidades de píxel. Propón entre cinco y ocho características construidas que podrían ser más informativas para distinguir formas, como número de bucles, simetría o centro de masa. Indica cuáles son lineales y cuáles no. Explica por qué PCA puede descubrir una superficie lineal de baja dimensión, pero no necesariamente esas características semánticas.</span>
+<span id="cb6-187"><a href="#cb6-187" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-188"><a href="#cb6-188" aria-hidden="true" tabindex="-1"></a>**Ejercicio 6.2. Mucha varianza, poca información.** Construye un dataset con dos clases conocidas en el que la dirección de máxima varianza no ayude a separarlas y una dirección de poca varianza sí lo haga. Ajusta PCA sin usar la clase y representa PC1 y PC2 coloreando a posteriori. Explica por qué «varianza explicada» no significa «información predictiva».</span>
+<span id="cb6-189"><a href="#cb6-189" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-190"><a href="#cb6-190" aria-hidden="true" tabindex="-1"></a>**Ejercicio 6.3. Preservación de varianza total.** Usa una matriz de covarianzas $3\times3$ no diagonal. Calcula su traza, los autovalores y la varianza de los datos expresados en las tres componentes. Comprueba la igualdad numérica y explícala mediante el cambio de base ortonormal. Después conserva solo dos componentes y distingue entre varianza total preservada por la rotación y varianza retenida por la reducción.</span>
+<span id="cb6-191"><a href="#cb6-191" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-192"><a href="#cb6-192" aria-hidden="true" tabindex="-1"></a>**Ejercicio 6.4. Escalar es elegir una pregunta.** Compara PCA de covarianzas y PCA de correlaciones en <span class="in">`mtcars`</span>. Identifica qué variables dominan cada primera componente. Formula una pregunta aplicada para la que cada análisis sea defendible; evita presentar el escalado como un trámite automático.</span>
+<span id="cb6-193"><a href="#cb6-193" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-194"><a href="#cb6-194" aria-hidden="true" tabindex="-1"></a>**Ejercicio 6.5. Signo y orientación.** Cambia el signo de todos los loadings y scores de una componente principal. Comprueba qué cantidades permanecen iguales y qué elementos del gráfico se reflejan. Explica por qué dos programas pueden mostrar ejes con sentidos opuestos sin discrepar estadísticamente.</span>
+<span id="cb6-195"><a href="#cb6-195" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-196"><a href="#cb6-196" aria-hidden="true" tabindex="-1"></a>**Ejercicio 6.6. Calidad frente a contribución.** Encuentra en un PCA de <span class="in">`mtcars`</span>: a) un coche bien representado en el plano pero con contribución modesta y b) un coche con contribución alta a un eje. Explica por qué cos² y contribución responden a preguntas distintas.</span>
+<span id="cb6-197"><a href="#cb6-197" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-198"><a href="#cb6-198" aria-hidden="true" tabindex="-1"></a><span class="fu">## Análisis factorial exploratorio</span></span>
+<span id="cb6-199"><a href="#cb6-199" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-200"><a href="#cb6-200" aria-hidden="true" tabindex="-1"></a>**Ejercicio 7.1. Del modelo a la covarianza.** Parte de $X = \Lambda F + \varepsilon$ y deriva cada paso hasta $\Sigma = \Lambda\Phi\Lambda^\mathsf{T} + \Psi$. Debes indicar qué términos cruzados desaparecen y bajo qué supuestos. Explica por qué, si los errores específicos son independientes y $\varepsilon_i\sim N(0,\psi_i)$, entonces $\Psi$ es diagonal. Discute qué cambiaría si dos errores específicos estuvieran correlacionados.</span>
+<span id="cb6-201"><a href="#cb6-201" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-202"><a href="#cb6-202" aria-hidden="true" tabindex="-1"></a>**Ejercicio 7.2. La misma covarianza, cargas distintas.** Parte de una matriz de cargas con dos factores ortogonales y aplícale una rotación ortogonal. Comprueba que $\Lambda\Lambda^\mathsf{T}$ no cambia. Explica qué implica esto para la identificabilidad de los factores y por qué una rotación puede mejorar la interpretación sin mejorar el ajuste.</span>
+<span id="cb6-203"><a href="#cb6-203" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-204"><a href="#cb6-204" aria-hidden="true" tabindex="-1"></a>**Ejercicio 7.3. Diseñar una estructura simple.** Construye una matriz de cargas para ocho variables y dos factores que tenga estructura simple. Después introduce dos cargas cruzadas y una unicidad muy alta. Simula datos a partir del modelo y estudia si el análisis recupera las dificultades que diseñaste.</span>
+<span id="cb6-205"><a href="#cb6-205" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-206"><a href="#cb6-206" aria-hidden="true" tabindex="-1"></a>**Ejercicio 7.4. PCA o factores.** Imagina seis preguntas de un cuestionario influidas por dos rasgos latentes y, además, por errores de medición. Compara qué objeto intenta reproducir PCA y qué objeto intenta reproducir el análisis factorial. Diseña una situación en la que dos componentes describan bien los datos pero no deban interpretarse como dos causas latentes.</span>
+<span id="cb6-207"><a href="#cb6-207" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-208"><a href="#cb6-208" aria-hidden="true" tabindex="-1"></a>**Ejercicio 7.5. ¿Cuántos factores?** Busca o simula un caso donde scree plot, análisis paralelo e interpretabilidad sugieran números diferentes de factores. Redacta una decisión razonada que no consista en votar entre criterios. Indica qué análisis de sensibilidad presentarías.</span>
+<span id="cb6-209"><a href="#cb6-209" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-210"><a href="#cb6-210" aria-hidden="true" tabindex="-1"></a>**Ejercicio 7.6. Normalidad y significado.** Explica qué papel desempeña la normalidad en la estimación e inferencia factorial y qué partes descriptivas del modelo pueden seguir siendo útiles sin normalidad exacta. Propón dos diagnósticos y una alternativa para datos claramente ordinales.</span>
+<span id="cb6-211"><a href="#cb6-211" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-212"><a href="#cb6-212" aria-hidden="true" tabindex="-1"></a><span class="fu">## Análisis de correspondencias simple</span></span>
+<span id="cb6-213"><a href="#cb6-213" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-214"><a href="#cb6-214" aria-hidden="true" tabindex="-1"></a>Usaremos esta tabla para varios ejercicios. Las filas representan franjas de escucha y las columnas, tipos de contenido.</span>
+<span id="cb6-215"><a href="#cb6-215" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-218"><a href="#cb6-218" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb6-219"><a href="#cb6-219" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: tabla-escucha</span></span>
+<span id="cb6-220"><a href="#cb6-220" aria-hidden="true" tabindex="-1"></a>tabla_escucha <span class="ot">&lt;-</span> <span class="fu">matrix</span>(</span>
+<span id="cb6-221"><a href="#cb6-221" aria-hidden="true" tabindex="-1"></a>  <span class="fu">c</span>(</span>
+<span id="cb6-222"><a href="#cb6-222" aria-hidden="true" tabindex="-1"></a>    <span class="dv">48</span>, <span class="dv">18</span>,  <span class="dv">6</span>, <span class="dv">28</span>,</span>
+<span id="cb6-223"><a href="#cb6-223" aria-hidden="true" tabindex="-1"></a>    <span class="dv">24</span>, <span class="dv">36</span>, <span class="dv">18</span>, <span class="dv">22</span>,</span>
+<span id="cb6-224"><a href="#cb6-224" aria-hidden="true" tabindex="-1"></a>     <span class="dv">8</span>, <span class="dv">22</span>, <span class="dv">46</span>, <span class="dv">24</span></span>
+<span id="cb6-225"><a href="#cb6-225" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb6-226"><a href="#cb6-226" aria-hidden="true" tabindex="-1"></a>  <span class="at">nrow =</span> <span class="dv">3</span>,</span>
+<span id="cb6-227"><a href="#cb6-227" aria-hidden="true" tabindex="-1"></a>  <span class="at">byrow =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb6-228"><a href="#cb6-228" aria-hidden="true" tabindex="-1"></a>  <span class="at">dimnames =</span> <span class="fu">list</span>(</span>
+<span id="cb6-229"><a href="#cb6-229" aria-hidden="true" tabindex="-1"></a>    <span class="at">franja =</span> <span class="fu">c</span>(<span class="st">"mañana"</span>, <span class="st">"tarde"</span>, <span class="st">"noche"</span>),</span>
+<span id="cb6-230"><a href="#cb6-230" aria-hidden="true" tabindex="-1"></a>    <span class="at">contenido =</span> <span class="fu">c</span>(<span class="st">"noticias"</span>, <span class="st">"listas"</span>, <span class="st">"albumes"</span>, <span class="st">"podcasts"</span>)</span>
+<span id="cb6-231"><a href="#cb6-231" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb6-232"><a href="#cb6-232" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb6-233"><a href="#cb6-233" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-234"><a href="#cb6-234" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(tabla_escucha)</span>
+<span id="cb6-235"><a href="#cb6-235" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb6-236"><a href="#cb6-236" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-237"><a href="#cb6-237" aria-hidden="true" tabindex="-1"></a>**Ejercicio 9.1. Perfiles antes que frecuencias.** Duplica todos los recuentos de una fila de <span class="in">`tabla_escucha`</span> y compara las frecuencias, los perfiles fila y su posición en un análisis de correspondencias. Explica qué cambia y qué no cambia. ¿Por qué la masa de la fila sigue siendo relevante aunque su perfil permanezca igual?</span>
+<span id="cb6-238"><a href="#cb6-238" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-239"><a href="#cb6-239" aria-hidden="true" tabindex="-1"></a>**Ejercicio 9.2. La distancia chi-cuadrado pondera.** Añade una categoría columna muy frecuente y otra muy rara, ambas con pequeñas desviaciones relativas entre filas. Compara su influencia en la distancia chi-cuadrado. Explica por qué dividir por el perfil marginal hace visibles categorías raras y cuándo esto puede resultar problemático.</span>
+<span id="cb6-240"><a href="#cb6-240" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-241"><a href="#cb6-241" aria-hidden="true" tabindex="-1"></a>**Ejercicio 9.3. De independencia a estructura.** Construye primero una tabla exactamente independiente a partir de unos marginales elegidos. Modifica después una única celda conservando el total mediante cambios compensatorios. Sigue cómo cambian residuos, estadístico chi-cuadrado, inercia y coordenadas. Identifica qué magnitudes expresan la misma desviación en escalas distintas.</span>
+<span id="cb6-242"><a href="#cb6-242" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-243"><a href="#cb6-243" aria-hidden="true" tabindex="-1"></a>**Ejercicio 9.4. Leer un mapa sin inventar proximidades.** Realiza CA sobre <span class="in">`tabla_escucha`</span> y redacta cinco interpretaciones del mapa: dos correctas, dos incorrectas y una que necesite información adicional. Intercambia la lista con otra persona para que identifique cada tipo y lo justifique usando perfiles, contribuciones y cos².</span>
+<span id="cb6-244"><a href="#cb6-244" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-245"><a href="#cb6-245" aria-hidden="true" tabindex="-1"></a>**Ejercicio 9.5. Una categoría extrema pero poco fiable.** Añade una fila con masa muy pequeña y perfil extremo. Estudia su contribución y calidad de representación. Decide si debe ser activa, agruparse con otra o tratarse como suplementaria, y justifica la decisión desde el contexto, no solo desde el gráfico.</span>
+<span id="cb6-246"><a href="#cb6-246" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-247"><a href="#cb6-247" aria-hidden="true" tabindex="-1"></a><span class="fu">## Análisis de correspondencias múltiples</span></span>
+<span id="cb6-248"><a href="#cb6-248" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-249"><a href="#cb6-249" aria-hidden="true" tabindex="-1"></a>**Ejercicio 10.1. Distancias en la tabla indicadora.** Selecciona dos pasajeros de <span class="in">`titanic_ex`</span> que difieran en una sola variable y otros dos que difieran en varias. Construye sus filas de la tabla indicadora y relaciona la distancia entre ellas con el número y la frecuencia de las modalidades en desacuerdo.</span>
+<span id="cb6-250"><a href="#cb6-250" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-251"><a href="#cb6-251" aria-hidden="true" tabindex="-1"></a>**Ejercicio 10.2. Inercia generada por la codificación.** Añade a <span class="in">`titanic_ex`</span> una variable categórica aleatoria con dos niveles y después otra con diez niveles. Repite MCA y estudia cómo cambia la inercia bruta. Explica por qué añadir modalidades aumenta inercia aunque no aporte estructura sustantiva y qué pretende corregir Benzécri.</span>
+<span id="cb6-252"><a href="#cb6-252" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-253"><a href="#cb6-253" aria-hidden="true" tabindex="-1"></a>**Ejercicio 10.3. Modalidad rara.** Crea una modalidad que aparezca en muy pocos individuos y observa su distancia al origen, contribución y cos². Explica por qué estar lejos no basta para convertirla en el hallazgo principal. Propón una regla de revisión que combine frecuencia, contribución y estabilidad.</span>
+<span id="cb6-254"><a href="#cb6-254" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-255"><a href="#cb6-255" aria-hidden="true" tabindex="-1"></a>**Ejercicio 10.4. Activa o suplementaria.** Compara dos MCA de <span class="in">`titanic_ex`</span>: uno con <span class="in">`Survived`</span> activa y otro con <span class="in">`Survived`</span> suplementaria. Explica con precisión por qué las asociaciones observadas no tienen el mismo estatus en ambos mapas y cuál usarías para explorar perfiles previos al desenlace.</span>
+<span id="cb6-256"><a href="#cb6-256" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-257"><a href="#cb6-257" aria-hidden="true" tabindex="-1"></a>**Ejercicio 10.5. Clustering sobre coordenadas.** Agrupa pasajeros usando un número pequeño y después uno grande de dimensiones MCA. Compara estabilidad e interpretación de los clusters. Explica qué información se pierde al usar pocas dimensiones y qué ruido o inercia trivial puede reintroducirse al usar demasiadas.</span>
+<span id="cb6-258"><a href="#cb6-258" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-259"><a href="#cb6-259" aria-hidden="true" tabindex="-1"></a><span class="fu">## FAMD para datos mixtos</span></span>
+<span id="cb6-260"><a href="#cb6-260" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-261"><a href="#cb6-261" aria-hidden="true" tabindex="-1"></a>**Ejercicio 8.1. Equilibrar bloques.** Crea dos versiones de <span class="in">`mtcars_mixed_ex`</span>: una con seis variables numéricas y una categórica, y otra donde esa categórica se duplique varias veces. Compara una concatenación ingenua de variables estandarizadas e indicadoras con FAMD. Explica qué normalización evita que un bloque domine únicamente por su número de columnas o modalidades.</span>
+<span id="cb6-262"><a href="#cb6-262" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-263"><a href="#cb6-263" aria-hidden="true" tabindex="-1"></a>**Ejercicio 8.2. Una dimensión mixta.** Interpreta una dimensión FAMD de <span class="in">`mtcars_mixed_ex`</span> que relacione simultáneamente variables numéricas y modalidades categóricas. La interpretación debe incluir contribuciones, coordenadas y cos², además de al menos dos coches bien representados. Propón un nombre para el eje y señala qué parte de ese nombre es inferencia sustantiva.</span>
+<span id="cb6-264"><a href="#cb6-264" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-265"><a href="#cb6-265" aria-hidden="true" tabindex="-1"></a>**Ejercicio 8.3. FAMD frente a Gower.** Compara vecinos obtenidos con distancia de Gower y con distancia euclídea en varias dimensiones FAMD. Busca un individuo para el que difieran. Explica qué decisiones de ponderación y qué pérdida por truncamiento pueden producir la discrepancia.</span>
+<span id="cb6-266"><a href="#cb6-266" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-267"><a href="#cb6-267" aria-hidden="true" tabindex="-1"></a>**Ejercicio 8.4. Categoría informativa o etiqueta encubierta.** Añade a un dataset mixto una categoría casi idéntica a una variable que luego quieras usar para interpretar o predecir. Estudia cómo domina la representación. Explica por qué declarar una variable suplementaria puede evitar circularidad, pero no arregla otras variables activas que filtren la misma información.</span>
+<span id="cb6-268"><a href="#cb6-268" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-269"><a href="#cb6-269" aria-hidden="true" tabindex="-1"></a>**Ejercicio 8.5. Diseñar datos mixtos.** Construye un dataset reproducible de al menos 30 individuos con dos numéricas, una ordinal, una nominal y una binaria asimétrica. Introduce deliberadamente una relación entre bloques. Antes de ejecutar FAMD, predice qué variables definirán las dos primeras dimensiones; después revisa la predicción con contribuciones.</span>
+<span id="cb6-270"><a href="#cb6-270" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-271"><a href="#cb6-271" aria-hidden="true" tabindex="-1"></a><span class="fu">## Análisis discriminante</span></span>
+<span id="cb6-272"><a href="#cb6-272" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-273"><a href="#cb6-273" aria-hidden="true" tabindex="-1"></a>El siguiente dataset contiene dos clases separadas sobre todo en una dirección de varianza pequeña.</span>
+<span id="cb6-274"><a href="#cb6-274" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-277"><a href="#cb6-277" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb6-278"><a href="#cb6-278" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: datos-discriminantes</span></span>
+<span id="cb6-279"><a href="#cb6-279" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">73</span>)</span>
+<span id="cb6-280"><a href="#cb6-280" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-281"><a href="#cb6-281" aria-hidden="true" tabindex="-1"></a>n_clase <span class="ot">&lt;-</span> <span class="dv">100</span></span>
+<span id="cb6-282"><a href="#cb6-282" aria-hidden="true" tabindex="-1"></a>datos_discriminantes <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb6-283"><a href="#cb6-283" aria-hidden="true" tabindex="-1"></a>  <span class="at">clase =</span> <span class="fu">factor</span>(<span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">"A"</span>, <span class="st">"B"</span>), <span class="at">each =</span> n_clase)),</span>
+<span id="cb6-284"><a href="#cb6-284" aria-hidden="true" tabindex="-1"></a>  <span class="at">x_ruido =</span> <span class="fu">rnorm</span>(<span class="dv">2</span> <span class="sc">*</span> n_clase, <span class="at">sd =</span> <span class="dv">4</span>),</span>
+<span id="cb6-285"><a href="#cb6-285" aria-hidden="true" tabindex="-1"></a>  x_señal <span class="ot">=</span> <span class="fu">c</span>(</span>
+<span id="cb6-286"><a href="#cb6-286" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rnorm</span>(n_clase, <span class="sc">-</span><span class="fl">0.65</span>, <span class="fl">0.35</span>),</span>
+<span id="cb6-287"><a href="#cb6-287" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rnorm</span>(n_clase,  <span class="fl">0.65</span>, <span class="fl">0.35</span>)</span>
+<span id="cb6-288"><a href="#cb6-288" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb6-289"><a href="#cb6-289" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb6-290"><a href="#cb6-290" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-291"><a href="#cb6-291" aria-hidden="true" tabindex="-1"></a>datos_discriminantes <span class="sc">|&gt;</span></span>
+<span id="cb6-292"><a href="#cb6-292" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(x_ruido, x_señal, <span class="at">color =</span> clase)) <span class="sc">+</span></span>
+<span id="cb6-293"><a href="#cb6-293" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.65</span>) <span class="sc">+</span></span>
+<span id="cb6-294"><a href="#cb6-294" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"La separación no coincide con la máxima varianza"</span>)</span>
+<span id="cb6-295"><a href="#cb6-295" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb6-296"><a href="#cb6-296" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-297"><a href="#cb6-297" aria-hidden="true" tabindex="-1"></a>**Ejercicio 11.1. PCA no es LDA.** Aplica PCA a las variables de <span class="in">`datos_discriminantes`</span> sin usar <span class="in">`clase`</span> y compara su primera dirección con la dirección discriminante de LDA. Explica las funciones objetivo distintas y por qué descartar componentes de poca varianza antes de clasificar puede eliminar la señal.</span>
+<span id="cb6-298"><a href="#cb6-298" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-299"><a href="#cb6-299" aria-hidden="true" tabindex="-1"></a>**Ejercicio 11.2. LDA o QDA por la geometría.** Simula dos escenarios: uno con covarianzas de clase iguales y otro con covarianzas claramente diferentes. Compara fronteras LDA y QDA con muestras pequeñas y grandes. Describe el compromiso entre sesgo y varianza sin decidir solo por la accuracy de una partición concreta.</span>
+<span id="cb6-300"><a href="#cb6-300" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-301"><a href="#cb6-301" aria-hidden="true" tabindex="-1"></a>**Ejercicio 11.3. Los errores no cuestan lo mismo.** Diseña un problema binario donde un falso negativo cueste diez veces más que un falso positivo. A partir de probabilidades posteriores, compara la regla de máximo posterior con una regla basada en coste esperado. Construye dos matrices de confusión con la misma accuracy pero consecuencias muy distintas.</span>
+<span id="cb6-302"><a href="#cb6-302" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-303"><a href="#cb6-303" aria-hidden="true" tabindex="-1"></a>**Ejercicio 11.4. Fuga de información.** Inventa tres ejemplos de data leakage en un análisis discriminante: uno producido por una variable, otro por el preprocesamiento y otro por la forma de dividir los datos. Para cada uno, explica por qué la estimación del error es optimista y cómo rediseñarías el flujo de validación.</span>
+<span id="cb6-304"><a href="#cb6-304" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-305"><a href="#cb6-305" aria-hidden="true" tabindex="-1"></a>**Ejercicio 11.5. Una clase minoritaria.** Crea un test con un 95% de una clase y muestra que clasificar siempre en la mayoritaria consigue alta accuracy. Propón métricas y una política de validación más informativas. La respuesta debe conectar cada métrica con una consecuencia aplicada.</span>
+<span id="cb6-306"><a href="#cb6-306" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-307"><a href="#cb6-307" aria-hidden="true" tabindex="-1"></a><span class="fu">## Casos integradores</span></span>
+<span id="cb6-308"><a href="#cb6-308" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-309"><a href="#cb6-309" aria-hidden="true" tabindex="-1"></a>**Ejercicio 12.1. La técnica depende de la pregunta.** Formula sobre <span class="in">`mtcars_mixed_ex`</span> tres preguntas que usen exactamente las mismas filas y columnas pero conduzcan razonablemente a PCA, FAMD y análisis discriminante. Explica qué papel es activo, suplementario o respuesta en cada análisis.</span>
+<span id="cb6-310"><a href="#cb6-310" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-311"><a href="#cb6-311" aria-hidden="true" tabindex="-1"></a>**Ejercicio 12.2. Dos representaciones que discrepan.** Analiza un mismo dataset mediante clustering sobre variables originales estandarizadas y clustering sobre unas pocas componentes principales. Busca una observación cuya asignación cambie. Investiga si el cambio se debe a reducción de ruido, pérdida de una dirección relevante o geometría del algoritmo.</span>
+<span id="cb6-312"><a href="#cb6-312" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-313"><a href="#cb6-313" aria-hidden="true" tabindex="-1"></a>**Ejercicio 12.3. Informe con decisión.** Elige una pregunta aplicada y redacta un informe de dos páginas con esta secuencia: pregunta, unidad de análisis, variables, preprocesamiento, método, selección de complejidad, resultado, validación y limitaciones. Solo puede incluir dos figuras y una tabla; justifica por qué son las evidencias más informativas.</span>
+<span id="cb6-314"><a href="#cb6-314" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-315"><a href="#cb6-315" aria-hidden="true" tabindex="-1"></a>**Ejercicio 12.4. Revisión por pares adversarial.** Intercambia el informe anterior con otra persona. La revisión debe intentar refutar la conclusión mediante: una codificación alternativa, una elección distinta de distancia o escalado, una perturbación de la muestra y una interpretación alternativa. El informe final debe indicar qué conclusiones sobrevivieron.</span>
+<span id="cb6-316"><a href="#cb6-316" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-317"><a href="#cb6-317" aria-hidden="true" tabindex="-1"></a>**Ejercicio 12.5. Diseñar un caso donde el método falle.** Elige una técnica del curso y construye datos que violen de forma visible uno de sus supuestos o intuiciones geométricas. Muestra el resultado engañoso y propón un diagnóstico que permita detectarlo sin conocer el mecanismo generador.</span>
+<span id="cb6-318"><a href="#cb6-318" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-319"><a href="#cb6-319" aria-hidden="true" tabindex="-1"></a>**Ejercicio 12.6. Mapa de decisiones.** Construye un diagrama de decisión para elegir entre clustering, PCA, análisis factorial, CA, MCA, FAMD y análisis discriminante. Debe incluir tipo de variables, existencia de respuesta, objetivo del análisis y al menos una advertencia por técnica. Prueba el diagrama con tres casos ambiguos y documenta dónde necesita juicio experto.</span>
+<span id="cb6-320"><a href="#cb6-320" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-321"><a href="#cb6-321" aria-hidden="true" tabindex="-1"></a><span class="fu">## Guía práctica de tidyverse y dplyr</span></span>
+<span id="cb6-322"><a href="#cb6-322" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-323"><a href="#cb6-323" aria-hidden="true" tabindex="-1"></a>**Ejercicio T.1. Una tubería legible.** Toma un análisis de <span class="in">`mtcars`</span> escrito como una sucesión de objetos intermedios o llamadas anidadas. Reescríbelo como pipeline y después divide la tubería en dos objetos con nombres sustantivos. Compara las tres versiones atendiendo a facilidad de depuración, no a número de líneas.</span>
+<span id="cb6-324"><a href="#cb6-324" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-325"><a href="#cb6-325" aria-hidden="true" tabindex="-1"></a>**Ejercicio T.2. El estado oculto de `group_by()`.** Construye un ejemplo donde olvidar un agrupamiento activo cambie el resultado de un <span class="in">`mutate()`</span> posterior. Diagnostica el problema con <span class="in">`group_vars()`</span> y corrígelo con <span class="in">`.groups`</span> o <span class="in">`ungroup()`</span>. Explica por qué el código puede ejecutarse sin error y aun así responder otra pregunta.</span>
+<span id="cb6-326"><a href="#cb6-326" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-327"><a href="#cb6-327" aria-hidden="true" tabindex="-1"></a>**Ejercicio T.3. Un join que multiplica filas.** Crea dos tablas con claves duplicadas y realiza un <span class="in">`left_join()`</span> que aumente inesperadamente el número de filas. Explica la relación muchos-a-muchos, diseña comprobaciones previas de unicidad y decide si el problema se corrige agregando, deduplicando o ampliando la clave.</span>
+<span id="cb6-328"><a href="#cb6-328" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-329"><a href="#cb6-329" aria-hidden="true" tabindex="-1"></a>**Ejercicio T.4. Ancho, largo y unidad de observación.** Construye una tabla de medidas repetidas en formato ancho y transfórmala a largo con <span class="in">`pivot_longer()`</span>. Explica qué representa una fila antes y después. Vuelve a formato ancho y verifica qué identificadores hacen reversible la operación.</span>
+<span id="cb6-330"><a href="#cb6-330" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-331"><a href="#cb6-331" aria-hidden="true" tabindex="-1"></a>**Ejercicio T.5. Un pipeline estadísticamente incorrecto.** Escribe código tidyverse sintácticamente impecable que produzca una comparación sesgada, por ejemplo filtrando después de observar la respuesta o resumiendo con denominadores inadecuados. Pide a otra persona que encuentre el problema conceptual. La moraleja debe distinguir código limpio de análisis válido.</span>
+<span id="cb6-332"><a href="#cb6-332" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-333"><a href="#cb6-333" aria-hidden="true" tabindex="-1"></a><span class="fu">## Proyecto de síntesis</span></span>
+<span id="cb6-334"><a href="#cb6-334" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-335"><a href="#cb6-335" aria-hidden="true" tabindex="-1"></a>Construye o elige un dataset pequeño que permita formular al menos tres preguntas multivariantes distintas. Una de ellas debe ser no supervisada, otra debe usar variables categóricas o mixtas y otra debe ser supervisada. El proyecto debe:</span>
+<span id="cb6-336"><a href="#cb6-336" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-337"><a href="#cb6-337" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>justificar la unidad de análisis y el origen de cada variable;</span>
+<span id="cb6-338"><a href="#cb6-338" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>anticipar la geometría o estructura que se espera encontrar;</span>
+<span id="cb6-339"><a href="#cb6-339" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>comparar al menos dos decisiones metodológicas razonables;</span>
+<span id="cb6-340"><a href="#cb6-340" aria-hidden="true" tabindex="-1"></a><span class="ss">4. </span>incluir un análisis de estabilidad, sensibilidad o validación;</span>
+<span id="cb6-341"><a href="#cb6-341" aria-hidden="true" tabindex="-1"></a><span class="ss">5. </span>separar resultados observados de interpretación sustantiva;</span>
+<span id="cb6-342"><a href="#cb6-342" aria-hidden="true" tabindex="-1"></a><span class="ss">6. </span>terminar con una conclusión que podría cambiar si se obtuvieran nuevos datos.</span>
+<span id="cb6-343"><a href="#cb6-343" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-344"><a href="#cb6-344" aria-hidden="true" tabindex="-1"></a>El dataset puede ser simulado. En ese caso, el mecanismo generador debe escribirse en R y la evaluación debe distinguir entre recuperar una estructura que se introdujo deliberadamente y descubrir una estructura desconocida.</span>
+</code></pre></div><button title="Copiar al portapapeles" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
+</div></div></div></div></div>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

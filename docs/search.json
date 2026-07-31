@@ -2510,232 +2510,419 @@
   {
     "objectID": "tidyverse.html",
     "href": "tidyverse.html",
-    "title": "15  Guía rápida de tidyverse y dplyr",
+    "title": "16  Guía rápida de tidyverse y dplyr",
     "section": "",
-    "text": "15.1 Objetivo del capítulo\nEn los apuntes usamos mucho tidyverse porque permite escribir análisis de datos como una secuencia legible de transformaciones. Este capítulo resume las funciones más frecuentes, especialmente las que aparecen en los ejemplos del libro.\nLa idea central es trabajar con tablas y encadenar pasos:\nUsaremos mtcars como tabla principal.\nCódigo\ncoches &lt;- mtcars |&gt;\n  as_tibble(rownames = \"modelo\") |&gt;\n  mutate(\n    transmision = factor(am, labels = c(\"automatico\", \"manual\")),\n    cilindros = factor(cyl)\n  )\n\ncoches |&gt;\n  select(modelo, mpg, disp, hp, wt, transmision, cilindros) |&gt;\n  head(6) |&gt;\n  kable()\n\n\n\n\n\nmodelo\nmpg\ndisp\nhp\nwt\ntransmision\ncilindros\n\n\n\n\nMazda RX4\n21.0\n160\n110\n2.620\nmanual\n6\n\n\nMazda RX4 Wag\n21.0\n160\n110\n2.875\nmanual\n6\n\n\nDatsun 710\n22.8\n108\n93\n2.320\nmanual\n4\n\n\nHornet 4 Drive\n21.4\n258\n110\n3.215\nautomatico\n6\n\n\nHornet Sportabout\n18.7\n360\n175\n3.440\nautomatico\n8\n\n\nValiant\n18.1\n225\n105\n3.460\nautomatico\n6",
+    "text": "16.1 Objetivo del capítulo\nEn los apuntes usamos mucho tidyverse porque permite escribir análisis de datos como una secuencia legible de transformaciones. Este capítulo resume las funciones más frecuentes, especialmente las que aparecen en los ejemplos del libro.\nLa idea central es trabajar con tablas y encadenar pasos:\nUsaremos mtcars como tabla principal.\nCódigo\ncoches &lt;- mtcars |&gt;\n  as_tibble(rownames = \"modelo\") |&gt;\n  mutate(\n    transmision = factor(am, labels = c(\"automatico\", \"manual\")),\n    cilindros = factor(cyl)\n  )\n\ncoches |&gt;\n  select(modelo, mpg, disp, hp, wt, transmision, cilindros) |&gt;\n  head(6) |&gt;\n  kable()\n\n\n\n\n\nmodelo\nmpg\ndisp\nhp\nwt\ntransmision\ncilindros\n\n\n\n\nMazda RX4\n21.0\n160\n110\n2.620\nmanual\n6\n\n\nMazda RX4 Wag\n21.0\n160\n110\n2.875\nmanual\n6\n\n\nDatsun 710\n22.8\n108\n93\n2.320\nmanual\n4\n\n\nHornet 4 Drive\n21.4\n258\n110\n3.215\nautomatico\n6\n\n\nHornet Sportabout\n18.7\n360\n175\n3.440\nautomatico\n8\n\n\nValiant\n18.1\n225\n105\n3.460\nautomatico\n6",
     "crumbs": [
       "Apéndice práctico",
-      "<span class='chapter-number'>15</span>  <span class='chapter-title'>Guía rápida de tidyverse y dplyr</span>"
+      "<span class='chapter-number'>16</span>  <span class='chapter-title'>Guía rápida de tidyverse y dplyr</span>"
     ]
   },
   {
     "objectID": "tidyverse.html#objetivo-del-capítulo",
     "href": "tidyverse.html#objetivo-del-capítulo",
-    "title": "15  Guía rápida de tidyverse y dplyr",
+    "title": "16  Guía rápida de tidyverse y dplyr",
     "section": "",
     "text": "elegir variables;\nfiltrar filas;\ncrear o transformar columnas;\nagrupar;\nresumir;\nordenar;\nrepresentar o mostrar resultados.",
     "crumbs": [
       "Apéndice práctico",
-      "<span class='chapter-number'>15</span>  <span class='chapter-title'>Guía rápida de tidyverse y dplyr</span>"
+      "<span class='chapter-number'>16</span>  <span class='chapter-title'>Guía rápida de tidyverse y dplyr</span>"
     ]
   },
   {
     "objectID": "tidyverse.html#la-tubería",
     "href": "tidyverse.html#la-tubería",
-    "title": "15  Guía rápida de tidyverse y dplyr",
-    "section": "15.2 La tubería",
-    "text": "15.2 La tubería\nLa tubería |&gt; lee el código de izquierda a derecha. El resultado de una línea entra como primer argumento de la función siguiente.\n\n\nCódigo\ncoches |&gt;\n  select(modelo, mpg, wt, transmision) |&gt;\n  filter(transmision == \"manual\") |&gt;\n  arrange(desc(mpg)) |&gt;\n  head(5) |&gt;\n  kable()\n\n\n\n\n\nmodelo\nmpg\nwt\ntransmision\n\n\n\n\nToyota Corolla\n33.9\n1.835\nmanual\n\n\nFiat 128\n32.4\n2.200\nmanual\n\n\nHonda Civic\n30.4\n1.615\nmanual\n\n\nLotus Europa\n30.4\n1.513\nmanual\n\n\nFiat X1-9\n27.3\n1.935\nmanual\n\n\n\n\n\nSin tuberías, el mismo código sería más anidado y menos legible:\n\n\nCódigo\nresultado &lt;- head(\n  arrange(\n    filter(\n      select(coches, modelo, mpg, wt, transmision),\n      transmision == \"manual\"\n    ),\n    desc(mpg)\n  ),\n  5\n)\n\nkable(resultado)\n\n\n\n\n\nmodelo\nmpg\nwt\ntransmision\n\n\n\n\nToyota Corolla\n33.9\n1.835\nmanual\n\n\nFiat 128\n32.4\n2.200\nmanual\n\n\nHonda Civic\n30.4\n1.615\nmanual\n\n\nLotus Europa\n30.4\n1.513\nmanual\n\n\nFiat X1-9\n27.3\n1.935\nmanual\n\n\n\n\n\nEn estos apuntes usamos principalmente |&gt;, la tubería nativa de R. También existe %&gt;%, del paquete magrittr, muy común en código tidyverse más antiguo. Para la mayoría de usos básicos, ambas permiten escribir cadenas de transformación similares.",
+    "title": "16  Guía rápida de tidyverse y dplyr",
+    "section": "16.2 La tubería",
+    "text": "16.2 La tubería\nLa tubería |&gt; lee el código de izquierda a derecha. El resultado de una línea entra como primer argumento de la función siguiente.\n\n\nCódigo\ncoches |&gt;\n  select(modelo, mpg, wt, transmision) |&gt;\n  filter(transmision == \"manual\") |&gt;\n  arrange(desc(mpg)) |&gt;\n  head(5) |&gt;\n  kable()\n\n\n\n\n\nmodelo\nmpg\nwt\ntransmision\n\n\n\n\nToyota Corolla\n33.9\n1.835\nmanual\n\n\nFiat 128\n32.4\n2.200\nmanual\n\n\nHonda Civic\n30.4\n1.615\nmanual\n\n\nLotus Europa\n30.4\n1.513\nmanual\n\n\nFiat X1-9\n27.3\n1.935\nmanual\n\n\n\n\n\nSin tuberías, el mismo código sería más anidado y menos legible:\n\n\nCódigo\nresultado &lt;- head(\n  arrange(\n    filter(\n      select(coches, modelo, mpg, wt, transmision),\n      transmision == \"manual\"\n    ),\n    desc(mpg)\n  ),\n  5\n)\n\nkable(resultado)\n\n\n\n\n\nmodelo\nmpg\nwt\ntransmision\n\n\n\n\nToyota Corolla\n33.9\n1.835\nmanual\n\n\nFiat 128\n32.4\n2.200\nmanual\n\n\nHonda Civic\n30.4\n1.615\nmanual\n\n\nLotus Europa\n30.4\n1.513\nmanual\n\n\nFiat X1-9\n27.3\n1.935\nmanual\n\n\n\n\n\nEn estos apuntes usamos principalmente |&gt;, la tubería nativa de R. También existe %&gt;%, del paquete magrittr, muy común en código tidyverse más antiguo. Para la mayoría de usos básicos, ambas permiten escribir cadenas de transformación similares.",
     "crumbs": [
       "Apéndice práctico",
-      "<span class='chapter-number'>15</span>  <span class='chapter-title'>Guía rápida de tidyverse y dplyr</span>"
+      "<span class='chapter-number'>16</span>  <span class='chapter-title'>Guía rápida de tidyverse y dplyr</span>"
     ]
   },
   {
     "objectID": "tidyverse.html#select-elegir-columnas",
     "href": "tidyverse.html#select-elegir-columnas",
-    "title": "15  Guía rápida de tidyverse y dplyr",
-    "section": "15.3 select(): elegir columnas",
-    "text": "15.3 select(): elegir columnas\nselect() conserva, reordena o descarta variables.\n\n\nCódigo\ncoches |&gt;\n  select(modelo, mpg, hp, wt) |&gt;\n  head(5) |&gt;\n  kable()\n\n\n\n\n\nmodelo\nmpg\nhp\nwt\n\n\n\n\nMazda RX4\n21.0\n110\n2.620\n\n\nMazda RX4 Wag\n21.0\n110\n2.875\n\n\nDatsun 710\n22.8\n93\n2.320\n\n\nHornet 4 Drive\n21.4\n110\n3.215\n\n\nHornet Sportabout\n18.7\n175\n3.440\n\n\n\n\n\nTambién se pueden usar ayudantes de selección:\n\n\nCódigo\ncoches |&gt;\n  select(modelo, starts_with(\"d\"), ends_with(\"s\")) |&gt;\n  head(5) |&gt;\n  kable()\n\n\n\n\n\nmodelo\ndisp\ndrat\nvs\ncilindros\n\n\n\n\nMazda RX4\n160\n3.90\n0\n6\n\n\nMazda RX4 Wag\n160\n3.90\n0\n6\n\n\nDatsun 710\n108\n3.85\n1\n4\n\n\nHornet 4 Drive\n258\n3.08\n1\n6\n\n\nHornet Sportabout\n360\n3.15\n0\n8\n\n\n\n\n\nPara quitar columnas se usa el signo menos.\n\n\nCódigo\ncoches |&gt;\n  select(-modelo, -transmision, -cilindros) |&gt;\n  head(5) |&gt;\n  kable()\n\n\n\n\n\nmpg\ncyl\ndisp\nhp\ndrat\nwt\nqsec\nvs\nam\ngear\ncarb\n\n\n\n\n21.0\n6\n160\n110\n3.90\n2.620\n16.46\n0\n1\n4\n4\n\n\n21.0\n6\n160\n110\n3.90\n2.875\n17.02\n0\n1\n4\n4\n\n\n22.8\n4\n108\n93\n3.85\n2.320\n18.61\n1\n1\n4\n1\n\n\n21.4\n6\n258\n110\n3.08\n3.215\n19.44\n1\n0\n3\n1\n\n\n18.7\n8\n360\n175\n3.15\n3.440\n17.02\n0\n0\n3\n2\n\n\n\n\n\nEn análisis multivariante, select() es útil para separar variables activas y suplementarias. Por ejemplo, podemos construir una matriz numérica activa y guardar la transmisión para interpretar después.\n\n\nCódigo\nX &lt;- coches |&gt;\n  select(mpg, disp, hp, wt, qsec)\n\netiqueta &lt;- coches |&gt;\n  pull(transmision)\n\nkable(head(X, 5))\n\n\n\n\n\nmpg\ndisp\nhp\nwt\nqsec\n\n\n\n\n21.0\n160\n110\n2.620\n16.46\n\n\n21.0\n160\n110\n2.875\n17.02\n\n\n22.8\n108\n93\n2.320\n18.61\n\n\n21.4\n258\n110\n3.215\n19.44\n\n\n18.7\n360\n175\n3.440\n17.02",
+    "title": "16  Guía rápida de tidyverse y dplyr",
+    "section": "16.3 select(): elegir columnas",
+    "text": "16.3 select(): elegir columnas\nselect() conserva, reordena o descarta variables.\n\n\nCódigo\ncoches |&gt;\n  select(modelo, mpg, hp, wt) |&gt;\n  head(5) |&gt;\n  kable()\n\n\n\n\n\nmodelo\nmpg\nhp\nwt\n\n\n\n\nMazda RX4\n21.0\n110\n2.620\n\n\nMazda RX4 Wag\n21.0\n110\n2.875\n\n\nDatsun 710\n22.8\n93\n2.320\n\n\nHornet 4 Drive\n21.4\n110\n3.215\n\n\nHornet Sportabout\n18.7\n175\n3.440\n\n\n\n\n\nTambién se pueden usar ayudantes de selección:\n\n\nCódigo\ncoches |&gt;\n  select(modelo, starts_with(\"d\"), ends_with(\"s\")) |&gt;\n  head(5) |&gt;\n  kable()\n\n\n\n\n\nmodelo\ndisp\ndrat\nvs\ncilindros\n\n\n\n\nMazda RX4\n160\n3.90\n0\n6\n\n\nMazda RX4 Wag\n160\n3.90\n0\n6\n\n\nDatsun 710\n108\n3.85\n1\n4\n\n\nHornet 4 Drive\n258\n3.08\n1\n6\n\n\nHornet Sportabout\n360\n3.15\n0\n8\n\n\n\n\n\nPara quitar columnas se usa el signo menos.\n\n\nCódigo\ncoches |&gt;\n  select(-modelo, -transmision, -cilindros) |&gt;\n  head(5) |&gt;\n  kable()\n\n\n\n\n\nmpg\ncyl\ndisp\nhp\ndrat\nwt\nqsec\nvs\nam\ngear\ncarb\n\n\n\n\n21.0\n6\n160\n110\n3.90\n2.620\n16.46\n0\n1\n4\n4\n\n\n21.0\n6\n160\n110\n3.90\n2.875\n17.02\n0\n1\n4\n4\n\n\n22.8\n4\n108\n93\n3.85\n2.320\n18.61\n1\n1\n4\n1\n\n\n21.4\n6\n258\n110\n3.08\n3.215\n19.44\n1\n0\n3\n1\n\n\n18.7\n8\n360\n175\n3.15\n3.440\n17.02\n0\n0\n3\n2\n\n\n\n\n\nEn análisis multivariante, select() es útil para separar variables activas y suplementarias. Por ejemplo, podemos construir una matriz numérica activa y guardar la transmisión para interpretar después.\n\n\nCódigo\nX &lt;- coches |&gt;\n  select(mpg, disp, hp, wt, qsec)\n\netiqueta &lt;- coches |&gt;\n  pull(transmision)\n\nkable(head(X, 5))\n\n\n\n\n\nmpg\ndisp\nhp\nwt\nqsec\n\n\n\n\n21.0\n160\n110\n2.620\n16.46\n\n\n21.0\n160\n110\n2.875\n17.02\n\n\n22.8\n108\n93\n2.320\n18.61\n\n\n21.4\n258\n110\n3.215\n19.44\n\n\n18.7\n360\n175\n3.440\n17.02",
     "crumbs": [
       "Apéndice práctico",
-      "<span class='chapter-number'>15</span>  <span class='chapter-title'>Guía rápida de tidyverse y dplyr</span>"
+      "<span class='chapter-number'>16</span>  <span class='chapter-title'>Guía rápida de tidyverse y dplyr</span>"
     ]
   },
   {
     "objectID": "tidyverse.html#filter-filtrar-filas",
     "href": "tidyverse.html#filter-filtrar-filas",
-    "title": "15  Guía rápida de tidyverse y dplyr",
-    "section": "15.4 filter(): filtrar filas",
-    "text": "15.4 filter(): filtrar filas\nfilter() conserva observaciones que cumplen una condición lógica.\n\n\nCódigo\ncoches |&gt;\n  filter(mpg &gt; 25) |&gt;\n  select(modelo, mpg, hp, wt, transmision) |&gt;\n  kable()\n\n\n\n\n\nmodelo\nmpg\nhp\nwt\ntransmision\n\n\n\n\nFiat 128\n32.4\n66\n2.200\nmanual\n\n\nHonda Civic\n30.4\n52\n1.615\nmanual\n\n\nToyota Corolla\n33.9\n65\n1.835\nmanual\n\n\nFiat X1-9\n27.3\n66\n1.935\nmanual\n\n\nPorsche 914-2\n26.0\n91\n2.140\nmanual\n\n\nLotus Europa\n30.4\n113\n1.513\nmanual\n\n\n\n\n\nSe pueden combinar condiciones con & y |.\n\n\nCódigo\ncoches |&gt;\n  filter(mpg &gt; 20, wt &lt; 3) |&gt;\n  select(modelo, mpg, wt, cilindros, transmision) |&gt;\n  kable()\n\n\n\n\n\nmodelo\nmpg\nwt\ncilindros\ntransmision\n\n\n\n\nMazda RX4\n21.0\n2.620\n6\nmanual\n\n\nMazda RX4 Wag\n21.0\n2.875\n6\nmanual\n\n\nDatsun 710\n22.8\n2.320\n4\nmanual\n\n\nFiat 128\n32.4\n2.200\n4\nmanual\n\n\nHonda Civic\n30.4\n1.615\n4\nmanual\n\n\nToyota Corolla\n33.9\n1.835\n4\nmanual\n\n\nToyota Corona\n21.5\n2.465\n4\nautomatico\n\n\nFiat X1-9\n27.3\n1.935\n4\nmanual\n\n\nPorsche 914-2\n26.0\n2.140\n4\nmanual\n\n\nLotus Europa\n30.4\n1.513\n4\nmanual\n\n\nVolvo 142E\n21.4\n2.780\n4\nmanual\n\n\n\n\n\nLa coma dentro de filter() equivale a una condición conjunta: deben cumplirse todas las condiciones. Para alternativas usamos |.\n\n\nCódigo\ncoches |&gt;\n  filter(cilindros == \"4\" | transmision == \"manual\") |&gt;\n  count(cilindros, transmision) |&gt;\n  kable()\n\n\n\n\n\ncilindros\ntransmision\nn\n\n\n\n\n4\nautomatico\n3\n\n\n4\nmanual\n8\n\n\n6\nmanual\n3\n\n\n8\nmanual\n2",
+    "title": "16  Guía rápida de tidyverse y dplyr",
+    "section": "16.4 filter(): filtrar filas",
+    "text": "16.4 filter(): filtrar filas\nfilter() conserva observaciones que cumplen una condición lógica.\n\n\nCódigo\ncoches |&gt;\n  filter(mpg &gt; 25) |&gt;\n  select(modelo, mpg, hp, wt, transmision) |&gt;\n  kable()\n\n\n\n\n\nmodelo\nmpg\nhp\nwt\ntransmision\n\n\n\n\nFiat 128\n32.4\n66\n2.200\nmanual\n\n\nHonda Civic\n30.4\n52\n1.615\nmanual\n\n\nToyota Corolla\n33.9\n65\n1.835\nmanual\n\n\nFiat X1-9\n27.3\n66\n1.935\nmanual\n\n\nPorsche 914-2\n26.0\n91\n2.140\nmanual\n\n\nLotus Europa\n30.4\n113\n1.513\nmanual\n\n\n\n\n\nSe pueden combinar condiciones con & y |.\n\n\nCódigo\ncoches |&gt;\n  filter(mpg &gt; 20, wt &lt; 3) |&gt;\n  select(modelo, mpg, wt, cilindros, transmision) |&gt;\n  kable()\n\n\n\n\n\nmodelo\nmpg\nwt\ncilindros\ntransmision\n\n\n\n\nMazda RX4\n21.0\n2.620\n6\nmanual\n\n\nMazda RX4 Wag\n21.0\n2.875\n6\nmanual\n\n\nDatsun 710\n22.8\n2.320\n4\nmanual\n\n\nFiat 128\n32.4\n2.200\n4\nmanual\n\n\nHonda Civic\n30.4\n1.615\n4\nmanual\n\n\nToyota Corolla\n33.9\n1.835\n4\nmanual\n\n\nToyota Corona\n21.5\n2.465\n4\nautomatico\n\n\nFiat X1-9\n27.3\n1.935\n4\nmanual\n\n\nPorsche 914-2\n26.0\n2.140\n4\nmanual\n\n\nLotus Europa\n30.4\n1.513\n4\nmanual\n\n\nVolvo 142E\n21.4\n2.780\n4\nmanual\n\n\n\n\n\nLa coma dentro de filter() equivale a una condición conjunta: deben cumplirse todas las condiciones. Para alternativas usamos |.\n\n\nCódigo\ncoches |&gt;\n  filter(cilindros == \"4\" | transmision == \"manual\") |&gt;\n  count(cilindros, transmision) |&gt;\n  kable()\n\n\n\n\n\ncilindros\ntransmision\nn\n\n\n\n\n4\nautomatico\n3\n\n\n4\nmanual\n8\n\n\n6\nmanual\n3\n\n\n8\nmanual\n2",
     "crumbs": [
       "Apéndice práctico",
-      "<span class='chapter-number'>15</span>  <span class='chapter-title'>Guía rápida de tidyverse y dplyr</span>"
+      "<span class='chapter-number'>16</span>  <span class='chapter-title'>Guía rápida de tidyverse y dplyr</span>"
     ]
   },
   {
     "objectID": "tidyverse.html#arrange-ordenar-filas",
     "href": "tidyverse.html#arrange-ordenar-filas",
-    "title": "15  Guía rápida de tidyverse y dplyr",
-    "section": "15.5 arrange(): ordenar filas",
-    "text": "15.5 arrange(): ordenar filas\narrange() ordena una tabla según una o varias columnas.\n\n\nCódigo\ncoches |&gt;\n  arrange(mpg) |&gt;\n  select(modelo, mpg, wt, hp) |&gt;\n  head(5) |&gt;\n  kable()\n\n\n\n\n\nmodelo\nmpg\nwt\nhp\n\n\n\n\nCadillac Fleetwood\n10.4\n5.250\n205\n\n\nLincoln Continental\n10.4\n5.424\n215\n\n\nCamaro Z28\n13.3\n3.840\n245\n\n\nDuster 360\n14.3\n3.570\n245\n\n\nChrysler Imperial\n14.7\n5.345\n230\n\n\n\n\n\nPara ordenar de mayor a menor se usa desc().\n\n\nCódigo\ncoches |&gt;\n  arrange(desc(hp)) |&gt;\n  select(modelo, hp, mpg, wt) |&gt;\n  head(5) |&gt;\n  kable()\n\n\n\n\n\nmodelo\nhp\nmpg\nwt\n\n\n\n\nMaserati Bora\n335\n15.0\n3.570\n\n\nFord Pantera L\n264\n15.8\n3.170\n\n\nDuster 360\n245\n14.3\n3.570\n\n\nCamaro Z28\n245\n13.3\n3.840\n\n\nChrysler Imperial\n230\n14.7\n5.345",
+    "title": "16  Guía rápida de tidyverse y dplyr",
+    "section": "16.5 arrange(): ordenar filas",
+    "text": "16.5 arrange(): ordenar filas\narrange() ordena una tabla según una o varias columnas.\n\n\nCódigo\ncoches |&gt;\n  arrange(mpg) |&gt;\n  select(modelo, mpg, wt, hp) |&gt;\n  head(5) |&gt;\n  kable()\n\n\n\n\n\nmodelo\nmpg\nwt\nhp\n\n\n\n\nCadillac Fleetwood\n10.4\n5.250\n205\n\n\nLincoln Continental\n10.4\n5.424\n215\n\n\nCamaro Z28\n13.3\n3.840\n245\n\n\nDuster 360\n14.3\n3.570\n245\n\n\nChrysler Imperial\n14.7\n5.345\n230\n\n\n\n\n\nPara ordenar de mayor a menor se usa desc().\n\n\nCódigo\ncoches |&gt;\n  arrange(desc(hp)) |&gt;\n  select(modelo, hp, mpg, wt) |&gt;\n  head(5) |&gt;\n  kable()\n\n\n\n\n\nmodelo\nhp\nmpg\nwt\n\n\n\n\nMaserati Bora\n335\n15.0\n3.570\n\n\nFord Pantera L\n264\n15.8\n3.170\n\n\nDuster 360\n245\n14.3\n3.570\n\n\nCamaro Z28\n245\n13.3\n3.840\n\n\nChrysler Imperial\n230\n14.7\n5.345",
     "crumbs": [
       "Apéndice práctico",
-      "<span class='chapter-number'>15</span>  <span class='chapter-title'>Guía rápida de tidyverse y dplyr</span>"
+      "<span class='chapter-number'>16</span>  <span class='chapter-title'>Guía rápida de tidyverse y dplyr</span>"
     ]
   },
   {
     "objectID": "tidyverse.html#mutate-crear-columnas",
     "href": "tidyverse.html#mutate-crear-columnas",
-    "title": "15  Guía rápida de tidyverse y dplyr",
-    "section": "15.6 mutate(): crear columnas",
-    "text": "15.6 mutate(): crear columnas\nmutate() añade nuevas variables o modifica variables existentes.\n\n\nCódigo\ncoches |&gt;\n  mutate(\n    peso_kg_aprox = wt * 1000 * 0.453592,\n    consumo_relativo = mpg / mean(mpg)\n  ) |&gt;\n  select(modelo, wt, peso_kg_aprox, mpg, consumo_relativo) |&gt;\n  head(5) |&gt;\n  kable(digits = 2)\n\n\n\n\n\nmodelo\nwt\npeso_kg_aprox\nmpg\nconsumo_relativo\n\n\n\n\nMazda RX4\n2.62\n1188.41\n21.0\n1.05\n\n\nMazda RX4 Wag\n2.88\n1304.08\n21.0\n1.05\n\n\nDatsun 710\n2.32\n1052.33\n22.8\n1.13\n\n\nHornet 4 Drive\n3.21\n1458.30\n21.4\n1.07\n\n\nHornet Sportabout\n3.44\n1560.36\n18.7\n0.93\n\n\n\n\n\nEs frecuente usar mutate() para crear factores interpretables a partir de códigos numéricos.\n\n\nCódigo\ncoches |&gt;\n  mutate(\n    tipo_motor = factor(vs, labels = c(\"V\", \"Straight\")),\n    potencia = if_else(hp &gt;= median(hp), \"alta\", \"baja\")\n  ) |&gt;\n  count(tipo_motor, potencia) |&gt;\n  kable()\n\n\n\n\n\ntipo_motor\npotencia\nn\n\n\n\n\nV\nalta\n15\n\n\nV\nbaja\n3\n\n\nStraight\nalta\n2\n\n\nStraight\nbaja\n12",
+    "title": "16  Guía rápida de tidyverse y dplyr",
+    "section": "16.6 mutate(): crear columnas",
+    "text": "16.6 mutate(): crear columnas\nmutate() añade nuevas variables o modifica variables existentes.\n\n\nCódigo\ncoches |&gt;\n  mutate(\n    peso_kg_aprox = wt * 1000 * 0.453592,\n    consumo_relativo = mpg / mean(mpg)\n  ) |&gt;\n  select(modelo, wt, peso_kg_aprox, mpg, consumo_relativo) |&gt;\n  head(5) |&gt;\n  kable(digits = 2)\n\n\n\n\n\nmodelo\nwt\npeso_kg_aprox\nmpg\nconsumo_relativo\n\n\n\n\nMazda RX4\n2.62\n1188.41\n21.0\n1.05\n\n\nMazda RX4 Wag\n2.88\n1304.08\n21.0\n1.05\n\n\nDatsun 710\n2.32\n1052.33\n22.8\n1.13\n\n\nHornet 4 Drive\n3.21\n1458.30\n21.4\n1.07\n\n\nHornet Sportabout\n3.44\n1560.36\n18.7\n0.93\n\n\n\n\n\nEs frecuente usar mutate() para crear factores interpretables a partir de códigos numéricos.\n\n\nCódigo\ncoches |&gt;\n  mutate(\n    tipo_motor = factor(vs, labels = c(\"V\", \"Straight\")),\n    potencia = if_else(hp &gt;= median(hp), \"alta\", \"baja\")\n  ) |&gt;\n  count(tipo_motor, potencia) |&gt;\n  kable()\n\n\n\n\n\ntipo_motor\npotencia\nn\n\n\n\n\nV\nalta\n15\n\n\nV\nbaja\n3\n\n\nStraight\nalta\n2\n\n\nStraight\nbaja\n12",
     "crumbs": [
       "Apéndice práctico",
-      "<span class='chapter-number'>15</span>  <span class='chapter-title'>Guía rápida de tidyverse y dplyr</span>"
+      "<span class='chapter-number'>16</span>  <span class='chapter-title'>Guía rápida de tidyverse y dplyr</span>"
     ]
   },
   {
     "objectID": "tidyverse.html#case_when-crear-categorías-con-varias-reglas",
     "href": "tidyverse.html#case_when-crear-categorías-con-varias-reglas",
-    "title": "15  Guía rápida de tidyverse y dplyr",
-    "section": "15.7 case_when(): crear categorías con varias reglas",
-    "text": "15.7 case_when(): crear categorías con varias reglas\ncase_when() es útil cuando una nueva variable depende de varias condiciones.\n\n\nCódigo\ncoches |&gt;\n  mutate(\n    perfil_consumo = case_when(\n      mpg &gt;= 25 ~ \"eficiente\",\n      mpg &gt;= 18 ~ \"intermedio\",\n      TRUE ~ \"alto consumo\"\n    )\n  ) |&gt;\n  count(perfil_consumo) |&gt;\n  kable()\n\n\n\n\n\nperfil_consumo\nn\n\n\n\n\nalto consumo\n13\n\n\neficiente\n6\n\n\nintermedio\n13\n\n\n\n\n\nEl caso TRUE ~ ... funciona como opción por defecto.",
+    "title": "16  Guía rápida de tidyverse y dplyr",
+    "section": "16.7 case_when(): crear categorías con varias reglas",
+    "text": "16.7 case_when(): crear categorías con varias reglas\ncase_when() es útil cuando una nueva variable depende de varias condiciones.\n\n\nCódigo\ncoches |&gt;\n  mutate(\n    perfil_consumo = case_when(\n      mpg &gt;= 25 ~ \"eficiente\",\n      mpg &gt;= 18 ~ \"intermedio\",\n      TRUE ~ \"alto consumo\"\n    )\n  ) |&gt;\n  count(perfil_consumo) |&gt;\n  kable()\n\n\n\n\n\nperfil_consumo\nn\n\n\n\n\nalto consumo\n13\n\n\neficiente\n6\n\n\nintermedio\n13\n\n\n\n\n\nEl caso TRUE ~ ... funciona como opción por defecto.",
     "crumbs": [
       "Apéndice práctico",
-      "<span class='chapter-number'>15</span>  <span class='chapter-title'>Guía rápida de tidyverse y dplyr</span>"
+      "<span class='chapter-number'>16</span>  <span class='chapter-title'>Guía rápida de tidyverse y dplyr</span>"
     ]
   },
   {
     "objectID": "tidyverse.html#summarise-y-group_by-resumir",
     "href": "tidyverse.html#summarise-y-group_by-resumir",
-    "title": "15  Guía rápida de tidyverse y dplyr",
-    "section": "15.8 summarise() y group_by(): resumir",
-    "text": "15.8 summarise() y group_by(): resumir\nsummarise() reduce una tabla a estadísticas resumen.\n\n\nCódigo\ncoches |&gt;\n  summarise(\n    n = n(),\n    media_mpg = mean(mpg),\n    sd_mpg = sd(mpg),\n    media_hp = mean(hp)\n  ) |&gt;\n  kable(digits = 2)\n\n\n\n\n\nn\nmedia_mpg\nsd_mpg\nmedia_hp\n\n\n\n\n32\n20.09\n6.03\n146.69\n\n\n\n\n\nCon group_by() el resumen se calcula por grupos.\n\n\nCódigo\ncoches |&gt;\n  group_by(transmision) |&gt;\n  summarise(\n    n = n(),\n    media_mpg = mean(mpg),\n    media_hp = mean(hp),\n    media_wt = mean(wt),\n    .groups = \"drop\"\n  ) |&gt;\n  kable(digits = 2)\n\n\n\n\n\ntransmision\nn\nmedia_mpg\nmedia_hp\nmedia_wt\n\n\n\n\nautomatico\n19\n17.15\n160.26\n3.77\n\n\nmanual\n13\n24.39\n126.85\n2.41\n\n\n\n\n\nEste patrón aparece mucho al interpretar clusters: primero asignamos una etiqueta de grupo y después calculamos medias por grupo.\n\n\nCódigo\nset.seed(123)\nclusters &lt;- coches |&gt;\n  select(mpg, disp, hp, wt) |&gt;\n  scale() |&gt;\n  kmeans(centers = 3, nstart = 25)\n\ncoches |&gt;\n  mutate(cluster = factor(clusters$cluster)) |&gt;\n  group_by(cluster) |&gt;\n  summarise(\n    n = n(),\n    mpg = mean(mpg),\n    disp = mean(disp),\n    hp = mean(hp),\n    wt = mean(wt),\n    .groups = \"drop\"\n  ) |&gt;\n  kable(digits = 2)\n\n\n\n\n\ncluster\nn\nmpg\ndisp\nhp\nwt\n\n\n\n\n1\n14\n15.10\n353.10\n209.21\n4.00\n\n\n2\n6\n30.07\n86.65\n75.50\n1.87\n\n\n3\n12\n20.92\n159.98\n109.33\n2.98",
+    "title": "16  Guía rápida de tidyverse y dplyr",
+    "section": "16.8 summarise() y group_by(): resumir",
+    "text": "16.8 summarise() y group_by(): resumir\nsummarise() reduce una tabla a estadísticas resumen.\n\n\nCódigo\ncoches |&gt;\n  summarise(\n    n = n(),\n    media_mpg = mean(mpg),\n    sd_mpg = sd(mpg),\n    media_hp = mean(hp)\n  ) |&gt;\n  kable(digits = 2)\n\n\n\n\n\nn\nmedia_mpg\nsd_mpg\nmedia_hp\n\n\n\n\n32\n20.09\n6.03\n146.69\n\n\n\n\n\nCon group_by() el resumen se calcula por grupos.\n\n\nCódigo\ncoches |&gt;\n  group_by(transmision) |&gt;\n  summarise(\n    n = n(),\n    media_mpg = mean(mpg),\n    media_hp = mean(hp),\n    media_wt = mean(wt),\n    .groups = \"drop\"\n  ) |&gt;\n  kable(digits = 2)\n\n\n\n\n\ntransmision\nn\nmedia_mpg\nmedia_hp\nmedia_wt\n\n\n\n\nautomatico\n19\n17.15\n160.26\n3.77\n\n\nmanual\n13\n24.39\n126.85\n2.41\n\n\n\n\n\nEste patrón aparece mucho al interpretar clusters: primero asignamos una etiqueta de grupo y después calculamos medias por grupo.\n\n\nCódigo\nset.seed(123)\nclusters &lt;- coches |&gt;\n  select(mpg, disp, hp, wt) |&gt;\n  scale() |&gt;\n  kmeans(centers = 3, nstart = 25)\n\ncoches |&gt;\n  mutate(cluster = factor(clusters$cluster)) |&gt;\n  group_by(cluster) |&gt;\n  summarise(\n    n = n(),\n    mpg = mean(mpg),\n    disp = mean(disp),\n    hp = mean(hp),\n    wt = mean(wt),\n    .groups = \"drop\"\n  ) |&gt;\n  kable(digits = 2)\n\n\n\n\n\ncluster\nn\nmpg\ndisp\nhp\nwt\n\n\n\n\n1\n14\n15.10\n353.10\n209.21\n4.00\n\n\n2\n6\n30.07\n86.65\n75.50\n1.87\n\n\n3\n12\n20.92\n159.98\n109.33\n2.98",
     "crumbs": [
       "Apéndice práctico",
-      "<span class='chapter-number'>15</span>  <span class='chapter-title'>Guía rápida de tidyverse y dplyr</span>"
+      "<span class='chapter-number'>16</span>  <span class='chapter-title'>Guía rápida de tidyverse y dplyr</span>"
     ]
   },
   {
     "objectID": "tidyverse.html#count-contar-combinaciones",
     "href": "tidyverse.html#count-contar-combinaciones",
-    "title": "15  Guía rápida de tidyverse y dplyr",
-    "section": "15.9 count(): contar combinaciones",
-    "text": "15.9 count(): contar combinaciones\ncount() es una abreviatura de group_by() seguido de summarise(n = n()).\n\n\nCódigo\ncoches |&gt;\n  count(cilindros, transmision) |&gt;\n  kable()\n\n\n\n\n\ncilindros\ntransmision\nn\n\n\n\n\n4\nautomatico\n3\n\n\n4\nmanual\n8\n\n\n6\nautomatico\n4\n\n\n6\nmanual\n3\n\n\n8\nautomatico\n12\n\n\n8\nmanual\n2\n\n\n\n\n\nPuede ordenarse por frecuencia:\n\n\nCódigo\ncoches |&gt;\n  count(cilindros, transmision, sort = TRUE) |&gt;\n  kable()\n\n\n\n\n\ncilindros\ntransmision\nn\n\n\n\n\n8\nautomatico\n12\n\n\n4\nmanual\n8\n\n\n6\nautomatico\n4\n\n\n4\nautomatico\n3\n\n\n6\nmanual\n3\n\n\n8\nmanual\n2\n\n\n\n\n\nEn capítulos de correspondencias y MCA usamos con frecuencia tablas de conteos porque la información categórica se resume mediante frecuencias.",
+    "title": "16  Guía rápida de tidyverse y dplyr",
+    "section": "16.9 count(): contar combinaciones",
+    "text": "16.9 count(): contar combinaciones\ncount() es una abreviatura de group_by() seguido de summarise(n = n()).\n\n\nCódigo\ncoches |&gt;\n  count(cilindros, transmision) |&gt;\n  kable()\n\n\n\n\n\ncilindros\ntransmision\nn\n\n\n\n\n4\nautomatico\n3\n\n\n4\nmanual\n8\n\n\n6\nautomatico\n4\n\n\n6\nmanual\n3\n\n\n8\nautomatico\n12\n\n\n8\nmanual\n2\n\n\n\n\n\nPuede ordenarse por frecuencia:\n\n\nCódigo\ncoches |&gt;\n  count(cilindros, transmision, sort = TRUE) |&gt;\n  kable()\n\n\n\n\n\ncilindros\ntransmision\nn\n\n\n\n\n8\nautomatico\n12\n\n\n4\nmanual\n8\n\n\n6\nautomatico\n4\n\n\n4\nautomatico\n3\n\n\n6\nmanual\n3\n\n\n8\nmanual\n2\n\n\n\n\n\nEn capítulos de correspondencias y MCA usamos con frecuencia tablas de conteos porque la información categórica se resume mediante frecuencias.",
     "crumbs": [
       "Apéndice práctico",
-      "<span class='chapter-number'>15</span>  <span class='chapter-title'>Guía rápida de tidyverse y dplyr</span>"
+      "<span class='chapter-number'>16</span>  <span class='chapter-title'>Guía rápida de tidyverse y dplyr</span>"
     ]
   },
   {
     "objectID": "tidyverse.html#across-aplicar-lo-mismo-a-varias-columnas",
     "href": "tidyverse.html#across-aplicar-lo-mismo-a-varias-columnas",
-    "title": "15  Guía rápida de tidyverse y dplyr",
-    "section": "15.10 across(): aplicar lo mismo a varias columnas",
-    "text": "15.10 across(): aplicar lo mismo a varias columnas\nacross() permite aplicar una función a varias variables dentro de summarise() o mutate().\n\n\nCódigo\ncoches |&gt;\n  summarise(\n    across(c(mpg, disp, hp, wt), mean)\n  ) |&gt;\n  kable(digits = 2)\n\n\n\n\n\nmpg\ndisp\nhp\nwt\n\n\n\n\n20.09\n230.72\n146.69\n3.22\n\n\n\n\n\nTambién podemos combinar group_by() y across().\n\n\nCódigo\ncoches |&gt;\n  group_by(transmision) |&gt;\n  summarise(\n    across(c(mpg, disp, hp, wt), mean),\n    .groups = \"drop\"\n  ) |&gt;\n  kable(digits = 2)\n\n\n\n\n\ntransmision\nmpg\ndisp\nhp\nwt\n\n\n\n\nautomatico\n17.15\n290.38\n160.26\n3.77\n\n\nmanual\n24.39\n143.53\n126.85\n2.41\n\n\n\n\n\nPara escalar varias variables dentro de una tabla, puede usarse:\n\n\nCódigo\ncoches_escalados &lt;- coches |&gt;\n  mutate(\n    across(c(mpg, disp, hp, wt), function(x) as.numeric(scale(x)))\n  )\n\ncoches_escalados |&gt;\n  select(modelo, mpg, disp, hp, wt) |&gt;\n  head(5) |&gt;\n  kable(digits = 2)\n\n\n\n\n\nmodelo\nmpg\ndisp\nhp\nwt\n\n\n\n\nMazda RX4\n0.15\n-0.57\n-0.54\n-0.61\n\n\nMazda RX4 Wag\n0.15\n-0.57\n-0.54\n-0.35\n\n\nDatsun 710\n0.45\n-0.99\n-0.78\n-0.92\n\n\nHornet 4 Drive\n0.22\n0.22\n-0.54\n0.00\n\n\nHornet Sportabout\n-0.23\n1.04\n0.41\n0.23\n\n\n\n\n\nPara análisis multivariante suele ser más claro construir directamente la matriz escalada con scale(), pero across() es cómodo cuando queremos conservar la tabla completa.",
+    "title": "16  Guía rápida de tidyverse y dplyr",
+    "section": "16.10 across(): aplicar lo mismo a varias columnas",
+    "text": "16.10 across(): aplicar lo mismo a varias columnas\nacross() permite aplicar una función a varias variables dentro de summarise() o mutate().\n\n\nCódigo\ncoches |&gt;\n  summarise(\n    across(c(mpg, disp, hp, wt), mean)\n  ) |&gt;\n  kable(digits = 2)\n\n\n\n\n\nmpg\ndisp\nhp\nwt\n\n\n\n\n20.09\n230.72\n146.69\n3.22\n\n\n\n\n\nTambién podemos combinar group_by() y across().\n\n\nCódigo\ncoches |&gt;\n  group_by(transmision) |&gt;\n  summarise(\n    across(c(mpg, disp, hp, wt), mean),\n    .groups = \"drop\"\n  ) |&gt;\n  kable(digits = 2)\n\n\n\n\n\ntransmision\nmpg\ndisp\nhp\nwt\n\n\n\n\nautomatico\n17.15\n290.38\n160.26\n3.77\n\n\nmanual\n24.39\n143.53\n126.85\n2.41\n\n\n\n\n\nPara escalar varias variables dentro de una tabla, puede usarse:\n\n\nCódigo\ncoches_escalados &lt;- coches |&gt;\n  mutate(\n    across(c(mpg, disp, hp, wt), function(x) as.numeric(scale(x)))\n  )\n\ncoches_escalados |&gt;\n  select(modelo, mpg, disp, hp, wt) |&gt;\n  head(5) |&gt;\n  kable(digits = 2)\n\n\n\n\n\nmodelo\nmpg\ndisp\nhp\nwt\n\n\n\n\nMazda RX4\n0.15\n-0.57\n-0.54\n-0.61\n\n\nMazda RX4 Wag\n0.15\n-0.57\n-0.54\n-0.35\n\n\nDatsun 710\n0.45\n-0.99\n-0.78\n-0.92\n\n\nHornet 4 Drive\n0.22\n0.22\n-0.54\n0.00\n\n\nHornet Sportabout\n-0.23\n1.04\n0.41\n0.23\n\n\n\n\n\nPara análisis multivariante suele ser más claro construir directamente la matriz escalada con scale(), pero across() es cómodo cuando queremos conservar la tabla completa.",
     "crumbs": [
       "Apéndice práctico",
-      "<span class='chapter-number'>15</span>  <span class='chapter-title'>Guía rápida de tidyverse y dplyr</span>"
+      "<span class='chapter-number'>16</span>  <span class='chapter-title'>Guía rápida de tidyverse y dplyr</span>"
     ]
   },
   {
     "objectID": "tidyverse.html#pull-extraer-una-columna-como-vector",
     "href": "tidyverse.html#pull-extraer-una-columna-como-vector",
-    "title": "15  Guía rápida de tidyverse y dplyr",
-    "section": "15.11 pull(): extraer una columna como vector",
-    "text": "15.11 pull(): extraer una columna como vector\npull() extrae una columna de una tabla. Es útil cuando una función espera un vector.\n\n\nCódigo\ntransmision &lt;- coches |&gt;\n  pull(transmision)\n\ntable(transmision) |&gt;\n  kable(col.names = c(\"Transmisión\", \"Frecuencia\"))\n\n\n\n\n\nTransmisión\nFrecuencia\n\n\n\n\nautomatico\n19\n\n\nmanual\n13\n\n\n\n\n\nEn los apuntes aparece esta idea al guardar una variable suplementaria, por ejemplo una etiqueta externa para interpretar clusters o ejes factoriales.",
+    "title": "16  Guía rápida de tidyverse y dplyr",
+    "section": "16.11 pull(): extraer una columna como vector",
+    "text": "16.11 pull(): extraer una columna como vector\npull() extrae una columna de una tabla. Es útil cuando una función espera un vector.\n\n\nCódigo\ntransmision &lt;- coches |&gt;\n  pull(transmision)\n\ntable(transmision) |&gt;\n  kable(col.names = c(\"Transmisión\", \"Frecuencia\"))\n\n\n\n\n\nTransmisión\nFrecuencia\n\n\n\n\nautomatico\n19\n\n\nmanual\n13\n\n\n\n\n\nEn los apuntes aparece esta idea al guardar una variable suplementaria, por ejemplo una etiqueta externa para interpretar clusters o ejes factoriales.",
     "crumbs": [
       "Apéndice práctico",
-      "<span class='chapter-number'>15</span>  <span class='chapter-title'>Guía rápida de tidyverse y dplyr</span>"
+      "<span class='chapter-number'>16</span>  <span class='chapter-title'>Guía rápida de tidyverse y dplyr</span>"
     ]
   },
   {
     "objectID": "tidyverse.html#slice-elegir-filas-por-posición",
     "href": "tidyverse.html#slice-elegir-filas-por-posición",
-    "title": "15  Guía rápida de tidyverse y dplyr",
-    "section": "15.12 slice(): elegir filas por posición",
-    "text": "15.12 slice(): elegir filas por posición\nslice() selecciona filas por posición. Algunas variantes útiles son slice_head(), slice_max() y slice_sample().\n\n\nCódigo\ncoches |&gt;\n  slice_head(n = 4) |&gt;\n  select(modelo, mpg, hp, wt) |&gt;\n  kable()\n\n\n\n\n\nmodelo\nmpg\nhp\nwt\n\n\n\n\nMazda RX4\n21.0\n110\n2.620\n\n\nMazda RX4 Wag\n21.0\n110\n2.875\n\n\nDatsun 710\n22.8\n93\n2.320\n\n\nHornet 4 Drive\n21.4\n110\n3.215\n\n\n\n\n\n\n\nCódigo\ncoches |&gt;\n  slice_max(hp, n = 5) |&gt;\n  select(modelo, hp, mpg, wt) |&gt;\n  kable()\n\n\n\n\n\nmodelo\nhp\nmpg\nwt\n\n\n\n\nMaserati Bora\n335\n15.0\n3.570\n\n\nFord Pantera L\n264\n15.8\n3.170\n\n\nDuster 360\n245\n14.3\n3.570\n\n\nCamaro Z28\n245\n13.3\n3.840\n\n\nChrysler Imperial\n230\n14.7\n5.345\n\n\n\n\n\n\n\nCódigo\nset.seed(42)\ncoches |&gt;\n  slice_sample(n = 5) |&gt;\n  select(modelo, mpg, hp, wt, transmision) |&gt;\n  kable()\n\n\n\n\n\nmodelo\nmpg\nhp\nwt\ntransmision\n\n\n\n\nChrysler Imperial\n14.7\n230\n5.345\nautomatico\n\n\nHornet Sportabout\n18.7\n175\n3.440\nautomatico\n\n\nMazda RX4\n21.0\n110\n2.620\nmanual\n\n\nPontiac Firebird\n19.2\n175\n3.845\nautomatico\n\n\nMerc 280\n19.2\n123\n3.440\nautomatico",
+    "title": "16  Guía rápida de tidyverse y dplyr",
+    "section": "16.12 slice(): elegir filas por posición",
+    "text": "16.12 slice(): elegir filas por posición\nslice() selecciona filas por posición. Algunas variantes útiles son slice_head(), slice_max() y slice_sample().\n\n\nCódigo\ncoches |&gt;\n  slice_head(n = 4) |&gt;\n  select(modelo, mpg, hp, wt) |&gt;\n  kable()\n\n\n\n\n\nmodelo\nmpg\nhp\nwt\n\n\n\n\nMazda RX4\n21.0\n110\n2.620\n\n\nMazda RX4 Wag\n21.0\n110\n2.875\n\n\nDatsun 710\n22.8\n93\n2.320\n\n\nHornet 4 Drive\n21.4\n110\n3.215\n\n\n\n\n\n\n\nCódigo\ncoches |&gt;\n  slice_max(hp, n = 5) |&gt;\n  select(modelo, hp, mpg, wt) |&gt;\n  kable()\n\n\n\n\n\nmodelo\nhp\nmpg\nwt\n\n\n\n\nMaserati Bora\n335\n15.0\n3.570\n\n\nFord Pantera L\n264\n15.8\n3.170\n\n\nDuster 360\n245\n14.3\n3.570\n\n\nCamaro Z28\n245\n13.3\n3.840\n\n\nChrysler Imperial\n230\n14.7\n5.345\n\n\n\n\n\n\n\nCódigo\nset.seed(42)\ncoches |&gt;\n  slice_sample(n = 5) |&gt;\n  select(modelo, mpg, hp, wt, transmision) |&gt;\n  kable()\n\n\n\n\n\nmodelo\nmpg\nhp\nwt\ntransmision\n\n\n\n\nChrysler Imperial\n14.7\n230\n5.345\nautomatico\n\n\nHornet Sportabout\n18.7\n175\n3.440\nautomatico\n\n\nMazda RX4\n21.0\n110\n2.620\nmanual\n\n\nPontiac Firebird\n19.2\n175\n3.845\nautomatico\n\n\nMerc 280\n19.2\n123\n3.440\nautomatico",
     "crumbs": [
       "Apéndice práctico",
-      "<span class='chapter-number'>15</span>  <span class='chapter-title'>Guía rápida de tidyverse y dplyr</span>"
+      "<span class='chapter-number'>16</span>  <span class='chapter-title'>Guía rápida de tidyverse y dplyr</span>"
     ]
   },
   {
     "objectID": "tidyverse.html#pivot_longer-formato-largo",
     "href": "tidyverse.html#pivot_longer-formato-largo",
-    "title": "15  Guía rápida de tidyverse y dplyr",
-    "section": "15.13 pivot_longer(): formato largo",
-    "text": "15.13 pivot_longer(): formato largo\nMuchas gráficas con ggplot2 funcionan mejor en formato largo: una columna indica la variable y otra el valor.\n\n\nCódigo\ncoches_largo &lt;- coches |&gt;\n  select(modelo, transmision, mpg, hp, wt) |&gt;\n  pivot_longer(\n    cols = c(mpg, hp, wt),\n    names_to = \"variable\",\n    values_to = \"valor\"\n  )\n\ncoches_largo |&gt;\n  head(8) |&gt;\n  kable()\n\n\n\n\n\nmodelo\ntransmision\nvariable\nvalor\n\n\n\n\nMazda RX4\nmanual\nmpg\n21.000\n\n\nMazda RX4\nmanual\nhp\n110.000\n\n\nMazda RX4\nmanual\nwt\n2.620\n\n\nMazda RX4 Wag\nmanual\nmpg\n21.000\n\n\nMazda RX4 Wag\nmanual\nhp\n110.000\n\n\nMazda RX4 Wag\nmanual\nwt\n2.875\n\n\nDatsun 710\nmanual\nmpg\n22.800\n\n\nDatsun 710\nmanual\nhp\n93.000\n\n\n\n\n\nEsto permite hacer una misma gráfica para varias variables.\n\n\nCódigo\ncoches_largo |&gt;\n  ggplot(aes(transmision, valor, fill = transmision)) +\n  geom_boxplot(alpha = 0.75, show.legend = FALSE) +\n  facet_wrap(~ variable, scales = \"free_y\") +\n  labs(x = \"Transmisión\", y = \"Valor\") +\n  theme_minimal()",
+    "title": "16  Guía rápida de tidyverse y dplyr",
+    "section": "16.13 pivot_longer(): formato largo",
+    "text": "16.13 pivot_longer(): formato largo\nMuchas gráficas con ggplot2 funcionan mejor en formato largo: una columna indica la variable y otra el valor.\n\n\nCódigo\ncoches_largo &lt;- coches |&gt;\n  select(modelo, transmision, mpg, hp, wt) |&gt;\n  pivot_longer(\n    cols = c(mpg, hp, wt),\n    names_to = \"variable\",\n    values_to = \"valor\"\n  )\n\ncoches_largo |&gt;\n  head(8) |&gt;\n  kable()\n\n\n\n\n\nmodelo\ntransmision\nvariable\nvalor\n\n\n\n\nMazda RX4\nmanual\nmpg\n21.000\n\n\nMazda RX4\nmanual\nhp\n110.000\n\n\nMazda RX4\nmanual\nwt\n2.620\n\n\nMazda RX4 Wag\nmanual\nmpg\n21.000\n\n\nMazda RX4 Wag\nmanual\nhp\n110.000\n\n\nMazda RX4 Wag\nmanual\nwt\n2.875\n\n\nDatsun 710\nmanual\nmpg\n22.800\n\n\nDatsun 710\nmanual\nhp\n93.000\n\n\n\n\n\nEsto permite hacer una misma gráfica para varias variables.\n\n\nCódigo\ncoches_largo |&gt;\n  ggplot(aes(transmision, valor, fill = transmision)) +\n  geom_boxplot(alpha = 0.75, show.legend = FALSE) +\n  facet_wrap(~ variable, scales = \"free_y\") +\n  labs(x = \"Transmisión\", y = \"Valor\") +\n  theme_minimal()",
     "crumbs": [
       "Apéndice práctico",
-      "<span class='chapter-number'>15</span>  <span class='chapter-title'>Guía rápida de tidyverse y dplyr</span>"
+      "<span class='chapter-number'>16</span>  <span class='chapter-title'>Guía rápida de tidyverse y dplyr</span>"
     ]
   },
   {
     "objectID": "tidyverse.html#pivot_wider-formato-ancho",
     "href": "tidyverse.html#pivot_wider-formato-ancho",
-    "title": "15  Guía rápida de tidyverse y dplyr",
-    "section": "15.14 pivot_wider(): formato ancho",
-    "text": "15.14 pivot_wider(): formato ancho\npivot_wider() hace la operación inversa: reparte valores de una columna en varias columnas.\n\n\nCódigo\nresumen_largo &lt;- coches |&gt;\n  group_by(transmision) |&gt;\n  summarise(\n    mpg = mean(mpg),\n    hp = mean(hp),\n    wt = mean(wt),\n    .groups = \"drop\"\n  ) |&gt;\n  pivot_longer(\n    cols = c(mpg, hp, wt),\n    names_to = \"variable\",\n    values_to = \"media\"\n  )\n\nresumen_largo |&gt;\n  pivot_wider(\n    names_from = transmision,\n    values_from = media\n  ) |&gt;\n  kable(digits = 2)\n\n\n\n\n\nvariable\nautomatico\nmanual\n\n\n\n\nmpg\n17.15\n24.39\n\n\nhp\n160.26\n126.85\n\n\nwt\n3.77\n2.41",
+    "title": "16  Guía rápida de tidyverse y dplyr",
+    "section": "16.14 pivot_wider(): formato ancho",
+    "text": "16.14 pivot_wider(): formato ancho\npivot_wider() hace la operación inversa: reparte valores de una columna en varias columnas.\n\n\nCódigo\nresumen_largo &lt;- coches |&gt;\n  group_by(transmision) |&gt;\n  summarise(\n    mpg = mean(mpg),\n    hp = mean(hp),\n    wt = mean(wt),\n    .groups = \"drop\"\n  ) |&gt;\n  pivot_longer(\n    cols = c(mpg, hp, wt),\n    names_to = \"variable\",\n    values_to = \"media\"\n  )\n\nresumen_largo |&gt;\n  pivot_wider(\n    names_from = transmision,\n    values_from = media\n  ) |&gt;\n  kable(digits = 2)\n\n\n\n\n\nvariable\nautomatico\nmanual\n\n\n\n\nmpg\n17.15\n24.39\n\n\nhp\n160.26\n126.85\n\n\nwt\n3.77\n2.41",
     "crumbs": [
       "Apéndice práctico",
-      "<span class='chapter-number'>15</span>  <span class='chapter-title'>Guía rápida de tidyverse y dplyr</span>"
+      "<span class='chapter-number'>16</span>  <span class='chapter-title'>Guía rápida de tidyverse y dplyr</span>"
     ]
   },
   {
     "objectID": "tidyverse.html#left_join-unir-tablas",
     "href": "tidyverse.html#left_join-unir-tablas",
-    "title": "15  Guía rápida de tidyverse y dplyr",
-    "section": "15.15 left_join(): unir tablas",
-    "text": "15.15 left_join(): unir tablas\nLos join combinan tablas usando una o varias claves. En análisis aplicado esto aparece al unir resultados de un modelo con información original.\n\n\nCódigo\ncoordenadas_pca &lt;- coches |&gt;\n  select(mpg, disp, hp, wt) |&gt;\n  prcomp(center = TRUE, scale. = TRUE) |&gt;\n  pluck(\"x\") |&gt;\n  as_tibble() |&gt;\n  select(PC1, PC2) |&gt;\n  mutate(modelo = coches$modelo)\n\netiquetas &lt;- coches |&gt;\n  select(modelo, transmision, cilindros)\n\ncoordenadas_pca |&gt;\n  left_join(etiquetas, by = \"modelo\") |&gt;\n  head(6) |&gt;\n  kable(digits = 2)\n\n\n\n\n\nPC1\nPC2\nmodelo\ntransmision\ncilindros\n\n\n\n\n-0.93\n0.03\nMazda RX4\nmanual\n6\n\n\n-0.80\n0.17\nMazda RX4 Wag\nmanual\n6\n\n\n-1.57\n-0.02\nDatsun 710\nmanual\n4\n\n\n-0.25\n0.44\nHornet 4 Drive\nautomatico\n6\n\n\n0.96\n-0.08\nHornet Sportabout\nautomatico\n8\n\n\n-0.02\n0.67\nValiant\nautomatico\n6\n\n\n\n\n\nleft_join(x, y, by = \"clave\") conserva todas las filas de x y añade las columnas de y cuando encuentra coincidencias.",
+    "title": "16  Guía rápida de tidyverse y dplyr",
+    "section": "16.15 left_join(): unir tablas",
+    "text": "16.15 left_join(): unir tablas\nLos join combinan tablas usando una o varias claves. En análisis aplicado esto aparece al unir resultados de un modelo con información original.\n\n\nCódigo\ncoordenadas_pca &lt;- coches |&gt;\n  select(mpg, disp, hp, wt) |&gt;\n  prcomp(center = TRUE, scale. = TRUE) |&gt;\n  pluck(\"x\") |&gt;\n  as_tibble() |&gt;\n  select(PC1, PC2) |&gt;\n  mutate(modelo = coches$modelo)\n\netiquetas &lt;- coches |&gt;\n  select(modelo, transmision, cilindros)\n\ncoordenadas_pca |&gt;\n  left_join(etiquetas, by = \"modelo\") |&gt;\n  head(6) |&gt;\n  kable(digits = 2)\n\n\n\n\n\nPC1\nPC2\nmodelo\ntransmision\ncilindros\n\n\n\n\n-0.93\n0.03\nMazda RX4\nmanual\n6\n\n\n-0.80\n0.17\nMazda RX4 Wag\nmanual\n6\n\n\n-1.57\n-0.02\nDatsun 710\nmanual\n4\n\n\n-0.25\n0.44\nHornet 4 Drive\nautomatico\n6\n\n\n0.96\n-0.08\nHornet Sportabout\nautomatico\n8\n\n\n-0.02\n0.67\nValiant\nautomatico\n6\n\n\n\n\n\nleft_join(x, y, by = \"clave\") conserva todas las filas de x y añade las columnas de y cuando encuentra coincidencias.",
     "crumbs": [
       "Apéndice práctico",
-      "<span class='chapter-number'>15</span>  <span class='chapter-title'>Guía rápida de tidyverse y dplyr</span>"
+      "<span class='chapter-number'>16</span>  <span class='chapter-title'>Guía rápida de tidyverse y dplyr</span>"
     ]
   },
   {
     "objectID": "tidyverse.html#ggplot-dentro-de-pipelines",
     "href": "tidyverse.html#ggplot-dentro-de-pipelines",
-    "title": "15  Guía rápida de tidyverse y dplyr",
-    "section": "15.16 ggplot() dentro de pipelines",
-    "text": "15.16 ggplot() dentro de pipelines\nggplot2 también encaja bien con tuberías. Primero transformamos la tabla y luego la enviamos a ggplot().\n\n\nCódigo\ncoches |&gt;\n  mutate(peso = if_else(wt &gt;= median(wt), \"pesado\", \"ligero\")) |&gt;\n  ggplot(aes(wt, mpg, color = peso, shape = transmision)) +\n  geom_point(size = 2.4, alpha = 0.85) +\n  labs(\n    title = \"Consumo y peso en mtcars\",\n    x = \"Peso\",\n    y = \"Millas por galón\",\n    color = \"Peso relativo\",\n    shape = \"Transmisión\"\n  ) +\n  theme_minimal()\n\n\n\n\n\n\n\n\n\nUna regla práctica: si una gráfica necesita una tabla transformada, conviene preparar esa tabla con select(), filter(), mutate() o summarise() antes de llamar a ggplot().",
+    "title": "16  Guía rápida de tidyverse y dplyr",
+    "section": "16.16 ggplot() dentro de pipelines",
+    "text": "16.16 ggplot() dentro de pipelines\nggplot2 también encaja bien con tuberías. Primero transformamos la tabla y luego la enviamos a ggplot().\n\n\nCódigo\ncoches |&gt;\n  mutate(peso = if_else(wt &gt;= median(wt), \"pesado\", \"ligero\")) |&gt;\n  ggplot(aes(wt, mpg, color = peso, shape = transmision)) +\n  geom_point(size = 2.4, alpha = 0.85) +\n  labs(\n    title = \"Consumo y peso en mtcars\",\n    x = \"Peso\",\n    y = \"Millas por galón\",\n    color = \"Peso relativo\",\n    shape = \"Transmisión\"\n  ) +\n  theme_minimal()\n\n\n\n\n\n\n\n\n\nUna regla práctica: si una gráfica necesita una tabla transformada, conviene preparar esa tabla con select(), filter(), mutate() o summarise() antes de llamar a ggplot().",
     "crumbs": [
       "Apéndice práctico",
-      "<span class='chapter-number'>15</span>  <span class='chapter-title'>Guía rápida de tidyverse y dplyr</span>"
+      "<span class='chapter-number'>16</span>  <span class='chapter-title'>Guía rápida de tidyverse y dplyr</span>"
     ]
   },
   {
     "objectID": "tidyverse.html#patrones-que-aparecen-en-los-apuntes",
     "href": "tidyverse.html#patrones-que-aparecen-en-los-apuntes",
-    "title": "15  Guía rápida de tidyverse y dplyr",
-    "section": "15.17 Patrones que aparecen en los apuntes",
-    "text": "15.17 Patrones que aparecen en los apuntes\n\n15.17.1 Preparar variables activas\n\n\nCódigo\nX &lt;- coches |&gt;\n  select(mpg, disp, hp, wt, qsec) |&gt;\n  scale()\n\ndim(X)\n\n\n[1] 32  5\n\n\n\n\n15.17.2 Añadir resultados de un modelo\n\n\nCódigo\nset.seed(321)\nkm &lt;- kmeans(X, centers = 3, nstart = 25)\n\ncoches_con_cluster &lt;- coches |&gt;\n  mutate(cluster = factor(km$cluster))\n\ncoches_con_cluster |&gt;\n  select(modelo, mpg, hp, wt, cluster) |&gt;\n  head(8) |&gt;\n  kable()\n\n\n\n\n\nmodelo\nmpg\nhp\nwt\ncluster\n\n\n\n\nMazda RX4\n21.0\n110\n2.620\n1\n\n\nMazda RX4 Wag\n21.0\n110\n2.875\n1\n\n\nDatsun 710\n22.8\n93\n2.320\n1\n\n\nHornet 4 Drive\n21.4\n110\n3.215\n1\n\n\nHornet Sportabout\n18.7\n175\n3.440\n2\n\n\nValiant\n18.1\n105\n3.460\n1\n\n\nDuster 360\n14.3\n245\n3.570\n2\n\n\nMerc 240D\n24.4\n62\n3.190\n1\n\n\n\n\n\n\n\n15.17.3 Resumir perfiles de grupo\n\n\nCódigo\ncoches_con_cluster |&gt;\n  group_by(cluster) |&gt;\n  summarise(\n    n = n(),\n    across(c(mpg, disp, hp, wt), mean),\n    .groups = \"drop\"\n  ) |&gt;\n  kable(digits = 2)\n\n\n\n\n\ncluster\nn\nmpg\ndisp\nhp\nwt\n\n\n\n\n1\n12\n20.92\n159.98\n109.33\n2.98\n\n\n2\n14\n15.10\n353.10\n209.21\n4.00\n\n\n3\n6\n30.07\n86.65\n75.50\n1.87\n\n\n\n\n\n\n\n15.17.4 Comparar con una variable suplementaria\n\n\nCódigo\ncoches_con_cluster |&gt;\n  count(cluster, transmision) |&gt;\n  kable()\n\n\n\n\n\ncluster\ntransmision\nn\n\n\n\n\n1\nautomatico\n7\n\n\n1\nmanual\n5\n\n\n2\nautomatico\n12\n\n\n2\nmanual\n2\n\n\n3\nmanual\n6\n\n\n\n\n\n\n\n15.17.5 Preparar datos para un mapa factorial\n\n\nCódigo\npca &lt;- coches |&gt;\n  select(mpg, disp, hp, wt) |&gt;\n  prcomp(center = TRUE, scale. = TRUE)\n\nscores &lt;- pca$x[, 1:2] |&gt;\n  as_tibble() |&gt;\n  mutate(transmision = coches$transmision)\n\nscores |&gt;\n  ggplot(aes(PC1, PC2, color = transmision)) +\n  geom_point(size = 2.4, alpha = 0.85) +\n  labs(color = \"Transmisión\") +\n  theme_minimal()",
+    "title": "16  Guía rápida de tidyverse y dplyr",
+    "section": "16.17 Patrones que aparecen en los apuntes",
+    "text": "16.17 Patrones que aparecen en los apuntes\n\n16.17.1 Preparar variables activas\n\n\nCódigo\nX &lt;- coches |&gt;\n  select(mpg, disp, hp, wt, qsec) |&gt;\n  scale()\n\ndim(X)\n\n\n[1] 32  5\n\n\n\n\n16.17.2 Añadir resultados de un modelo\n\n\nCódigo\nset.seed(321)\nkm &lt;- kmeans(X, centers = 3, nstart = 25)\n\ncoches_con_cluster &lt;- coches |&gt;\n  mutate(cluster = factor(km$cluster))\n\ncoches_con_cluster |&gt;\n  select(modelo, mpg, hp, wt, cluster) |&gt;\n  head(8) |&gt;\n  kable()\n\n\n\n\n\nmodelo\nmpg\nhp\nwt\ncluster\n\n\n\n\nMazda RX4\n21.0\n110\n2.620\n1\n\n\nMazda RX4 Wag\n21.0\n110\n2.875\n1\n\n\nDatsun 710\n22.8\n93\n2.320\n1\n\n\nHornet 4 Drive\n21.4\n110\n3.215\n1\n\n\nHornet Sportabout\n18.7\n175\n3.440\n2\n\n\nValiant\n18.1\n105\n3.460\n1\n\n\nDuster 360\n14.3\n245\n3.570\n2\n\n\nMerc 240D\n24.4\n62\n3.190\n1\n\n\n\n\n\n\n\n16.17.3 Resumir perfiles de grupo\n\n\nCódigo\ncoches_con_cluster |&gt;\n  group_by(cluster) |&gt;\n  summarise(\n    n = n(),\n    across(c(mpg, disp, hp, wt), mean),\n    .groups = \"drop\"\n  ) |&gt;\n  kable(digits = 2)\n\n\n\n\n\ncluster\nn\nmpg\ndisp\nhp\nwt\n\n\n\n\n1\n12\n20.92\n159.98\n109.33\n2.98\n\n\n2\n14\n15.10\n353.10\n209.21\n4.00\n\n\n3\n6\n30.07\n86.65\n75.50\n1.87\n\n\n\n\n\n\n\n16.17.4 Comparar con una variable suplementaria\n\n\nCódigo\ncoches_con_cluster |&gt;\n  count(cluster, transmision) |&gt;\n  kable()\n\n\n\n\n\ncluster\ntransmision\nn\n\n\n\n\n1\nautomatico\n7\n\n\n1\nmanual\n5\n\n\n2\nautomatico\n12\n\n\n2\nmanual\n2\n\n\n3\nmanual\n6\n\n\n\n\n\n\n\n16.17.5 Preparar datos para un mapa factorial\n\n\nCódigo\npca &lt;- coches |&gt;\n  select(mpg, disp, hp, wt) |&gt;\n  prcomp(center = TRUE, scale. = TRUE)\n\nscores &lt;- pca$x[, 1:2] |&gt;\n  as_tibble() |&gt;\n  mutate(transmision = coches$transmision)\n\nscores |&gt;\n  ggplot(aes(PC1, PC2, color = transmision)) +\n  geom_point(size = 2.4, alpha = 0.85) +\n  labs(color = \"Transmisión\") +\n  theme_minimal()",
     "crumbs": [
       "Apéndice práctico",
-      "<span class='chapter-number'>15</span>  <span class='chapter-title'>Guía rápida de tidyverse y dplyr</span>"
+      "<span class='chapter-number'>16</span>  <span class='chapter-title'>Guía rápida de tidyverse y dplyr</span>"
     ]
   },
   {
     "objectID": "tidyverse.html#errores-frecuentes",
     "href": "tidyverse.html#errores-frecuentes",
-    "title": "15  Guía rápida de tidyverse y dplyr",
-    "section": "15.18 Errores frecuentes",
-    "text": "15.18 Errores frecuentes\n\nUsar select() cuando se quieren filtrar filas; para filas se usa filter().\nOlvidar que filter() necesita condiciones lógicas, como mpg &gt; 20.\nCrear una variable con mutate() pero no guardar el resultado ni continuar la tubería.\nResumir después de group_by() y olvidar .groups = \"drop\" cuando se quiere una tabla sin agrupación.\nTratar códigos categóricos como números sin convertirlos a factor.\nPerder una variable suplementaria antes de usarla para interpretar resultados.",
+    "title": "16  Guía rápida de tidyverse y dplyr",
+    "section": "16.18 Errores frecuentes",
+    "text": "16.18 Errores frecuentes\n\nUsar select() cuando se quieren filtrar filas; para filas se usa filter().\nOlvidar que filter() necesita condiciones lógicas, como mpg &gt; 20.\nCrear una variable con mutate() pero no guardar el resultado ni continuar la tubería.\nResumir después de group_by() y olvidar .groups = \"drop\" cuando se quiere una tabla sin agrupación.\nTratar códigos categóricos como números sin convertirlos a factor.\nPerder una variable suplementaria antes de usarla para interpretar resultados.",
     "crumbs": [
       "Apéndice práctico",
-      "<span class='chapter-number'>15</span>  <span class='chapter-title'>Guía rápida de tidyverse y dplyr</span>"
+      "<span class='chapter-number'>16</span>  <span class='chapter-title'>Guía rápida de tidyverse y dplyr</span>"
     ]
   },
   {
     "objectID": "tidyverse.html#resumen-del-capítulo",
     "href": "tidyverse.html#resumen-del-capítulo",
-    "title": "15  Guía rápida de tidyverse y dplyr",
-    "section": "15.19 Resumen del capítulo",
-    "text": "15.19 Resumen del capítulo\nEl flujo tidyverse se basa en transformar tablas de forma explícita y legible. Para los apuntes, las funciones más importantes son select(), filter(), mutate(), arrange(), group_by(), summarise(), count(), across(), pivot_longer(), pivot_wider(), pull() y los join. La tubería |&gt; permite encadenarlas como una receta de análisis.",
+    "title": "16  Guía rápida de tidyverse y dplyr",
+    "section": "16.19 Resumen del capítulo",
+    "text": "16.19 Resumen del capítulo\nEl flujo tidyverse se basa en transformar tablas de forma explícita y legible. Para los apuntes, las funciones más importantes son select(), filter(), mutate(), arrange(), group_by(), summarise(), count(), across(), pivot_longer(), pivot_wider(), pull() y los join. La tubería |&gt; permite encadenarlas como una receta de análisis.",
     "crumbs": [
       "Apéndice práctico",
-      "<span class='chapter-number'>15</span>  <span class='chapter-title'>Guía rápida de tidyverse y dplyr</span>"
+      "<span class='chapter-number'>16</span>  <span class='chapter-title'>Guía rápida de tidyverse y dplyr</span>"
     ]
   },
   {
     "objectID": "tidyverse.html#ejercicios-propuestos",
     "href": "tidyverse.html#ejercicios-propuestos",
-    "title": "15  Guía rápida de tidyverse y dplyr",
-    "section": "15.20 Ejercicios propuestos",
-    "text": "15.20 Ejercicios propuestos\n\nCon mtcars, crea una tabla con modelo, mpg, hp, wt y una variable categórica que indique si el coche es ligero o pesado.\nCalcula medias de mpg, hp y wt por tipo de transmisión usando group_by() y summarise().\nConvierte mpg, hp y wt a formato largo con pivot_longer() y representa un boxplot por variable.\nAjusta k-means con tres grupos sobre variables escaladas de mtcars y resume los perfiles con across().\nExplica qué diferencia hay entre usar una variable como activa y conservarla como suplementaria.",
+    "title": "16  Guía rápida de tidyverse y dplyr",
+    "section": "16.20 Ejercicios propuestos",
+    "text": "16.20 Ejercicios propuestos\n\nCon mtcars, crea una tabla con modelo, mpg, hp, wt y una variable categórica que indique si el coche es ligero o pesado.\nCalcula medias de mpg, hp y wt por tipo de transmisión usando group_by() y summarise().\nConvierte mpg, hp y wt a formato largo con pivot_longer() y representa un boxplot por variable.\nAjusta k-means con tres grupos sobre variables escaladas de mtcars y resume los perfiles con across().\nExplica qué diferencia hay entre usar una variable como activa y conservarla como suplementaria.",
     "crumbs": [
       "Apéndice práctico",
-      "<span class='chapter-number'>15</span>  <span class='chapter-title'>Guía rápida de tidyverse y dplyr</span>"
+      "<span class='chapter-number'>16</span>  <span class='chapter-title'>Guía rápida de tidyverse y dplyr</span>"
+    ]
+  },
+  {
+    "objectID": "ejercicios.html",
+    "href": "ejercicios.html",
+    "title": "15  Ejercicios conceptuales",
+    "section": "",
+    "text": "15.1 Cómo trabajar con este capítulo\nEstos ejercicios están pensados para discutir, experimentar y justificar. Una respuesta no está completa por incluir una cifra o un gráfico: debe explicar qué decisión metodológica se tomó, qué evidencia la respalda y qué limitación conserva la conclusión.\nSalvo que se indique otra cosa, cada entrega debería contener:\nEn los ejercicios de construcción de datos no se busca encontrar el único ejemplo posible. El objetivo es producir un ejemplo reproducible que muestre con claridad el fenómeno pedido.",
+    "crumbs": [
+      "Ejercicios",
+      "<span class='chapter-number'>15</span>  <span class='chapter-title'>Ejercicios conceptuales</span>"
+    ]
+  },
+  {
+    "objectID": "ejercicios.html#cómo-trabajar-con-este-capítulo",
+    "href": "ejercicios.html#cómo-trabajar-con-este-capítulo",
+    "title": "15  Ejercicios conceptuales",
+    "section": "",
+    "text": "una respuesta breve a la pregunta sustantiva;\nuna justificación de las variables, transformaciones y método elegidos;\nuna tabla o figura que aporte evidencia;\nuna limitación o una explicación alternativa.\n\n\n\n\n\n\n\n\nNota\n\n\n\nUna simulación es una demostración empírica, no una prueba general. Cuando se use una simulación, hay que distinguir qué se ha observado en esos datos de qué se afirma que ocurre en general.",
+    "crumbs": [
+      "Ejercicios",
+      "<span class='chapter-number'>15</span>  <span class='chapter-title'>Ejercicios conceptuales</span>"
+    ]
+  },
+  {
+    "objectID": "ejercicios.html#presentación-de-la-asignatura",
+    "href": "ejercicios.html#presentación-de-la-asignatura",
+    "title": "15  Ejercicios conceptuales",
+    "section": "15.2 Presentación de la asignatura",
+    "text": "15.2 Presentación de la asignatura\nEjercicio 0.1. La misma tabla, preguntas distintas. Imagina una tabla con información sobre canciones: duración, tempo, energía, tonalidad, género y popularidad. Formula cuatro preguntas diferentes que requieran, respectivamente, agrupamiento, reducción de dimensión, estudio de asociación y clasificación supervisada. Para cada pregunta, identifica la unidad de análisis, la variable respuesta si existe y el tipo de conclusión que sería legítimo comunicar.\nEjercicio 0.2. De la pregunta al método. Un equipo afirma: «Aplicaremos PCA porque tenemos muchas variables». Escribe una respuesta de revisión de unas 150 palabras. Explica qué información falta antes de recomendar una técnica y propón al menos dos preguntas para las que PCA no sería la elección natural aun cuando hubiera muchas columnas.\nEjercicio 0.3. Una conclusión demasiado fuerte. Reescribe de forma estadísticamente honesta la frase «el algoritmo ha descubierto tres tipos reales de consumidores». Da tres explicaciones alternativas para que aparezcan tres clusters y especifica qué evidencia adicional ayudaría a distinguirlas.",
+    "crumbs": [
+      "Ejercicios",
+      "<span class='chapter-number'>15</span>  <span class='chapter-title'>Ejercicios conceptuales</span>"
+    ]
+  },
+  {
+    "objectID": "ejercicios.html#introducción-conceptual",
+    "href": "ejercicios.html#introducción-conceptual",
+    "title": "15  Ejercicios conceptuales",
+    "section": "15.3 Introducción conceptual",
+    "text": "15.3 Introducción conceptual\nEjercicio 1.1. ¿Qué representa una fila? Una encuesta musical contiene una fila por reproducción, pero también un identificador de oyente y otro de canción. Explica cómo cambiarían la matriz de datos, las dependencias entre filas y la pregunta científica si la unidad de análisis fuera: a) una reproducción, b) una canción, o c) un oyente. Indica una técnica del curso que podría ser razonable en cada caso.\nEjercicio 1.2. Tipos de variables que dependen de la pregunta. Clasifica cyl, gear, carb y am de mtcars según su tipo estadístico. Después plantea dos análisis en los que una misma columna se trate de maneras diferentes. La respuesta debe justificar la codificación por el significado de la comparación, no por cómo R almacena la columna.\nEjercicio 1.3. Misma proyección, estructuras distintas. Construye dos datasets tridimensionales que tengan prácticamente la misma representación al proyectarlos sobre los ejes \\(x_1\\) y \\(x_2\\), pero estructuras claramente distintas al considerar \\(x_3\\). Muéstralos con gráficos y explica por qué una representación de baja dimensión siempre puede ocultar información.\nEjercicio 1.4. Diseñar una estructura multivariante. Genera un dataset con cinco variables en el que haya simultáneamente: dos variables redundantes, una variable con escala dominante, una variable irrelevante y una variable que separe dos grupos. No apliques todavía ningún método. Argumenta qué problemas anticipas para distancias, PCA y clustering.",
+    "crumbs": [
+      "Ejercicios",
+      "<span class='chapter-number'>15</span>  <span class='chapter-title'>Ejercicios conceptuales</span>"
+    ]
+  },
+  {
+    "objectID": "ejercicios.html#distancias-y-similitud",
+    "href": "ejercicios.html#distancias-y-similitud",
+    "title": "15  Ejercicios conceptuales",
+    "section": "15.4 Distancias y similitud",
+    "text": "15.4 Distancias y similitud\nEjercicio 2.1. La dirección importa. Usa disp y wt estandarizadas de mtcars. Calcula sus componentes principales y construye dos pares de puntos con la misma distancia euclídea: un par separado solamente en la dirección de PC1 y otro solamente en PC2. Representa los datos y los cuatro puntos antes de calcular distancias. Compara euclídea y Mahalanobis y explica el resultado a partir de los autovalores y de la correlación, no de las unidades originales.\nEjercicio 2.2. Vecinos que dependen de la pregunta. Elige un coche de mtcars y encuentra sus tres vecinos más próximos usando, sobre las mismas variables estandarizadas, distancia euclídea, Manhattan y Chebyshev. No te limites a listar vecinos: identifica qué diferencias entre coches está enfatizando cada geometría y decide cuál usarías en un sistema de recomendación donde una discrepancia extrema en una sola característica sea inaceptable.\nEjercicio 2.3. Una variable ordinal no equiespaciada. Diseña una variable de satisfacción con cinco categorías ordenadas para la que no sea razonable suponer saltos iguales. Propón posiciones numéricas para sus niveles, construye una distancia normalizada y compárala con: a) desacuerdo nominal y b) rangos equiespaciados. Explica qué conocimiento sustantivo introducen tus posiciones.\nEjercicio 2.4. Tonalidades musicales. Las doce clases cromáticas pueden codificarse como enteros de 0 a 11, pero forman un ciclo. Define una disimilitud entre tonalidades que haga próximas a B y C. Después discute por qué la proximidad cromática no representa necesariamente similitud armónica completa. Propón una extensión que distinga, al menos, modo mayor y menor.\nEjercicio 2.5. Gower no decide por nosotros. Selecciona cuatro variables numéricas y tres categóricas de mtcars_mixed_ex. Calcula distancias de Gower bajo dos sistemas de pesos que respondan a preguntas aplicadas diferentes. Busca un coche cuyo vecino más próximo cambie y explica exactamente qué contribuciones parciales producen el cambio.\nEjercicio 2.6. Construir un contraejemplo. Crea un dataset de entre cuatro y ocho individuos en el que duplicar una variable cambie el vecino más próximo de al menos un individuo con distancia euclídea. Muestra que estandarizar no elimina necesariamente este problema y explica la diferencia entre escala y redundancia.",
+    "crumbs": [
+      "Ejercicios",
+      "<span class='chapter-number'>15</span>  <span class='chapter-title'>Ejercicios conceptuales</span>"
+    ]
+  },
+  {
+    "objectID": "ejercicios.html#clustering-jerárquico",
+    "href": "ejercicios.html#clustering-jerárquico",
+    "title": "15  Ejercicios conceptuales",
+    "section": "15.5 Clustering jerárquico",
+    "text": "15.5 Clustering jerárquico\nEl siguiente dataset contiene dos grupos compactos unidos por una cadena de puntos.\n\n\nCódigo\nset.seed(31)\n\ndatos_puente &lt;- bind_rows(\n  tibble(\n    id = paste0(\"I\", 1:12),\n    x = rnorm(12, -3, 0.35),\n    y = rnorm(12, 0, 0.35),\n    tipo = \"nube izquierda\"\n  ),\n  tibble(\n    id = paste0(\"D\", 1:12),\n    x = rnorm(12, 3, 0.35),\n    y = rnorm(12, 0, 0.35),\n    tipo = \"nube derecha\"\n  ),\n  tibble(\n    id = paste0(\"P\", 1:7),\n    x = seq(-2.1, 2.1, length.out = 7),\n    y = rnorm(7, 0, 0.08),\n    tipo = \"puente\"\n  )\n)\n\ndatos_puente |&gt;\n  ggplot(aes(x, y, color = tipo, label = id)) +\n  geom_point(size = 2.5) +\n  geom_text(nudge_y = 0.18, size = 3, show.legend = FALSE) +\n  coord_equal() +\n  labs(title = \"Dos nubes conectadas por un puente\", color = NULL)\n\n\n\n\n\n\n\n\n\nEjercicio 3.1. El efecto cadena. Aplica single, complete, average y Ward a datos_puente. Antes de cortar los dendrogramas, predice qué método será más sensible al puente. Contrasta la predicción y explica el resultado usando la definición matemática del linkage.\nEjercicio 3.2. El dendrograma no es un mapa. Permuta el orden de las filas de datos_puente y vuelve a dibujar el dendrograma con el mismo método. Investiga qué puede cambiar visualmente aunque las fusiones y las alturas representen la misma jerarquía. Escribe tres reglas para evitar interpretar como distancia horizontal lo que solo es una disposición gráfica.\nEjercicio 3.3. Una fusión irreversible. Construye un ejemplo pequeño donde una de las primeras fusiones de un algoritmo aglomerativo resulte poco conveniente al observar la estructura global. Explica por qué el algoritmo no puede corregirla. Describe cómo plantearía el mismo problema un método divisivo y qué nueva decisión difícil aparecería.\nEjercicio 3.4. Ward y la geometría elegida. Compara Ward sobre variables originales y estandarizadas de mtcars. Identifica una fusión que cambie pronto en el árbol y explica qué variable o conjunto de variables la provoca. ¿Tendría sentido usar Ward directamente con una distancia de Gower? Responde atendiendo a su criterio de incremento de suma de cuadrados.\nEjercicio 3.5. ¿Dónde cortar? Elige dos cortes plausibles de un mismo dendrograma de mtcars. Defiende cada corte como si respondiera a una pregunta aplicada diferente. Usa perfiles y silhouette, pero explica por qué ninguno de esos elementos convierte automáticamente un corte en el «verdadero».",
+    "crumbs": [
+      "Ejercicios",
+      "<span class='chapter-number'>15</span>  <span class='chapter-title'>Ejercicios conceptuales</span>"
+    ]
+  },
+  {
+    "objectID": "ejercicios.html#k-means-y-pam",
+    "href": "ejercicios.html#k-means-y-pam",
+    "title": "15  Ejercicios conceptuales",
+    "section": "15.6 k-means y PAM",
+    "text": "15.6 k-means y PAM\nEste dataset tiene dos grupos curvos y permite estudiar una limitación geométrica de k-means.\n\n\nCódigo\nset.seed(42)\n\nn_luna &lt;- 80\nangulo &lt;- runif(n_luna, 0, pi)\n\ndatos_lunas &lt;- bind_rows(\n  tibble(\n    x = cos(angulo) + rnorm(n_luna, 0, 0.06),\n    y = sin(angulo) + rnorm(n_luna, 0, 0.06),\n    grupo_generador = \"superior\"\n  ),\n  tibble(\n    x = 1 - cos(angulo) + rnorm(n_luna, 0, 0.06),\n    y = 0.45 - sin(angulo) + rnorm(n_luna, 0, 0.06),\n    grupo_generador = \"inferior\"\n  )\n)\n\ndatos_lunas |&gt;\n  ggplot(aes(x, y, color = grupo_generador)) +\n  geom_point(alpha = 0.8) +\n  coord_equal() +\n  labs(title = \"Dos grupos no convexos\", color = \"Grupo generador\")\n\n\n\n\n\n\n\n\n\nEjercicio 4.1. Narrar una iteración. Selecciona seis puntos bidimensionales y dos centroides iniciales para que, después de una iteración de Lloyd, al menos un punto cambie de cluster en la iteración siguiente. Representa asignación y actualización en gráficos sucesivos. Explica por qué cada paso no aumenta la suma de cuadrados intracluster.\nEjercicio 4.2. Un mínimo local visible. Busca dos inicializaciones de k-means sobre un mismo dataset que terminen en particiones diferentes. Compara sus funciones objetivo y representa ambas soluciones. A partir del ejemplo, explica qué resuelve nstart y qué no resuelve.\nEjercicio 4.3. El outlier como centroide. Añade progresivamente un punto extremo a un dataset con dos grupos compactos. Compara cómo cambian los centroides de k-means y los medoides de PAM. No basta con afirmar que PAM es robusto: cuantifica el desplazamiento de los representantes y explica por qué el uso de un objeto observado limita la influencia.\nEjercicio 4.4. La geometría de las lunas. Aplica k-means y PAM euclídeo a datos_lunas. Explica por qué ambos pueden fallar aunque uno use centroides y otro medoides. Propón una distancia o representación alternativa que haga accesible la estructura curva, sin usar las etiquetas grupo_generador para construirla.\nEjercicio 4.5. Tres criterios, tres mensajes. Sobre mtcars, compara codo, silhouette y gap statistic para varios valores de \\(k\\). Si coinciden, modifica razonablemente las variables o añade observaciones para producir desacuerdo. La entrega debe explicar qué aspecto de la partición mide cada criterio y por qué el desacuerdo es información útil.",
+    "crumbs": [
+      "Ejercicios",
+      "<span class='chapter-number'>15</span>  <span class='chapter-title'>Ejercicios conceptuales</span>"
+    ]
+  },
+  {
+    "objectID": "ejercicios.html#interpretación-de-clusters",
+    "href": "ejercicios.html#interpretación-de-clusters",
+    "title": "15  Ejercicios conceptuales",
+    "section": "15.7 Interpretación de clusters",
+    "text": "15.7 Interpretación de clusters\nEjercicio 5.1. Nombrar sin caricaturizar. Obtén una partición de mtcars y construye perfiles con medias estandarizadas. Propón un nombre descriptivo para cada cluster y después escribe una versión deliberadamente exagerada de esos nombres. Explica qué afirmaciones de la segunda versión no están respaldadas por las variables observadas.\nEjercicio 5.2. La media oculta individuos. Construye dos clusters con medias casi idénticas en una variable pero distribuciones muy diferentes. Demuestra con boxplots o violines por qué una tabla de medias sería insuficiente. Añade una segunda variable en la que ocurra lo contrario: medias distintas pero gran solapamiento.\nEjercicio 5.3. Variable activa o suplementaria. Usa am de mtcars primero como parte activa de una representación mixta y después como variable suplementaria para interpretar clusters numéricos. Compara las preguntas que responde cada análisis. Explica por qué una asociación fuerte con am tiene distinto significado en ambos casos.\nEjercicio 5.4. Estabilidad localizada. Repite un clustering de mtcars sobre muestras bootstrap y estima con qué frecuencia dos coches aparecen juntos. Busca un coche con pertenencia inestable. ¿La solución adecuada es eliminarlo, asignarlo por mayoría o comunicar incertidumbre? Defiende una opción según un contexto aplicado inventado.\nEjercicio 5.5. Auditoría de un informe. Escribe un mini-informe de cinco frases sobre una partición y pásalo por esta auditoría: ¿declara variables activas?, ¿explica escalado y distancia?, ¿justifica \\(k\\)?, ¿describe heterogeneidad interna?, ¿evita presentar clusters como clases naturales? Reescribe el informe después de la auditoría.",
+    "crumbs": [
+      "Ejercicios",
+      "<span class='chapter-number'>15</span>  <span class='chapter-title'>Ejercicios conceptuales</span>"
+    ]
+  },
+  {
+    "objectID": "ejercicios.html#análisis-de-componentes-principales",
+    "href": "ejercicios.html#análisis-de-componentes-principales",
+    "title": "15  Ejercicios conceptuales",
+    "section": "15.8 Análisis de componentes principales",
+    "text": "15.8 Análisis de componentes principales\nEjercicio 6.1. Dígitos y características. Una imagen MNIST tiene 784 intensidades de píxel. Propón entre cinco y ocho características construidas que podrían ser más informativas para distinguir formas, como número de bucles, simetría o centro de masa. Indica cuáles son lineales y cuáles no. Explica por qué PCA puede descubrir una superficie lineal de baja dimensión, pero no necesariamente esas características semánticas.\nEjercicio 6.2. Mucha varianza, poca información. Construye un dataset con dos clases conocidas en el que la dirección de máxima varianza no ayude a separarlas y una dirección de poca varianza sí lo haga. Ajusta PCA sin usar la clase y representa PC1 y PC2 coloreando a posteriori. Explica por qué «varianza explicada» no significa «información predictiva».\nEjercicio 6.3. Preservación de varianza total. Usa una matriz de covarianzas \\(3\\times3\\) no diagonal. Calcula su traza, los autovalores y la varianza de los datos expresados en las tres componentes. Comprueba la igualdad numérica y explícala mediante el cambio de base ortonormal. Después conserva solo dos componentes y distingue entre varianza total preservada por la rotación y varianza retenida por la reducción.\nEjercicio 6.4. Escalar es elegir una pregunta. Compara PCA de covarianzas y PCA de correlaciones en mtcars. Identifica qué variables dominan cada primera componente. Formula una pregunta aplicada para la que cada análisis sea defendible; evita presentar el escalado como un trámite automático.\nEjercicio 6.5. Signo y orientación. Cambia el signo de todos los loadings y scores de una componente principal. Comprueba qué cantidades permanecen iguales y qué elementos del gráfico se reflejan. Explica por qué dos programas pueden mostrar ejes con sentidos opuestos sin discrepar estadísticamente.\nEjercicio 6.6. Calidad frente a contribución. Encuentra en un PCA de mtcars: a) un coche bien representado en el plano pero con contribución modesta y b) un coche con contribución alta a un eje. Explica por qué cos² y contribución responden a preguntas distintas.",
+    "crumbs": [
+      "Ejercicios",
+      "<span class='chapter-number'>15</span>  <span class='chapter-title'>Ejercicios conceptuales</span>"
+    ]
+  },
+  {
+    "objectID": "ejercicios.html#análisis-factorial-exploratorio",
+    "href": "ejercicios.html#análisis-factorial-exploratorio",
+    "title": "15  Ejercicios conceptuales",
+    "section": "15.9 Análisis factorial exploratorio",
+    "text": "15.9 Análisis factorial exploratorio\nEjercicio 7.1. Del modelo a la covarianza. Parte de \\(X = \\Lambda F + \\varepsilon\\) y deriva cada paso hasta \\(\\Sigma = \\Lambda\\Phi\\Lambda^\\mathsf{T} + \\Psi\\). Debes indicar qué términos cruzados desaparecen y bajo qué supuestos. Explica por qué, si los errores específicos son independientes y \\(\\varepsilon_i\\sim N(0,\\psi_i)\\), entonces \\(\\Psi\\) es diagonal. Discute qué cambiaría si dos errores específicos estuvieran correlacionados.\nEjercicio 7.2. La misma covarianza, cargas distintas. Parte de una matriz de cargas con dos factores ortogonales y aplícale una rotación ortogonal. Comprueba que \\(\\Lambda\\Lambda^\\mathsf{T}\\) no cambia. Explica qué implica esto para la identificabilidad de los factores y por qué una rotación puede mejorar la interpretación sin mejorar el ajuste.\nEjercicio 7.3. Diseñar una estructura simple. Construye una matriz de cargas para ocho variables y dos factores que tenga estructura simple. Después introduce dos cargas cruzadas y una unicidad muy alta. Simula datos a partir del modelo y estudia si el análisis recupera las dificultades que diseñaste.\nEjercicio 7.4. PCA o factores. Imagina seis preguntas de un cuestionario influidas por dos rasgos latentes y, además, por errores de medición. Compara qué objeto intenta reproducir PCA y qué objeto intenta reproducir el análisis factorial. Diseña una situación en la que dos componentes describan bien los datos pero no deban interpretarse como dos causas latentes.\nEjercicio 7.5. ¿Cuántos factores? Busca o simula un caso donde scree plot, análisis paralelo e interpretabilidad sugieran números diferentes de factores. Redacta una decisión razonada que no consista en votar entre criterios. Indica qué análisis de sensibilidad presentarías.\nEjercicio 7.6. Normalidad y significado. Explica qué papel desempeña la normalidad en la estimación e inferencia factorial y qué partes descriptivas del modelo pueden seguir siendo útiles sin normalidad exacta. Propón dos diagnósticos y una alternativa para datos claramente ordinales.",
+    "crumbs": [
+      "Ejercicios",
+      "<span class='chapter-number'>15</span>  <span class='chapter-title'>Ejercicios conceptuales</span>"
+    ]
+  },
+  {
+    "objectID": "ejercicios.html#análisis-de-correspondencias-simple",
+    "href": "ejercicios.html#análisis-de-correspondencias-simple",
+    "title": "15  Ejercicios conceptuales",
+    "section": "15.10 Análisis de correspondencias simple",
+    "text": "15.10 Análisis de correspondencias simple\nUsaremos esta tabla para varios ejercicios. Las filas representan franjas de escucha y las columnas, tipos de contenido.\n\n\nCódigo\ntabla_escucha &lt;- matrix(\n  c(\n    48, 18,  6, 28,\n    24, 36, 18, 22,\n     8, 22, 46, 24\n  ),\n  nrow = 3,\n  byrow = TRUE,\n  dimnames = list(\n    franja = c(\"mañana\", \"tarde\", \"noche\"),\n    contenido = c(\"noticias\", \"listas\", \"albumes\", \"podcasts\")\n  )\n)\n\nkable(tabla_escucha)\n\n\n\n\n\n\nnoticias\nlistas\nalbumes\npodcasts\n\n\n\n\nmañana\n48\n18\n6\n28\n\n\ntarde\n24\n36\n18\n22\n\n\nnoche\n8\n22\n46\n24\n\n\n\n\n\nEjercicio 9.1. Perfiles antes que frecuencias. Duplica todos los recuentos de una fila de tabla_escucha y compara las frecuencias, los perfiles fila y su posición en un análisis de correspondencias. Explica qué cambia y qué no cambia. ¿Por qué la masa de la fila sigue siendo relevante aunque su perfil permanezca igual?\nEjercicio 9.2. La distancia chi-cuadrado pondera. Añade una categoría columna muy frecuente y otra muy rara, ambas con pequeñas desviaciones relativas entre filas. Compara su influencia en la distancia chi-cuadrado. Explica por qué dividir por el perfil marginal hace visibles categorías raras y cuándo esto puede resultar problemático.\nEjercicio 9.3. De independencia a estructura. Construye primero una tabla exactamente independiente a partir de unos marginales elegidos. Modifica después una única celda conservando el total mediante cambios compensatorios. Sigue cómo cambian residuos, estadístico chi-cuadrado, inercia y coordenadas. Identifica qué magnitudes expresan la misma desviación en escalas distintas.\nEjercicio 9.4. Leer un mapa sin inventar proximidades. Realiza CA sobre tabla_escucha y redacta cinco interpretaciones del mapa: dos correctas, dos incorrectas y una que necesite información adicional. Intercambia la lista con otra persona para que identifique cada tipo y lo justifique usando perfiles, contribuciones y cos².\nEjercicio 9.5. Una categoría extrema pero poco fiable. Añade una fila con masa muy pequeña y perfil extremo. Estudia su contribución y calidad de representación. Decide si debe ser activa, agruparse con otra o tratarse como suplementaria, y justifica la decisión desde el contexto, no solo desde el gráfico.",
+    "crumbs": [
+      "Ejercicios",
+      "<span class='chapter-number'>15</span>  <span class='chapter-title'>Ejercicios conceptuales</span>"
+    ]
+  },
+  {
+    "objectID": "ejercicios.html#análisis-de-correspondencias-múltiples",
+    "href": "ejercicios.html#análisis-de-correspondencias-múltiples",
+    "title": "15  Ejercicios conceptuales",
+    "section": "15.11 Análisis de correspondencias múltiples",
+    "text": "15.11 Análisis de correspondencias múltiples\nEjercicio 10.1. Distancias en la tabla indicadora. Selecciona dos pasajeros de titanic_ex que difieran en una sola variable y otros dos que difieran en varias. Construye sus filas de la tabla indicadora y relaciona la distancia entre ellas con el número y la frecuencia de las modalidades en desacuerdo.\nEjercicio 10.2. Inercia generada por la codificación. Añade a titanic_ex una variable categórica aleatoria con dos niveles y después otra con diez niveles. Repite MCA y estudia cómo cambia la inercia bruta. Explica por qué añadir modalidades aumenta inercia aunque no aporte estructura sustantiva y qué pretende corregir Benzécri.\nEjercicio 10.3. Modalidad rara. Crea una modalidad que aparezca en muy pocos individuos y observa su distancia al origen, contribución y cos². Explica por qué estar lejos no basta para convertirla en el hallazgo principal. Propón una regla de revisión que combine frecuencia, contribución y estabilidad.\nEjercicio 10.4. Activa o suplementaria. Compara dos MCA de titanic_ex: uno con Survived activa y otro con Survived suplementaria. Explica con precisión por qué las asociaciones observadas no tienen el mismo estatus en ambos mapas y cuál usarías para explorar perfiles previos al desenlace.\nEjercicio 10.5. Clustering sobre coordenadas. Agrupa pasajeros usando un número pequeño y después uno grande de dimensiones MCA. Compara estabilidad e interpretación de los clusters. Explica qué información se pierde al usar pocas dimensiones y qué ruido o inercia trivial puede reintroducirse al usar demasiadas.",
+    "crumbs": [
+      "Ejercicios",
+      "<span class='chapter-number'>15</span>  <span class='chapter-title'>Ejercicios conceptuales</span>"
+    ]
+  },
+  {
+    "objectID": "ejercicios.html#famd-para-datos-mixtos",
+    "href": "ejercicios.html#famd-para-datos-mixtos",
+    "title": "15  Ejercicios conceptuales",
+    "section": "15.12 FAMD para datos mixtos",
+    "text": "15.12 FAMD para datos mixtos\nEjercicio 8.1. Equilibrar bloques. Crea dos versiones de mtcars_mixed_ex: una con seis variables numéricas y una categórica, y otra donde esa categórica se duplique varias veces. Compara una concatenación ingenua de variables estandarizadas e indicadoras con FAMD. Explica qué normalización evita que un bloque domine únicamente por su número de columnas o modalidades.\nEjercicio 8.2. Una dimensión mixta. Interpreta una dimensión FAMD de mtcars_mixed_ex que relacione simultáneamente variables numéricas y modalidades categóricas. La interpretación debe incluir contribuciones, coordenadas y cos², además de al menos dos coches bien representados. Propón un nombre para el eje y señala qué parte de ese nombre es inferencia sustantiva.\nEjercicio 8.3. FAMD frente a Gower. Compara vecinos obtenidos con distancia de Gower y con distancia euclídea en varias dimensiones FAMD. Busca un individuo para el que difieran. Explica qué decisiones de ponderación y qué pérdida por truncamiento pueden producir la discrepancia.\nEjercicio 8.4. Categoría informativa o etiqueta encubierta. Añade a un dataset mixto una categoría casi idéntica a una variable que luego quieras usar para interpretar o predecir. Estudia cómo domina la representación. Explica por qué declarar una variable suplementaria puede evitar circularidad, pero no arregla otras variables activas que filtren la misma información.\nEjercicio 8.5. Diseñar datos mixtos. Construye un dataset reproducible de al menos 30 individuos con dos numéricas, una ordinal, una nominal y una binaria asimétrica. Introduce deliberadamente una relación entre bloques. Antes de ejecutar FAMD, predice qué variables definirán las dos primeras dimensiones; después revisa la predicción con contribuciones.",
+    "crumbs": [
+      "Ejercicios",
+      "<span class='chapter-number'>15</span>  <span class='chapter-title'>Ejercicios conceptuales</span>"
+    ]
+  },
+  {
+    "objectID": "ejercicios.html#análisis-discriminante",
+    "href": "ejercicios.html#análisis-discriminante",
+    "title": "15  Ejercicios conceptuales",
+    "section": "15.13 Análisis discriminante",
+    "text": "15.13 Análisis discriminante\nEl siguiente dataset contiene dos clases separadas sobre todo en una dirección de varianza pequeña.\n\n\nCódigo\nset.seed(73)\n\nn_clase &lt;- 100\ndatos_discriminantes &lt;- tibble(\n  clase = factor(rep(c(\"A\", \"B\"), each = n_clase)),\n  x_ruido = rnorm(2 * n_clase, sd = 4),\n  x_señal = c(\n    rnorm(n_clase, -0.65, 0.35),\n    rnorm(n_clase,  0.65, 0.35)\n  )\n)\n\ndatos_discriminantes |&gt;\n  ggplot(aes(x_ruido, x_señal, color = clase)) +\n  geom_point(alpha = 0.65) +\n  labs(title = \"La separación no coincide con la máxima varianza\")\n\n\n\n\n\n\n\n\n\nEjercicio 11.1. PCA no es LDA. Aplica PCA a las variables de datos_discriminantes sin usar clase y compara su primera dirección con la dirección discriminante de LDA. Explica las funciones objetivo distintas y por qué descartar componentes de poca varianza antes de clasificar puede eliminar la señal.\nEjercicio 11.2. LDA o QDA por la geometría. Simula dos escenarios: uno con covarianzas de clase iguales y otro con covarianzas claramente diferentes. Compara fronteras LDA y QDA con muestras pequeñas y grandes. Describe el compromiso entre sesgo y varianza sin decidir solo por la accuracy de una partición concreta.\nEjercicio 11.3. Los errores no cuestan lo mismo. Diseña un problema binario donde un falso negativo cueste diez veces más que un falso positivo. A partir de probabilidades posteriores, compara la regla de máximo posterior con una regla basada en coste esperado. Construye dos matrices de confusión con la misma accuracy pero consecuencias muy distintas.\nEjercicio 11.4. Fuga de información. Inventa tres ejemplos de data leakage en un análisis discriminante: uno producido por una variable, otro por el preprocesamiento y otro por la forma de dividir los datos. Para cada uno, explica por qué la estimación del error es optimista y cómo rediseñarías el flujo de validación.\nEjercicio 11.5. Una clase minoritaria. Crea un test con un 95% de una clase y muestra que clasificar siempre en la mayoritaria consigue alta accuracy. Propón métricas y una política de validación más informativas. La respuesta debe conectar cada métrica con una consecuencia aplicada.",
+    "crumbs": [
+      "Ejercicios",
+      "<span class='chapter-number'>15</span>  <span class='chapter-title'>Ejercicios conceptuales</span>"
+    ]
+  },
+  {
+    "objectID": "ejercicios.html#casos-integradores",
+    "href": "ejercicios.html#casos-integradores",
+    "title": "15  Ejercicios conceptuales",
+    "section": "15.14 Casos integradores",
+    "text": "15.14 Casos integradores\nEjercicio 12.1. La técnica depende de la pregunta. Formula sobre mtcars_mixed_ex tres preguntas que usen exactamente las mismas filas y columnas pero conduzcan razonablemente a PCA, FAMD y análisis discriminante. Explica qué papel es activo, suplementario o respuesta en cada análisis.\nEjercicio 12.2. Dos representaciones que discrepan. Analiza un mismo dataset mediante clustering sobre variables originales estandarizadas y clustering sobre unas pocas componentes principales. Busca una observación cuya asignación cambie. Investiga si el cambio se debe a reducción de ruido, pérdida de una dirección relevante o geometría del algoritmo.\nEjercicio 12.3. Informe con decisión. Elige una pregunta aplicada y redacta un informe de dos páginas con esta secuencia: pregunta, unidad de análisis, variables, preprocesamiento, método, selección de complejidad, resultado, validación y limitaciones. Solo puede incluir dos figuras y una tabla; justifica por qué son las evidencias más informativas.\nEjercicio 12.4. Revisión por pares adversarial. Intercambia el informe anterior con otra persona. La revisión debe intentar refutar la conclusión mediante: una codificación alternativa, una elección distinta de distancia o escalado, una perturbación de la muestra y una interpretación alternativa. El informe final debe indicar qué conclusiones sobrevivieron.\nEjercicio 12.5. Diseñar un caso donde el método falle. Elige una técnica del curso y construye datos que violen de forma visible uno de sus supuestos o intuiciones geométricas. Muestra el resultado engañoso y propón un diagnóstico que permita detectarlo sin conocer el mecanismo generador.\nEjercicio 12.6. Mapa de decisiones. Construye un diagrama de decisión para elegir entre clustering, PCA, análisis factorial, CA, MCA, FAMD y análisis discriminante. Debe incluir tipo de variables, existencia de respuesta, objetivo del análisis y al menos una advertencia por técnica. Prueba el diagrama con tres casos ambiguos y documenta dónde necesita juicio experto.",
+    "crumbs": [
+      "Ejercicios",
+      "<span class='chapter-number'>15</span>  <span class='chapter-title'>Ejercicios conceptuales</span>"
+    ]
+  },
+  {
+    "objectID": "ejercicios.html#guía-práctica-de-tidyverse-y-dplyr",
+    "href": "ejercicios.html#guía-práctica-de-tidyverse-y-dplyr",
+    "title": "15  Ejercicios conceptuales",
+    "section": "15.15 Guía práctica de tidyverse y dplyr",
+    "text": "15.15 Guía práctica de tidyverse y dplyr\nEjercicio T.1. Una tubería legible. Toma un análisis de mtcars escrito como una sucesión de objetos intermedios o llamadas anidadas. Reescríbelo como pipeline y después divide la tubería en dos objetos con nombres sustantivos. Compara las tres versiones atendiendo a facilidad de depuración, no a número de líneas.\nEjercicio T.2. El estado oculto de group_by(). Construye un ejemplo donde olvidar un agrupamiento activo cambie el resultado de un mutate() posterior. Diagnostica el problema con group_vars() y corrígelo con .groups o ungroup(). Explica por qué el código puede ejecutarse sin error y aun así responder otra pregunta.\nEjercicio T.3. Un join que multiplica filas. Crea dos tablas con claves duplicadas y realiza un left_join() que aumente inesperadamente el número de filas. Explica la relación muchos-a-muchos, diseña comprobaciones previas de unicidad y decide si el problema se corrige agregando, deduplicando o ampliando la clave.\nEjercicio T.4. Ancho, largo y unidad de observación. Construye una tabla de medidas repetidas en formato ancho y transfórmala a largo con pivot_longer(). Explica qué representa una fila antes y después. Vuelve a formato ancho y verifica qué identificadores hacen reversible la operación.\nEjercicio T.5. Un pipeline estadísticamente incorrecto. Escribe código tidyverse sintácticamente impecable que produzca una comparación sesgada, por ejemplo filtrando después de observar la respuesta o resumiendo con denominadores inadecuados. Pide a otra persona que encuentre el problema conceptual. La moraleja debe distinguir código limpio de análisis válido.",
+    "crumbs": [
+      "Ejercicios",
+      "<span class='chapter-number'>15</span>  <span class='chapter-title'>Ejercicios conceptuales</span>"
+    ]
+  },
+  {
+    "objectID": "ejercicios.html#proyecto-de-síntesis",
+    "href": "ejercicios.html#proyecto-de-síntesis",
+    "title": "15  Ejercicios conceptuales",
+    "section": "15.16 Proyecto de síntesis",
+    "text": "15.16 Proyecto de síntesis\nConstruye o elige un dataset pequeño que permita formular al menos tres preguntas multivariantes distintas. Una de ellas debe ser no supervisada, otra debe usar variables categóricas o mixtas y otra debe ser supervisada. El proyecto debe:\n\njustificar la unidad de análisis y el origen de cada variable;\nanticipar la geometría o estructura que se espera encontrar;\ncomparar al menos dos decisiones metodológicas razonables;\nincluir un análisis de estabilidad, sensibilidad o validación;\nseparar resultados observados de interpretación sustantiva;\nterminar con una conclusión que podría cambiar si se obtuvieran nuevos datos.\n\nEl dataset puede ser simulado. En ese caso, el mecanismo generador debe escribirse en R y la evaluación debe distinguir entre recuperar una estructura que se introdujo deliberadamente y descubrir una estructura desconocida.",
+    "crumbs": [
+      "Ejercicios",
+      "<span class='chapter-number'>15</span>  <span class='chapter-title'>Ejercicios conceptuales</span>"
     ]
   }
 ]

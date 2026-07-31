@@ -21,3 +21,6 @@ Thumbs.db
 # Local datasets not used by the book
 /Spotify/
 /other datasets/
+
+/.quarto/
+**/*.quarto_ipynb
