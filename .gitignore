@@ -1,0 +1,23 @@
+# R session and IDE state
+.Rhistory
+.RData
+.Ruserdata
+.Rproj.user/
+
+# Quarto local cache (published output remains in docs/)
+.quarto/
+
+# Editor and operating-system files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Codex local metadata
+.agents/
+.codex/
+/instrucciones_codex_apuntes_multivariante.md
+
+# Local datasets not used by the book
+/Spotify/
+/other datasets/
