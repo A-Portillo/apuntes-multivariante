@@ -212,33 +212,7 @@ tibble(k = 1:8, wss = wss) |>
 
 El codo rara vez es completamente objetivo. Sirve como guía visual.
 
-### Silhouette
-
-Para cada individuo $i$, definimos:
-
-- $a(i)$: distancia media de $i$ a los individuos de su propio cluster;
-- $b(i)$: menor distancia media de $i$ a otro cluster.
-
-La silhouette es:
-
-$$
-s(i)=\frac{b(i)-a(i)}{\max\{a(i),b(i)\}}.
-$$
-
-Valores cercanos a 1 indican buena asignación; valores cerca de 0 indican frontera; valores negativos sugieren posible mala asignación.
-
-```{r}
-sil_media <- sapply(2:8, function(k) {
-  cl <- kmeans(X, centers = k, nstart = 25)$cluster
-  mean(cluster::silhouette(cl, dist(X))[, 3])
-})
-tibble(k = 2:8, silhouette_media = sil_media) |>
-  ggplot(aes(k, silhouette_media)) +
-  geom_line() +
-  geom_point(size = 2) +
-  labs(title = "Criterio silhouette", x = "k", y = "Silhouette media") +
-  theme_minimal()
-```
+La silhouette, desarrollada en @sec-silhouette para comparar cortes de un árbol, también puede evaluar particiones producidas por k-means, PAM u otros algoritmos. En ese caso se sustituyen las asignaciones de `cutree()` por las de cada partición candidata, manteniendo una distancia coherente con la geometría del método.
 
 ### Gap statistic
 

@@ -371,25 +371,21 @@ En este caso, una línea a altura `r round(h_equivalente, 3)` reproduce el corte
 
 ### Corte por altura
 
-Con `cutree(arbol, h = h_corte)` se aceptan todas las fusiones cuya altura no supera `h_corte`. El número de clusters es entonces una consecuencia de la altura elegida y no se fija de antemano. Por ejemplo, una altura de 4 produce cinco grupos:
+Con `cutree(arbol, h = h_corte)` se aceptan todas las fusiones cuya altura no supera `h_corte`. El número de clusters es entonces una consecuencia de la altura elegida y no se fija de antemano. Por ejemplo, una altura de 4.5 produce cinco grupos:
 
 ```{r}
-h_corte <- 4
-grupos_h <- cutree(hc_ward, h = h_corte)
+h_corte <- 4.5
 
-tibble(
-  tipo_de_corte = c("k = 4", "h = 4"),
-  numero_de_clusters = c(
-    n_distinct(grupos4),
-    n_distinct(grupos_h)
-  )
-) |>
-  kable(caption = "Número de clusters según el criterio de corte")
+grupos_h <- cutree(hc_ward, h = h_corte)
+k_h <- n_distinct(grupos_h)
 
 factoextra::fviz_dend(
   hc_ward,
-  h = h_corte,
-  show_labels = FALSE
+  k = k_h,
+  show_labels = FALSE,
+  rect = TRUE,
+  rect_fill = FALSE,
+  color_labels_by_k = TRUE
 ) +
   geom_hline(
     yintercept = h_corte,
@@ -397,7 +393,13 @@ factoextra::fviz_dend(
     linetype = "dashed"
   ) +
   labs(
-    title = "Ward.D2 cortado a altura 4",
+    title = paste(
+      "Ward.D2 cortado a altura",
+      h_corte,
+      "—",
+      k_h,
+      "clusters"
+    ),
     x = "Coches",
     y = "Altura de fusión"
   )
@@ -432,21 +434,194 @@ tibble(fusion = seq_len(15), altura = alturas[1:15]) |>
 
 Un salto grande indica que se están fusionando clusters bastante separados. Cortar antes de ese salto puede ser razonable, pero no es una prueba automática.
 
+### Silhouette {#sec-silhouette}
+
+La silhouette evalúa simultáneamente la cohesión interna de cada cluster y su separación respecto a los demás [@rousseeuw1987silhouettes]. Para una observación $i$ perteneciente al cluster $C_i$, definimos:
+
+$$
+a(i)=\frac{1}{|C_i|-1}\sum_{j\in C_i,\,j\neq i}d(i,j),
+$$
+
+la disimilitud media de $i$ respecto a su propio cluster. Para cualquier otro cluster $C$, calculamos
+
+$$
+d(i,C)=\frac{1}{|C|}\sum_{j\in C}d(i,j),
+$$
+
+y conservamos la menor de esas disimilitudes medias:
+
+$$
+b(i)=\min_{C\neq C_i}d(i,C).
+$$
+
+El cluster que alcanza este mínimo es el **cluster vecino** de $i$. La anchura silhouette es
+
+$$
+s(i)=\frac{b(i)-a(i)}{\max\{a(i),b(i)\}},
+$$
+
+con $-1\leq s(i)\leq 1$. Su interpretación es:
+
+- $s(i)$ próximo a $1$: $i$ está mucho más cerca de su propio cluster que del cluster vecino;
+- $s(i)$ próximo a $0$: $i$ está en una frontera entre clusters;
+- $s(i)<0$: $i$ está, en promedio, más cerca del cluster vecino que del asignado;
+- si $i$ forma un cluster de un solo individuo, por convenio se toma $s(i)=0$.
+
+La silhouette usa la misma matriz de disimilitudes con la que queremos juzgar la partición. En este ejemplo evaluamos cortes del árbol de Ward, pero mantenemos `d` como geometría de referencia:
+
+```{r}
+evaluacion_silhouette <- map_dfr(2:8, function(k) {
+  grupos_k <- cutree(hc_ward, k = k)
+  sil_k <- cluster::silhouette(grupos_k, d)
+
+  tibble(
+    k = k,
+    silhouette_media = mean(sil_k[, "sil_width"]),
+    silhouette_minima = min(sil_k[, "sil_width"]),
+    valores_negativos = sum(sil_k[, "sil_width"] < 0),
+    cluster_mas_pequeno = min(table(grupos_k))
+  )
+})
+
+evaluacion_silhouette |>
+  ggplot(aes(k, silhouette_media)) +
+  geom_line() +
+  geom_point(size = 2) +
+  scale_x_continuous(breaks = 2:8) +
+  labs(
+    title = "Silhouette media para distintos cortes de Ward",
+    x = "Número de clusters",
+    y = "Silhouette media"
+  )
+```
+
+La media permite comparar cortes, pero puede ocultar observaciones problemáticas y favorecer soluciones con grupos pequeños. Por eso conviene revisar también el mínimo, el número de valores negativos y los tamaños:
+
+```{r}
+evaluacion_silhouette |>
+  mutate(across(starts_with("silhouette"), ~round(.x, 3))) |>
+  kable(caption = "Diagnóstico silhouette de los cortes de Ward")
+```
+
+Para $k=4$, el gráfico individual permite localizar coches bien asignados, casos fronterizos y posibles asignaciones dudosas:
+
+```{r}
+silhouette_ward4 <- cluster::silhouette(grupos4, d)
+
+factoextra::fviz_silhouette(
+  silhouette_ward4,
+  label = FALSE,
+  print.summary = FALSE
+) +
+  labs(title = "Silhouette por coche: Ward, k = 4")
+```
+
+En `mtcars`, la silhouette media sigue mejorando para algunos valores relativamente grandes de $k$. Eso no obliga a elegir el máximo: con solo 32 coches, una mejora puede conseguirse fragmentando perfiles en clusters demasiado pequeños para la pregunta aplicada. La silhouette es un diagnóstico interno de compacidad y separación, no una prueba de que exista un número verdadero de grupos.
+
 ## Clustering divisivo
 
-El clustering divisivo empieza con todos los individuos juntos y realiza separaciones sucesivas. Una estrategia divisiva genérica es:
+El clustering divisivo empieza con todos los individuos juntos y realiza separaciones sucesivas. Mientras que un método aglomerativo decide qué elementos locales unir, uno divisivo debe resolver dos decisiones: qué cluster abrir y cómo repartir sus observaciones.
+
+Una estrategia divisiva genérica es:
 
 1. empezar con un cluster que contiene todos los individuos;
 2. elegir el cluster más heterogéneo;
 3. dividirlo en dos subclusters;
 4. repetir hasta obtener individuos aislados o una partición deseada.
 
-El método DIANA, disponible en el paquete `cluster`, usa disimilitudes para identificar observaciones que se separan progresivamente del grupo principal.
+Las primeras divisiones afectan a ramas grandes del dendrograma y son irreversibles. Por eso los métodos divisivos priorizan la estructura global al principio, pero necesitan una regla concreta que evite examinar todas las biparticiones posibles.
+
+### El algoritmo DIANA
+
+DIANA, abreviatura de **DIvisive ANAlysis**, es el procedimiento divisivo de Kaufman y Rousseeuw [@kaufman1990finding]. Trabaja directamente con una matriz de disimilitudes y construye una jerarquía completa mediante una regla voraz.
+
+En cada etapa procede así:
+
+1. Entre los clusters que todavía contienen más de un individuo, selecciona el de mayor diámetro:
+
+$$
+\operatorname{diam}(C)=\max_{i,j\in C}d(i,j).
+$$
+
+2. Dentro del cluster elegido, busca el individuo cuya disimilitud media respecto al resto es mayor. Ese individuo inicia un nuevo grupo, denominado **splinter group** o grupo escindido. Los demás forman provisionalmente el **old party** o grupo original.
+
+3. Para cada individuo $i$ que permanece en el grupo original $O$, calcula
+
+$$
+\Delta(i)=
+\frac{1}{|O|-1}\sum_{j\in O,\,j\neq i}d(i,j)
+-
+\frac{1}{|S|}\sum_{j\in S}d(i,j),
+$$
+
+donde $S$ es el grupo escindido. Si $\Delta(i)>0$, el individuo está en promedio más lejos del grupo original que del grupo escindido.
+
+4. Mueve al grupo escindido el individuo con mayor $\Delta(i)$ positivo, actualiza todas las medias y repite. Cuando ningún valor es positivo, la división queda fijada.
+
+5. Vuelve a seleccionar, entre los clusters resultantes, el de mayor diámetro. El proceso continúa hasta que todos los individuos quedan aislados.
+
+La regla es local: DIANA no garantiza encontrar, en cada nodo, la mejor bipartición según un criterio global. Sin embargo, evita enumerar las $2^{|C|-1}-1$ biparticiones posibles de un cluster y proporciona una división reproducible a partir de la disimilitud elegida.
+
+::: {.callout-note}
+DIANA no pide elegir un linkage, pero no está libre de decisiones. Su resultado depende de las variables, el escalado y la disimilitud. Un outlier puede iniciar pronto un grupo escindido y acabar formando una rama o un cluster de un solo individuo.
+:::
+
+### DIANA en `mtcars`
+
+Pasamos a `diana()` el mismo objeto `d` usado en el análisis aglomerativo. Así la comparación modifica la dirección y la regla de construcción de la jerarquía, pero conserva la geometría entre coches.
+
 
 ```{r}
-div <- cluster::diana(X)
-factoextra::fviz_dend(as.hclust(div), show_labels = FALSE, main = "Dendrograma divisivo")
+div <- cluster::diana(d)
+hc_diana <- as.hclust(div)
+grupos_diana4 <- cutree(hc_diana, k = 4)
+
+factoextra::fviz_dend(
+  hc_diana,
+  k = 4,
+  k_colors = colores_clusters,
+  show_labels = FALSE,
+  rect = TRUE,
+  rect_border = colores_clusters,
+  rect_fill = FALSE,
+  main = "DIANA: cuatro clusters"
+) +
+  labs(
+    x = "Coches",
+    y = "Diámetro antes de la división"
+  )
 ```
+
+Las alturas del dendrograma de DIANA representan los diámetros de los clusters antes de dividirse. Una división a gran altura indica que se está abriendo un grupo muy heterogéneo.
+
+```{r}
+kable(
+  table(DIANA = grupos_diana4, Ward = grupos4),
+  caption = "Comparación de los cortes con k = 4"
+)
+```
+
+DIANA y Ward no producen aquí la misma partición. En particular, DIANA deja un cluster de un solo coche para $k=4$. No es necesariamente un error, pero obliga a revisar si se trata de un perfil sustantivamente singular o de una separación dominada por una observación extrema.
+
+### Coeficiente divisivo
+
+El objeto devuelto por `diana()` incluye el **coeficiente divisivo**. Sea $D$ el diámetro del dataset completo y sea $d_i$ el diámetro del último cluster al que pertenece el individuo $i$ antes de quedar separado como singleton. El coeficiente es
+
+$$
+DC=\frac{1}{n}\sum_{i=1}^{n}\left(1-\frac{d_i}{D}\right).
+$$
+
+Un valor alto indica que muchos individuos se separan definitivamente cuando los clusters que los contienen tienen un diámetro pequeño respecto al diámetro total. Esto sugiere una estructura jerárquica marcada.
+
+```{r}
+tibble(
+  medida = c("Diámetro inicial", "Coeficiente divisivo"),
+  valor = c(max(d), div$dc)
+) |>
+  kable(digits = 3, caption = "Resumen de la jerarquía DIANA")
+```
+
+En estos datos, el coeficiente divisivo es aproximadamente `r round(div$dc, 3)`. No debe interpretarse como porcentaje de clasificación correcta ni compararse directamente entre datasets de tamaños muy diferentes, porque tiende a crecer con el número de observaciones.
 
 ## Aglomerativo frente a divisivo
 
