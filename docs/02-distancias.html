@@ -365,7 +365,7 @@ window.Quarto = {
   <ul>
   <li><a href="#motivación-aplicada" id="toc-motivación-aplicada" class="nav-link active" data-scroll-target="#motivación-aplicada"><span class="header-section-number">4.1</span> Motivación aplicada</a></li>
   <li><a href="#datos-como-puntos" id="toc-datos-como-puntos" class="nav-link" data-scroll-target="#datos-como-puntos"><span class="header-section-number">4.2</span> Datos como puntos</a></li>
-  <li><a href="#propiedades-de-una-distancia" id="toc-propiedades-de-una-distancia" class="nav-link" data-scroll-target="#propiedades-de-una-distancia"><span class="header-section-number">4.3</span> Propiedades de una distancia</a></li>
+  <li><a href="#propiedades-de-una-distancia-métrica" id="toc-propiedades-de-una-distancia-métrica" class="nav-link" data-scroll-target="#propiedades-de-una-distancia-métrica"><span class="header-section-number">4.3</span> Propiedades de una distancia métrica</a></li>
   <li><a href="#distancias-numéricas" id="toc-distancias-numéricas" class="nav-link" data-scroll-target="#distancias-numéricas"><span class="header-section-number">4.4</span> Distancias numéricas</a>
   <ul class="collapse">
   <li><a href="#distancia-euclídea" id="toc-distancia-euclídea" class="nav-link" data-scroll-target="#distancia-euclídea"><span class="header-section-number">4.4.1</span> Distancia euclídea</a></li>
@@ -455,12 +455,12 @@ Tip
 <p>Con variables numéricas, cada individuo puede verse como un punto <span class="math inline">\(x_i = (x_{i1}, \ldots, x_{ip})\)</span> en un espacio de <span class="math inline">\(p\)</span> dimensiones. Una distancia asigna a dos puntos <span class="math inline">\(x_i\)</span> y <span class="math inline">\(x_j\)</span> un número <span class="math inline">\(d(x_i,x_j)\)</span> que resume su disimilitud.</p>
 <p>Si <span class="math inline">\(d(x_i,x_j)\)</span> es pequeño, los individuos son parecidos según las variables y la métrica elegidas. Si es grande, difieren mucho. Esta interpretación siempre está condicionada por las variables activas y por sus escalas.</p>
 </section>
-<section id="propiedades-de-una-distancia" class="level2" data-number="4.3">
-<h2 data-number="4.3" class="anchored" data-anchor-id="propiedades-de-una-distancia"><span class="header-section-number">4.3</span> Propiedades de una distancia</h2>
-<p>Una distancia <span class="math inline">\(d\)</span> debe cumplir:</p>
+<section id="propiedades-de-una-distancia-métrica" class="level2" data-number="4.3">
+<h2 data-number="4.3" class="anchored" data-anchor-id="propiedades-de-una-distancia-métrica"><span class="header-section-number">4.3</span> Propiedades de una distancia métrica</h2>
+<p>Una distancia métrica es, en general, el tipo mas deseable de distancia. Para ser una métrica <span class="math inline">\(d\)</span> debe cumplir:</p>
 <ul>
 <li>no negatividad: <span class="math inline">\(d(x_i,x_j) \geq 0\)</span>;</li>
-<li>identidad: <span class="math inline">\(d(x_i,x_j)=0\)</span> si los puntos son iguales;</li>
+<li>identidad: <span class="math inline">\(d(x_i,x_j)=0\)</span> si y solo si los puntos son iguales;</li>
 <li>simetría: <span class="math inline">\(d(x_i,x_j)=d(x_j,x_i)\)</span>;</li>
 <li>desigualdad triangular: <span class="math inline">\(d(x_i,x_k) \leq d(x_i,x_j)+d(x_j,x_k)\)</span>.</li>
 </ul>
@@ -523,6 +523,7 @@ d_{cor}(x_i,x_j)=1-r(x_i,x_j).
 \]</span></p>
 <p>Si usamos <span class="math inline">\(1-r\)</span>, dos individuos con perfiles paralelos tienen distancia pequeña aunque sus niveles absolutos sean distintos. A veces se usa <span class="math inline">\(1-|r|\)</span> cuando interesan perfiles lineales tanto positivos como negativos, pero esa decisión cambia mucho la interpretación.</p>
 <p>Esta distancia es útil cuando importa la forma del perfil y no la magnitud. Por ejemplo, dos canciones podrían tener una evolución de energía parecida aunque una sea más intensa que la otra en todos los tramos.</p>
+<p>Nótese que esta distancia no es una métrica ya que no satisface la desigualdad triangular.</p>
 </section>
 </section>
 <section id="cómo-difieren-las-distancias" class="level2" data-number="4.5">
@@ -2442,12 +2443,12 @@ Advertencia
 <span id="cb23-25"><a href="#cb23-25" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb23-26"><a href="#cb23-26" aria-hidden="true" tabindex="-1"></a>Si $d(x_i,x_j)$ es pequeño, los individuos son parecidos según las variables y la métrica elegidas. Si es grande, difieren mucho. Esta interpretación siempre está condicionada por las variables activas y por sus escalas.</span>
 <span id="cb23-27"><a href="#cb23-27" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-28"><a href="#cb23-28" aria-hidden="true" tabindex="-1"></a><span class="fu">## Propiedades de una distancia</span></span>
+<span id="cb23-28"><a href="#cb23-28" aria-hidden="true" tabindex="-1"></a><span class="fu">## Propiedades de una distancia métrica</span></span>
 <span id="cb23-29"><a href="#cb23-29" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-30"><a href="#cb23-30" aria-hidden="true" tabindex="-1"></a>Una distancia $d$ debe cumplir:</span>
+<span id="cb23-30"><a href="#cb23-30" aria-hidden="true" tabindex="-1"></a>Una distancia métrica es, en general, el tipo mas deseable de distancia. Para ser una métrica $d$ debe cumplir:</span>
 <span id="cb23-31"><a href="#cb23-31" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb23-32"><a href="#cb23-32" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>no negatividad: $d(x_i,x_j) \geq 0$;</span>
-<span id="cb23-33"><a href="#cb23-33" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>identidad: $d(x_i,x_j)=0$ si los puntos son iguales;</span>
+<span id="cb23-33"><a href="#cb23-33" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>identidad: $d(x_i,x_j)=0$ si y solo si los puntos son iguales;</span>
 <span id="cb23-34"><a href="#cb23-34" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>simetría: $d(x_i,x_j)=d(x_j,x_i)$;</span>
 <span id="cb23-35"><a href="#cb23-35" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>desigualdad triangular: $d(x_i,x_k) \leq d(x_i,x_j)+d(x_j,x_k)$.</span>
 <span id="cb23-36"><a href="#cb23-36" aria-hidden="true" tabindex="-1"></a></span>
@@ -2515,551 +2516,553 @@ Advertencia
 <span id="cb23-98"><a href="#cb23-98" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb23-99"><a href="#cb23-99" aria-hidden="true" tabindex="-1"></a>Esta distancia es útil cuando importa la forma del perfil y no la magnitud. Por ejemplo, dos canciones podrían tener una evolución de energía parecida aunque una sea más intensa que la otra en todos los tramos.</span>
 <span id="cb23-100"><a href="#cb23-100" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-101"><a href="#cb23-101" aria-hidden="true" tabindex="-1"></a><span class="fu">## Cómo difieren las distancias</span></span>
+<span id="cb23-101"><a href="#cb23-101" aria-hidden="true" tabindex="-1"></a>Nótese que esta distancia no es una métrica ya que no satisface la desigualdad triangular.</span>
 <span id="cb23-102"><a href="#cb23-102" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-103"><a href="#cb23-103" aria-hidden="true" tabindex="-1"></a>Comparamos cuatro puntos artificiales. El punto <span class="in">`B`</span> difiere poco de <span class="in">`A`</span> en dos variables; <span class="in">`C`</span> difiere mucho en una sola variable; <span class="in">`D`</span> tiene un perfil proporcional a <span class="in">`A`</span>.</span>
+<span id="cb23-103"><a href="#cb23-103" aria-hidden="true" tabindex="-1"></a><span class="fu">## Cómo difieren las distancias</span></span>
 <span id="cb23-104"><a href="#cb23-104" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-107"><a href="#cb23-107" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb23-108"><a href="#cb23-108" aria-hidden="true" tabindex="-1"></a>puntos <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
-<span id="cb23-109"><a href="#cb23-109" aria-hidden="true" tabindex="-1"></a>  <span class="at">x1 =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">5</span>, <span class="dv">2</span>),</span>
-<span id="cb23-110"><a href="#cb23-110" aria-hidden="true" tabindex="-1"></a>  <span class="at">x2 =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">2</span>),</span>
-<span id="cb23-111"><a href="#cb23-111" aria-hidden="true" tabindex="-1"></a>  <span class="at">row.names =</span> <span class="fu">c</span>(<span class="st">"A"</span>, <span class="st">"B"</span>, <span class="st">"C"</span>, <span class="st">"D"</span>)</span>
-<span id="cb23-112"><a href="#cb23-112" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb23-113"><a href="#cb23-113" aria-hidden="true" tabindex="-1"></a>puntos <span class="sc">|&gt;</span></span>
-<span id="cb23-114"><a href="#cb23-114" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rownames_to_column</span>(<span class="st">"punto"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb23-115"><a href="#cb23-115" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>()</span>
-<span id="cb23-116"><a href="#cb23-116" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb23-117"><a href="#cb23-117" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-120"><a href="#cb23-120" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb23-121"><a href="#cb23-121" aria-hidden="true" tabindex="-1"></a>dist_euclidean <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(<span class="fu">dist</span>(puntos, <span class="at">method =</span> <span class="st">"euclidean"</span>))</span>
-<span id="cb23-122"><a href="#cb23-122" aria-hidden="true" tabindex="-1"></a>dist_manhattan <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(<span class="fu">dist</span>(puntos, <span class="at">method =</span> <span class="st">"manhattan"</span>))</span>
-<span id="cb23-123"><a href="#cb23-123" aria-hidden="true" tabindex="-1"></a>dist_chebyshev <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(<span class="fu">dist</span>(puntos, <span class="at">method =</span> <span class="st">"maximum"</span>))</span>
-<span id="cb23-124"><a href="#cb23-124" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-125"><a href="#cb23-125" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(<span class="fu">round</span>(dist_euclidean, <span class="dv">2</span>), <span class="at">caption =</span> <span class="st">"Distancia euclídea"</span>)</span>
-<span id="cb23-126"><a href="#cb23-126" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(<span class="fu">round</span>(dist_manhattan, <span class="dv">2</span>), <span class="at">caption =</span> <span class="st">"Distancia Manhattan"</span>)</span>
-<span id="cb23-127"><a href="#cb23-127" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(<span class="fu">round</span>(dist_chebyshev, <span class="dv">2</span>), <span class="at">caption =</span> <span class="st">"Distancia Chebyshev"</span>)</span>
-<span id="cb23-128"><a href="#cb23-128" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb23-129"><a href="#cb23-129" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-130"><a href="#cb23-130" aria-hidden="true" tabindex="-1"></a>La comparación entre <span class="in">`A`</span> y <span class="in">`B`</span> reparte la diferencia entre dos variables. La comparación entre <span class="in">`A`</span> y <span class="in">`C`</span> concentra la diferencia en una variable. Manhattan acumula cambios; Chebyshev solo mira el cambio máximo; euclídea queda en una posición intermedia, pero penaliza más las diferencias grandes.</span>
+<span id="cb23-105"><a href="#cb23-105" aria-hidden="true" tabindex="-1"></a>Comparamos cuatro puntos artificiales. El punto <span class="in">`B`</span> difiere poco de <span class="in">`A`</span> en dos variables; <span class="in">`C`</span> difiere mucho en una sola variable; <span class="in">`D`</span> tiene un perfil proporcional a <span class="in">`A`</span>.</span>
+<span id="cb23-106"><a href="#cb23-106" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-109"><a href="#cb23-109" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb23-110"><a href="#cb23-110" aria-hidden="true" tabindex="-1"></a>puntos <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb23-111"><a href="#cb23-111" aria-hidden="true" tabindex="-1"></a>  <span class="at">x1 =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">5</span>, <span class="dv">2</span>),</span>
+<span id="cb23-112"><a href="#cb23-112" aria-hidden="true" tabindex="-1"></a>  <span class="at">x2 =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">2</span>),</span>
+<span id="cb23-113"><a href="#cb23-113" aria-hidden="true" tabindex="-1"></a>  <span class="at">row.names =</span> <span class="fu">c</span>(<span class="st">"A"</span>, <span class="st">"B"</span>, <span class="st">"C"</span>, <span class="st">"D"</span>)</span>
+<span id="cb23-114"><a href="#cb23-114" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb23-115"><a href="#cb23-115" aria-hidden="true" tabindex="-1"></a>puntos <span class="sc">|&gt;</span></span>
+<span id="cb23-116"><a href="#cb23-116" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rownames_to_column</span>(<span class="st">"punto"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb23-117"><a href="#cb23-117" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>()</span>
+<span id="cb23-118"><a href="#cb23-118" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb23-119"><a href="#cb23-119" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-122"><a href="#cb23-122" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb23-123"><a href="#cb23-123" aria-hidden="true" tabindex="-1"></a>dist_euclidean <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(<span class="fu">dist</span>(puntos, <span class="at">method =</span> <span class="st">"euclidean"</span>))</span>
+<span id="cb23-124"><a href="#cb23-124" aria-hidden="true" tabindex="-1"></a>dist_manhattan <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(<span class="fu">dist</span>(puntos, <span class="at">method =</span> <span class="st">"manhattan"</span>))</span>
+<span id="cb23-125"><a href="#cb23-125" aria-hidden="true" tabindex="-1"></a>dist_chebyshev <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(<span class="fu">dist</span>(puntos, <span class="at">method =</span> <span class="st">"maximum"</span>))</span>
+<span id="cb23-126"><a href="#cb23-126" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-127"><a href="#cb23-127" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(<span class="fu">round</span>(dist_euclidean, <span class="dv">2</span>), <span class="at">caption =</span> <span class="st">"Distancia euclídea"</span>)</span>
+<span id="cb23-128"><a href="#cb23-128" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(<span class="fu">round</span>(dist_manhattan, <span class="dv">2</span>), <span class="at">caption =</span> <span class="st">"Distancia Manhattan"</span>)</span>
+<span id="cb23-129"><a href="#cb23-129" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(<span class="fu">round</span>(dist_chebyshev, <span class="dv">2</span>), <span class="at">caption =</span> <span class="st">"Distancia Chebyshev"</span>)</span>
+<span id="cb23-130"><a href="#cb23-130" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb23-131"><a href="#cb23-131" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-132"><a href="#cb23-132" aria-hidden="true" tabindex="-1"></a>Veamos ahora Mahalanobis en dos variables muy correlacionadas de <span class="in">`mtcars`</span>: cilindrada (<span class="in">`disp`</span>) y peso (<span class="in">`wt`</span>). Para que el efecto no venga de las unidades de medida, primero estandarizamos ambas variables. Así la comparación se centra en la correlación.</span>
+<span id="cb23-132"><a href="#cb23-132" aria-hidden="true" tabindex="-1"></a>La comparación entre <span class="in">`A`</span> y <span class="in">`B`</span> reparte la diferencia entre dos variables. La comparación entre <span class="in">`A`</span> y <span class="in">`C`</span> concentra la diferencia en una variable. Manhattan acumula cambios; Chebyshev solo mira el cambio máximo; euclídea queda en una posición intermedia, pero penaliza más las diferencias grandes.</span>
 <span id="cb23-133"><a href="#cb23-133" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-134"><a href="#cb23-134" aria-hidden="true" tabindex="-1"></a>Construimos dos pares artificiales:</span>
+<span id="cb23-134"><a href="#cb23-134" aria-hidden="true" tabindex="-1"></a>Veamos ahora Mahalanobis en dos variables muy correlacionadas de <span class="in">`mtcars`</span>: cilindrada (<span class="in">`disp`</span>) y peso (<span class="in">`wt`</span>). Para que el efecto no venga de las unidades de medida, primero estandarizamos ambas variables. Así la comparación se centra en la correlación.</span>
 <span id="cb23-135"><a href="#cb23-135" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-136"><a href="#cb23-136" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`A-B`</span>, separado en la dirección de la primera componente principal, donde <span class="in">`disp`</span> y <span class="in">`wt`</span> aumentan conjuntamente. Esa es la dirección larga de la nube.</span>
-<span id="cb23-137"><a href="#cb23-137" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`C-D`</span>, separado en la dirección de la segunda componente principal, donde una variable aumenta mientras la otra disminuye. Esa es la dirección corta de la nube.</span>
-<span id="cb23-138"><a href="#cb23-138" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-141"><a href="#cb23-141" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb23-142"><a href="#cb23-142" aria-hidden="true" tabindex="-1"></a>X_mtcars <span class="ot">&lt;-</span> mtcars[, <span class="fu">c</span>(<span class="st">"disp"</span>, <span class="st">"wt"</span>)]</span>
-<span id="cb23-143"><a href="#cb23-143" aria-hidden="true" tabindex="-1"></a>Z_mtcars <span class="ot">&lt;-</span> <span class="fu">scale</span>(X_mtcars)</span>
-<span id="cb23-144"><a href="#cb23-144" aria-hidden="true" tabindex="-1"></a>pca_disp_wt <span class="ot">&lt;-</span> <span class="fu">prcomp</span>(Z_mtcars, <span class="at">center =</span> <span class="cn">FALSE</span>, <span class="at">scale. =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb23-145"><a href="#cb23-145" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-146"><a href="#cb23-146" aria-hidden="true" tabindex="-1"></a>rho <span class="ot">&lt;-</span> <span class="fu">cor</span>(Z_mtcars[, <span class="st">"disp"</span>], Z_mtcars[, <span class="st">"wt"</span>])</span>
-<span id="cb23-147"><a href="#cb23-147" aria-hidden="true" tabindex="-1"></a>lambda <span class="ot">&lt;-</span> pca_disp_wt<span class="sc">$</span>sdev<span class="sc">^</span><span class="dv">2</span></span>
-<span id="cb23-148"><a href="#cb23-148" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-149"><a href="#cb23-149" aria-hidden="true" tabindex="-1"></a>scores_puntos <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
-<span id="cb23-150"><a href="#cb23-150" aria-hidden="true" tabindex="-1"></a>  <span class="at">punto =</span> <span class="fu">c</span>(<span class="st">"A"</span>, <span class="st">"B"</span>, <span class="st">"C"</span>, <span class="st">"D"</span>),</span>
-<span id="cb23-151"><a href="#cb23-151" aria-hidden="true" tabindex="-1"></a>  <span class="at">PC1 =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fl">1.6</span>, <span class="fl">1.6</span>, <span class="dv">0</span>, <span class="dv">0</span>),</span>
-<span id="cb23-152"><a href="#cb23-152" aria-hidden="true" tabindex="-1"></a>  <span class="at">PC2 =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="sc">-</span><span class="fl">1.6</span>, <span class="fl">1.6</span>),</span>
-<span id="cb23-153"><a href="#cb23-153" aria-hidden="true" tabindex="-1"></a>  <span class="at">par =</span> <span class="fu">c</span>(<span class="st">"A-B"</span>, <span class="st">"A-B"</span>, <span class="st">"C-D"</span>, <span class="st">"C-D"</span>)</span>
-<span id="cb23-154"><a href="#cb23-154" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb23-155"><a href="#cb23-155" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-156"><a href="#cb23-156" aria-hidden="true" tabindex="-1"></a>coord_z <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(scores_puntos[, <span class="fu">c</span>(<span class="st">"PC1"</span>, <span class="st">"PC2"</span>)]) <span class="sc">%*%</span> <span class="fu">t</span>(pca_disp_wt<span class="sc">$</span>rotation[, <span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>])</span>
-<span id="cb23-157"><a href="#cb23-157" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(coord_z) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"z_disp"</span>, <span class="st">"z_wt"</span>)</span>
-<span id="cb23-158"><a href="#cb23-158" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-159"><a href="#cb23-159" aria-hidden="true" tabindex="-1"></a>puntos_maha <span class="ot">&lt;-</span> <span class="fu">bind_cols</span>(scores_puntos, <span class="fu">as_tibble</span>(coord_z))</span>
+<span id="cb23-136"><a href="#cb23-136" aria-hidden="true" tabindex="-1"></a>Construimos dos pares artificiales:</span>
+<span id="cb23-137"><a href="#cb23-137" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-138"><a href="#cb23-138" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`A-B`</span>, separado en la dirección de la primera componente principal, donde <span class="in">`disp`</span> y <span class="in">`wt`</span> aumentan conjuntamente. Esa es la dirección larga de la nube.</span>
+<span id="cb23-139"><a href="#cb23-139" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`C-D`</span>, separado en la dirección de la segunda componente principal, donde una variable aumenta mientras la otra disminuye. Esa es la dirección corta de la nube.</span>
+<span id="cb23-140"><a href="#cb23-140" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-143"><a href="#cb23-143" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb23-144"><a href="#cb23-144" aria-hidden="true" tabindex="-1"></a>X_mtcars <span class="ot">&lt;-</span> mtcars[, <span class="fu">c</span>(<span class="st">"disp"</span>, <span class="st">"wt"</span>)]</span>
+<span id="cb23-145"><a href="#cb23-145" aria-hidden="true" tabindex="-1"></a>Z_mtcars <span class="ot">&lt;-</span> <span class="fu">scale</span>(X_mtcars)</span>
+<span id="cb23-146"><a href="#cb23-146" aria-hidden="true" tabindex="-1"></a>pca_disp_wt <span class="ot">&lt;-</span> <span class="fu">prcomp</span>(Z_mtcars, <span class="at">center =</span> <span class="cn">FALSE</span>, <span class="at">scale. =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb23-147"><a href="#cb23-147" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-148"><a href="#cb23-148" aria-hidden="true" tabindex="-1"></a>rho <span class="ot">&lt;-</span> <span class="fu">cor</span>(Z_mtcars[, <span class="st">"disp"</span>], Z_mtcars[, <span class="st">"wt"</span>])</span>
+<span id="cb23-149"><a href="#cb23-149" aria-hidden="true" tabindex="-1"></a>lambda <span class="ot">&lt;-</span> pca_disp_wt<span class="sc">$</span>sdev<span class="sc">^</span><span class="dv">2</span></span>
+<span id="cb23-150"><a href="#cb23-150" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-151"><a href="#cb23-151" aria-hidden="true" tabindex="-1"></a>scores_puntos <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb23-152"><a href="#cb23-152" aria-hidden="true" tabindex="-1"></a>  <span class="at">punto =</span> <span class="fu">c</span>(<span class="st">"A"</span>, <span class="st">"B"</span>, <span class="st">"C"</span>, <span class="st">"D"</span>),</span>
+<span id="cb23-153"><a href="#cb23-153" aria-hidden="true" tabindex="-1"></a>  <span class="at">PC1 =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fl">1.6</span>, <span class="fl">1.6</span>, <span class="dv">0</span>, <span class="dv">0</span>),</span>
+<span id="cb23-154"><a href="#cb23-154" aria-hidden="true" tabindex="-1"></a>  <span class="at">PC2 =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="sc">-</span><span class="fl">1.6</span>, <span class="fl">1.6</span>),</span>
+<span id="cb23-155"><a href="#cb23-155" aria-hidden="true" tabindex="-1"></a>  <span class="at">par =</span> <span class="fu">c</span>(<span class="st">"A-B"</span>, <span class="st">"A-B"</span>, <span class="st">"C-D"</span>, <span class="st">"C-D"</span>)</span>
+<span id="cb23-156"><a href="#cb23-156" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb23-157"><a href="#cb23-157" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-158"><a href="#cb23-158" aria-hidden="true" tabindex="-1"></a>coord_z <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(scores_puntos[, <span class="fu">c</span>(<span class="st">"PC1"</span>, <span class="st">"PC2"</span>)]) <span class="sc">%*%</span> <span class="fu">t</span>(pca_disp_wt<span class="sc">$</span>rotation[, <span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>])</span>
+<span id="cb23-159"><a href="#cb23-159" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(coord_z) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"z_disp"</span>, <span class="st">"z_wt"</span>)</span>
 <span id="cb23-160"><a href="#cb23-160" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-161"><a href="#cb23-161" aria-hidden="true" tabindex="-1"></a>segmentos_maha <span class="ot">&lt;-</span> puntos_maha <span class="sc">|&gt;</span></span>
-<span id="cb23-162"><a href="#cb23-162" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(par) <span class="sc">|&gt;</span></span>
-<span id="cb23-163"><a href="#cb23-163" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
-<span id="cb23-164"><a href="#cb23-164" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="fu">first</span>(z_disp),</span>
-<span id="cb23-165"><a href="#cb23-165" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="fu">first</span>(z_wt),</span>
-<span id="cb23-166"><a href="#cb23-166" aria-hidden="true" tabindex="-1"></a>    <span class="at">xend =</span> <span class="fu">last</span>(z_disp),</span>
-<span id="cb23-167"><a href="#cb23-167" aria-hidden="true" tabindex="-1"></a>    <span class="at">yend =</span> <span class="fu">last</span>(z_wt),</span>
-<span id="cb23-168"><a href="#cb23-168" aria-hidden="true" tabindex="-1"></a>    <span class="at">.groups =</span> <span class="st">"drop"</span></span>
-<span id="cb23-169"><a href="#cb23-169" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb23-170"><a href="#cb23-170" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-171"><a href="#cb23-171" aria-hidden="true" tabindex="-1"></a>datos_z <span class="ot">&lt;-</span> <span class="fu">as_tibble</span>(Z_mtcars) <span class="sc">|&gt;</span></span>
-<span id="cb23-172"><a href="#cb23-172" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_names</span>(<span class="fu">c</span>(<span class="st">"z_disp"</span>, <span class="st">"z_wt"</span>))</span>
-<span id="cb23-173"><a href="#cb23-173" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-174"><a href="#cb23-174" aria-hidden="true" tabindex="-1"></a>ejes_pc <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
-<span id="cb23-175"><a href="#cb23-175" aria-hidden="true" tabindex="-1"></a>  <span class="at">eje =</span> <span class="fu">c</span>(<span class="st">"PC1"</span>, <span class="st">"PC2"</span>),</span>
-<span id="cb23-176"><a href="#cb23-176" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> <span class="dv">0</span>,</span>
-<span id="cb23-177"><a href="#cb23-177" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> <span class="dv">0</span>,</span>
-<span id="cb23-178"><a href="#cb23-178" aria-hidden="true" tabindex="-1"></a>  <span class="at">xend =</span> <span class="fl">2.2</span> <span class="sc">*</span> pca_disp_wt<span class="sc">$</span>rotation[<span class="st">"disp"</span>, <span class="fu">c</span>(<span class="st">"PC1"</span>, <span class="st">"PC2"</span>)],</span>
-<span id="cb23-179"><a href="#cb23-179" aria-hidden="true" tabindex="-1"></a>  <span class="at">yend =</span> <span class="fl">2.2</span> <span class="sc">*</span> pca_disp_wt<span class="sc">$</span>rotation[<span class="st">"wt"</span>, <span class="fu">c</span>(<span class="st">"PC1"</span>, <span class="st">"PC2"</span>)]</span>
-<span id="cb23-180"><a href="#cb23-180" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb23-181"><a href="#cb23-181" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-182"><a href="#cb23-182" aria-hidden="true" tabindex="-1"></a>datos_z <span class="sc">|&gt;</span></span>
-<span id="cb23-183"><a href="#cb23-183" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(z_disp, z_wt)) <span class="sc">+</span></span>
-<span id="cb23-184"><a href="#cb23-184" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.65</span>, <span class="at">size =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
-<span id="cb23-185"><a href="#cb23-185" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_ellipse</span>(<span class="at">type =</span> <span class="st">"norm"</span>, <span class="at">level =</span> <span class="fl">0.68</span>, <span class="at">color =</span> <span class="st">"gray40"</span>, <span class="at">linewidth =</span> <span class="fl">0.7</span>) <span class="sc">+</span></span>
-<span id="cb23-186"><a href="#cb23-186" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_segment</span>(</span>
-<span id="cb23-187"><a href="#cb23-187" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> ejes_pc,</span>
-<span id="cb23-188"><a href="#cb23-188" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> y, <span class="at">xend =</span> xend, <span class="at">yend =</span> yend),</span>
-<span id="cb23-189"><a href="#cb23-189" aria-hidden="true" tabindex="-1"></a>    <span class="at">inherit.aes =</span> <span class="cn">FALSE</span>,</span>
-<span id="cb23-190"><a href="#cb23-190" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">"gray25"</span>,</span>
-<span id="cb23-191"><a href="#cb23-191" aria-hidden="true" tabindex="-1"></a>    <span class="at">linewidth =</span> <span class="fl">0.7</span>,</span>
-<span id="cb23-192"><a href="#cb23-192" aria-hidden="true" tabindex="-1"></a>    <span class="at">arrow =</span> <span class="fu">arrow</span>(<span class="at">length =</span> grid<span class="sc">::</span><span class="fu">unit</span>(<span class="fl">0.16</span>, <span class="st">"cm"</span>))</span>
-<span id="cb23-193"><a href="#cb23-193" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb23-194"><a href="#cb23-194" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(</span>
-<span id="cb23-195"><a href="#cb23-195" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> ejes_pc,</span>
-<span id="cb23-196"><a href="#cb23-196" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">x =</span> xend, <span class="at">y =</span> yend, <span class="at">label =</span> eje),</span>
-<span id="cb23-197"><a href="#cb23-197" aria-hidden="true" tabindex="-1"></a>    <span class="at">inherit.aes =</span> <span class="cn">FALSE</span>,</span>
-<span id="cb23-198"><a href="#cb23-198" aria-hidden="true" tabindex="-1"></a>    <span class="at">nudge_y =</span> <span class="fl">0.12</span>,</span>
-<span id="cb23-199"><a href="#cb23-199" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">"gray20"</span></span>
-<span id="cb23-200"><a href="#cb23-200" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb23-201"><a href="#cb23-201" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_segment</span>(</span>
-<span id="cb23-202"><a href="#cb23-202" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> segmentos_maha,</span>
-<span id="cb23-203"><a href="#cb23-203" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> y, <span class="at">xend =</span> xend, <span class="at">yend =</span> yend, <span class="at">color =</span> par),</span>
-<span id="cb23-204"><a href="#cb23-204" aria-hidden="true" tabindex="-1"></a>    <span class="at">linewidth =</span> <span class="fl">1.2</span>,</span>
-<span id="cb23-205"><a href="#cb23-205" aria-hidden="true" tabindex="-1"></a>    <span class="at">arrow =</span> <span class="fu">arrow</span>(<span class="at">length =</span> grid<span class="sc">::</span><span class="fu">unit</span>(<span class="fl">0.18</span>, <span class="st">"cm"</span>))</span>
-<span id="cb23-206"><a href="#cb23-206" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb23-207"><a href="#cb23-207" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">data =</span> puntos_maha, <span class="fu">aes</span>(z_disp, z_wt, <span class="at">color =</span> par), <span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
-<span id="cb23-208"><a href="#cb23-208" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(</span>
-<span id="cb23-209"><a href="#cb23-209" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> puntos_maha,</span>
-<span id="cb23-210"><a href="#cb23-210" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(z_disp, z_wt, <span class="at">label =</span> punto, <span class="at">color =</span> par),</span>
-<span id="cb23-211"><a href="#cb23-211" aria-hidden="true" tabindex="-1"></a>    <span class="at">nudge_y =</span> <span class="fl">0.14</span>,</span>
-<span id="cb23-212"><a href="#cb23-212" aria-hidden="true" tabindex="-1"></a>    <span class="at">show.legend =</span> <span class="cn">FALSE</span></span>
-<span id="cb23-213"><a href="#cb23-213" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb23-214"><a href="#cb23-214" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_equal</span>() <span class="sc">+</span></span>
-<span id="cb23-215"><a href="#cb23-215" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
-<span id="cb23-216"><a href="#cb23-216" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Mahalanobis en la dirección larga y corta de la nube"</span>,</span>
-<span id="cb23-217"><a href="#cb23-217" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">"Variables estandarizadas: el efecto visible viene de la correlación"</span>,</span>
-<span id="cb23-218"><a href="#cb23-218" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Cilindrada estandarizada"</span>,</span>
-<span id="cb23-219"><a href="#cb23-219" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Peso estandarizado"</span>,</span>
-<span id="cb23-220"><a href="#cb23-220" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">"Par"</span></span>
-<span id="cb23-221"><a href="#cb23-221" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb23-222"><a href="#cb23-222" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span>
-<span id="cb23-223"><a href="#cb23-223" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb23-224"><a href="#cb23-224" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-225"><a href="#cb23-225" aria-hidden="true" tabindex="-1"></a>La correlación positiva hace que la nube sea alargada. La dirección PC1 tiene mucha varianza: moverse por ahí es relativamente habitual. La dirección PC2 tiene poca varianza: moverse por ahí es raro porque rompe la relación positiva entre cilindrada y peso.</span>
+<span id="cb23-161"><a href="#cb23-161" aria-hidden="true" tabindex="-1"></a>puntos_maha <span class="ot">&lt;-</span> <span class="fu">bind_cols</span>(scores_puntos, <span class="fu">as_tibble</span>(coord_z))</span>
+<span id="cb23-162"><a href="#cb23-162" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-163"><a href="#cb23-163" aria-hidden="true" tabindex="-1"></a>segmentos_maha <span class="ot">&lt;-</span> puntos_maha <span class="sc">|&gt;</span></span>
+<span id="cb23-164"><a href="#cb23-164" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(par) <span class="sc">|&gt;</span></span>
+<span id="cb23-165"><a href="#cb23-165" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb23-166"><a href="#cb23-166" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="fu">first</span>(z_disp),</span>
+<span id="cb23-167"><a href="#cb23-167" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="fu">first</span>(z_wt),</span>
+<span id="cb23-168"><a href="#cb23-168" aria-hidden="true" tabindex="-1"></a>    <span class="at">xend =</span> <span class="fu">last</span>(z_disp),</span>
+<span id="cb23-169"><a href="#cb23-169" aria-hidden="true" tabindex="-1"></a>    <span class="at">yend =</span> <span class="fu">last</span>(z_wt),</span>
+<span id="cb23-170"><a href="#cb23-170" aria-hidden="true" tabindex="-1"></a>    <span class="at">.groups =</span> <span class="st">"drop"</span></span>
+<span id="cb23-171"><a href="#cb23-171" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb23-172"><a href="#cb23-172" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-173"><a href="#cb23-173" aria-hidden="true" tabindex="-1"></a>datos_z <span class="ot">&lt;-</span> <span class="fu">as_tibble</span>(Z_mtcars) <span class="sc">|&gt;</span></span>
+<span id="cb23-174"><a href="#cb23-174" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_names</span>(<span class="fu">c</span>(<span class="st">"z_disp"</span>, <span class="st">"z_wt"</span>))</span>
+<span id="cb23-175"><a href="#cb23-175" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-176"><a href="#cb23-176" aria-hidden="true" tabindex="-1"></a>ejes_pc <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb23-177"><a href="#cb23-177" aria-hidden="true" tabindex="-1"></a>  <span class="at">eje =</span> <span class="fu">c</span>(<span class="st">"PC1"</span>, <span class="st">"PC2"</span>),</span>
+<span id="cb23-178"><a href="#cb23-178" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> <span class="dv">0</span>,</span>
+<span id="cb23-179"><a href="#cb23-179" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> <span class="dv">0</span>,</span>
+<span id="cb23-180"><a href="#cb23-180" aria-hidden="true" tabindex="-1"></a>  <span class="at">xend =</span> <span class="fl">2.2</span> <span class="sc">*</span> pca_disp_wt<span class="sc">$</span>rotation[<span class="st">"disp"</span>, <span class="fu">c</span>(<span class="st">"PC1"</span>, <span class="st">"PC2"</span>)],</span>
+<span id="cb23-181"><a href="#cb23-181" aria-hidden="true" tabindex="-1"></a>  <span class="at">yend =</span> <span class="fl">2.2</span> <span class="sc">*</span> pca_disp_wt<span class="sc">$</span>rotation[<span class="st">"wt"</span>, <span class="fu">c</span>(<span class="st">"PC1"</span>, <span class="st">"PC2"</span>)]</span>
+<span id="cb23-182"><a href="#cb23-182" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb23-183"><a href="#cb23-183" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-184"><a href="#cb23-184" aria-hidden="true" tabindex="-1"></a>datos_z <span class="sc">|&gt;</span></span>
+<span id="cb23-185"><a href="#cb23-185" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(z_disp, z_wt)) <span class="sc">+</span></span>
+<span id="cb23-186"><a href="#cb23-186" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.65</span>, <span class="at">size =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb23-187"><a href="#cb23-187" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_ellipse</span>(<span class="at">type =</span> <span class="st">"norm"</span>, <span class="at">level =</span> <span class="fl">0.68</span>, <span class="at">color =</span> <span class="st">"gray40"</span>, <span class="at">linewidth =</span> <span class="fl">0.7</span>) <span class="sc">+</span></span>
+<span id="cb23-188"><a href="#cb23-188" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_segment</span>(</span>
+<span id="cb23-189"><a href="#cb23-189" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> ejes_pc,</span>
+<span id="cb23-190"><a href="#cb23-190" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> y, <span class="at">xend =</span> xend, <span class="at">yend =</span> yend),</span>
+<span id="cb23-191"><a href="#cb23-191" aria-hidden="true" tabindex="-1"></a>    <span class="at">inherit.aes =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb23-192"><a href="#cb23-192" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">"gray25"</span>,</span>
+<span id="cb23-193"><a href="#cb23-193" aria-hidden="true" tabindex="-1"></a>    <span class="at">linewidth =</span> <span class="fl">0.7</span>,</span>
+<span id="cb23-194"><a href="#cb23-194" aria-hidden="true" tabindex="-1"></a>    <span class="at">arrow =</span> <span class="fu">arrow</span>(<span class="at">length =</span> grid<span class="sc">::</span><span class="fu">unit</span>(<span class="fl">0.16</span>, <span class="st">"cm"</span>))</span>
+<span id="cb23-195"><a href="#cb23-195" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb23-196"><a href="#cb23-196" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(</span>
+<span id="cb23-197"><a href="#cb23-197" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> ejes_pc,</span>
+<span id="cb23-198"><a href="#cb23-198" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">x =</span> xend, <span class="at">y =</span> yend, <span class="at">label =</span> eje),</span>
+<span id="cb23-199"><a href="#cb23-199" aria-hidden="true" tabindex="-1"></a>    <span class="at">inherit.aes =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb23-200"><a href="#cb23-200" aria-hidden="true" tabindex="-1"></a>    <span class="at">nudge_y =</span> <span class="fl">0.12</span>,</span>
+<span id="cb23-201"><a href="#cb23-201" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">"gray20"</span></span>
+<span id="cb23-202"><a href="#cb23-202" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb23-203"><a href="#cb23-203" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_segment</span>(</span>
+<span id="cb23-204"><a href="#cb23-204" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> segmentos_maha,</span>
+<span id="cb23-205"><a href="#cb23-205" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> y, <span class="at">xend =</span> xend, <span class="at">yend =</span> yend, <span class="at">color =</span> par),</span>
+<span id="cb23-206"><a href="#cb23-206" aria-hidden="true" tabindex="-1"></a>    <span class="at">linewidth =</span> <span class="fl">1.2</span>,</span>
+<span id="cb23-207"><a href="#cb23-207" aria-hidden="true" tabindex="-1"></a>    <span class="at">arrow =</span> <span class="fu">arrow</span>(<span class="at">length =</span> grid<span class="sc">::</span><span class="fu">unit</span>(<span class="fl">0.18</span>, <span class="st">"cm"</span>))</span>
+<span id="cb23-208"><a href="#cb23-208" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb23-209"><a href="#cb23-209" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">data =</span> puntos_maha, <span class="fu">aes</span>(z_disp, z_wt, <span class="at">color =</span> par), <span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
+<span id="cb23-210"><a href="#cb23-210" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(</span>
+<span id="cb23-211"><a href="#cb23-211" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> puntos_maha,</span>
+<span id="cb23-212"><a href="#cb23-212" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(z_disp, z_wt, <span class="at">label =</span> punto, <span class="at">color =</span> par),</span>
+<span id="cb23-213"><a href="#cb23-213" aria-hidden="true" tabindex="-1"></a>    <span class="at">nudge_y =</span> <span class="fl">0.14</span>,</span>
+<span id="cb23-214"><a href="#cb23-214" aria-hidden="true" tabindex="-1"></a>    <span class="at">show.legend =</span> <span class="cn">FALSE</span></span>
+<span id="cb23-215"><a href="#cb23-215" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb23-216"><a href="#cb23-216" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_equal</span>() <span class="sc">+</span></span>
+<span id="cb23-217"><a href="#cb23-217" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb23-218"><a href="#cb23-218" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Mahalanobis en la dirección larga y corta de la nube"</span>,</span>
+<span id="cb23-219"><a href="#cb23-219" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">"Variables estandarizadas: el efecto visible viene de la correlación"</span>,</span>
+<span id="cb23-220"><a href="#cb23-220" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Cilindrada estandarizada"</span>,</span>
+<span id="cb23-221"><a href="#cb23-221" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Peso estandarizado"</span>,</span>
+<span id="cb23-222"><a href="#cb23-222" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">"Par"</span></span>
+<span id="cb23-223"><a href="#cb23-223" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb23-224"><a href="#cb23-224" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span>
+<span id="cb23-225"><a href="#cb23-225" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb23-226"><a href="#cb23-226" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-229"><a href="#cb23-229" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb23-230"><a href="#cb23-230" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(</span>
-<span id="cb23-231"><a href="#cb23-231" aria-hidden="true" tabindex="-1"></a>  <span class="at">correlacion =</span> rho,</span>
-<span id="cb23-232"><a href="#cb23-232" aria-hidden="true" tabindex="-1"></a>  <span class="at">varianza_PC1 =</span> lambda[<span class="dv">1</span>],</span>
-<span id="cb23-233"><a href="#cb23-233" aria-hidden="true" tabindex="-1"></a>  <span class="at">varianza_PC2 =</span> lambda[<span class="dv">2</span>]</span>
-<span id="cb23-234"><a href="#cb23-234" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
-<span id="cb23-235"><a href="#cb23-235" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">digits =</span> <span class="dv">3</span>)</span>
-<span id="cb23-236"><a href="#cb23-236" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb23-237"><a href="#cb23-237" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-238"><a href="#cb23-238" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-239"><a href="#cb23-239" aria-hidden="true" tabindex="-1"></a>Por tanto, el peso de la separación es inversamente proporcional a la varianza en ese eje.</span>
+<span id="cb23-227"><a href="#cb23-227" aria-hidden="true" tabindex="-1"></a>La correlación positiva hace que la nube sea alargada. La dirección PC1 tiene mucha varianza: moverse por ahí es relativamente habitual. La dirección PC2 tiene poca varianza: moverse por ahí es raro porque rompe la relación positiva entre cilindrada y peso.</span>
+<span id="cb23-228"><a href="#cb23-228" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-231"><a href="#cb23-231" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb23-232"><a href="#cb23-232" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(</span>
+<span id="cb23-233"><a href="#cb23-233" aria-hidden="true" tabindex="-1"></a>  <span class="at">correlacion =</span> rho,</span>
+<span id="cb23-234"><a href="#cb23-234" aria-hidden="true" tabindex="-1"></a>  <span class="at">varianza_PC1 =</span> lambda[<span class="dv">1</span>],</span>
+<span id="cb23-235"><a href="#cb23-235" aria-hidden="true" tabindex="-1"></a>  <span class="at">varianza_PC2 =</span> lambda[<span class="dv">2</span>]</span>
+<span id="cb23-236"><a href="#cb23-236" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
+<span id="cb23-237"><a href="#cb23-237" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">digits =</span> <span class="dv">3</span>)</span>
+<span id="cb23-238"><a href="#cb23-238" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb23-239"><a href="#cb23-239" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb23-240"><a href="#cb23-240" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-243"><a href="#cb23-243" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb23-244"><a href="#cb23-244" aria-hidden="true" tabindex="-1"></a>distancia_par <span class="ot">&lt;-</span> <span class="cf">function</span>(p1, p2, datos, S) {</span>
-<span id="cb23-245"><a href="#cb23-245" aria-hidden="true" tabindex="-1"></a>  x1 <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(datos[datos<span class="sc">$</span>punto <span class="sc">==</span> p1, <span class="fu">c</span>(<span class="st">"z_disp"</span>, <span class="st">"z_wt"</span>)])</span>
-<span id="cb23-246"><a href="#cb23-246" aria-hidden="true" tabindex="-1"></a>  x2 <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(datos[datos<span class="sc">$</span>punto <span class="sc">==</span> p2, <span class="fu">c</span>(<span class="st">"z_disp"</span>, <span class="st">"z_wt"</span>)])</span>
-<span id="cb23-247"><a href="#cb23-247" aria-hidden="true" tabindex="-1"></a>  dif <span class="ot">&lt;-</span> x1 <span class="sc">-</span> x2</span>
-<span id="cb23-248"><a href="#cb23-248" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>(</span>
-<span id="cb23-249"><a href="#cb23-249" aria-hidden="true" tabindex="-1"></a>    <span class="at">par =</span> <span class="fu">paste</span>(p1, p2, <span class="at">sep =</span> <span class="st">"-"</span>),</span>
-<span id="cb23-250"><a href="#cb23-250" aria-hidden="true" tabindex="-1"></a>    <span class="at">direccion =</span> <span class="fu">if_else</span>(par <span class="sc">==</span> <span class="st">"A-B"</span>, <span class="st">"PC1"</span>, <span class="st">"PC2"</span>),</span>
-<span id="cb23-251"><a href="#cb23-251" aria-hidden="true" tabindex="-1"></a>    <span class="at">euclidea =</span> <span class="fu">sqrt</span>(<span class="fu">sum</span>(dif<span class="sc">^</span><span class="dv">2</span>)),</span>
-<span id="cb23-252"><a href="#cb23-252" aria-hidden="true" tabindex="-1"></a>    <span class="at">mahalanobis =</span> <span class="fu">sqrt</span>(<span class="fu">t</span>(dif) <span class="sc">%*%</span> <span class="fu">solve</span>(S) <span class="sc">%*%</span> dif)</span>
-<span id="cb23-253"><a href="#cb23-253" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb23-254"><a href="#cb23-254" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb23-255"><a href="#cb23-255" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-256"><a href="#cb23-256" aria-hidden="true" tabindex="-1"></a>S <span class="ot">&lt;-</span> <span class="fu">cov</span>(Z_mtcars)</span>
+<span id="cb23-241"><a href="#cb23-241" aria-hidden="true" tabindex="-1"></a>Por tanto, el peso de la separación es inversamente proporcional a la varianza en ese eje.</span>
+<span id="cb23-242"><a href="#cb23-242" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-245"><a href="#cb23-245" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb23-246"><a href="#cb23-246" aria-hidden="true" tabindex="-1"></a>distancia_par <span class="ot">&lt;-</span> <span class="cf">function</span>(p1, p2, datos, S) {</span>
+<span id="cb23-247"><a href="#cb23-247" aria-hidden="true" tabindex="-1"></a>  x1 <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(datos[datos<span class="sc">$</span>punto <span class="sc">==</span> p1, <span class="fu">c</span>(<span class="st">"z_disp"</span>, <span class="st">"z_wt"</span>)])</span>
+<span id="cb23-248"><a href="#cb23-248" aria-hidden="true" tabindex="-1"></a>  x2 <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(datos[datos<span class="sc">$</span>punto <span class="sc">==</span> p2, <span class="fu">c</span>(<span class="st">"z_disp"</span>, <span class="st">"z_wt"</span>)])</span>
+<span id="cb23-249"><a href="#cb23-249" aria-hidden="true" tabindex="-1"></a>  dif <span class="ot">&lt;-</span> x1 <span class="sc">-</span> x2</span>
+<span id="cb23-250"><a href="#cb23-250" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>(</span>
+<span id="cb23-251"><a href="#cb23-251" aria-hidden="true" tabindex="-1"></a>    <span class="at">par =</span> <span class="fu">paste</span>(p1, p2, <span class="at">sep =</span> <span class="st">"-"</span>),</span>
+<span id="cb23-252"><a href="#cb23-252" aria-hidden="true" tabindex="-1"></a>    <span class="at">direccion =</span> <span class="fu">if_else</span>(par <span class="sc">==</span> <span class="st">"A-B"</span>, <span class="st">"PC1"</span>, <span class="st">"PC2"</span>),</span>
+<span id="cb23-253"><a href="#cb23-253" aria-hidden="true" tabindex="-1"></a>    <span class="at">euclidea =</span> <span class="fu">sqrt</span>(<span class="fu">sum</span>(dif<span class="sc">^</span><span class="dv">2</span>)),</span>
+<span id="cb23-254"><a href="#cb23-254" aria-hidden="true" tabindex="-1"></a>    <span class="at">mahalanobis =</span> <span class="fu">sqrt</span>(<span class="fu">t</span>(dif) <span class="sc">%*%</span> <span class="fu">solve</span>(S) <span class="sc">%*%</span> dif)</span>
+<span id="cb23-255"><a href="#cb23-255" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb23-256"><a href="#cb23-256" aria-hidden="true" tabindex="-1"></a>}</span>
 <span id="cb23-257"><a href="#cb23-257" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-258"><a href="#cb23-258" aria-hidden="true" tabindex="-1"></a>comparacion <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(</span>
-<span id="cb23-259"><a href="#cb23-259" aria-hidden="true" tabindex="-1"></a>  <span class="fu">distancia_par</span>(<span class="st">"A"</span>, <span class="st">"B"</span>, puntos_maha, S),</span>
-<span id="cb23-260"><a href="#cb23-260" aria-hidden="true" tabindex="-1"></a>  <span class="fu">distancia_par</span>(<span class="st">"C"</span>, <span class="st">"D"</span>, puntos_maha, S)</span>
-<span id="cb23-261"><a href="#cb23-261" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb23-262"><a href="#cb23-262" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-263"><a href="#cb23-263" aria-hidden="true" tabindex="-1"></a>comparacion <span class="sc">|&gt;</span></span>
-<span id="cb23-264"><a href="#cb23-264" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">c</span>(euclidea, mahalanobis), <span class="cf">function</span>(x) <span class="fu">round</span>(x, <span class="dv">3</span>))) <span class="sc">|&gt;</span></span>
-<span id="cb23-265"><a href="#cb23-265" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>()</span>
-<span id="cb23-266"><a href="#cb23-266" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb23-267"><a href="#cb23-267" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-268"><a href="#cb23-268" aria-hidden="true" tabindex="-1"></a>Los dos pares tienen prácticamente la misma distancia euclídea, porque los hemos separado con la misma longitud en el plano estandarizado. Sin embargo, Mahalanobis distingue la dirección: <span class="in">`A-B`</span> está lejos en la dirección de alta variabilidad, mientras que <span class="in">`C-D`</span> está lejos en la dirección de baja variabilidad. La diferencia no viene de la escala de <span class="in">`disp`</span> y <span class="in">`wt`</span>, sino de su correlación.</span>
+<span id="cb23-258"><a href="#cb23-258" aria-hidden="true" tabindex="-1"></a>S <span class="ot">&lt;-</span> <span class="fu">cov</span>(Z_mtcars)</span>
+<span id="cb23-259"><a href="#cb23-259" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-260"><a href="#cb23-260" aria-hidden="true" tabindex="-1"></a>comparacion <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(</span>
+<span id="cb23-261"><a href="#cb23-261" aria-hidden="true" tabindex="-1"></a>  <span class="fu">distancia_par</span>(<span class="st">"A"</span>, <span class="st">"B"</span>, puntos_maha, S),</span>
+<span id="cb23-262"><a href="#cb23-262" aria-hidden="true" tabindex="-1"></a>  <span class="fu">distancia_par</span>(<span class="st">"C"</span>, <span class="st">"D"</span>, puntos_maha, S)</span>
+<span id="cb23-263"><a href="#cb23-263" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb23-264"><a href="#cb23-264" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-265"><a href="#cb23-265" aria-hidden="true" tabindex="-1"></a>comparacion <span class="sc">|&gt;</span></span>
+<span id="cb23-266"><a href="#cb23-266" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">c</span>(euclidea, mahalanobis), <span class="cf">function</span>(x) <span class="fu">round</span>(x, <span class="dv">3</span>))) <span class="sc">|&gt;</span></span>
+<span id="cb23-267"><a href="#cb23-267" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>()</span>
+<span id="cb23-268"><a href="#cb23-268" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb23-269"><a href="#cb23-269" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-270"><a href="#cb23-270" aria-hidden="true" tabindex="-1"></a>Mahalanobis no solo pregunta cuánto cambian las variables, sino si el cambio sigue una dirección habitual de variación conjunta. Una diferencia en una dirección donde los datos ya varían mucho puede considerarse menos excepcional que una diferencia igual de grande en una dirección rara.</span>
+<span id="cb23-270"><a href="#cb23-270" aria-hidden="true" tabindex="-1"></a>Los dos pares tienen prácticamente la misma distancia euclídea, porque los hemos separado con la misma longitud en el plano estandarizado. Sin embargo, Mahalanobis distingue la dirección: <span class="in">`A-B`</span> está lejos en la dirección de alta variabilidad, mientras que <span class="in">`C-D`</span> está lejos en la dirección de baja variabilidad. La diferencia no viene de la escala de <span class="in">`disp`</span> y <span class="in">`wt`</span>, sino de su correlación.</span>
 <span id="cb23-271"><a href="#cb23-271" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-272"><a href="#cb23-272" aria-hidden="true" tabindex="-1"></a><span class="fu">## El problema del escalado</span></span>
+<span id="cb23-272"><a href="#cb23-272" aria-hidden="true" tabindex="-1"></a>Mahalanobis no solo pregunta cuánto cambian las variables, sino si el cambio sigue una dirección habitual de variación conjunta. Una diferencia en una dirección donde los datos ya varían mucho puede considerarse menos excepcional que una diferencia igual de grande en una dirección rara.</span>
 <span id="cb23-273"><a href="#cb23-273" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-274"><a href="#cb23-274" aria-hidden="true" tabindex="-1"></a>Si las variables están en unidades distintas, una variable con mucha dispersión puede dominar la distancia. Por eso es habitual estandarizar:</span>
+<span id="cb23-274"><a href="#cb23-274" aria-hidden="true" tabindex="-1"></a><span class="fu">## El problema del escalado</span></span>
 <span id="cb23-275"><a href="#cb23-275" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-278"><a href="#cb23-278" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb23-279"><a href="#cb23-279" aria-hidden="true" tabindex="-1"></a>vars <span class="ot">&lt;-</span> mtcars[, <span class="fu">c</span>(<span class="st">"mpg"</span>, <span class="st">"disp"</span>, <span class="st">"hp"</span>, <span class="st">"wt"</span>)]</span>
-<span id="cb23-280"><a href="#cb23-280" aria-hidden="true" tabindex="-1"></a>d_sin_escalar <span class="ot">&lt;-</span> <span class="fu">dist</span>(vars)</span>
-<span id="cb23-281"><a href="#cb23-281" aria-hidden="true" tabindex="-1"></a>d_escalada <span class="ot">&lt;-</span> <span class="fu">dist</span>(<span class="fu">scale</span>(vars))</span>
-<span id="cb23-282"><a href="#cb23-282" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-283"><a href="#cb23-283" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(<span class="fu">round</span>(<span class="fu">as.matrix</span>(d_sin_escalar)[<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>], <span class="dv">1</span>), <span class="at">caption =</span> <span class="st">"Distancias sin escalar"</span>)</span>
-<span id="cb23-284"><a href="#cb23-284" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(<span class="fu">round</span>(<span class="fu">as.matrix</span>(d_escalada)[<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>], <span class="dv">2</span>), <span class="at">caption =</span> <span class="st">"Distancias con variables escaladas"</span>)</span>
-<span id="cb23-285"><a href="#cb23-285" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb23-286"><a href="#cb23-286" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-287"><a href="#cb23-287" aria-hidden="true" tabindex="-1"></a>El escalado no es una operación neutra: expresa que las variables se comparan en unidades relativas. Estandarizar equivale a sustituir cada valor por su puntuación típica:</span>
+<span id="cb23-276"><a href="#cb23-276" aria-hidden="true" tabindex="-1"></a>Si las variables están en unidades distintas, una variable con mucha dispersión puede dominar la distancia. Por eso es habitual estandarizar:</span>
+<span id="cb23-277"><a href="#cb23-277" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-280"><a href="#cb23-280" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb23-281"><a href="#cb23-281" aria-hidden="true" tabindex="-1"></a>vars <span class="ot">&lt;-</span> mtcars[, <span class="fu">c</span>(<span class="st">"mpg"</span>, <span class="st">"disp"</span>, <span class="st">"hp"</span>, <span class="st">"wt"</span>)]</span>
+<span id="cb23-282"><a href="#cb23-282" aria-hidden="true" tabindex="-1"></a>d_sin_escalar <span class="ot">&lt;-</span> <span class="fu">dist</span>(vars)</span>
+<span id="cb23-283"><a href="#cb23-283" aria-hidden="true" tabindex="-1"></a>d_escalada <span class="ot">&lt;-</span> <span class="fu">dist</span>(<span class="fu">scale</span>(vars))</span>
+<span id="cb23-284"><a href="#cb23-284" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-285"><a href="#cb23-285" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(<span class="fu">round</span>(<span class="fu">as.matrix</span>(d_sin_escalar)[<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>], <span class="dv">1</span>), <span class="at">caption =</span> <span class="st">"Distancias sin escalar"</span>)</span>
+<span id="cb23-286"><a href="#cb23-286" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(<span class="fu">round</span>(<span class="fu">as.matrix</span>(d_escalada)[<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>], <span class="dv">2</span>), <span class="at">caption =</span> <span class="st">"Distancias con variables escaladas"</span>)</span>
+<span id="cb23-287"><a href="#cb23-287" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb23-288"><a href="#cb23-288" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-289"><a href="#cb23-289" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb23-290"><a href="#cb23-290" aria-hidden="true" tabindex="-1"></a>z_{ik}=\frac{x_{ik}-\bar{x}_k}{s_k}.</span>
+<span id="cb23-289"><a href="#cb23-289" aria-hidden="true" tabindex="-1"></a>El escalado no es una operación neutra: expresa que las variables se comparan en unidades relativas. Estandarizar equivale a sustituir cada valor por su puntuación típica:</span>
+<span id="cb23-290"><a href="#cb23-290" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb23-291"><a href="#cb23-291" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb23-292"><a href="#cb23-292" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-293"><a href="#cb23-293" aria-hidden="true" tabindex="-1"></a>Después del escalado, una diferencia de una unidad significa una desviación típica, independientemente de si la variable original era consumo, potencia o peso.</span>
+<span id="cb23-292"><a href="#cb23-292" aria-hidden="true" tabindex="-1"></a>z_{ik}=\frac{x_{ik}-\bar{x}_k}{s_k}.</span>
+<span id="cb23-293"><a href="#cb23-293" aria-hidden="true" tabindex="-1"></a>$$</span>
 <span id="cb23-294"><a href="#cb23-294" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-295"><a href="#cb23-295" aria-hidden="true" tabindex="-1"></a><span class="fu">## Variables redundantes y dominantes</span></span>
+<span id="cb23-295"><a href="#cb23-295" aria-hidden="true" tabindex="-1"></a>Después del escalado, una diferencia de una unidad significa una desviación típica, independientemente de si la variable original era consumo, potencia o peso.</span>
 <span id="cb23-296"><a href="#cb23-296" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-297"><a href="#cb23-297" aria-hidden="true" tabindex="-1"></a>Dos variables muy correlacionadas pueden duplicar información. Si ambas entran como activas en una distancia euclídea, ese patrón pesa dos veces. La selección de variables forma parte del análisis.</span>
+<span id="cb23-297"><a href="#cb23-297" aria-hidden="true" tabindex="-1"></a><span class="fu">## Variables redundantes y dominantes</span></span>
 <span id="cb23-298"><a href="#cb23-298" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-301"><a href="#cb23-301" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb23-302"><a href="#cb23-302" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(<span class="fu">round</span>(<span class="fu">cor</span>(mtcars[, <span class="fu">c</span>(<span class="st">"mpg"</span>, <span class="st">"disp"</span>, <span class="st">"hp"</span>, <span class="st">"wt"</span>, <span class="st">"qsec"</span>)]), <span class="dv">2</span>))</span>
-<span id="cb23-303"><a href="#cb23-303" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb23-304"><a href="#cb23-304" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-305"><a href="#cb23-305" aria-hidden="true" tabindex="-1"></a>Una estrategia posible es seleccionar variables no redundantes. Otra es usar una distancia que tenga en cuenta covarianzas, como Mahalanobis. Una tercera es transformar primero los datos, por ejemplo mediante PCA, y calcular distancias en los primeros componentes.</span>
+<span id="cb23-299"><a href="#cb23-299" aria-hidden="true" tabindex="-1"></a>Dos variables muy correlacionadas pueden duplicar información. Si ambas entran como activas en una distancia euclídea, ese patrón pesa dos veces. La selección de variables forma parte del análisis.</span>
+<span id="cb23-300"><a href="#cb23-300" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-303"><a href="#cb23-303" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb23-304"><a href="#cb23-304" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(<span class="fu">round</span>(<span class="fu">cor</span>(mtcars[, <span class="fu">c</span>(<span class="st">"mpg"</span>, <span class="st">"disp"</span>, <span class="st">"hp"</span>, <span class="st">"wt"</span>, <span class="st">"qsec"</span>)]), <span class="dv">2</span>))</span>
+<span id="cb23-305"><a href="#cb23-305" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb23-306"><a href="#cb23-306" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-307"><a href="#cb23-307" aria-hidden="true" tabindex="-1"></a><span class="fu">## Distancias categóricas</span></span>
+<span id="cb23-307"><a href="#cb23-307" aria-hidden="true" tabindex="-1"></a>Una estrategia posible es seleccionar variables no redundantes. Otra es usar una distancia que tenga en cuenta covarianzas, como Mahalanobis. Una tercera es transformar primero los datos, por ejemplo mediante PCA, y calcular distancias en los primeros componentes.</span>
 <span id="cb23-308"><a href="#cb23-308" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-309"><a href="#cb23-309" aria-hidden="true" tabindex="-1"></a>En variables categóricas, no tiene sentido restar etiquetas. Una codificación como <span class="in">`automatico = 1`</span> y <span class="in">`manual = 2`</span> no implica que la diferencia sea una unidad comparable a otra variable.</span>
+<span id="cb23-309"><a href="#cb23-309" aria-hidden="true" tabindex="-1"></a><span class="fu">## Distancias categóricas</span></span>
 <span id="cb23-310"><a href="#cb23-310" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-311"><a href="#cb23-311" aria-hidden="true" tabindex="-1"></a>Las categorías pueden ser nominales, ordinales o cíclicas. Cada caso exige una idea distinta de similitud.</span>
+<span id="cb23-311"><a href="#cb23-311" aria-hidden="true" tabindex="-1"></a>En variables categóricas, no tiene sentido restar etiquetas. Una codificación como <span class="in">`automatico = 1`</span> y <span class="in">`manual = 2`</span> no implica que la diferencia sea una unidad comparable a otra variable.</span>
 <span id="cb23-312"><a href="#cb23-312" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-313"><a href="#cb23-313" aria-hidden="true" tabindex="-1"></a><span class="fu">### Variables nominales</span></span>
+<span id="cb23-313"><a href="#cb23-313" aria-hidden="true" tabindex="-1"></a>Las categorías pueden ser nominales, ordinales o cíclicas. Cada caso exige una idea distinta de similitud.</span>
 <span id="cb23-314"><a href="#cb23-314" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-315"><a href="#cb23-315" aria-hidden="true" tabindex="-1"></a>Una variable nominal no tiene orden natural. Ejemplos: tipo de transmisión, país, color, especie o género musical. Una distancia simple para una variable nominal es:</span>
+<span id="cb23-315"><a href="#cb23-315" aria-hidden="true" tabindex="-1"></a><span class="fu">### Variables nominales</span></span>
 <span id="cb23-316"><a href="#cb23-316" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-317"><a href="#cb23-317" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb23-318"><a href="#cb23-318" aria-hidden="true" tabindex="-1"></a>\delta(x_{ik},x_{jk})=</span>
-<span id="cb23-319"><a href="#cb23-319" aria-hidden="true" tabindex="-1"></a>\begin{cases}</span>
-<span id="cb23-320"><a href="#cb23-320" aria-hidden="true" tabindex="-1"></a>0, &amp; \text{si } x_{ik}=x_{jk},<span class="sc">\\</span></span>
-<span id="cb23-321"><a href="#cb23-321" aria-hidden="true" tabindex="-1"></a>1, &amp; \text{si } x_{ik}\neq x_{jk}.</span>
-<span id="cb23-322"><a href="#cb23-322" aria-hidden="true" tabindex="-1"></a>\end{cases}</span>
-<span id="cb23-323"><a href="#cb23-323" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb23-324"><a href="#cb23-324" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-325"><a href="#cb23-325" aria-hidden="true" tabindex="-1"></a>Con varias variables nominales, se puede usar la proporción de desacuerdos:</span>
+<span id="cb23-317"><a href="#cb23-317" aria-hidden="true" tabindex="-1"></a>Una variable nominal no tiene orden natural. Ejemplos: tipo de transmisión, país, color, especie o género musical. Una distancia simple para una variable nominal es:</span>
+<span id="cb23-318"><a href="#cb23-318" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-319"><a href="#cb23-319" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb23-320"><a href="#cb23-320" aria-hidden="true" tabindex="-1"></a>\delta(x_{ik},x_{jk})=</span>
+<span id="cb23-321"><a href="#cb23-321" aria-hidden="true" tabindex="-1"></a>\begin{cases}</span>
+<span id="cb23-322"><a href="#cb23-322" aria-hidden="true" tabindex="-1"></a>0, &amp; \text{si } x_{ik}=x_{jk},<span class="sc">\\</span></span>
+<span id="cb23-323"><a href="#cb23-323" aria-hidden="true" tabindex="-1"></a>1, &amp; \text{si } x_{ik}\neq x_{jk}.</span>
+<span id="cb23-324"><a href="#cb23-324" aria-hidden="true" tabindex="-1"></a>\end{cases}</span>
+<span id="cb23-325"><a href="#cb23-325" aria-hidden="true" tabindex="-1"></a>$$</span>
 <span id="cb23-326"><a href="#cb23-326" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-327"><a href="#cb23-327" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb23-328"><a href="#cb23-328" aria-hidden="true" tabindex="-1"></a>d_{nom}(x_i,x_j)=\frac{1}{p}\sum_{k=1}^{p}\delta(x_{ik},x_{jk}).</span>
+<span id="cb23-327"><a href="#cb23-327" aria-hidden="true" tabindex="-1"></a>Con varias variables nominales, se puede usar la proporción de desacuerdos:</span>
+<span id="cb23-328"><a href="#cb23-328" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb23-329"><a href="#cb23-329" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb23-330"><a href="#cb23-330" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-331"><a href="#cb23-331" aria-hidden="true" tabindex="-1"></a>Esta distancia trata todos los desacuerdos por igual. Cambiar de <span class="in">`automatico`</span> a <span class="in">`manual`</span> pesa lo mismo que cambiar de <span class="in">`4 cilindros`</span> a <span class="in">`8 cilindros`</span>, salvo que asignemos pesos diferentes.</span>
+<span id="cb23-330"><a href="#cb23-330" aria-hidden="true" tabindex="-1"></a>d_{nom}(x_i,x_j)=\frac{1}{p}\sum_{k=1}^{p}\delta(x_{ik},x_{jk}).</span>
+<span id="cb23-331"><a href="#cb23-331" aria-hidden="true" tabindex="-1"></a>$$</span>
 <span id="cb23-332"><a href="#cb23-332" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-335"><a href="#cb23-335" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb23-336"><a href="#cb23-336" aria-hidden="true" tabindex="-1"></a>coches_cat <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
-<span id="cb23-337"><a href="#cb23-337" aria-hidden="true" tabindex="-1"></a>  <span class="at">transmision =</span> <span class="fu">factor</span>(<span class="fu">c</span>(<span class="st">"manual"</span>, <span class="st">"manual"</span>, <span class="st">"automatico"</span>, <span class="st">"automatico"</span>)),</span>
-<span id="cb23-338"><a href="#cb23-338" aria-hidden="true" tabindex="-1"></a>  <span class="at">cilindros =</span> <span class="fu">factor</span>(<span class="fu">c</span>(<span class="st">"4"</span>, <span class="st">"6"</span>, <span class="st">"6"</span>, <span class="st">"8"</span>)),</span>
-<span id="cb23-339"><a href="#cb23-339" aria-hidden="true" tabindex="-1"></a>  <span class="at">motor =</span> <span class="fu">factor</span>(<span class="fu">c</span>(<span class="st">"recto"</span>, <span class="st">"recto"</span>, <span class="st">"V"</span>, <span class="st">"V"</span>)),</span>
-<span id="cb23-340"><a href="#cb23-340" aria-hidden="true" tabindex="-1"></a>  <span class="at">row.names =</span> <span class="fu">c</span>(<span class="st">"A"</span>, <span class="st">"B"</span>, <span class="st">"C"</span>, <span class="st">"D"</span>)</span>
-<span id="cb23-341"><a href="#cb23-341" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb23-342"><a href="#cb23-342" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-343"><a href="#cb23-343" aria-hidden="true" tabindex="-1"></a>dist_nominal <span class="ot">&lt;-</span> <span class="cf">function</span>(df) {</span>
-<span id="cb23-344"><a href="#cb23-344" aria-hidden="true" tabindex="-1"></a>  n <span class="ot">&lt;-</span> <span class="fu">nrow</span>(df)</span>
-<span id="cb23-345"><a href="#cb23-345" aria-hidden="true" tabindex="-1"></a>  out <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="dv">0</span>, n, n, <span class="at">dimnames =</span> <span class="fu">list</span>(<span class="fu">rownames</span>(df), <span class="fu">rownames</span>(df)))</span>
-<span id="cb23-346"><a href="#cb23-346" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">seq_len</span>(n)) {</span>
-<span id="cb23-347"><a href="#cb23-347" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> (j <span class="cf">in</span> <span class="fu">seq_len</span>(n)) {</span>
-<span id="cb23-348"><a href="#cb23-348" aria-hidden="true" tabindex="-1"></a>      out[i, j] <span class="ot">&lt;-</span> <span class="fu">mean</span>(df[i, ] <span class="sc">!=</span> df[j, ])</span>
-<span id="cb23-349"><a href="#cb23-349" aria-hidden="true" tabindex="-1"></a>    }</span>
-<span id="cb23-350"><a href="#cb23-350" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb23-351"><a href="#cb23-351" aria-hidden="true" tabindex="-1"></a>  out</span>
-<span id="cb23-352"><a href="#cb23-352" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb23-353"><a href="#cb23-353" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-354"><a href="#cb23-354" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(<span class="fu">dist_nominal</span>(coches_cat))</span>
-<span id="cb23-355"><a href="#cb23-355" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb23-356"><a href="#cb23-356" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-357"><a href="#cb23-357" aria-hidden="true" tabindex="-1"></a>La interpretación es directa: <span class="in">`0`</span> significa coincidencia completa; <span class="in">`1`</span> significa desacuerdo en todas las variables nominales.</span>
+<span id="cb23-333"><a href="#cb23-333" aria-hidden="true" tabindex="-1"></a>Esta distancia trata todos los desacuerdos por igual. Cambiar de <span class="in">`automatico`</span> a <span class="in">`manual`</span> pesa lo mismo que cambiar de <span class="in">`4 cilindros`</span> a <span class="in">`8 cilindros`</span>, salvo que asignemos pesos diferentes.</span>
+<span id="cb23-334"><a href="#cb23-334" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-337"><a href="#cb23-337" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb23-338"><a href="#cb23-338" aria-hidden="true" tabindex="-1"></a>coches_cat <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb23-339"><a href="#cb23-339" aria-hidden="true" tabindex="-1"></a>  <span class="at">transmision =</span> <span class="fu">factor</span>(<span class="fu">c</span>(<span class="st">"manual"</span>, <span class="st">"manual"</span>, <span class="st">"automatico"</span>, <span class="st">"automatico"</span>)),</span>
+<span id="cb23-340"><a href="#cb23-340" aria-hidden="true" tabindex="-1"></a>  <span class="at">cilindros =</span> <span class="fu">factor</span>(<span class="fu">c</span>(<span class="st">"4"</span>, <span class="st">"6"</span>, <span class="st">"6"</span>, <span class="st">"8"</span>)),</span>
+<span id="cb23-341"><a href="#cb23-341" aria-hidden="true" tabindex="-1"></a>  <span class="at">motor =</span> <span class="fu">factor</span>(<span class="fu">c</span>(<span class="st">"recto"</span>, <span class="st">"recto"</span>, <span class="st">"V"</span>, <span class="st">"V"</span>)),</span>
+<span id="cb23-342"><a href="#cb23-342" aria-hidden="true" tabindex="-1"></a>  <span class="at">row.names =</span> <span class="fu">c</span>(<span class="st">"A"</span>, <span class="st">"B"</span>, <span class="st">"C"</span>, <span class="st">"D"</span>)</span>
+<span id="cb23-343"><a href="#cb23-343" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb23-344"><a href="#cb23-344" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-345"><a href="#cb23-345" aria-hidden="true" tabindex="-1"></a>dist_nominal <span class="ot">&lt;-</span> <span class="cf">function</span>(df) {</span>
+<span id="cb23-346"><a href="#cb23-346" aria-hidden="true" tabindex="-1"></a>  n <span class="ot">&lt;-</span> <span class="fu">nrow</span>(df)</span>
+<span id="cb23-347"><a href="#cb23-347" aria-hidden="true" tabindex="-1"></a>  out <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="dv">0</span>, n, n, <span class="at">dimnames =</span> <span class="fu">list</span>(<span class="fu">rownames</span>(df), <span class="fu">rownames</span>(df)))</span>
+<span id="cb23-348"><a href="#cb23-348" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">seq_len</span>(n)) {</span>
+<span id="cb23-349"><a href="#cb23-349" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> (j <span class="cf">in</span> <span class="fu">seq_len</span>(n)) {</span>
+<span id="cb23-350"><a href="#cb23-350" aria-hidden="true" tabindex="-1"></a>      out[i, j] <span class="ot">&lt;-</span> <span class="fu">mean</span>(df[i, ] <span class="sc">!=</span> df[j, ])</span>
+<span id="cb23-351"><a href="#cb23-351" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb23-352"><a href="#cb23-352" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb23-353"><a href="#cb23-353" aria-hidden="true" tabindex="-1"></a>  out</span>
+<span id="cb23-354"><a href="#cb23-354" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb23-355"><a href="#cb23-355" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-356"><a href="#cb23-356" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(<span class="fu">dist_nominal</span>(coches_cat))</span>
+<span id="cb23-357"><a href="#cb23-357" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb23-358"><a href="#cb23-358" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-359"><a href="#cb23-359" aria-hidden="true" tabindex="-1"></a><span class="fu">### Variables ordinales</span></span>
+<span id="cb23-359"><a href="#cb23-359" aria-hidden="true" tabindex="-1"></a>La interpretación es directa: <span class="in">`0`</span> significa coincidencia completa; <span class="in">`1`</span> significa desacuerdo en todas las variables nominales.</span>
 <span id="cb23-360"><a href="#cb23-360" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-361"><a href="#cb23-361" aria-hidden="true" tabindex="-1"></a>Una variable ordinal tiene categorías ordenadas, pero las distancias entre categorías consecutivas no tienen por qué ser iguales. Ejemplos: <span class="in">`bajo`</span>, <span class="in">`medio`</span>, <span class="in">`alto`</span>; nivel educativo; satisfacción de 1 a 5.</span>
+<span id="cb23-361"><a href="#cb23-361" aria-hidden="true" tabindex="-1"></a><span class="fu">### Variables ordinales</span></span>
 <span id="cb23-362"><a href="#cb23-362" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-363"><a href="#cb23-363" aria-hidden="true" tabindex="-1"></a>Una opción sencilla es convertir los rangos a valores entre 0 y 1:</span>
+<span id="cb23-363"><a href="#cb23-363" aria-hidden="true" tabindex="-1"></a>Una variable ordinal tiene categorías ordenadas, pero las distancias entre categorías consecutivas no tienen por qué ser iguales. Ejemplos: <span class="in">`bajo`</span>, <span class="in">`medio`</span>, <span class="in">`alto`</span>; nivel educativo; satisfacción de 1 a 5.</span>
 <span id="cb23-364"><a href="#cb23-364" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-365"><a href="#cb23-365" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb23-366"><a href="#cb23-366" aria-hidden="true" tabindex="-1"></a>z_{ik}=\frac{r_{ik}-1}{m_k-1},</span>
+<span id="cb23-365"><a href="#cb23-365" aria-hidden="true" tabindex="-1"></a>Una opción sencilla es convertir los rangos a valores entre 0 y 1:</span>
+<span id="cb23-366"><a href="#cb23-366" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb23-367"><a href="#cb23-367" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb23-368"><a href="#cb23-368" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-369"><a href="#cb23-369" aria-hidden="true" tabindex="-1"></a>donde $r_{ik}$ es el rango de la categoría del individuo $i$ en la variable $k$, y $m_k$ es el número de categorías. Después se calcula una distancia numérica sobre esos valores.</span>
+<span id="cb23-368"><a href="#cb23-368" aria-hidden="true" tabindex="-1"></a>z_{ik}=\frac{r_{ik}-1}{m_k-1},</span>
+<span id="cb23-369"><a href="#cb23-369" aria-hidden="true" tabindex="-1"></a>$$</span>
 <span id="cb23-370"><a href="#cb23-370" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-373"><a href="#cb23-373" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb23-374"><a href="#cb23-374" aria-hidden="true" tabindex="-1"></a>ordinales <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
-<span id="cb23-375"><a href="#cb23-375" aria-hidden="true" tabindex="-1"></a>  <span class="at">satisfaccion =</span> <span class="fu">ordered</span>(<span class="fu">c</span>(<span class="st">"baja"</span>, <span class="st">"media"</span>, <span class="st">"alta"</span>, <span class="st">"alta"</span>), <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"baja"</span>, <span class="st">"media"</span>, <span class="st">"alta"</span>)),</span>
-<span id="cb23-376"><a href="#cb23-376" aria-hidden="true" tabindex="-1"></a>  <span class="at">riesgo =</span> <span class="fu">ordered</span>(<span class="fu">c</span>(<span class="st">"bajo"</span>, <span class="st">"bajo"</span>, <span class="st">"medio"</span>, <span class="st">"alto"</span>), <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"bajo"</span>, <span class="st">"medio"</span>, <span class="st">"alto"</span>)),</span>
-<span id="cb23-377"><a href="#cb23-377" aria-hidden="true" tabindex="-1"></a>  <span class="at">row.names =</span> <span class="fu">c</span>(<span class="st">"A"</span>, <span class="st">"B"</span>, <span class="st">"C"</span>, <span class="st">"D"</span>)</span>
-<span id="cb23-378"><a href="#cb23-378" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb23-379"><a href="#cb23-379" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-380"><a href="#cb23-380" aria-hidden="true" tabindex="-1"></a>ordinal_a_01 <span class="ot">&lt;-</span> <span class="cf">function</span>(x) {</span>
-<span id="cb23-381"><a href="#cb23-381" aria-hidden="true" tabindex="-1"></a>  (<span class="fu">as.numeric</span>(x) <span class="sc">-</span> <span class="dv">1</span>) <span class="sc">/</span> (<span class="fu">nlevels</span>(x) <span class="sc">-</span> <span class="dv">1</span>)</span>
-<span id="cb23-382"><a href="#cb23-382" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb23-383"><a href="#cb23-383" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-384"><a href="#cb23-384" aria-hidden="true" tabindex="-1"></a>ordinal_num <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(<span class="fu">lapply</span>(ordinales, ordinal_a_01))</span>
-<span id="cb23-385"><a href="#cb23-385" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(ordinal_num) <span class="ot">&lt;-</span> <span class="fu">rownames</span>(ordinales)</span>
-<span id="cb23-386"><a href="#cb23-386" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(ordinal_num)</span>
-<span id="cb23-387"><a href="#cb23-387" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(<span class="fu">round</span>(<span class="fu">as.matrix</span>(<span class="fu">dist</span>(ordinal_num, <span class="at">method =</span> <span class="st">"manhattan"</span>)) <span class="sc">/</span> <span class="fu">ncol</span>(ordinal_num), <span class="dv">2</span>))</span>
-<span id="cb23-388"><a href="#cb23-388" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb23-389"><a href="#cb23-389" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-390"><a href="#cb23-390" aria-hidden="true" tabindex="-1"></a>Esta transformación respeta el orden, pero asume que los saltos entre niveles son equivalentes. Si pasar de <span class="in">`bajo`</span> a <span class="in">`medio`</span> no tiene el mismo significado que pasar de <span class="in">`medio`</span> a <span class="in">`alto`</span>, conviene definir puntuaciones específicas con criterio sustantivo.</span>
+<span id="cb23-371"><a href="#cb23-371" aria-hidden="true" tabindex="-1"></a>donde $r_{ik}$ es el rango de la categoría del individuo $i$ en la variable $k$, y $m_k$ es el número de categorías. Después se calcula una distancia numérica sobre esos valores.</span>
+<span id="cb23-372"><a href="#cb23-372" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-375"><a href="#cb23-375" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb23-376"><a href="#cb23-376" aria-hidden="true" tabindex="-1"></a>ordinales <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb23-377"><a href="#cb23-377" aria-hidden="true" tabindex="-1"></a>  <span class="at">satisfaccion =</span> <span class="fu">ordered</span>(<span class="fu">c</span>(<span class="st">"baja"</span>, <span class="st">"media"</span>, <span class="st">"alta"</span>, <span class="st">"alta"</span>), <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"baja"</span>, <span class="st">"media"</span>, <span class="st">"alta"</span>)),</span>
+<span id="cb23-378"><a href="#cb23-378" aria-hidden="true" tabindex="-1"></a>  <span class="at">riesgo =</span> <span class="fu">ordered</span>(<span class="fu">c</span>(<span class="st">"bajo"</span>, <span class="st">"bajo"</span>, <span class="st">"medio"</span>, <span class="st">"alto"</span>), <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"bajo"</span>, <span class="st">"medio"</span>, <span class="st">"alto"</span>)),</span>
+<span id="cb23-379"><a href="#cb23-379" aria-hidden="true" tabindex="-1"></a>  <span class="at">row.names =</span> <span class="fu">c</span>(<span class="st">"A"</span>, <span class="st">"B"</span>, <span class="st">"C"</span>, <span class="st">"D"</span>)</span>
+<span id="cb23-380"><a href="#cb23-380" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb23-381"><a href="#cb23-381" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-382"><a href="#cb23-382" aria-hidden="true" tabindex="-1"></a>ordinal_a_01 <span class="ot">&lt;-</span> <span class="cf">function</span>(x) {</span>
+<span id="cb23-383"><a href="#cb23-383" aria-hidden="true" tabindex="-1"></a>  (<span class="fu">as.numeric</span>(x) <span class="sc">-</span> <span class="dv">1</span>) <span class="sc">/</span> (<span class="fu">nlevels</span>(x) <span class="sc">-</span> <span class="dv">1</span>)</span>
+<span id="cb23-384"><a href="#cb23-384" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb23-385"><a href="#cb23-385" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-386"><a href="#cb23-386" aria-hidden="true" tabindex="-1"></a>ordinal_num <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(<span class="fu">lapply</span>(ordinales, ordinal_a_01))</span>
+<span id="cb23-387"><a href="#cb23-387" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(ordinal_num) <span class="ot">&lt;-</span> <span class="fu">rownames</span>(ordinales)</span>
+<span id="cb23-388"><a href="#cb23-388" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(ordinal_num)</span>
+<span id="cb23-389"><a href="#cb23-389" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(<span class="fu">round</span>(<span class="fu">as.matrix</span>(<span class="fu">dist</span>(ordinal_num, <span class="at">method =</span> <span class="st">"manhattan"</span>)) <span class="sc">/</span> <span class="fu">ncol</span>(ordinal_num), <span class="dv">2</span>))</span>
+<span id="cb23-390"><a href="#cb23-390" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb23-391"><a href="#cb23-391" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-392"><a href="#cb23-392" aria-hidden="true" tabindex="-1"></a><span class="fu">### Variables cíclicas</span></span>
+<span id="cb23-392"><a href="#cb23-392" aria-hidden="true" tabindex="-1"></a>Esta transformación respeta el orden, pero asume que los saltos entre niveles son equivalentes. Si pasar de <span class="in">`bajo`</span> a <span class="in">`medio`</span> no tiene el mismo significado que pasar de <span class="in">`medio`</span> a <span class="in">`alto`</span>, conviene definir puntuaciones específicas con criterio sustantivo.</span>
 <span id="cb23-393"><a href="#cb23-393" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-394"><a href="#cb23-394" aria-hidden="true" tabindex="-1"></a>Algunas categorías tienen orden circular. El ejemplo clásico es la hora del día; en música, el tono o pitch class puede representarse en 12 clases donde <span class="in">`Do`</span> está cerca de <span class="in">`Do#`</span> y también de <span class="in">`Si`</span>. Si codificamos tonos como 0, 1, ..., 11, la diferencia lineal entre 0 y 11 sería 11, aunque musicalmente están a un semitono.</span>
+<span id="cb23-394"><a href="#cb23-394" aria-hidden="true" tabindex="-1"></a><span class="fu">### Variables cíclicas</span></span>
 <span id="cb23-395"><a href="#cb23-395" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-396"><a href="#cb23-396" aria-hidden="true" tabindex="-1"></a>Para una variable cíclica con $m$ posiciones, la distancia circular entre dos categorías codificadas como $a$ y $b$ puede definirse como:</span>
+<span id="cb23-396"><a href="#cb23-396" aria-hidden="true" tabindex="-1"></a>Algunas categorías tienen orden circular. El ejemplo clásico es la hora del día; en música, el tono o pitch class puede representarse en 12 clases donde <span class="in">`Do`</span> está cerca de <span class="in">`Do#`</span> y también de <span class="in">`Si`</span>. Si codificamos tonos como 0, 1, ..., 11, la diferencia lineal entre 0 y 11 sería 11, aunque musicalmente están a un semitono.</span>
 <span id="cb23-397"><a href="#cb23-397" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-398"><a href="#cb23-398" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb23-399"><a href="#cb23-399" aria-hidden="true" tabindex="-1"></a>d_{circ}(a,b)=\frac{\min(|a-b|,m-|a-b|)}{\lfloor m/2 \rfloor}.</span>
+<span id="cb23-398"><a href="#cb23-398" aria-hidden="true" tabindex="-1"></a>Para una variable cíclica con $m$ posiciones, la distancia circular entre dos categorías codificadas como $a$ y $b$ puede definirse como:</span>
+<span id="cb23-399"><a href="#cb23-399" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb23-400"><a href="#cb23-400" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb23-401"><a href="#cb23-401" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-402"><a href="#cb23-402" aria-hidden="true" tabindex="-1"></a>Así, la distancia queda entre 0 y 1.</span>
+<span id="cb23-401"><a href="#cb23-401" aria-hidden="true" tabindex="-1"></a>d_{circ}(a,b)=\frac{\min(|a-b|,m-|a-b|)}{\lfloor m/2 \rfloor}.</span>
+<span id="cb23-402"><a href="#cb23-402" aria-hidden="true" tabindex="-1"></a>$$</span>
 <span id="cb23-403"><a href="#cb23-403" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-406"><a href="#cb23-406" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb23-407"><a href="#cb23-407" aria-hidden="true" tabindex="-1"></a>tonos <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Do"</span>, <span class="st">"Do#"</span>, <span class="st">"Re"</span>, <span class="st">"Re#"</span>, <span class="st">"Mi"</span>, <span class="st">"Fa"</span>, <span class="st">"Fa#"</span>, <span class="st">"Sol"</span>, <span class="st">"Sol#"</span>, <span class="st">"La"</span>, <span class="st">"La#"</span>, <span class="st">"Si"</span>)</span>
-<span id="cb23-408"><a href="#cb23-408" aria-hidden="true" tabindex="-1"></a>cod_tono <span class="ot">&lt;-</span> <span class="fu">setNames</span>(<span class="dv">0</span><span class="sc">:</span><span class="dv">11</span>, tonos)</span>
-<span id="cb23-409"><a href="#cb23-409" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-410"><a href="#cb23-410" aria-hidden="true" tabindex="-1"></a>dist_tono <span class="ot">&lt;-</span> <span class="cf">function</span>(a, b, <span class="at">m =</span> <span class="dv">12</span>) {</span>
-<span id="cb23-411"><a href="#cb23-411" aria-hidden="true" tabindex="-1"></a>  dif <span class="ot">&lt;-</span> <span class="fu">abs</span>(cod_tono[a] <span class="sc">-</span> cod_tono[b])</span>
-<span id="cb23-412"><a href="#cb23-412" aria-hidden="true" tabindex="-1"></a>  <span class="fu">min</span>(dif, m <span class="sc">-</span> dif) <span class="sc">/</span> <span class="fu">floor</span>(m <span class="sc">/</span> <span class="dv">2</span>)</span>
-<span id="cb23-413"><a href="#cb23-413" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb23-414"><a href="#cb23-414" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-415"><a href="#cb23-415" aria-hidden="true" tabindex="-1"></a>pares_tonos <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
-<span id="cb23-416"><a href="#cb23-416" aria-hidden="true" tabindex="-1"></a>  <span class="at">tono_1 =</span> <span class="fu">c</span>(<span class="st">"Do"</span>, <span class="st">"Do"</span>, <span class="st">"Mi"</span>, <span class="st">"Si"</span>),</span>
-<span id="cb23-417"><a href="#cb23-417" aria-hidden="true" tabindex="-1"></a>  <span class="at">tono_2 =</span> <span class="fu">c</span>(<span class="st">"Do#"</span>, <span class="st">"Si"</span>, <span class="st">"La"</span>, <span class="st">"Fa#"</span>)</span>
-<span id="cb23-418"><a href="#cb23-418" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb23-419"><a href="#cb23-419" aria-hidden="true" tabindex="-1"></a>pares_tonos<span class="sc">$</span>distancia_circular <span class="ot">&lt;-</span> <span class="fu">mapply</span>(dist_tono, pares_tonos<span class="sc">$</span>tono_1, pares_tonos<span class="sc">$</span>tono_2)</span>
-<span id="cb23-420"><a href="#cb23-420" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(pares_tonos)</span>
-<span id="cb23-421"><a href="#cb23-421" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb23-422"><a href="#cb23-422" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-423"><a href="#cb23-423" aria-hidden="true" tabindex="-1"></a>Este ejemplo muestra por qué una categoría cíclica no debe tratarse como nominal pura ni como ordinal lineal. Si el tono de una canción importa para medir similitud musical, la distancia debe respetar la circularidad.</span>
+<span id="cb23-404"><a href="#cb23-404" aria-hidden="true" tabindex="-1"></a>Así, la distancia queda entre 0 y 1.</span>
+<span id="cb23-405"><a href="#cb23-405" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-408"><a href="#cb23-408" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb23-409"><a href="#cb23-409" aria-hidden="true" tabindex="-1"></a>tonos <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Do"</span>, <span class="st">"Do#"</span>, <span class="st">"Re"</span>, <span class="st">"Re#"</span>, <span class="st">"Mi"</span>, <span class="st">"Fa"</span>, <span class="st">"Fa#"</span>, <span class="st">"Sol"</span>, <span class="st">"Sol#"</span>, <span class="st">"La"</span>, <span class="st">"La#"</span>, <span class="st">"Si"</span>)</span>
+<span id="cb23-410"><a href="#cb23-410" aria-hidden="true" tabindex="-1"></a>cod_tono <span class="ot">&lt;-</span> <span class="fu">setNames</span>(<span class="dv">0</span><span class="sc">:</span><span class="dv">11</span>, tonos)</span>
+<span id="cb23-411"><a href="#cb23-411" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-412"><a href="#cb23-412" aria-hidden="true" tabindex="-1"></a>dist_tono <span class="ot">&lt;-</span> <span class="cf">function</span>(a, b, <span class="at">m =</span> <span class="dv">12</span>) {</span>
+<span id="cb23-413"><a href="#cb23-413" aria-hidden="true" tabindex="-1"></a>  dif <span class="ot">&lt;-</span> <span class="fu">abs</span>(cod_tono[a] <span class="sc">-</span> cod_tono[b])</span>
+<span id="cb23-414"><a href="#cb23-414" aria-hidden="true" tabindex="-1"></a>  <span class="fu">min</span>(dif, m <span class="sc">-</span> dif) <span class="sc">/</span> <span class="fu">floor</span>(m <span class="sc">/</span> <span class="dv">2</span>)</span>
+<span id="cb23-415"><a href="#cb23-415" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb23-416"><a href="#cb23-416" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-417"><a href="#cb23-417" aria-hidden="true" tabindex="-1"></a>pares_tonos <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb23-418"><a href="#cb23-418" aria-hidden="true" tabindex="-1"></a>  <span class="at">tono_1 =</span> <span class="fu">c</span>(<span class="st">"Do"</span>, <span class="st">"Do"</span>, <span class="st">"Mi"</span>, <span class="st">"Si"</span>),</span>
+<span id="cb23-419"><a href="#cb23-419" aria-hidden="true" tabindex="-1"></a>  <span class="at">tono_2 =</span> <span class="fu">c</span>(<span class="st">"Do#"</span>, <span class="st">"Si"</span>, <span class="st">"La"</span>, <span class="st">"Fa#"</span>)</span>
+<span id="cb23-420"><a href="#cb23-420" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb23-421"><a href="#cb23-421" aria-hidden="true" tabindex="-1"></a>pares_tonos<span class="sc">$</span>distancia_circular <span class="ot">&lt;-</span> <span class="fu">mapply</span>(dist_tono, pares_tonos<span class="sc">$</span>tono_1, pares_tonos<span class="sc">$</span>tono_2)</span>
+<span id="cb23-422"><a href="#cb23-422" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(pares_tonos)</span>
+<span id="cb23-423"><a href="#cb23-423" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb23-424"><a href="#cb23-424" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-425"><a href="#cb23-425" aria-hidden="true" tabindex="-1"></a><span class="fu">### Pesos en variables categóricas</span></span>
+<span id="cb23-425"><a href="#cb23-425" aria-hidden="true" tabindex="-1"></a>Este ejemplo muestra por qué una categoría cíclica no debe tratarse como nominal pura ni como ordinal lineal. Si el tono de una canción importa para medir similitud musical, la distancia debe respetar la circularidad.</span>
 <span id="cb23-426"><a href="#cb23-426" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-427"><a href="#cb23-427" aria-hidden="true" tabindex="-1"></a>No todas las variables categóricas tienen por qué pesar igual. Si dos variables describen aspectos casi idénticos, conviene no duplicar su influencia. Si una variable es central para la pregunta aplicada, puede recibir mayor peso.</span>
+<span id="cb23-427"><a href="#cb23-427" aria-hidden="true" tabindex="-1"></a><span class="fu">### Pesos en variables categóricas</span></span>
 <span id="cb23-428"><a href="#cb23-428" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-429"><a href="#cb23-429" aria-hidden="true" tabindex="-1"></a>Matemáticamente, una distancia nominal ponderada puede escribirse como:</span>
+<span id="cb23-429"><a href="#cb23-429" aria-hidden="true" tabindex="-1"></a>No todas las variables categóricas tienen por qué pesar igual. Si dos variables describen aspectos casi idénticos, conviene no duplicar su influencia. Si una variable es central para la pregunta aplicada, puede recibir mayor peso.</span>
 <span id="cb23-430"><a href="#cb23-430" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-431"><a href="#cb23-431" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb23-432"><a href="#cb23-432" aria-hidden="true" tabindex="-1"></a>d_{nom,w}(x_i,x_j)=\frac{\sum_{k=1}^{p} w_k \delta(x_{ik},x_{jk})}{\sum_{k=1}^{p} w_k}.</span>
+<span id="cb23-431"><a href="#cb23-431" aria-hidden="true" tabindex="-1"></a>Matemáticamente, una distancia nominal ponderada puede escribirse como:</span>
+<span id="cb23-432"><a href="#cb23-432" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb23-433"><a href="#cb23-433" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb23-434"><a href="#cb23-434" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-435"><a href="#cb23-435" aria-hidden="true" tabindex="-1"></a>Los pesos $w_k$ deben justificarse. No deberían elegirse después de mirar clusters solo para obtener una partición más atractiva.</span>
+<span id="cb23-434"><a href="#cb23-434" aria-hidden="true" tabindex="-1"></a>d_{nom,w}(x_i,x_j)=\frac{\sum_{k=1}^{p} w_k \delta(x_{ik},x_{jk})}{\sum_{k=1}^{p} w_k}.</span>
+<span id="cb23-435"><a href="#cb23-435" aria-hidden="true" tabindex="-1"></a>$$</span>
 <span id="cb23-436"><a href="#cb23-436" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-437"><a href="#cb23-437" aria-hidden="true" tabindex="-1"></a><span class="fu">## Distancias mixtas y distancia de Gower</span></span>
+<span id="cb23-437"><a href="#cb23-437" aria-hidden="true" tabindex="-1"></a>Los pesos $w_k$ deben justificarse. No deberían elegirse después de mirar clusters solo para obtener una partición más atractiva.</span>
 <span id="cb23-438"><a href="#cb23-438" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-439"><a href="#cb23-439" aria-hidden="true" tabindex="-1"></a>En datos mixtos combinamos variables numéricas, nominales, ordinales y a veces binarias o cíclicas. La distancia de Gower resume similitudes variable a variable en una escala común.</span>
+<span id="cb23-439"><a href="#cb23-439" aria-hidden="true" tabindex="-1"></a><span class="fu">## Distancias mixtas y distancia de Gower</span></span>
 <span id="cb23-440"><a href="#cb23-440" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-441"><a href="#cb23-441" aria-hidden="true" tabindex="-1"></a>La forma general se expresa como una disimilitud:</span>
+<span id="cb23-441"><a href="#cb23-441" aria-hidden="true" tabindex="-1"></a>En datos mixtos combinamos variables numéricas, nominales, ordinales y a veces binarias o cíclicas. La distancia de Gower resume similitudes variable a variable en una escala común.</span>
 <span id="cb23-442"><a href="#cb23-442" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-443"><a href="#cb23-443" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb23-444"><a href="#cb23-444" aria-hidden="true" tabindex="-1"></a>d_G(i,j)=\frac{\sum_{k=1}^{p} w_{ijk} d_{ijk}}{\sum_{k=1}^{p} w_{ijk}},</span>
+<span id="cb23-443"><a href="#cb23-443" aria-hidden="true" tabindex="-1"></a>La forma general se expresa como una disimilitud:</span>
+<span id="cb23-444"><a href="#cb23-444" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb23-445"><a href="#cb23-445" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb23-446"><a href="#cb23-446" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-447"><a href="#cb23-447" aria-hidden="true" tabindex="-1"></a>donde $d_{ijk}$ es la disimilitud parcial entre los individuos $i$ y $j$ en la variable $k$, y $w_{ijk}$ indica si esa comparación es válida y qué peso recibe. Si no hay valores perdidos y todos los pesos valen 1, se reduce al promedio de disimilitudes parciales.</span>
+<span id="cb23-446"><a href="#cb23-446" aria-hidden="true" tabindex="-1"></a>d_G(i,j)=\frac{\sum_{k=1}^{p} w_{ijk} d_{ijk}}{\sum_{k=1}^{p} w_{ijk}},</span>
+<span id="cb23-447"><a href="#cb23-447" aria-hidden="true" tabindex="-1"></a>$$</span>
 <span id="cb23-448"><a href="#cb23-448" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-449"><a href="#cb23-449" aria-hidden="true" tabindex="-1"></a><span class="fu">### Componente numérica de Gower</span></span>
+<span id="cb23-449"><a href="#cb23-449" aria-hidden="true" tabindex="-1"></a>donde $d_{ijk}$ es la disimilitud parcial entre los individuos $i$ y $j$ en la variable $k$, y $w_{ijk}$ indica si esa comparación es válida y qué peso recibe. Si no hay valores perdidos y todos los pesos valen 1, se reduce al promedio de disimilitudes parciales.</span>
 <span id="cb23-450"><a href="#cb23-450" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-451"><a href="#cb23-451" aria-hidden="true" tabindex="-1"></a>Para una variable numérica $k$, Gower suele usar:</span>
+<span id="cb23-451"><a href="#cb23-451" aria-hidden="true" tabindex="-1"></a><span class="fu">### Componente numérica de Gower</span></span>
 <span id="cb23-452"><a href="#cb23-452" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-453"><a href="#cb23-453" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb23-454"><a href="#cb23-454" aria-hidden="true" tabindex="-1"></a>d_{ijk}=\frac{|x_{ik}-x_{jk}|}{R_k},</span>
+<span id="cb23-453"><a href="#cb23-453" aria-hidden="true" tabindex="-1"></a>Para una variable numérica $k$, Gower suele usar:</span>
+<span id="cb23-454"><a href="#cb23-454" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb23-455"><a href="#cb23-455" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb23-456"><a href="#cb23-456" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-457"><a href="#cb23-457" aria-hidden="true" tabindex="-1"></a>donde $R_k=\max(x_k)-\min(x_k)$ es el rango observado. Así, cada diferencia numérica queda entre 0 y 1.</span>
+<span id="cb23-456"><a href="#cb23-456" aria-hidden="true" tabindex="-1"></a>d_{ijk}=\frac{|x_{ik}-x_{jk}|}{R_k},</span>
+<span id="cb23-457"><a href="#cb23-457" aria-hidden="true" tabindex="-1"></a>$$</span>
 <span id="cb23-458"><a href="#cb23-458" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-459"><a href="#cb23-459" aria-hidden="true" tabindex="-1"></a>Esta normalización es parecida en espíritu al escalado, pero usa el rango. Tiene una interpretación simple: diferencia relativa respecto al recorrido observado de la variable. También implica sensibilidad a valores extremos, porque un outlier puede inflar $R_k$ y reducir artificialmente las diferencias entre la mayoría de individuos.</span>
+<span id="cb23-459"><a href="#cb23-459" aria-hidden="true" tabindex="-1"></a>donde $R_k=\max(x_k)-\min(x_k)$ es el rango observado. Así, cada diferencia numérica queda entre 0 y 1.</span>
 <span id="cb23-460"><a href="#cb23-460" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-461"><a href="#cb23-461" aria-hidden="true" tabindex="-1"></a><span class="fu">### Componente nominal</span></span>
+<span id="cb23-461"><a href="#cb23-461" aria-hidden="true" tabindex="-1"></a>Esta normalización es parecida en espíritu al escalado, pero usa el rango. Tiene una interpretación simple: diferencia relativa respecto al recorrido observado de la variable. También implica sensibilidad a valores extremos, porque un outlier puede inflar $R_k$ y reducir artificialmente las diferencias entre la mayoría de individuos.</span>
 <span id="cb23-462"><a href="#cb23-462" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-463"><a href="#cb23-463" aria-hidden="true" tabindex="-1"></a>Para variables nominales:</span>
+<span id="cb23-463"><a href="#cb23-463" aria-hidden="true" tabindex="-1"></a><span class="fu">### Componente nominal</span></span>
 <span id="cb23-464"><a href="#cb23-464" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-465"><a href="#cb23-465" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb23-466"><a href="#cb23-466" aria-hidden="true" tabindex="-1"></a>d_{ijk}=</span>
-<span id="cb23-467"><a href="#cb23-467" aria-hidden="true" tabindex="-1"></a>\begin{cases}</span>
-<span id="cb23-468"><a href="#cb23-468" aria-hidden="true" tabindex="-1"></a>0, &amp; \text{si } x_{ik}=x_{jk},<span class="sc">\\</span></span>
-<span id="cb23-469"><a href="#cb23-469" aria-hidden="true" tabindex="-1"></a>1, &amp; \text{si } x_{ik}\neq x_{jk}.</span>
-<span id="cb23-470"><a href="#cb23-470" aria-hidden="true" tabindex="-1"></a>\end{cases}</span>
-<span id="cb23-471"><a href="#cb23-471" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb23-472"><a href="#cb23-472" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-473"><a href="#cb23-473" aria-hidden="true" tabindex="-1"></a>El desacuerdo completo vale 1, igual que la máxima diferencia posible en una variable numérica reescalada.</span>
+<span id="cb23-465"><a href="#cb23-465" aria-hidden="true" tabindex="-1"></a>Para variables nominales:</span>
+<span id="cb23-466"><a href="#cb23-466" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-467"><a href="#cb23-467" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb23-468"><a href="#cb23-468" aria-hidden="true" tabindex="-1"></a>d_{ijk}=</span>
+<span id="cb23-469"><a href="#cb23-469" aria-hidden="true" tabindex="-1"></a>\begin{cases}</span>
+<span id="cb23-470"><a href="#cb23-470" aria-hidden="true" tabindex="-1"></a>0, &amp; \text{si } x_{ik}=x_{jk},<span class="sc">\\</span></span>
+<span id="cb23-471"><a href="#cb23-471" aria-hidden="true" tabindex="-1"></a>1, &amp; \text{si } x_{ik}\neq x_{jk}.</span>
+<span id="cb23-472"><a href="#cb23-472" aria-hidden="true" tabindex="-1"></a>\end{cases}</span>
+<span id="cb23-473"><a href="#cb23-473" aria-hidden="true" tabindex="-1"></a>$$</span>
 <span id="cb23-474"><a href="#cb23-474" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-475"><a href="#cb23-475" aria-hidden="true" tabindex="-1"></a><span class="fu">### Componente ordinal</span></span>
+<span id="cb23-475"><a href="#cb23-475" aria-hidden="true" tabindex="-1"></a>El desacuerdo completo vale 1, igual que la máxima diferencia posible en una variable numérica reescalada.</span>
 <span id="cb23-476"><a href="#cb23-476" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-477"><a href="#cb23-477" aria-hidden="true" tabindex="-1"></a>Para variables ordinales, una estrategia habitual es convertir categorías ordenadas en puntuaciones $z_{ik}$ entre 0 y 1 y después usar:</span>
+<span id="cb23-477"><a href="#cb23-477" aria-hidden="true" tabindex="-1"></a><span class="fu">### Componente ordinal</span></span>
 <span id="cb23-478"><a href="#cb23-478" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-479"><a href="#cb23-479" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb23-480"><a href="#cb23-480" aria-hidden="true" tabindex="-1"></a>d_{ijk}=|z_{ik}-z_{jk}|.</span>
+<span id="cb23-479"><a href="#cb23-479" aria-hidden="true" tabindex="-1"></a>Para variables ordinales, una estrategia habitual es convertir categorías ordenadas en puntuaciones $z_{ik}$ entre 0 y 1 y después usar:</span>
+<span id="cb23-480"><a href="#cb23-480" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb23-481"><a href="#cb23-481" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb23-482"><a href="#cb23-482" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-483"><a href="#cb23-483" aria-hidden="true" tabindex="-1"></a>Esto permite que <span class="in">`bajo`</span> frente a <span class="in">`alto`</span> sea más distante que <span class="in">`bajo`</span> frente a <span class="in">`medio`</span>.</span>
+<span id="cb23-482"><a href="#cb23-482" aria-hidden="true" tabindex="-1"></a>d_{ijk}=|z_{ik}-z_{jk}|.</span>
+<span id="cb23-483"><a href="#cb23-483" aria-hidden="true" tabindex="-1"></a>$$</span>
 <span id="cb23-484"><a href="#cb23-484" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-485"><a href="#cb23-485" aria-hidden="true" tabindex="-1"></a><span class="fu">### Variables binarias asimétricas</span></span>
+<span id="cb23-485"><a href="#cb23-485" aria-hidden="true" tabindex="-1"></a>Esto permite que <span class="in">`bajo`</span> frente a <span class="in">`alto`</span> sea más distante que <span class="in">`bajo`</span> frente a <span class="in">`medio`</span>.</span>
 <span id="cb23-486"><a href="#cb23-486" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-487"><a href="#cb23-487" aria-hidden="true" tabindex="-1"></a>En algunas variables binarias, la coincidencia en ausencia no debe contar como similitud fuerte. Por ejemplo, dos pacientes pueden compartir que no tienen una enfermedad rara; esa coincidencia quizá no dice mucho. Gower permite ajustar pesos para que ciertas comparaciones no contribuyan.</span>
+<span id="cb23-487"><a href="#cb23-487" aria-hidden="true" tabindex="-1"></a><span class="fu">### Variables binarias asimétricas</span></span>
 <span id="cb23-488"><a href="#cb23-488" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-489"><a href="#cb23-489" aria-hidden="true" tabindex="-1"></a><span class="fu">### Valores perdidos</span></span>
+<span id="cb23-489"><a href="#cb23-489" aria-hidden="true" tabindex="-1"></a>En algunas variables binarias, la coincidencia en ausencia no debe contar como similitud fuerte. Por ejemplo, dos pacientes pueden compartir que no tienen una enfermedad rara; esa coincidencia quizá no dice mucho. Gower permite ajustar pesos para que ciertas comparaciones no contribuyan.</span>
 <span id="cb23-490"><a href="#cb23-490" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-491"><a href="#cb23-491" aria-hidden="true" tabindex="-1"></a>Si falta una variable para un individuo, esa variable no debe crear similitud ni disimilitud artificial. Se usa $w_{ijk}=0$ para excluirla del promedio:</span>
+<span id="cb23-491"><a href="#cb23-491" aria-hidden="true" tabindex="-1"></a><span class="fu">### Valores perdidos</span></span>
 <span id="cb23-492"><a href="#cb23-492" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-493"><a href="#cb23-493" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb23-494"><a href="#cb23-494" aria-hidden="true" tabindex="-1"></a>w_{ijk}=</span>
-<span id="cb23-495"><a href="#cb23-495" aria-hidden="true" tabindex="-1"></a>\begin{cases}</span>
-<span id="cb23-496"><a href="#cb23-496" aria-hidden="true" tabindex="-1"></a>1, &amp; \text{si la variable } k \text{ puede compararse entre } i \text{ y } j,<span class="sc">\\</span></span>
-<span id="cb23-497"><a href="#cb23-497" aria-hidden="true" tabindex="-1"></a>0, &amp; \text{si falta información o la comparación no procede.}</span>
-<span id="cb23-498"><a href="#cb23-498" aria-hidden="true" tabindex="-1"></a>\end{cases}</span>
-<span id="cb23-499"><a href="#cb23-499" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb23-500"><a href="#cb23-500" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-501"><a href="#cb23-501" aria-hidden="true" tabindex="-1"></a>Esta es una ventaja práctica de Gower: puede promediar solo las variables comparables para cada par.</span>
+<span id="cb23-493"><a href="#cb23-493" aria-hidden="true" tabindex="-1"></a>Si falta una variable para un individuo, esa variable no debe crear similitud ni disimilitud artificial. Se usa $w_{ijk}=0$ para excluirla del promedio:</span>
+<span id="cb23-494"><a href="#cb23-494" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-495"><a href="#cb23-495" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb23-496"><a href="#cb23-496" aria-hidden="true" tabindex="-1"></a>w_{ijk}=</span>
+<span id="cb23-497"><a href="#cb23-497" aria-hidden="true" tabindex="-1"></a>\begin{cases}</span>
+<span id="cb23-498"><a href="#cb23-498" aria-hidden="true" tabindex="-1"></a>1, &amp; \text{si la variable } k \text{ puede compararse entre } i \text{ y } j,<span class="sc">\\</span></span>
+<span id="cb23-499"><a href="#cb23-499" aria-hidden="true" tabindex="-1"></a>0, &amp; \text{si falta información o la comparación no procede.}</span>
+<span id="cb23-500"><a href="#cb23-500" aria-hidden="true" tabindex="-1"></a>\end{cases}</span>
+<span id="cb23-501"><a href="#cb23-501" aria-hidden="true" tabindex="-1"></a>$$</span>
 <span id="cb23-502"><a href="#cb23-502" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-503"><a href="#cb23-503" aria-hidden="true" tabindex="-1"></a><span class="fu">## Ejemplo manual de Gower</span></span>
+<span id="cb23-503"><a href="#cb23-503" aria-hidden="true" tabindex="-1"></a>Esta es una ventaja práctica de Gower: puede promediar solo las variables comparables para cada par.</span>
 <span id="cb23-504"><a href="#cb23-504" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-505"><a href="#cb23-505" aria-hidden="true" tabindex="-1"></a>Construimos una versión mixta de <span class="in">`mtcars`</span>:</span>
+<span id="cb23-505"><a href="#cb23-505" aria-hidden="true" tabindex="-1"></a><span class="fu">## Ejemplo manual de Gower</span></span>
 <span id="cb23-506"><a href="#cb23-506" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-509"><a href="#cb23-509" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb23-510"><a href="#cb23-510" aria-hidden="true" tabindex="-1"></a>mtcars_mixed <span class="ot">&lt;-</span> mtcars</span>
-<span id="cb23-511"><a href="#cb23-511" aria-hidden="true" tabindex="-1"></a>mtcars_mixed<span class="sc">$</span>cyl <span class="ot">&lt;-</span> <span class="fu">factor</span>(mtcars_mixed<span class="sc">$</span>cyl)</span>
-<span id="cb23-512"><a href="#cb23-512" aria-hidden="true" tabindex="-1"></a>mtcars_mixed<span class="sc">$</span>vs <span class="ot">&lt;-</span> <span class="fu">factor</span>(mtcars_mixed<span class="sc">$</span>vs, <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"V"</span>, <span class="st">"Straight"</span>))</span>
-<span id="cb23-513"><a href="#cb23-513" aria-hidden="true" tabindex="-1"></a>mtcars_mixed<span class="sc">$</span>am <span class="ot">&lt;-</span> <span class="fu">factor</span>(mtcars_mixed<span class="sc">$</span>am, <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"automatico"</span>, <span class="st">"manual"</span>))</span>
-<span id="cb23-514"><a href="#cb23-514" aria-hidden="true" tabindex="-1"></a>mtcars_mixed<span class="sc">$</span>gear <span class="ot">&lt;-</span> <span class="fu">factor</span>(mtcars_mixed<span class="sc">$</span>gear)</span>
-<span id="cb23-515"><a href="#cb23-515" aria-hidden="true" tabindex="-1"></a>mtcars_mixed<span class="sc">$</span>carb <span class="ot">&lt;-</span> <span class="fu">factor</span>(mtcars_mixed<span class="sc">$</span>carb)</span>
-<span id="cb23-516"><a href="#cb23-516" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(</span>
-<span id="cb23-517"><a href="#cb23-517" aria-hidden="true" tabindex="-1"></a>  <span class="at">variable =</span> <span class="fu">names</span>(mtcars_mixed),</span>
-<span id="cb23-518"><a href="#cb23-518" aria-hidden="true" tabindex="-1"></a>  <span class="at">clase =</span> <span class="fu">sapply</span>(mtcars_mixed, <span class="cf">function</span>(x) <span class="fu">class</span>(x)[<span class="dv">1</span>])</span>
-<span id="cb23-519"><a href="#cb23-519" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
-<span id="cb23-520"><a href="#cb23-520" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>()</span>
-<span id="cb23-521"><a href="#cb23-521" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb23-522"><a href="#cb23-522" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-523"><a href="#cb23-523" aria-hidden="true" tabindex="-1"></a>Calculamos una versión manual de Gower para un subconjunto con variables numéricas y categóricas.</span>
+<span id="cb23-507"><a href="#cb23-507" aria-hidden="true" tabindex="-1"></a>Construimos una versión mixta de <span class="in">`mtcars`</span>:</span>
+<span id="cb23-508"><a href="#cb23-508" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-511"><a href="#cb23-511" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb23-512"><a href="#cb23-512" aria-hidden="true" tabindex="-1"></a>mtcars_mixed <span class="ot">&lt;-</span> mtcars</span>
+<span id="cb23-513"><a href="#cb23-513" aria-hidden="true" tabindex="-1"></a>mtcars_mixed<span class="sc">$</span>cyl <span class="ot">&lt;-</span> <span class="fu">factor</span>(mtcars_mixed<span class="sc">$</span>cyl)</span>
+<span id="cb23-514"><a href="#cb23-514" aria-hidden="true" tabindex="-1"></a>mtcars_mixed<span class="sc">$</span>vs <span class="ot">&lt;-</span> <span class="fu">factor</span>(mtcars_mixed<span class="sc">$</span>vs, <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"V"</span>, <span class="st">"Straight"</span>))</span>
+<span id="cb23-515"><a href="#cb23-515" aria-hidden="true" tabindex="-1"></a>mtcars_mixed<span class="sc">$</span>am <span class="ot">&lt;-</span> <span class="fu">factor</span>(mtcars_mixed<span class="sc">$</span>am, <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"automatico"</span>, <span class="st">"manual"</span>))</span>
+<span id="cb23-516"><a href="#cb23-516" aria-hidden="true" tabindex="-1"></a>mtcars_mixed<span class="sc">$</span>gear <span class="ot">&lt;-</span> <span class="fu">factor</span>(mtcars_mixed<span class="sc">$</span>gear)</span>
+<span id="cb23-517"><a href="#cb23-517" aria-hidden="true" tabindex="-1"></a>mtcars_mixed<span class="sc">$</span>carb <span class="ot">&lt;-</span> <span class="fu">factor</span>(mtcars_mixed<span class="sc">$</span>carb)</span>
+<span id="cb23-518"><a href="#cb23-518" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(</span>
+<span id="cb23-519"><a href="#cb23-519" aria-hidden="true" tabindex="-1"></a>  <span class="at">variable =</span> <span class="fu">names</span>(mtcars_mixed),</span>
+<span id="cb23-520"><a href="#cb23-520" aria-hidden="true" tabindex="-1"></a>  <span class="at">clase =</span> <span class="fu">sapply</span>(mtcars_mixed, <span class="cf">function</span>(x) <span class="fu">class</span>(x)[<span class="dv">1</span>])</span>
+<span id="cb23-521"><a href="#cb23-521" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
+<span id="cb23-522"><a href="#cb23-522" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>()</span>
+<span id="cb23-523"><a href="#cb23-523" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb23-524"><a href="#cb23-524" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-527"><a href="#cb23-527" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb23-528"><a href="#cb23-528" aria-hidden="true" tabindex="-1"></a>datos_gower <span class="ot">&lt;-</span> mtcars_mixed[<span class="dv">1</span><span class="sc">:</span><span class="dv">6</span>, <span class="fu">c</span>(<span class="st">"mpg"</span>, <span class="st">"hp"</span>, <span class="st">"wt"</span>, <span class="st">"cyl"</span>, <span class="st">"am"</span>)]</span>
-<span id="cb23-529"><a href="#cb23-529" aria-hidden="true" tabindex="-1"></a>datos_gower <span class="sc">|&gt;</span></span>
-<span id="cb23-530"><a href="#cb23-530" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rownames_to_column</span>(<span class="st">"modelo"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb23-531"><a href="#cb23-531" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>()</span>
-<span id="cb23-532"><a href="#cb23-532" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb23-533"><a href="#cb23-533" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-536"><a href="#cb23-536" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb23-537"><a href="#cb23-537" aria-hidden="true" tabindex="-1"></a>gower_manual <span class="ot">&lt;-</span> <span class="cf">function</span>(df) {</span>
-<span id="cb23-538"><a href="#cb23-538" aria-hidden="true" tabindex="-1"></a>  n <span class="ot">&lt;-</span> <span class="fu">nrow</span>(df)</span>
-<span id="cb23-539"><a href="#cb23-539" aria-hidden="true" tabindex="-1"></a>  out <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="dv">0</span>, n, n, <span class="at">dimnames =</span> <span class="fu">list</span>(<span class="fu">rownames</span>(df), <span class="fu">rownames</span>(df)))</span>
-<span id="cb23-540"><a href="#cb23-540" aria-hidden="true" tabindex="-1"></a>  numericas <span class="ot">&lt;-</span> <span class="fu">sapply</span>(df, is.numeric)</span>
-<span id="cb23-541"><a href="#cb23-541" aria-hidden="true" tabindex="-1"></a>  rangos <span class="ot">&lt;-</span> <span class="fu">sapply</span>(df[numericas], <span class="cf">function</span>(x) <span class="fu">diff</span>(<span class="fu">range</span>(x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)))</span>
-<span id="cb23-542"><a href="#cb23-542" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb23-543"><a href="#cb23-543" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">seq_len</span>(n)) {</span>
-<span id="cb23-544"><a href="#cb23-544" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> (j <span class="cf">in</span> <span class="fu">seq_len</span>(n)) {</span>
-<span id="cb23-545"><a href="#cb23-545" aria-hidden="true" tabindex="-1"></a>      partes <span class="ot">&lt;-</span> <span class="fu">numeric</span>(<span class="dv">0</span>)</span>
-<span id="cb23-546"><a href="#cb23-546" aria-hidden="true" tabindex="-1"></a>      <span class="cf">for</span> (v <span class="cf">in</span> <span class="fu">names</span>(df)) {</span>
-<span id="cb23-547"><a href="#cb23-547" aria-hidden="true" tabindex="-1"></a>        xi <span class="ot">&lt;-</span> df[[v]][i]</span>
-<span id="cb23-548"><a href="#cb23-548" aria-hidden="true" tabindex="-1"></a>        xj <span class="ot">&lt;-</span> df[[v]][j]</span>
-<span id="cb23-549"><a href="#cb23-549" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> (<span class="fu">is.na</span>(xi) <span class="sc">||</span> <span class="fu">is.na</span>(xj)) {</span>
-<span id="cb23-550"><a href="#cb23-550" aria-hidden="true" tabindex="-1"></a>          <span class="cf">next</span></span>
-<span id="cb23-551"><a href="#cb23-551" aria-hidden="true" tabindex="-1"></a>        }</span>
-<span id="cb23-552"><a href="#cb23-552" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> (<span class="fu">is.numeric</span>(df[[v]])) {</span>
-<span id="cb23-553"><a href="#cb23-553" aria-hidden="true" tabindex="-1"></a>          r <span class="ot">&lt;-</span> rangos[v]</span>
-<span id="cb23-554"><a href="#cb23-554" aria-hidden="true" tabindex="-1"></a>          partes <span class="ot">&lt;-</span> <span class="fu">c</span>(partes, <span class="fu">ifelse</span>(r <span class="sc">==</span> <span class="dv">0</span>, <span class="dv">0</span>, <span class="fu">abs</span>(xi <span class="sc">-</span> xj) <span class="sc">/</span> r))</span>
-<span id="cb23-555"><a href="#cb23-555" aria-hidden="true" tabindex="-1"></a>        } <span class="cf">else</span> {</span>
-<span id="cb23-556"><a href="#cb23-556" aria-hidden="true" tabindex="-1"></a>          partes <span class="ot">&lt;-</span> <span class="fu">c</span>(partes, <span class="fu">as.numeric</span>(xi <span class="sc">!=</span> xj))</span>
-<span id="cb23-557"><a href="#cb23-557" aria-hidden="true" tabindex="-1"></a>        }</span>
-<span id="cb23-558"><a href="#cb23-558" aria-hidden="true" tabindex="-1"></a>      }</span>
-<span id="cb23-559"><a href="#cb23-559" aria-hidden="true" tabindex="-1"></a>      out[i, j] <span class="ot">&lt;-</span> <span class="fu">mean</span>(partes)</span>
-<span id="cb23-560"><a href="#cb23-560" aria-hidden="true" tabindex="-1"></a>    }</span>
-<span id="cb23-561"><a href="#cb23-561" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb23-562"><a href="#cb23-562" aria-hidden="true" tabindex="-1"></a>  out</span>
-<span id="cb23-563"><a href="#cb23-563" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb23-564"><a href="#cb23-564" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-565"><a href="#cb23-565" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(<span class="fu">round</span>(<span class="fu">gower_manual</span>(datos_gower), <span class="dv">3</span>))</span>
-<span id="cb23-566"><a href="#cb23-566" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb23-567"><a href="#cb23-567" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-568"><a href="#cb23-568" aria-hidden="true" tabindex="-1"></a>Ahora comparamos con <span class="in">`cluster::daisy()`</span>.</span>
+<span id="cb23-525"><a href="#cb23-525" aria-hidden="true" tabindex="-1"></a>Calculamos una versión manual de Gower para un subconjunto con variables numéricas y categóricas.</span>
+<span id="cb23-526"><a href="#cb23-526" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-529"><a href="#cb23-529" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb23-530"><a href="#cb23-530" aria-hidden="true" tabindex="-1"></a>datos_gower <span class="ot">&lt;-</span> mtcars_mixed[<span class="dv">1</span><span class="sc">:</span><span class="dv">6</span>, <span class="fu">c</span>(<span class="st">"mpg"</span>, <span class="st">"hp"</span>, <span class="st">"wt"</span>, <span class="st">"cyl"</span>, <span class="st">"am"</span>)]</span>
+<span id="cb23-531"><a href="#cb23-531" aria-hidden="true" tabindex="-1"></a>datos_gower <span class="sc">|&gt;</span></span>
+<span id="cb23-532"><a href="#cb23-532" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rownames_to_column</span>(<span class="st">"modelo"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb23-533"><a href="#cb23-533" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>()</span>
+<span id="cb23-534"><a href="#cb23-534" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb23-535"><a href="#cb23-535" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-538"><a href="#cb23-538" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb23-539"><a href="#cb23-539" aria-hidden="true" tabindex="-1"></a>gower_manual <span class="ot">&lt;-</span> <span class="cf">function</span>(df) {</span>
+<span id="cb23-540"><a href="#cb23-540" aria-hidden="true" tabindex="-1"></a>  n <span class="ot">&lt;-</span> <span class="fu">nrow</span>(df)</span>
+<span id="cb23-541"><a href="#cb23-541" aria-hidden="true" tabindex="-1"></a>  out <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="dv">0</span>, n, n, <span class="at">dimnames =</span> <span class="fu">list</span>(<span class="fu">rownames</span>(df), <span class="fu">rownames</span>(df)))</span>
+<span id="cb23-542"><a href="#cb23-542" aria-hidden="true" tabindex="-1"></a>  numericas <span class="ot">&lt;-</span> <span class="fu">sapply</span>(df, is.numeric)</span>
+<span id="cb23-543"><a href="#cb23-543" aria-hidden="true" tabindex="-1"></a>  rangos <span class="ot">&lt;-</span> <span class="fu">sapply</span>(df[numericas], <span class="cf">function</span>(x) <span class="fu">diff</span>(<span class="fu">range</span>(x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)))</span>
+<span id="cb23-544"><a href="#cb23-544" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb23-545"><a href="#cb23-545" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">seq_len</span>(n)) {</span>
+<span id="cb23-546"><a href="#cb23-546" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> (j <span class="cf">in</span> <span class="fu">seq_len</span>(n)) {</span>
+<span id="cb23-547"><a href="#cb23-547" aria-hidden="true" tabindex="-1"></a>      partes <span class="ot">&lt;-</span> <span class="fu">numeric</span>(<span class="dv">0</span>)</span>
+<span id="cb23-548"><a href="#cb23-548" aria-hidden="true" tabindex="-1"></a>      <span class="cf">for</span> (v <span class="cf">in</span> <span class="fu">names</span>(df)) {</span>
+<span id="cb23-549"><a href="#cb23-549" aria-hidden="true" tabindex="-1"></a>        xi <span class="ot">&lt;-</span> df[[v]][i]</span>
+<span id="cb23-550"><a href="#cb23-550" aria-hidden="true" tabindex="-1"></a>        xj <span class="ot">&lt;-</span> df[[v]][j]</span>
+<span id="cb23-551"><a href="#cb23-551" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> (<span class="fu">is.na</span>(xi) <span class="sc">||</span> <span class="fu">is.na</span>(xj)) {</span>
+<span id="cb23-552"><a href="#cb23-552" aria-hidden="true" tabindex="-1"></a>          <span class="cf">next</span></span>
+<span id="cb23-553"><a href="#cb23-553" aria-hidden="true" tabindex="-1"></a>        }</span>
+<span id="cb23-554"><a href="#cb23-554" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> (<span class="fu">is.numeric</span>(df[[v]])) {</span>
+<span id="cb23-555"><a href="#cb23-555" aria-hidden="true" tabindex="-1"></a>          r <span class="ot">&lt;-</span> rangos[v]</span>
+<span id="cb23-556"><a href="#cb23-556" aria-hidden="true" tabindex="-1"></a>          partes <span class="ot">&lt;-</span> <span class="fu">c</span>(partes, <span class="fu">ifelse</span>(r <span class="sc">==</span> <span class="dv">0</span>, <span class="dv">0</span>, <span class="fu">abs</span>(xi <span class="sc">-</span> xj) <span class="sc">/</span> r))</span>
+<span id="cb23-557"><a href="#cb23-557" aria-hidden="true" tabindex="-1"></a>        } <span class="cf">else</span> {</span>
+<span id="cb23-558"><a href="#cb23-558" aria-hidden="true" tabindex="-1"></a>          partes <span class="ot">&lt;-</span> <span class="fu">c</span>(partes, <span class="fu">as.numeric</span>(xi <span class="sc">!=</span> xj))</span>
+<span id="cb23-559"><a href="#cb23-559" aria-hidden="true" tabindex="-1"></a>        }</span>
+<span id="cb23-560"><a href="#cb23-560" aria-hidden="true" tabindex="-1"></a>      }</span>
+<span id="cb23-561"><a href="#cb23-561" aria-hidden="true" tabindex="-1"></a>      out[i, j] <span class="ot">&lt;-</span> <span class="fu">mean</span>(partes)</span>
+<span id="cb23-562"><a href="#cb23-562" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb23-563"><a href="#cb23-563" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb23-564"><a href="#cb23-564" aria-hidden="true" tabindex="-1"></a>  out</span>
+<span id="cb23-565"><a href="#cb23-565" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb23-566"><a href="#cb23-566" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-567"><a href="#cb23-567" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(<span class="fu">round</span>(<span class="fu">gower_manual</span>(datos_gower), <span class="dv">3</span>))</span>
+<span id="cb23-568"><a href="#cb23-568" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb23-569"><a href="#cb23-569" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-572"><a href="#cb23-572" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb23-573"><a href="#cb23-573" aria-hidden="true" tabindex="-1"></a>gower <span class="ot">&lt;-</span> cluster<span class="sc">::</span><span class="fu">daisy</span>(datos_gower, <span class="at">metric =</span> <span class="st">"gower"</span>)</span>
-<span id="cb23-574"><a href="#cb23-574" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(<span class="fu">round</span>(<span class="fu">as.matrix</span>(gower), <span class="dv">3</span>))</span>
-<span id="cb23-575"><a href="#cb23-575" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb23-576"><a href="#cb23-576" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-577"><a href="#cb23-577" aria-hidden="true" tabindex="-1"></a>La distancia de Gower final es un promedio interpretable: una distancia de 0.25 puede leerse como una disimilitud media del 25% sobre las variables comparadas, siempre que todas hayan sido tratadas con una codificación razonable.</span>
+<span id="cb23-570"><a href="#cb23-570" aria-hidden="true" tabindex="-1"></a>Ahora comparamos con <span class="in">`cluster::daisy()`</span>.</span>
+<span id="cb23-571"><a href="#cb23-571" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-574"><a href="#cb23-574" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb23-575"><a href="#cb23-575" aria-hidden="true" tabindex="-1"></a>gower <span class="ot">&lt;-</span> cluster<span class="sc">::</span><span class="fu">daisy</span>(datos_gower, <span class="at">metric =</span> <span class="st">"gower"</span>)</span>
+<span id="cb23-576"><a href="#cb23-576" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(<span class="fu">round</span>(<span class="fu">as.matrix</span>(gower), <span class="dv">3</span>))</span>
+<span id="cb23-577"><a href="#cb23-577" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb23-578"><a href="#cb23-578" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-579"><a href="#cb23-579" aria-hidden="true" tabindex="-1"></a><span class="fu">## Comparación entre distancias en `mtcars`</span></span>
+<span id="cb23-579"><a href="#cb23-579" aria-hidden="true" tabindex="-1"></a>La distancia de Gower final es un promedio interpretable: una distancia de 0.25 puede leerse como una disimilitud media del 25% sobre las variables comparadas, siempre que todas hayan sido tratadas con una codificación razonable.</span>
 <span id="cb23-580"><a href="#cb23-580" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-581"><a href="#cb23-581" aria-hidden="true" tabindex="-1"></a>El siguiente ejemplo muestra cómo cambia la noción de vecindad al usar solo variables numéricas escaladas o variables mixtas con Gower.</span>
+<span id="cb23-581"><a href="#cb23-581" aria-hidden="true" tabindex="-1"></a><span class="fu">## Comparación entre distancias en `mtcars`</span></span>
 <span id="cb23-582"><a href="#cb23-582" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-585"><a href="#cb23-585" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb23-586"><a href="#cb23-586" aria-hidden="true" tabindex="-1"></a>vecinos <span class="ot">&lt;-</span> <span class="cf">function</span>(d, individuo, <span class="at">k =</span> <span class="dv">5</span>) {</span>
-<span id="cb23-587"><a href="#cb23-587" aria-hidden="true" tabindex="-1"></a>  orden <span class="ot">&lt;-</span> <span class="fu">sort</span>(d[individuo, ])</span>
-<span id="cb23-588"><a href="#cb23-588" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.frame</span>(</span>
-<span id="cb23-589"><a href="#cb23-589" aria-hidden="true" tabindex="-1"></a>    <span class="at">vecino =</span> <span class="fu">names</span>(orden)[<span class="dv">2</span><span class="sc">:</span>(k <span class="sc">+</span> <span class="dv">1</span>)],</span>
-<span id="cb23-590"><a href="#cb23-590" aria-hidden="true" tabindex="-1"></a>    <span class="at">distancia =</span> <span class="fu">as.numeric</span>(orden[<span class="dv">2</span><span class="sc">:</span>(k <span class="sc">+</span> <span class="dv">1</span>)])</span>
-<span id="cb23-591"><a href="#cb23-591" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb23-592"><a href="#cb23-592" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb23-593"><a href="#cb23-593" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-594"><a href="#cb23-594" aria-hidden="true" tabindex="-1"></a>d_num <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(<span class="fu">dist</span>(<span class="fu">scale</span>(mtcars[, <span class="fu">c</span>(<span class="st">"mpg"</span>, <span class="st">"disp"</span>, <span class="st">"hp"</span>, <span class="st">"wt"</span>)])))</span>
-<span id="cb23-595"><a href="#cb23-595" aria-hidden="true" tabindex="-1"></a><span class="fu">vecinos</span>(d_num, <span class="st">"Mazda RX4"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb23-596"><a href="#cb23-596" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>()</span>
-<span id="cb23-597"><a href="#cb23-597" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb23-598"><a href="#cb23-598" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-601"><a href="#cb23-601" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb23-602"><a href="#cb23-602" aria-hidden="true" tabindex="-1"></a>d_gower <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(cluster<span class="sc">::</span><span class="fu">daisy</span>(mtcars_mixed, <span class="at">metric =</span> <span class="st">"gower"</span>))</span>
-<span id="cb23-603"><a href="#cb23-603" aria-hidden="true" tabindex="-1"></a><span class="fu">vecinos</span>(d_gower, <span class="st">"Mazda RX4"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb23-604"><a href="#cb23-604" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>()</span>
-<span id="cb23-605"><a href="#cb23-605" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb23-606"><a href="#cb23-606" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-607"><a href="#cb23-607" aria-hidden="true" tabindex="-1"></a>Si cambian los vecinos más próximos, no significa que una distancia sea verdadera y otra falsa. Significa que responden a definiciones distintas de parecido.</span>
+<span id="cb23-583"><a href="#cb23-583" aria-hidden="true" tabindex="-1"></a>El siguiente ejemplo muestra cómo cambia la noción de vecindad al usar solo variables numéricas escaladas o variables mixtas con Gower.</span>
+<span id="cb23-584"><a href="#cb23-584" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-587"><a href="#cb23-587" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb23-588"><a href="#cb23-588" aria-hidden="true" tabindex="-1"></a>vecinos <span class="ot">&lt;-</span> <span class="cf">function</span>(d, individuo, <span class="at">k =</span> <span class="dv">5</span>) {</span>
+<span id="cb23-589"><a href="#cb23-589" aria-hidden="true" tabindex="-1"></a>  orden <span class="ot">&lt;-</span> <span class="fu">sort</span>(d[individuo, ])</span>
+<span id="cb23-590"><a href="#cb23-590" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.frame</span>(</span>
+<span id="cb23-591"><a href="#cb23-591" aria-hidden="true" tabindex="-1"></a>    <span class="at">vecino =</span> <span class="fu">names</span>(orden)[<span class="dv">2</span><span class="sc">:</span>(k <span class="sc">+</span> <span class="dv">1</span>)],</span>
+<span id="cb23-592"><a href="#cb23-592" aria-hidden="true" tabindex="-1"></a>    <span class="at">distancia =</span> <span class="fu">as.numeric</span>(orden[<span class="dv">2</span><span class="sc">:</span>(k <span class="sc">+</span> <span class="dv">1</span>)])</span>
+<span id="cb23-593"><a href="#cb23-593" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb23-594"><a href="#cb23-594" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb23-595"><a href="#cb23-595" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-596"><a href="#cb23-596" aria-hidden="true" tabindex="-1"></a>d_num <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(<span class="fu">dist</span>(<span class="fu">scale</span>(mtcars[, <span class="fu">c</span>(<span class="st">"mpg"</span>, <span class="st">"disp"</span>, <span class="st">"hp"</span>, <span class="st">"wt"</span>)])))</span>
+<span id="cb23-597"><a href="#cb23-597" aria-hidden="true" tabindex="-1"></a><span class="fu">vecinos</span>(d_num, <span class="st">"Mazda RX4"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb23-598"><a href="#cb23-598" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>()</span>
+<span id="cb23-599"><a href="#cb23-599" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb23-600"><a href="#cb23-600" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-603"><a href="#cb23-603" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb23-604"><a href="#cb23-604" aria-hidden="true" tabindex="-1"></a>d_gower <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(cluster<span class="sc">::</span><span class="fu">daisy</span>(mtcars_mixed, <span class="at">metric =</span> <span class="st">"gower"</span>))</span>
+<span id="cb23-605"><a href="#cb23-605" aria-hidden="true" tabindex="-1"></a><span class="fu">vecinos</span>(d_gower, <span class="st">"Mazda RX4"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb23-606"><a href="#cb23-606" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>()</span>
+<span id="cb23-607"><a href="#cb23-607" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb23-608"><a href="#cb23-608" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-609"><a href="#cb23-609" aria-hidden="true" tabindex="-1"></a><span class="fu">## Mapa de calor de distancias</span></span>
+<span id="cb23-609"><a href="#cb23-609" aria-hidden="true" tabindex="-1"></a>Si cambian los vecinos más próximos, no significa que una distancia sea verdadera y otra falsa. Significa que responden a definiciones distintas de parecido.</span>
 <span id="cb23-610"><a href="#cb23-610" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-611"><a href="#cb23-611" aria-hidden="true" tabindex="-1"></a>Un mapa de calor ayuda a ver patrones de proximidad en un subconjunto pequeño.</span>
+<span id="cb23-611"><a href="#cb23-611" aria-hidden="true" tabindex="-1"></a><span class="fu">## Mapa de calor de distancias</span></span>
 <span id="cb23-612"><a href="#cb23-612" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-615"><a href="#cb23-615" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb23-616"><a href="#cb23-616" aria-hidden="true" tabindex="-1"></a>d <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(<span class="fu">dist</span>(<span class="fu">scale</span>(mtcars[<span class="dv">1</span><span class="sc">:</span><span class="dv">12</span>, <span class="fu">c</span>(<span class="st">"mpg"</span>, <span class="st">"disp"</span>, <span class="st">"hp"</span>, <span class="st">"wt"</span>)])))</span>
-<span id="cb23-617"><a href="#cb23-617" aria-hidden="true" tabindex="-1"></a><span class="fu">as.data.frame</span>(<span class="fu">as.table</span>(d)) <span class="sc">|&gt;</span></span>
-<span id="cb23-618"><a href="#cb23-618" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as_tibble</span>() <span class="sc">|&gt;</span></span>
-<span id="cb23-619"><a href="#cb23-619" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">coche_1 =</span> Var1, <span class="at">coche_2 =</span> Var2, <span class="at">distancia =</span> Freq) <span class="sc">|&gt;</span></span>
-<span id="cb23-620"><a href="#cb23-620" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(coche_1, coche_2, <span class="at">fill =</span> distancia)) <span class="sc">+</span></span>
-<span id="cb23-621"><a href="#cb23-621" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_tile</span>(<span class="at">color =</span> <span class="st">"white"</span>) <span class="sc">+</span></span>
-<span id="cb23-622"><a href="#cb23-622" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_viridis_c</span>(<span class="at">option =</span> <span class="st">"C"</span>) <span class="sc">+</span></span>
-<span id="cb23-623"><a href="#cb23-623" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
-<span id="cb23-624"><a href="#cb23-624" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Distancias euclídeas estandarizadas"</span>,</span>
-<span id="cb23-625"><a href="#cb23-625" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Coche"</span>,</span>
-<span id="cb23-626"><a href="#cb23-626" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Coche"</span>,</span>
-<span id="cb23-627"><a href="#cb23-627" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill =</span> <span class="st">"Distancia"</span></span>
-<span id="cb23-628"><a href="#cb23-628" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb23-629"><a href="#cb23-629" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()<span class="sc">+</span></span>
-<span id="cb23-630"><a href="#cb23-630" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
-<span id="cb23-631"><a href="#cb23-631" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">45</span>, <span class="at">hjust =</span> <span class="dv">1</span>)</span>
-<span id="cb23-632"><a href="#cb23-632" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb23-633"><a href="#cb23-633" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb23-634"><a href="#cb23-634" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-635"><a href="#cb23-635" aria-hidden="true" tabindex="-1"></a>Los bloques oscuros o claros pueden sugerir proximidades internas, pero el mapa depende por completo de la distancia elegida.</span>
+<span id="cb23-613"><a href="#cb23-613" aria-hidden="true" tabindex="-1"></a>Un mapa de calor ayuda a ver patrones de proximidad en un subconjunto pequeño.</span>
+<span id="cb23-614"><a href="#cb23-614" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-617"><a href="#cb23-617" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb23-618"><a href="#cb23-618" aria-hidden="true" tabindex="-1"></a>d <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(<span class="fu">dist</span>(<span class="fu">scale</span>(mtcars[<span class="dv">1</span><span class="sc">:</span><span class="dv">12</span>, <span class="fu">c</span>(<span class="st">"mpg"</span>, <span class="st">"disp"</span>, <span class="st">"hp"</span>, <span class="st">"wt"</span>)])))</span>
+<span id="cb23-619"><a href="#cb23-619" aria-hidden="true" tabindex="-1"></a><span class="fu">as.data.frame</span>(<span class="fu">as.table</span>(d)) <span class="sc">|&gt;</span></span>
+<span id="cb23-620"><a href="#cb23-620" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as_tibble</span>() <span class="sc">|&gt;</span></span>
+<span id="cb23-621"><a href="#cb23-621" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">coche_1 =</span> Var1, <span class="at">coche_2 =</span> Var2, <span class="at">distancia =</span> Freq) <span class="sc">|&gt;</span></span>
+<span id="cb23-622"><a href="#cb23-622" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(coche_1, coche_2, <span class="at">fill =</span> distancia)) <span class="sc">+</span></span>
+<span id="cb23-623"><a href="#cb23-623" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_tile</span>(<span class="at">color =</span> <span class="st">"white"</span>) <span class="sc">+</span></span>
+<span id="cb23-624"><a href="#cb23-624" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_viridis_c</span>(<span class="at">option =</span> <span class="st">"C"</span>) <span class="sc">+</span></span>
+<span id="cb23-625"><a href="#cb23-625" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb23-626"><a href="#cb23-626" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Distancias euclídeas estandarizadas"</span>,</span>
+<span id="cb23-627"><a href="#cb23-627" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Coche"</span>,</span>
+<span id="cb23-628"><a href="#cb23-628" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Coche"</span>,</span>
+<span id="cb23-629"><a href="#cb23-629" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill =</span> <span class="st">"Distancia"</span></span>
+<span id="cb23-630"><a href="#cb23-630" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb23-631"><a href="#cb23-631" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()<span class="sc">+</span></span>
+<span id="cb23-632"><a href="#cb23-632" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
+<span id="cb23-633"><a href="#cb23-633" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">45</span>, <span class="at">hjust =</span> <span class="dv">1</span>)</span>
+<span id="cb23-634"><a href="#cb23-634" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb23-635"><a href="#cb23-635" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb23-636"><a href="#cb23-636" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-637"><a href="#cb23-637" aria-hidden="true" tabindex="-1"></a><span class="fu">## Variables activas y suplementarias</span></span>
+<span id="cb23-637"><a href="#cb23-637" aria-hidden="true" tabindex="-1"></a>Los bloques oscuros o claros pueden sugerir proximidades internas, pero el mapa depende por completo de la distancia elegida.</span>
 <span id="cb23-638"><a href="#cb23-638" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-639"><a href="#cb23-639" aria-hidden="true" tabindex="-1"></a>Las variables activas construyen la distancia. Las suplementarias ayudan a interpretar después. En <span class="in">`mtcars`</span>, <span class="in">`am`</span> o <span class="in">`cyl`</span> pueden dejarse fuera del cálculo y usarse luego para evaluar si los grupos encontrados tienen sentido.</span>
+<span id="cb23-639"><a href="#cb23-639" aria-hidden="true" tabindex="-1"></a><span class="fu">## Variables activas y suplementarias</span></span>
 <span id="cb23-640"><a href="#cb23-640" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-641"><a href="#cb23-641" aria-hidden="true" tabindex="-1"></a>En un análisis musical, podríamos usar tempo, energía, valencia y tono como variables activas, pero reservar el artista como suplementaria para interpretar si los clusters coinciden con estilos o catálogos concretos. Si el artista entrara como variable activa, el análisis podría agrupar por autoría más que por sonido.</span>
+<span id="cb23-641"><a href="#cb23-641" aria-hidden="true" tabindex="-1"></a>Las variables activas construyen la distancia. Las suplementarias ayudan a interpretar después. En <span class="in">`mtcars`</span>, <span class="in">`am`</span> o <span class="in">`cyl`</span> pueden dejarse fuera del cálculo y usarse luego para evaluar si los grupos encontrados tienen sentido.</span>
 <span id="cb23-642"><a href="#cb23-642" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-643"><a href="#cb23-643" aria-hidden="true" tabindex="-1"></a><span class="fu">## Cómo elegir una distancia</span></span>
+<span id="cb23-643"><a href="#cb23-643" aria-hidden="true" tabindex="-1"></a>En un análisis musical, podríamos usar tempo, energía, valencia y tono como variables activas, pero reservar el artista como suplementaria para interpretar si los clusters coinciden con estilos o catálogos concretos. Si el artista entrara como variable activa, el análisis podría agrupar por autoría más que por sonido.</span>
 <span id="cb23-644"><a href="#cb23-644" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-645"><a href="#cb23-645" aria-hidden="true" tabindex="-1"></a>La elección debe responder a la pregunta aplicada:</span>
+<span id="cb23-645"><a href="#cb23-645" aria-hidden="true" tabindex="-1"></a><span class="fu">## Cómo elegir una distancia</span></span>
 <span id="cb23-646"><a href="#cb23-646" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-647"><a href="#cb23-647" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>si importan diferencias geométricas globales en variables numéricas comparables, euclídea es razonable;</span>
-<span id="cb23-648"><a href="#cb23-648" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>si queremos acumular cambios absolutos y reducir algo el efecto de grandes diferencias aisladas, Manhattan puede ser útil;</span>
-<span id="cb23-649"><a href="#cb23-649" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>si la mayor discrepancia individual define la incompatibilidad entre perfiles, Chebyshev es natural;</span>
-<span id="cb23-650"><a href="#cb23-650" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>si hay variables numéricas correlacionadas y la matriz de covarianzas se estima bien, Mahalanobis puede evitar redundancias;</span>
-<span id="cb23-651"><a href="#cb23-651" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>si hay datos mixtos, Gower ofrece una solución práctica;</span>
-<span id="cb23-652"><a href="#cb23-652" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>si hay categorías cíclicas, hay que respetar la circularidad en lugar de usar códigos lineales.</span>
-<span id="cb23-653"><a href="#cb23-653" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-654"><a href="#cb23-654" aria-hidden="true" tabindex="-1"></a>::: {.callout-warning}</span>
-<span id="cb23-655"><a href="#cb23-655" aria-hidden="true" tabindex="-1"></a>No existe una distancia universalmente mejor. Una distancia es adecuada si representa bien la noción de parecido relevante para la pregunta y los datos.</span>
-<span id="cb23-656"><a href="#cb23-656" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb23-657"><a href="#cb23-657" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-658"><a href="#cb23-658" aria-hidden="true" tabindex="-1"></a><span class="fu">## Errores frecuentes</span></span>
+<span id="cb23-647"><a href="#cb23-647" aria-hidden="true" tabindex="-1"></a>La elección debe responder a la pregunta aplicada:</span>
+<span id="cb23-648"><a href="#cb23-648" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-649"><a href="#cb23-649" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>si importan diferencias geométricas globales en variables numéricas comparables, euclídea es razonable;</span>
+<span id="cb23-650"><a href="#cb23-650" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>si queremos acumular cambios absolutos y reducir algo el efecto de grandes diferencias aisladas, Manhattan puede ser útil;</span>
+<span id="cb23-651"><a href="#cb23-651" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>si la mayor discrepancia individual define la incompatibilidad entre perfiles, Chebyshev es natural;</span>
+<span id="cb23-652"><a href="#cb23-652" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>si hay variables numéricas correlacionadas y la matriz de covarianzas se estima bien, Mahalanobis puede evitar redundancias;</span>
+<span id="cb23-653"><a href="#cb23-653" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>si hay datos mixtos, Gower ofrece una solución práctica;</span>
+<span id="cb23-654"><a href="#cb23-654" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>si hay categorías cíclicas, hay que respetar la circularidad en lugar de usar códigos lineales.</span>
+<span id="cb23-655"><a href="#cb23-655" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-656"><a href="#cb23-656" aria-hidden="true" tabindex="-1"></a>::: {.callout-warning}</span>
+<span id="cb23-657"><a href="#cb23-657" aria-hidden="true" tabindex="-1"></a>No existe una distancia universalmente mejor. Una distancia es adecuada si representa bien la noción de parecido relevante para la pregunta y los datos.</span>
+<span id="cb23-658"><a href="#cb23-658" aria-hidden="true" tabindex="-1"></a>:::</span>
 <span id="cb23-659"><a href="#cb23-659" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-660"><a href="#cb23-660" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Calcular distancias con variables en escalas incompatibles.</span>
-<span id="cb23-661"><a href="#cb23-661" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Codificar categorías nominales como números sin justificarlo.</span>
-<span id="cb23-662"><a href="#cb23-662" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Tratar variables ordinales como nominales o como numéricas sin pensar qué significan los saltos.</span>
-<span id="cb23-663"><a href="#cb23-663" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Ignorar la circularidad de variables como hora, dirección o tono musical.</span>
-<span id="cb23-664"><a href="#cb23-664" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Incluir muchas variables redundantes.</span>
-<span id="cb23-665"><a href="#cb23-665" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Usar Gower sin revisar pesos, rangos y categorías raras.</span>
-<span id="cb23-666"><a href="#cb23-666" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Interpretar una distancia como si fuera objetiva y no dependiera de decisiones previas.</span>
-<span id="cb23-667"><a href="#cb23-667" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-668"><a href="#cb23-668" aria-hidden="true" tabindex="-1"></a><span class="fu">## Resumen del capítulo</span></span>
+<span id="cb23-660"><a href="#cb23-660" aria-hidden="true" tabindex="-1"></a><span class="fu">## Errores frecuentes</span></span>
+<span id="cb23-661"><a href="#cb23-661" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-662"><a href="#cb23-662" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Calcular distancias con variables en escalas incompatibles.</span>
+<span id="cb23-663"><a href="#cb23-663" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Codificar categorías nominales como números sin justificarlo.</span>
+<span id="cb23-664"><a href="#cb23-664" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Tratar variables ordinales como nominales o como numéricas sin pensar qué significan los saltos.</span>
+<span id="cb23-665"><a href="#cb23-665" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Ignorar la circularidad de variables como hora, dirección o tono musical.</span>
+<span id="cb23-666"><a href="#cb23-666" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Incluir muchas variables redundantes.</span>
+<span id="cb23-667"><a href="#cb23-667" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Usar Gower sin revisar pesos, rangos y categorías raras.</span>
+<span id="cb23-668"><a href="#cb23-668" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Interpretar una distancia como si fuera objetiva y no dependiera de decisiones previas.</span>
 <span id="cb23-669"><a href="#cb23-669" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-670"><a href="#cb23-670" aria-hidden="true" tabindex="-1"></a>Toda técnica de clustering depende de una noción de similitud. Las distancias euclídea, Manhattan, Chebyshev y Mahalanobis inducen geometrías distintas en datos numéricos. Las variables categóricas requieren tratamientos específicos para nominales, ordinales y cíclicas. En datos mixtos, Gower promedia disimilitudes parciales reescaladas, pero sigue dependiendo de codificaciones, pesos y decisiones metodológicas.</span>
+<span id="cb23-670"><a href="#cb23-670" aria-hidden="true" tabindex="-1"></a><span class="fu">## Resumen del capítulo</span></span>
 <span id="cb23-671"><a href="#cb23-671" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-672"><a href="#cb23-672" aria-hidden="true" tabindex="-1"></a><span class="fu">## Ejercicios propuestos</span></span>
+<span id="cb23-672"><a href="#cb23-672" aria-hidden="true" tabindex="-1"></a>Toda técnica de clustering depende de una noción de similitud. Las distancias euclídea, Manhattan, Chebyshev y Mahalanobis inducen geometrías distintas en datos numéricos. Las variables categóricas requieren tratamientos específicos para nominales, ordinales y cíclicas. En datos mixtos, Gower promedia disimilitudes parciales reescaladas, pero sigue dependiendo de codificaciones, pesos y decisiones metodológicas.</span>
 <span id="cb23-673"><a href="#cb23-673" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-674"><a href="#cb23-674" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>Calcula distancias en <span class="in">`mtcars`</span> con y sin escalado y compara los vecinos más cercanos de <span class="in">`Mazda RX4`</span>.</span>
-<span id="cb23-675"><a href="#cb23-675" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>En <span class="in">`mtcars`</span>, compara los vecinos de <span class="in">`Mazda RX4`</span> usando euclídea, Manhattan y Chebyshev sobre variables escaladas.</span>
-<span id="cb23-676"><a href="#cb23-676" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>Define una distancia para una variable ordinal con cuatro niveles donde los saltos no sean equivalentes.</span>
-<span id="cb23-677"><a href="#cb23-677" aria-hidden="true" tabindex="-1"></a><span class="ss">4. </span>Propón una codificación circular para la hora del día y calcula la distancia entre las 23:00 y la 01:00.</span>
-<span id="cb23-678"><a href="#cb23-678" aria-hidden="true" tabindex="-1"></a><span class="ss">5. </span>Explica qué variables de <span class="in">`mtcars`</span> tratarías como categóricas en un análisis mixto y por qué.</span>
-<span id="cb23-679"><a href="#cb23-679" aria-hidden="true" tabindex="-1"></a><span class="ss">6. </span>Propón una variable suplementaria para interpretar clusters en <span class="in">`mtcars`</span>.</span>
+<span id="cb23-674"><a href="#cb23-674" aria-hidden="true" tabindex="-1"></a><span class="fu">## Ejercicios propuestos</span></span>
+<span id="cb23-675"><a href="#cb23-675" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-676"><a href="#cb23-676" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>Calcula distancias en <span class="in">`mtcars`</span> con y sin escalado y compara los vecinos más cercanos de <span class="in">`Mazda RX4`</span>.</span>
+<span id="cb23-677"><a href="#cb23-677" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>En <span class="in">`mtcars`</span>, compara los vecinos de <span class="in">`Mazda RX4`</span> usando euclídea, Manhattan y Chebyshev sobre variables escaladas.</span>
+<span id="cb23-678"><a href="#cb23-678" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>Define una distancia para una variable ordinal con cuatro niveles donde los saltos no sean equivalentes.</span>
+<span id="cb23-679"><a href="#cb23-679" aria-hidden="true" tabindex="-1"></a><span class="ss">4. </span>Propón una codificación circular para la hora del día y calcula la distancia entre las 23:00 y la 01:00.</span>
+<span id="cb23-680"><a href="#cb23-680" aria-hidden="true" tabindex="-1"></a><span class="ss">5. </span>Explica qué variables de <span class="in">`mtcars`</span> tratarías como categóricas en un análisis mixto y por qué.</span>
+<span id="cb23-681"><a href="#cb23-681" aria-hidden="true" tabindex="-1"></a><span class="ss">6. </span>Propón una variable suplementaria para interpretar clusters en <span class="in">`mtcars`</span>.</span>
 </code></pre></div><button title="Copiar al portapapeles" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
