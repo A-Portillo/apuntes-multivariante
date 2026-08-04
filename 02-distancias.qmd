@@ -23,12 +23,12 @@ Con variables numéricas, cada individuo puede verse como un punto $x_i = (x_{i1
 
 Si $d(x_i,x_j)$ es pequeño, los individuos son parecidos según las variables y la métrica elegidas. Si es grande, difieren mucho. Esta interpretación siempre está condicionada por las variables activas y por sus escalas.
 
-## Propiedades de una distancia
+## Propiedades de una distancia métrica
 
-Una distancia $d$ debe cumplir:
+Una distancia métrica es, en general, el tipo mas deseable de distancia. Para ser una métrica $d$ debe cumplir:
 
 - no negatividad: $d(x_i,x_j) \geq 0$;
-- identidad: $d(x_i,x_j)=0$ si los puntos son iguales;
+- identidad: $d(x_i,x_j)=0$ si y solo si los puntos son iguales;
 - simetría: $d(x_i,x_j)=d(x_j,x_i)$;
 - desigualdad triangular: $d(x_i,x_k) \leq d(x_i,x_j)+d(x_j,x_k)$.
 
@@ -95,6 +95,8 @@ $$
 Si usamos $1-r$, dos individuos con perfiles paralelos tienen distancia pequeña aunque sus niveles absolutos sean distintos. A veces se usa $1-|r|$ cuando interesan perfiles lineales tanto positivos como negativos, pero esa decisión cambia mucho la interpretación.
 
 Esta distancia es útil cuando importa la forma del perfil y no la magnitud. Por ejemplo, dos canciones podrían tener una evolución de energía parecida aunque una sea más intensa que la otra en todos los tramos.
+
+Nótese que esta distancia no es una métrica ya que no satisface la desigualdad triangular.
 
 ## Cómo difieren las distancias
 
