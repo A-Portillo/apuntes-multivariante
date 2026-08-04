@@ -163,12 +163,17 @@ Ward tiene sentido principalmente con distancia euclídea. Usarlo con otras disi
 
 ```{r}
 metodos <- c("single", "complete", "average", "ward.D2")
+arboles <- setNames(
+  lapply(metodos, function(m) hclust(d, method = m)),
+  metodos
+)
+
 plots <- lapply(metodos, function(m) {
   factoextra::fviz_dend(
-    hclust(d, method = m),
+    arboles[[m]],
     show_labels = FALSE,
     main = m
-    )
+  )
 })
 
 gridExtra::grid.arrange(grobs = plots, ncol = 2)
@@ -176,19 +181,82 @@ gridExtra::grid.arrange(grobs = plots, ncol = 2)
 
 Los cuatro dendrogramas parten de la misma matriz de distancias, pero inducen jerarquías distintas. Esto no es un problema del método; es una señal de que el enlace forma parte de la pregunta.
 
+### Gamma de Baker
+
+La inspección visual permite detectar diferencias grandes, pero no proporciona una medida única de cuánto se parecen dos jerarquías. La **gamma de Baker** resume su grado de asociación sin depender de la escala numérica de las alturas [@baker1974stability].
+
+Sea $T$ un árbol con $n$ individuos. Para cada par $(i,j)$ definimos
+
+$$
+r_T(i,j)=\max\left\{k:\ i\text{ y }j\text{ pertenecen al mismo cluster al cortar }T\text{ en }k\text{ grupos}\right\}.
+$$
+
+El valor $r_T(i,j)$ indica lo pronto que se unen ambos individuos al recorrer la jerarquía desde $n$ grupos hacia uno. Un valor grande significa que se fusionan pronto, cuando todavía quedan muchos clusters; un valor pequeño significa que solo coinciden en niveles muy generales del árbol.
+
+Reunimos estos valores para los $\binom{n}{2}$ pares de individuos. La implementación de `dendextend` calcula la gamma de Baker como la correlación de Spearman entre los niveles de unión de los dos árboles:
+
+$$
+\gamma_B(T_1,T_2)
+=
+\operatorname{cor}_{S}
+\left(
+\{r_{T_1}(i,j)\}_{i<j},
+\{r_{T_2}(i,j)\}_{i<j}
+\right).
+$$
+
+Por tanto:
+
+- un valor próximo a $1$ indica que los pares se unen en un orden jerárquico muy parecido;
+- un valor próximo a $0$ indica poca asociación entre los órdenes de fusión;
+- un valor negativo indica órdenes opuestos, algo menos habitual al comparar árboles construidos sobre los mismos datos.
+
+La gamma no compara las alturas de las ramas. Dos árboles pueden tener gamma próxima a uno aunque las fusiones ocurran a alturas numéricas distintas. Tampoco es un porcentaje de clusters iguales ni garantiza que las particiones coincidan para un valor concreto de $k$.
+
+```{r}
+gamma_baker <- matrix(
+  1,
+  nrow = length(metodos),
+  ncol = length(metodos),
+  dimnames = list(metodos, metodos)
+)
+
+for (i in seq_len(length(metodos) - 1)) {
+  for (j in (i + 1):length(metodos)) {
+    gamma_ij <- dendextend::cor_bakers_gamma(
+      arboles[[i]],
+      arboles[[j]]
+    )
+    gamma_baker[i, j] <- gamma_ij
+    gamma_baker[j, i] <- gamma_ij
+  }
+}
+
+kable(
+  round(gamma_baker, 4),
+  caption = "Gamma de Baker entre métodos de enlace"
+)
+```
+
+En estos datos, complete y Ward producen órdenes de unión casi idénticos, con una gamma cercana a $1$. Average mantiene una semejanza intermedia con los demás métodos. Single presenta valores alrededor de $0.41$ frente a complete y Ward: el criterio del vecino más próximo altera de forma apreciable la jerarquía, en consonancia con su tendencia al encadenamiento.
+
+::: {.callout-note}
+La gamma de Baker sirve para comparar árboles completos. Si solo interesa una partición con $k$ grupos, conviene complementarla con una comparación de las asignaciones, porque una gamma alta puede ocultar diferencias justo en el nivel elegido.
+:::
+
 ```{r}
 particiones <- data.frame(
-  single = cutree(hclust(d, method = "single"), k = 4),
-  complete = cutree(hclust(d, method = "complete"), k = 4),
-  average = cutree(hclust(d, method = "average"), k = 4),
-  ward = cutree(hclust(d, method = "ward.D2"), k = 4)
+  single = cutree(arboles$single, k = 4),
+  complete = cutree(arboles$complete, k = 4),
+  average = cutree(arboles$average, k = 4),
+  ward = cutree(arboles$ward.D2, k = 4)
 )
 
 kable(table(particiones$single, particiones$ward), caption = "Single frente a Ward")
 kable(table(particiones$complete, particiones$ward), caption = "Complete frente a Ward")
 ```
 
-Las tablas cruzadas muestran que cambiar el enlace puede cambiar la partición final incluso manteniendo $k=4$.
+Las tablas cruzadas muestran dos situaciones distintas. Single cambia la partición final respecto a Ward. Complete y Ward coinciden para $k=4$, aunque sus alturas no sean iguales. Una coincidencia en un único corte no implica que los árboles sean idénticos; la gamma aporta una comparación de todos los niveles simultáneamente.
 
 ## Ejemplo geométrico con datos artificiales
 
@@ -232,29 +300,114 @@ No debe interpretarse la distancia horizontal entre etiquetas. El dendrograma es
 
 ## Corte del árbol
 
-Cortar el árbol transforma la jerarquía en una partición. Si cortamos en $k=4$:
+Cortar el árbol transforma la jerarquía en una partición. `cutree()` permite especificar el número de grupos, `k`, o una altura, `h`, pero ambas operaciones se formulan de manera diferente.
+
+### Corte por número de grupos
+
+Un árbol aglomerativo con $n$ individuos comienza con $n$ clusters. Cada fusión reduce su número en uno. Por tanto, `cutree(arbol, k = k)` sigue la secuencia almacenada en `arbol$merge` y conserva las primeras $n-k$ fusiones. No vuelve a ejecutar el clustering ni busca una nueva partición óptima: detiene la jerarquía ya construida cuando quedan exactamente $k$ grupos.
+
+Para $k=4$ en `mtcars`, se han aceptado $32-4=28$ fusiones. `fviz_dend()` colorea las ramas y dibuja los rectángulos correspondientes a esa partición:
 
 ```{r}
-grupos4 <- cutree(hc_ward, k = 4)
-table(grupos4)
+k_corte <- 4
+grupos4 <- cutree(hc_ward, k = k_corte)
+
+colores_clusters <- c("#0072B2", "#D55E00", "#009E73", "#CC79A7")
+
+factoextra::fviz_dend(
+  hc_ward,
+  k = k_corte,
+  k_colors = colores_clusters,
+  show_labels = FALSE,
+  rect = TRUE,
+  rect_border = colores_clusters,
+  rect_fill = FALSE
+) +
+  labs(
+    title = "Ward.D2 cortado en cuatro clusters",
+    x = "Coches",
+    y = "Altura de fusión"
+  )
+```
+
+```{r}
+tibble(cluster = grupos4) |>
+  count(cluster, name = "numero_de_coches") |>
+  kable(caption = "Tamaño de los clusters para k = 4")
+
 aggregate(vars_mtcars, by = list(cluster = grupos4), mean) |>
-  kable(digits = 2)
+  kable(digits = 2, caption = "Perfil medio de los cuatro clusters")
 ```
 
 La tabla de medias ayuda a interpretar los clusters. Conviene volver a las variables originales para comunicar resultados, aunque la distancia se haya calculado con variables escaladas.
 
-También podemos cortar por altura:
+### Relación con un corte horizontal
+
+Si las alturas de fusión son crecientes y no hay empates en la frontera, el corte por $k$ sí puede representarse mediante una línea horizontal. Si $h_m$ es la altura de la fusión $m$, cualquier valor $h^*$ que satisfaga
+
+$$
+h_{n-k}\leq h^* < h_{n-k+1}
+$$
+
+produce los mismos $k$ grupos: se aceptan las primeras $n-k$ fusiones y se excluye la siguiente.
 
 ```{r}
+n_individuos <- length(hc_ward$order)
+ultima_aceptada <- n_individuos - k_corte
+primera_excluida <- ultima_aceptada + 1
+h_equivalente <- mean(
+  hc_ward$height[c(ultima_aceptada, primera_excluida)]
+)
+
+tibble(
+  frontera = c("Última fusión aceptada", "Primera fusión excluida"),
+  paso = c(ultima_aceptada, primera_excluida),
+  altura = hc_ward$height[c(ultima_aceptada, primera_excluida)]
+) |>
+  kable(digits = 3, caption = "Frontera del corte con k = 4")
+```
+
+En este caso, una línea a altura `r round(h_equivalente, 3)` reproduce el corte en cuatro grupos. Esto es posible porque Ward genera aquí alturas monótonas.
+
+### Corte por altura
+
+Con `cutree(arbol, h = h_corte)` se aceptan todas las fusiones cuya altura no supera `h_corte`. El número de clusters es entonces una consecuencia de la altura elegida y no se fija de antemano. Por ejemplo, una altura de 4 produce cinco grupos:
+
+```{r}
+h_corte <- 4
+grupos_h <- cutree(hc_ward, h = h_corte)
+
+tibble(
+  tipo_de_corte = c("k = 4", "h = 4"),
+  numero_de_clusters = c(
+    n_distinct(grupos4),
+    n_distinct(grupos_h)
+  )
+) |>
+  kable(caption = "Número de clusters según el criterio de corte")
+
 factoextra::fviz_dend(
   hc_ward,
-  cex = 0.55,
-  main = "Corte por altura"
+  h = h_corte,
+  show_labels = FALSE
 ) +
-  geom_hline(yintercept = 4, color = "red", linetype = "dashed")
+  geom_hline(
+    yintercept = h_corte,
+    color = "#D55E00",
+    linetype = "dashed"
+  ) +
+  labs(
+    title = "Ward.D2 cortado a altura 4",
+    x = "Coches",
+    y = "Altura de fusión"
+  )
 ```
 
 El corte por altura pregunta: ¿qué clusters existen antes de permitir fusiones más lejanas que cierto umbral?
+
+::: {.callout-warning}
+El corte por altura solo está bien definido para árboles con alturas monótonas. Métodos como centroid pueden producir inversiones: una fusión posterior aparece por debajo de una anterior. En ese caso `cutree(..., h = ...)` no puede representar la secuencia mediante una línea horizontal y R devuelve un error. `cutree(..., k = ...)` sigue siendo posible porque usa el orden de las fusiones, no sus alturas. Además, si varias fusiones tienen exactamente la misma altura, algunos valores de $k$ pueden no corresponder a ningún corte horizontal, aunque `cutree(..., k = ...)` sí pueda devolver exactamente ese número de grupos.
+:::
 
 ## Cómo elegir una partición
 
