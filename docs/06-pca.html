@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>8&nbsp; Análisis de componentes principales – Técnicas Multivariantes Aplicadas con R</title>
+<title>9&nbsp; Análisis de componentes principales – Técnicas Multivariantes Aplicadas con R</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -69,7 +69,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
 <link href="./07-analisis-factorial.html" rel="next">
-<link href="./05-interpretacion-clusters.html" rel="prev">
+<link href="./05-clustering-variables.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
@@ -149,7 +149,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./06-pca.html">Bloque 2. Reducción de dimensión</a></li><li class="breadcrumb-item"><a href="./06-pca.html"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Análisis de componentes principales</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./06-pca.html">Bloque 2. Reducción de dimensión</a></li><li class="breadcrumb-item"><a href="./06-pca.html"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Análisis de componentes principales</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Buscar" onclick="window.quartoOpenSearch();">
@@ -225,6 +225,12 @@ window.Quarto = {
  <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Interpretación de clusters</span></span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./05-clustering-variables.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Clustering de variables</span></span></a>
+  </div>
+</li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
@@ -239,13 +245,13 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./06-pca.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Análisis de componentes principales</span></span></a>
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Análisis de componentes principales</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./07-analisis-factorial.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Análisis factorial exploratorio</span></span></a>
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Análisis factorial exploratorio</span></span></a>
   </div>
 </li>
       </ul>
@@ -262,19 +268,19 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./09-correspondencias.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Análisis de correspondencias simple</span></span></a>
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Análisis de correspondencias simple</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./10-mca.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Análisis de correspondencias múltiples</span></span></a>
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Análisis de correspondencias múltiples</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./08-famd.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">FAMD para datos mixtos</span></span></a>
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">FAMD para datos mixtos</span></span></a>
   </div>
 </li>
       </ul>
@@ -291,7 +297,7 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./11-discriminante.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Análisis discriminante</span></span></a>
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Análisis discriminante</span></span></a>
   </div>
 </li>
       </ul>
@@ -308,7 +314,7 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./12-casos-integradores.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Casos integradores</span></span></a>
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Casos integradores</span></span></a>
   </div>
 </li>
       </ul>
@@ -325,7 +331,7 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./ejercicios.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Ejercicios conceptuales</span></span></a>
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Ejercicios conceptuales</span></span></a>
   </div>
 </li>
       </ul>
@@ -342,7 +348,7 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./tidyverse.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Guía rápida de tidyverse y dplyr</span></span></a>
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Guía rápida de tidyverse y dplyr</span></span></a>
   </div>
 </li>
       </ul>
@@ -363,35 +369,35 @@ window.Quarto = {
     <h2 id="toc-title">Tabla de contenidos</h2>
    
   <ul>
-  <li><a href="#motivación-intuitiva-los-datos-no-llenan-todo-el-espacio" id="toc-motivación-intuitiva-los-datos-no-llenan-todo-el-espacio" class="nav-link active" data-scroll-target="#motivación-intuitiva-los-datos-no-llenan-todo-el-espacio"><span class="header-section-number">8.1</span> Motivación intuitiva: los datos no llenan todo el espacio</a></li>
-  <li><a href="#una-imagen-geométrica-sencilla" id="toc-una-imagen-geométrica-sencilla" class="nav-link" data-scroll-target="#una-imagen-geométrica-sencilla"><span class="header-section-number">8.2</span> Una imagen geométrica sencilla</a></li>
-  <li><a href="#qué-hace-pca" id="toc-qué-hace-pca" class="nav-link" data-scroll-target="#qué-hace-pca"><span class="header-section-number">8.3</span> Qué hace PCA</a></li>
-  <li><a href="#centrado-escalado-y-matriz-de-covarianzas" id="toc-centrado-escalado-y-matriz-de-covarianzas" class="nav-link" data-scroll-target="#centrado-escalado-y-matriz-de-covarianzas"><span class="header-section-number">8.4</span> Centrado, escalado y matriz de covarianzas</a></li>
-  <li><a href="#varianza-de-una-componente" id="toc-varianza-de-una-componente" class="nav-link" data-scroll-target="#varianza-de-una-componente"><span class="header-section-number">8.5</span> Varianza de una componente</a></li>
-  <li><a href="#por-qué-las-componentes-son-ortogonales" id="toc-por-qué-las-componentes-son-ortogonales" class="nav-link" data-scroll-target="#por-qué-las-componentes-son-ortogonales"><span class="header-section-number">8.6</span> Por qué las componentes son ortogonales</a></li>
-  <li><a href="#varianza-total-y-traza" id="toc-varianza-total-y-traza" class="nav-link" data-scroll-target="#varianza-total-y-traza"><span class="header-section-number">8.7</span> Varianza total y traza</a></li>
-  <li><a href="#pca-con-prcomp" id="toc-pca-con-prcomp" class="nav-link" data-scroll-target="#pca-con-prcomp"><span class="header-section-number">8.8</span> PCA con <code>prcomp()</code></a></li>
-  <li><a href="#scores-y-loadings" id="toc-scores-y-loadings" class="nav-link" data-scroll-target="#scores-y-loadings"><span class="header-section-number">8.9</span> Scores y loadings</a></li>
-  <li><a href="#varianza-explicada-y-scree-plot" id="toc-varianza-explicada-y-scree-plot" class="nav-link" data-scroll-target="#varianza-explicada-y-scree-plot"><span class="header-section-number">8.10</span> Varianza explicada y scree plot</a></li>
-  <li><a href="#interpretación-de-individuos" id="toc-interpretación-de-individuos" class="nav-link" data-scroll-target="#interpretación-de-individuos"><span class="header-section-number">8.11</span> Interpretación de individuos</a></li>
-  <li><a href="#interpretación-de-variables" id="toc-interpretación-de-variables" class="nav-link" data-scroll-target="#interpretación-de-variables"><span class="header-section-number">8.12</span> Interpretación de variables</a></li>
-  <li><a href="#biplot-contribuciones-y-cos²" id="toc-biplot-contribuciones-y-cos²" class="nav-link" data-scroll-target="#biplot-contribuciones-y-cos²"><span class="header-section-number">8.13</span> Biplot, contribuciones y cos²</a></li>
-  <li><a href="#pca-sobre-covarianzas-frente-a-correlaciones" id="toc-pca-sobre-covarianzas-frente-a-correlaciones" class="nav-link" data-scroll-target="#pca-sobre-covarianzas-frente-a-correlaciones"><span class="header-section-number">8.14</span> PCA sobre covarianzas frente a correlaciones</a></li>
-  <li><a href="#pca-como-reducción-de-dimensión" id="toc-pca-como-reducción-de-dimensión" class="nav-link" data-scroll-target="#pca-como-reducción-de-dimensión"><span class="header-section-number">8.15</span> PCA como reducción de dimensión</a></li>
-  <li><a href="#pca-como-preprocesamiento" id="toc-pca-como-preprocesamiento" class="nav-link" data-scroll-target="#pca-como-preprocesamiento"><span class="header-section-number">8.16</span> PCA como preprocesamiento</a></li>
-  <li><a href="#limitaciones" id="toc-limitaciones" class="nav-link" data-scroll-target="#limitaciones"><span class="header-section-number">8.17</span> Limitaciones</a></li>
-  <li><a href="#errores-frecuentes" id="toc-errores-frecuentes" class="nav-link" data-scroll-target="#errores-frecuentes"><span class="header-section-number">8.18</span> Errores frecuentes</a></li>
-  <li><a href="#resumen-del-capítulo" id="toc-resumen-del-capítulo" class="nav-link" data-scroll-target="#resumen-del-capítulo"><span class="header-section-number">8.19</span> Resumen del capítulo</a></li>
-  <li><a href="#ejercicios-propuestos" id="toc-ejercicios-propuestos" class="nav-link" data-scroll-target="#ejercicios-propuestos"><span class="header-section-number">8.20</span> Ejercicios propuestos</a></li>
+  <li><a href="#motivación-intuitiva-los-datos-no-llenan-todo-el-espacio" id="toc-motivación-intuitiva-los-datos-no-llenan-todo-el-espacio" class="nav-link active" data-scroll-target="#motivación-intuitiva-los-datos-no-llenan-todo-el-espacio"><span class="header-section-number">9.1</span> Motivación intuitiva: los datos no llenan todo el espacio</a></li>
+  <li><a href="#una-imagen-geométrica-sencilla" id="toc-una-imagen-geométrica-sencilla" class="nav-link" data-scroll-target="#una-imagen-geométrica-sencilla"><span class="header-section-number">9.2</span> Una imagen geométrica sencilla</a></li>
+  <li><a href="#qué-hace-pca" id="toc-qué-hace-pca" class="nav-link" data-scroll-target="#qué-hace-pca"><span class="header-section-number">9.3</span> Qué hace PCA</a></li>
+  <li><a href="#centrado-escalado-y-matriz-de-covarianzas" id="toc-centrado-escalado-y-matriz-de-covarianzas" class="nav-link" data-scroll-target="#centrado-escalado-y-matriz-de-covarianzas"><span class="header-section-number">9.4</span> Centrado, escalado y matriz de covarianzas</a></li>
+  <li><a href="#varianza-de-una-componente" id="toc-varianza-de-una-componente" class="nav-link" data-scroll-target="#varianza-de-una-componente"><span class="header-section-number">9.5</span> Varianza de una componente</a></li>
+  <li><a href="#por-qué-las-componentes-son-ortogonales" id="toc-por-qué-las-componentes-son-ortogonales" class="nav-link" data-scroll-target="#por-qué-las-componentes-son-ortogonales"><span class="header-section-number">9.6</span> Por qué las componentes son ortogonales</a></li>
+  <li><a href="#varianza-total-y-traza" id="toc-varianza-total-y-traza" class="nav-link" data-scroll-target="#varianza-total-y-traza"><span class="header-section-number">9.7</span> Varianza total y traza</a></li>
+  <li><a href="#pca-con-prcomp" id="toc-pca-con-prcomp" class="nav-link" data-scroll-target="#pca-con-prcomp"><span class="header-section-number">9.8</span> PCA con <code>prcomp()</code></a></li>
+  <li><a href="#scores-y-loadings" id="toc-scores-y-loadings" class="nav-link" data-scroll-target="#scores-y-loadings"><span class="header-section-number">9.9</span> Scores y loadings</a></li>
+  <li><a href="#varianza-explicada-y-scree-plot" id="toc-varianza-explicada-y-scree-plot" class="nav-link" data-scroll-target="#varianza-explicada-y-scree-plot"><span class="header-section-number">9.10</span> Varianza explicada y scree plot</a></li>
+  <li><a href="#interpretación-de-individuos" id="toc-interpretación-de-individuos" class="nav-link" data-scroll-target="#interpretación-de-individuos"><span class="header-section-number">9.11</span> Interpretación de individuos</a></li>
+  <li><a href="#interpretación-de-variables" id="toc-interpretación-de-variables" class="nav-link" data-scroll-target="#interpretación-de-variables"><span class="header-section-number">9.12</span> Interpretación de variables</a></li>
+  <li><a href="#biplot-contribuciones-y-cos²" id="toc-biplot-contribuciones-y-cos²" class="nav-link" data-scroll-target="#biplot-contribuciones-y-cos²"><span class="header-section-number">9.13</span> Biplot, contribuciones y cos²</a></li>
+  <li><a href="#pca-sobre-covarianzas-frente-a-correlaciones" id="toc-pca-sobre-covarianzas-frente-a-correlaciones" class="nav-link" data-scroll-target="#pca-sobre-covarianzas-frente-a-correlaciones"><span class="header-section-number">9.14</span> PCA sobre covarianzas frente a correlaciones</a></li>
+  <li><a href="#pca-como-reducción-de-dimensión" id="toc-pca-como-reducción-de-dimensión" class="nav-link" data-scroll-target="#pca-como-reducción-de-dimensión"><span class="header-section-number">9.15</span> PCA como reducción de dimensión</a></li>
+  <li><a href="#pca-como-preprocesamiento" id="toc-pca-como-preprocesamiento" class="nav-link" data-scroll-target="#pca-como-preprocesamiento"><span class="header-section-number">9.16</span> PCA como preprocesamiento</a></li>
+  <li><a href="#limitaciones" id="toc-limitaciones" class="nav-link" data-scroll-target="#limitaciones"><span class="header-section-number">9.17</span> Limitaciones</a></li>
+  <li><a href="#errores-frecuentes" id="toc-errores-frecuentes" class="nav-link" data-scroll-target="#errores-frecuentes"><span class="header-section-number">9.18</span> Errores frecuentes</a></li>
+  <li><a href="#resumen-del-capítulo" id="toc-resumen-del-capítulo" class="nav-link" data-scroll-target="#resumen-del-capítulo"><span class="header-section-number">9.19</span> Resumen del capítulo</a></li>
+  <li><a href="#ejercicios-propuestos" id="toc-ejercicios-propuestos" class="nav-link" data-scroll-target="#ejercicios-propuestos"><span class="header-section-number">9.20</span> Ejercicios propuestos</a></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./06-pca.html">Bloque 2. Reducción de dimensión</a></li><li class="breadcrumb-item"><a href="./06-pca.html"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Análisis de componentes principales</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./06-pca.html">Bloque 2. Reducción de dimensión</a></li><li class="breadcrumb-item"><a href="./06-pca.html"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Análisis de componentes principales</span></a></li></ol></nav>
 <div class="quarto-title">
-<div class="quarto-title-block"><div><h1 class="title"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Análisis de componentes principales</span></h1><button type="button" class="btn code-tools-button dropdown-toggle" id="quarto-code-tools-menu" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi"></i> Código</button><ul class="dropdown-menu dropdown-menu-end" aria-labelelledby="quarto-code-tools-menu"><li><a id="quarto-show-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Mostrar todo el código</a></li><li><a id="quarto-hide-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Ocultar todo el código</a></li><li><hr class="dropdown-divider"></li><li><a id="quarto-view-source" class="dropdown-item" href="javascript:void(0)" role="button">Ver el código fuente</a></li></ul></div></div>
+<div class="quarto-title-block"><div><h1 class="title"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Análisis de componentes principales</span></h1><button type="button" class="btn code-tools-button dropdown-toggle" id="quarto-code-tools-menu" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi"></i> Código</button><ul class="dropdown-menu dropdown-menu-end" aria-labelelledby="quarto-code-tools-menu"><li><a id="quarto-show-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Mostrar todo el código</a></li><li><a id="quarto-hide-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Ocultar todo el código</a></li><li><hr class="dropdown-divider"></li><li><a id="quarto-view-source" class="dropdown-item" href="javascript:void(0)" role="button">Ver el código fuente</a></li></ul></div></div>
 </div>
 
 
@@ -415,8 +421,8 @@ window.Quarto = {
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(knitr)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
-<section id="motivación-intuitiva-los-datos-no-llenan-todo-el-espacio" class="level2" data-number="8.1">
-<h2 data-number="8.1" class="anchored" data-anchor-id="motivación-intuitiva-los-datos-no-llenan-todo-el-espacio"><span class="header-section-number">8.1</span> Motivación intuitiva: los datos no llenan todo el espacio</h2>
+<section id="motivación-intuitiva-los-datos-no-llenan-todo-el-espacio" class="level2" data-number="9.1">
+<h2 data-number="9.1" class="anchored" data-anchor-id="motivación-intuitiva-los-datos-no-llenan-todo-el-espacio"><span class="header-section-number">9.1</span> Motivación intuitiva: los datos no llenan todo el espacio</h2>
 <p>Imaginemos imágenes de dígitos escritos a mano, como las del conjunto MNIST. Si cada imagen tiene <span class="math inline">\(28 \times 28\)</span> píxeles, cada dígito puede representarse como un punto con 784 variables. En principio, el espacio posible es enorme: cualquier combinación de intensidades de píxeles sería un punto válido.</p>
 <p>Pero los dígitos reales no ocupan uniformemente ese espacio. La mayoría de combinaciones posibles de píxeles no parecen números. Los dígitos viven cerca de estructuras de dimensión mucho menor: formas con trazos, bucles, picos, inclinaciones, anchuras y curvaturas. Un <code>0</code> suele tener un bucle; un <code>1</code> suele ser estrecho; un <code>2</code> tiene una curva superior y una base; un <code>8</code> tiene dos bucles.</p>
 <p>Reducir dimensión consiste en encontrar características más informativas que las variables originales. En lugar de describir una imagen píxel a píxel, nos gustaría resumirla mediante ejes que capturen patrones importantes de variación: grosor, inclinación, apertura, presencia de bucles o contraste entre zonas.</p>
@@ -435,8 +441,8 @@ Nota
 </div>
 </div>
 </section>
-<section id="una-imagen-geométrica-sencilla" class="level2" data-number="8.2">
-<h2 data-number="8.2" class="anchored" data-anchor-id="una-imagen-geométrica-sencilla"><span class="header-section-number">8.2</span> Una imagen geométrica sencilla</h2>
+<section id="una-imagen-geométrica-sencilla" class="level2" data-number="9.2">
+<h2 data-number="9.2" class="anchored" data-anchor-id="una-imagen-geométrica-sencilla"><span class="header-section-number">9.2</span> Una imagen geométrica sencilla</h2>
 <p>Si una nube de puntos en dos dimensiones está alargada, no ocupa todo el plano por igual. Hay una dirección principal donde varía mucho y otra dirección perpendicular donde varía poco. PCA busca esas direcciones.</p>
 <div class="cell">
 <details class="code-fold">
@@ -481,8 +487,8 @@ Nota
 </div>
 <p>La primera componente apunta en la dirección donde la nube se extiende más. La segunda es perpendicular y recoge la variabilidad restante. Si proyectamos los puntos sobre la primera dirección, perdemos información, pero conservamos gran parte de la estructura.</p>
 </section>
-<section id="qué-hace-pca" class="level2" data-number="8.3">
-<h2 data-number="8.3" class="anchored" data-anchor-id="qué-hace-pca"><span class="header-section-number">8.3</span> Qué hace PCA</h2>
+<section id="qué-hace-pca" class="level2" data-number="9.3">
+<h2 data-number="9.3" class="anchored" data-anchor-id="qué-hace-pca"><span class="header-section-number">9.3</span> Qué hace PCA</h2>
 <p>PCA construye componentes <span class="math inline">\(Z_1, Z_2, \ldots, Z_p\)</span> como combinaciones lineales de las variables originales:</p>
 <p><span class="math display">\[
 Z_m = a_{1m}X_1 + a_{2m}X_2 + \cdots + a_{pm}X_p.
@@ -497,8 +503,8 @@ a_1 = \arg\max_{\lVert a \rVert = 1} Var(Xa).
 \]</span></p>
 <p>La segunda componente busca la mayor varianza posible entre las direcciones ortogonales a la primera. Y así sucesivamente.</p>
 </section>
-<section id="centrado-escalado-y-matriz-de-covarianzas" class="level2" data-number="8.4">
-<h2 data-number="8.4" class="anchored" data-anchor-id="centrado-escalado-y-matriz-de-covarianzas"><span class="header-section-number">8.4</span> Centrado, escalado y matriz de covarianzas</h2>
+<section id="centrado-escalado-y-matriz-de-covarianzas" class="level2" data-number="9.4">
+<h2 data-number="9.4" class="anchored" data-anchor-id="centrado-escalado-y-matriz-de-covarianzas"><span class="header-section-number">9.4</span> Centrado, escalado y matriz de covarianzas</h2>
 <p>PCA se aplica normalmente sobre datos centrados. Si <span class="math inline">\(X\)</span> es la matriz de datos, centramos cada variable restando su media. La matriz de covarianzas de los datos centrados es:</p>
 <p><span class="math display">\[
 S=\frac{1}{n-1}X^\top X.
@@ -661,8 +667,8 @@ S=\frac{1}{n-1}X^\top X.
 </div>
 <p>La decisión entre covarianzas y correlaciones no es automática. Usar covarianzas conserva las unidades originales; usar correlaciones da el mismo peso inicial a todas las variables estandarizadas.</p>
 </section>
-<section id="varianza-de-una-componente" class="level2" data-number="8.5">
-<h2 data-number="8.5" class="anchored" data-anchor-id="varianza-de-una-componente"><span class="header-section-number">8.5</span> Varianza de una componente</h2>
+<section id="varianza-de-una-componente" class="level2" data-number="9.5">
+<h2 data-number="9.5" class="anchored" data-anchor-id="varianza-de-una-componente"><span class="header-section-number">9.5</span> Varianza de una componente</h2>
 <p>Si una componente es <span class="math inline">\(Z = Xa\)</span>, su varianza es:</p>
 <p><span class="math display">\[
 Var(Z)=Var(Xa)=a^\top S a.
@@ -775,8 +781,8 @@ Var(Z)=Var(Xa)=a^\top S a.
 </div>
 </div>
 </section>
-<section id="por-qué-las-componentes-son-ortogonales" class="level2" data-number="8.6">
-<h2 data-number="8.6" class="anchored" data-anchor-id="por-qué-las-componentes-son-ortogonales"><span class="header-section-number">8.6</span> Por qué las componentes son ortogonales</h2>
+<section id="por-qué-las-componentes-son-ortogonales" class="level2" data-number="9.6">
+<h2 data-number="9.6" class="anchored" data-anchor-id="por-qué-las-componentes-son-ortogonales"><span class="header-section-number">9.6</span> Por qué las componentes son ortogonales</h2>
 <p>Las componentes principales están construidas para ser ortogonales entre sí. Si <span class="math inline">\(a_r\)</span> y <span class="math inline">\(a_s\)</span> son dos vectores de carga asociados a autovalores distintos <span class="math inline">\(\lambda_r\)</span> y <span class="math inline">\(\lambda_s\)</span>, entonces:</p>
 <p><span class="math display">\[
 S a_r = \lambda_r a_r,
@@ -811,8 +817,8 @@ Nota
 </div>
 </div>
 </section>
-<section id="varianza-total-y-traza" class="level2" data-number="8.7">
-<h2 data-number="8.7" class="anchored" data-anchor-id="varianza-total-y-traza"><span class="header-section-number">8.7</span> Varianza total y traza</h2>
+<section id="varianza-total-y-traza" class="level2" data-number="9.7">
+<h2 data-number="9.7" class="anchored" data-anchor-id="varianza-total-y-traza"><span class="header-section-number">9.7</span> Varianza total y traza</h2>
 <p>La varianza total de un conjunto de variables centradas se define como la suma de las varianzas de las variables originales:</p>
 <p><span class="math display">\[
 Var_{total} = Var(X_1)+\cdots+Var(X_p).
@@ -869,8 +875,8 @@ tr(S)=\lambda_1+\lambda_2+\cdots+\lambda_p.
 </div>
 <p>La igualdad numérica confirma la idea: PCA redistribuye la misma varianza total entre ejes nuevos ordenados de mayor a menor importancia.</p>
 </section>
-<section id="pca-con-prcomp" class="level2" data-number="8.8">
-<h2 data-number="8.8" class="anchored" data-anchor-id="pca-con-prcomp"><span class="header-section-number">8.8</span> PCA con <code>prcomp()</code></h2>
+<section id="pca-con-prcomp" class="level2" data-number="9.8">
+<h2 data-number="9.8" class="anchored" data-anchor-id="pca-con-prcomp"><span class="header-section-number">9.8</span> PCA con <code>prcomp()</code></h2>
 <p>En R, <code>prcomp()</code> calcula PCA de forma estable. Con <code>scale. = TRUE</code> usamos variables estandarizadas.</p>
 <div class="cell">
 <details class="code-fold">
@@ -1007,8 +1013,8 @@ tr(S)=\lambda_1+\lambda_2+\cdots+\lambda_p.
 <li><code>sdev^2</code>: varianzas explicadas.</li>
 </ul>
 </section>
-<section id="scores-y-loadings" class="level2" data-number="8.9">
-<h2 data-number="8.9" class="anchored" data-anchor-id="scores-y-loadings"><span class="header-section-number">8.9</span> Scores y loadings</h2>
+<section id="scores-y-loadings" class="level2" data-number="9.9">
+<h2 data-number="9.9" class="anchored" data-anchor-id="scores-y-loadings"><span class="header-section-number">9.9</span> Scores y loadings</h2>
 <p>Los <strong>loadings</strong> indican cómo se construye cada componente a partir de las variables originales. Los <strong>scores</strong> son las coordenadas de cada individuo en el nuevo sistema.</p>
 <p>Si <span class="math inline">\(A\)</span> es la matriz de cargas, los scores se obtienen como:</p>
 <p><span class="math display">\[
@@ -1067,8 +1073,8 @@ Z = X A.
 </div>
 </div>
 </section>
-<section id="varianza-explicada-y-scree-plot" class="level2" data-number="8.10">
-<h2 data-number="8.10" class="anchored" data-anchor-id="varianza-explicada-y-scree-plot"><span class="header-section-number">8.10</span> Varianza explicada y scree plot</h2>
+<section id="varianza-explicada-y-scree-plot" class="level2" data-number="9.10">
+<h2 data-number="9.10" class="anchored" data-anchor-id="varianza-explicada-y-scree-plot"><span class="header-section-number">9.10</span> Varianza explicada y scree plot</h2>
 <div class="cell">
 <details class="code-fold">
 <summary>Código</summary>
@@ -1142,8 +1148,8 @@ Z = X A.
 <li>coste de perder información.</li>
 </ul>
 </section>
-<section id="interpretación-de-individuos" class="level2" data-number="8.11">
-<h2 data-number="8.11" class="anchored" data-anchor-id="interpretación-de-individuos"><span class="header-section-number">8.11</span> Interpretación de individuos</h2>
+<section id="interpretación-de-individuos" class="level2" data-number="9.11">
+<h2 data-number="9.11" class="anchored" data-anchor-id="interpretación-de-individuos"><span class="header-section-number">9.11</span> Interpretación de individuos</h2>
 <div class="cell">
 <details class="code-fold">
 <summary>Código</summary>
@@ -1164,8 +1170,8 @@ Z = X A.
 </div>
 <p>Los puntos cercanos tienen perfiles parecidos en las variables activas, siempre dentro de la calidad de representación del plano mostrado. Si los dos primeros componentes explican poca varianza, las proximidades del plano pueden ser engañosas.</p>
 </section>
-<section id="interpretación-de-variables" class="level2" data-number="8.12">
-<h2 data-number="8.12" class="anchored" data-anchor-id="interpretación-de-variables"><span class="header-section-number">8.12</span> Interpretación de variables</h2>
+<section id="interpretación-de-variables" class="level2" data-number="9.12">
+<h2 data-number="9.12" class="anchored" data-anchor-id="interpretación-de-variables"><span class="header-section-number">9.12</span> Interpretación de variables</h2>
 <p>Las cargas indican qué variables contribuyen a cada eje.</p>
 <div class="cell">
 <details class="code-fold">
@@ -1192,8 +1198,8 @@ Z = X A.
 <p>Variables con flechas próximas tienden a estar correlacionadas. Flechas opuestas sugieren asociación negativa. Flechas casi perpendiculares sugieren asociación lineal débil en el plano representado.</p>
 <p>El signo de una componente es arbitrario: si multiplicamos todas sus cargas y scores por <span class="math inline">\(-1\)</span>, la información no cambia. Por eso no debe interpretarse el signo de forma aislada, sino la oposición entre variables y la posición relativa de individuos.</p>
 </section>
-<section id="biplot-contribuciones-y-cos²" class="level2" data-number="8.13">
-<h2 data-number="8.13" class="anchored" data-anchor-id="biplot-contribuciones-y-cos²"><span class="header-section-number">8.13</span> Biplot, contribuciones y cos²</h2>
+<section id="biplot-contribuciones-y-cos²" class="level2" data-number="9.13">
+<h2 data-number="9.13" class="anchored" data-anchor-id="biplot-contribuciones-y-cos²"><span class="header-section-number">9.13</span> Biplot, contribuciones y cos²</h2>
 <div class="cell">
 <details class="code-fold">
 <summary>Código</summary>
@@ -1282,8 +1288,8 @@ Z = X A.
 </div>
 <p>Las contribuciones indican cuánto aporta cada variable o individuo a la construcción de un eje. Una variable puede estar bien representada y, además, contribuir mucho a una componente; ambas ideas están relacionadas, pero no son idénticas.</p>
 </section>
-<section id="pca-sobre-covarianzas-frente-a-correlaciones" class="level2" data-number="8.14">
-<h2 data-number="8.14" class="anchored" data-anchor-id="pca-sobre-covarianzas-frente-a-correlaciones"><span class="header-section-number">8.14</span> PCA sobre covarianzas frente a correlaciones</h2>
+<section id="pca-sobre-covarianzas-frente-a-correlaciones" class="level2" data-number="9.14">
+<h2 data-number="9.14" class="anchored" data-anchor-id="pca-sobre-covarianzas-frente-a-correlaciones"><span class="header-section-number">9.14</span> PCA sobre covarianzas frente a correlaciones</h2>
 <p>Veamos <code>mtcars</code>. Las variables tienen escalas diferentes, así que el PCA sin escalar queda dominado por variables con mayor varianza.</p>
 <div class="cell">
 <details class="code-fold">
@@ -1398,8 +1404,8 @@ Z = X A.
 </div>
 <p>La diferencia no es un error de R: responde a dos preguntas distintas. Sin escalar, las variables con mayor dispersión en sus unidades originales tienen más influencia. Con escalado, todas parten con varianza 1.</p>
 </section>
-<section id="pca-como-reducción-de-dimensión" class="level2" data-number="8.15">
-<h2 data-number="8.15" class="anchored" data-anchor-id="pca-como-reducción-de-dimensión"><span class="header-section-number">8.15</span> PCA como reducción de dimensión</h2>
+<section id="pca-como-reducción-de-dimensión" class="level2" data-number="9.15">
+<h2 data-number="9.15" class="anchored" data-anchor-id="pca-como-reducción-de-dimensión"><span class="header-section-number">9.15</span> PCA como reducción de dimensión</h2>
 <p>Si retenemos solo las primeras <span class="math inline">\(q\)</span> componentes, con <span class="math inline">\(q &lt; p\)</span>, aproximamos los datos mediante:</p>
 <p><span class="math display">\[
 X \approx Z_q A_q^\top.
@@ -1432,8 +1438,8 @@ X \approx Z_q A_q^\top.
 </div>
 <p>El error de reconstrucción baja al retener más componentes, pero la representación se vuelve menos simple.</p>
 </section>
-<section id="pca-como-preprocesamiento" class="level2" data-number="8.16">
-<h2 data-number="8.16" class="anchored" data-anchor-id="pca-como-preprocesamiento"><span class="header-section-number">8.16</span> PCA como preprocesamiento</h2>
+<section id="pca-como-preprocesamiento" class="level2" data-number="9.16">
+<h2 data-number="9.16" class="anchored" data-anchor-id="pca-como-preprocesamiento"><span class="header-section-number">9.16</span> PCA como preprocesamiento</h2>
 <p>PCA puede usarse antes de clustering o clasificación para reducir ruido y colinealidad. Esa reducción también puede eliminar información relevante, por lo que debe justificarse.</p>
 <div class="cell">
 <details class="code-fold">
@@ -1469,8 +1475,8 @@ X \approx Z_q A_q^\top.
 </div>
 <p>Aquí usamos solo dos componentes. En <code>mtcars</code> puede ayudar a construir grupos de coches, pero las direcciones de máxima varianza no tienen por qué coincidir con las direcciones que separan mejor una etiqueta externa como <code>am</code>.</p>
 </section>
-<section id="limitaciones" class="level2" data-number="8.17">
-<h2 data-number="8.17" class="anchored" data-anchor-id="limitaciones"><span class="header-section-number">8.17</span> Limitaciones</h2>
+<section id="limitaciones" class="level2" data-number="9.17">
+<h2 data-number="9.17" class="anchored" data-anchor-id="limitaciones"><span class="header-section-number">9.17</span> Limitaciones</h2>
 <p>PCA tiene varias limitaciones:</p>
 <ul>
 <li>es lineal;</li>
@@ -1495,8 +1501,8 @@ Advertencia
 </div>
 </div>
 </section>
-<section id="errores-frecuentes" class="level2" data-number="8.18">
-<h2 data-number="8.18" class="anchored" data-anchor-id="errores-frecuentes"><span class="header-section-number">8.18</span> Errores frecuentes</h2>
+<section id="errores-frecuentes" class="level2" data-number="9.18">
+<h2 data-number="9.18" class="anchored" data-anchor-id="errores-frecuentes"><span class="header-section-number">9.18</span> Errores frecuentes</h2>
 <ul>
 <li>Aplicar PCA sin centrar los datos.</li>
 <li>No escalar variables con unidades muy diferentes.</li>
@@ -1507,12 +1513,12 @@ Advertencia
 <li>Interpretar el signo de una componente como si fuera absoluto.</li>
 </ul>
 </section>
-<section id="resumen-del-capítulo" class="level2" data-number="8.19">
-<h2 data-number="8.19" class="anchored" data-anchor-id="resumen-del-capítulo"><span class="header-section-number">8.19</span> Resumen del capítulo</h2>
+<section id="resumen-del-capítulo" class="level2" data-number="9.19">
+<h2 data-number="9.19" class="anchored" data-anchor-id="resumen-del-capítulo"><span class="header-section-number">9.19</span> Resumen del capítulo</h2>
 <p>PCA parte de una idea geométrica: los datos suelen vivir cerca de estructuras de menor dimensión que el espacio original. Construye componentes como combinaciones lineales ortogonales que ordenan la varianza. La varianza total se conserva porque PCA rota los ejes y la varianza total es la traza de la matriz de covarianzas. Interpretar PCA exige revisar escalado, varianza explicada, cargas, scores, cos² y el objetivo aplicado.</p>
 </section>
-<section id="ejercicios-propuestos" class="level2" data-number="8.20">
-<h2 data-number="8.20" class="anchored" data-anchor-id="ejercicios-propuestos"><span class="header-section-number">8.20</span> Ejercicios propuestos</h2>
+<section id="ejercicios-propuestos" class="level2" data-number="9.20">
+<h2 data-number="9.20" class="anchored" data-anchor-id="ejercicios-propuestos"><span class="header-section-number">9.20</span> Ejercicios propuestos</h2>
 <ol type="1">
 <li>Aplica PCA a <code>mtcars</code> con escalado y comenta los dos primeros componentes.</li>
 <li>Compara PCA de <code>mtcars</code> con y sin escalado usando diferentes subconjuntos de variables.</li>
@@ -1981,13 +1987,13 @@ Advertencia
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./05-interpretacion-clusters.html" class="pagination-link" aria-label="Interpretación de clusters">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Interpretación de clusters</span></span>
+      <a href="./05-clustering-variables.html" class="pagination-link" aria-label="Clustering de variables">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Clustering de variables</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
       <a href="./07-analisis-factorial.html" class="pagination-link" aria-label="Análisis factorial exploratorio">
-        <span class="nav-page-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Análisis factorial exploratorio</span></span> <i class="bi bi-arrow-right-short"></i>
+        <span class="nav-page-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Análisis factorial exploratorio</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Ejecutar el código</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">

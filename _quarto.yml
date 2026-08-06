@@ -20,6 +20,7 @@ book:
         - 03-clustering-jerarquico.qmd
         - 04-kmeans-pam.qmd
         - 05-interpretacion-clusters.qmd
+        - 05-clustering-variables.qmd
 
     - part: "Bloque 2. Reducción de dimensión"
       chapters:

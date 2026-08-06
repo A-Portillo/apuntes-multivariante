@@ -175,6 +175,18 @@ datos_lunas |>
 
 **Ejercicio 5.5. Auditoría de un informe.** Escribe un mini-informe de cinco frases sobre una partición y pásalo por esta auditoría: ¿declara variables activas?, ¿explica escalado y distancia?, ¿justifica $k$?, ¿describe heterogeneidad interna?, ¿evita presentar clusters como clases naturales? Reescribe el informe después de la auditoría.
 
+## Clustering de variables
+
+**Ejercicio 5V.1. Lineal o monótono.** Construye tres variables cuantitativas: dos con una relación monótona fuerte pero claramente no lineal, y una tercera linealmente relacionada con la primera. Compara Pearson, Spearman y los dendrogramas obtenidos con $1-|r|$ y $1-|\rho_s|$. Explica qué agrupamiento responde mejor a dos preguntas aplicadas diferentes.
+
+**Ejercicio 5V.2. El tipo de `cyl` es una decisión.** Analiza `mtcars` tratando `cyl` sucesivamente como cuantitativa, ordinal y nominal. Indica qué medida usa la matriz mixta en cada caso y cómo cambia su proximidad con `mpg`, `disp` y `vs`. Defiende una codificación desde el significado, no desde el dendrograma que resulte más limpio.
+
+**Ejercicio 5V.3. Misma intensidad, distinta historia.** Busca o construye tres parejas con valores próximos a $0.7$ de Spearman, V de Cramér y eta. Representa cada relación de forma adecuada y explica por qué compartir un valor numérico no las convierte en el mismo tipo de evidencia.
+
+**Ejercicio 5V.4. Auditar una variable sintética.** Elige un grupo producido por `ClustOfVar`. Comprueba su puntuación sintética con gráficos frente a las cuantitativas y por categorías de las cualitativas. Propón dos nombres para el eje, identifica cuál sobreinterpreta la evidencia y explica el carácter arbitrario de su signo.
+
+**Ejercicio 5V.5. Cuántos resúmenes conservar.** Compara cortes de `ClustOfVar` con tres, cuatro y cinco grupos usando homogeneidad, interpretabilidad y redundancia. Diseña además una perturbación bootstrap para estudiar si las variables permanecen juntas. Evita presentar el valor de $k$ elegido como una verdad poblacional.
+
 ## Análisis de componentes principales
 
 **Ejercicio 6.1. Dígitos y características.** Una imagen MNIST tiene 784 intensidades de píxel. Propón entre cinco y ocho características construidas que podrían ser más informativas para distinguir formas, como número de bucles, simetría o centro de masa. Indica cuáles son lineales y cuáles no. Explica por qué PCA puede descubrir una superficie lineal de baja dimensión, pero no necesariamente esas características semánticas.

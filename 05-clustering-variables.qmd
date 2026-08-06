@@ -1,0 +1,567 @@
+# Clustering de variables
+
+```{r}
+#| label: setup-clustering-variables
+#| message: false
+#| warning: false
+library(tidyverse)
+library(knitr)
+
+theme_set(theme_minimal())
+```
+
+## Motivación: agrupar columnas, no individuos
+
+En los capítulos anteriores cada objeto era un automóvil y buscábamos grupos de automóviles parecidos. Ahora cambia la unidad que se agrupa: los objetos son las **variables**. Dos variables deberían quedar próximas cuando transmiten información similar sobre los mismos individuos.
+
+Este cambio permite responder preguntas distintas:
+
+- ¿qué medidas describen aproximadamente el mismo aspecto del fenómeno?;
+- ¿hay bloques como tamaño, potencia o transmisión?;
+- ¿podemos resumir cada bloque mediante una variable sintética?;
+- ¿qué variables son redundantes y cuáles aportan información diferente?
+
+El clustering de variables no demuestra relaciones causales ni convierte automáticamente un conjunto de columnas en conceptos sustantivos. Produce una organización exploratoria que depende de cómo definamos la asociación, del tratamiento de las variables ordinales y de la regla de enlace.
+
+Usaremos una versión mixta de `mtcars` durante todo el capítulo. `cyl` y `gear` se tratarán como ordinales; `am`, `vs` y `carb`, como nominales.
+
+```{r}
+#| label: datos-clustering-variables
+datosCluster <- mtcars |>
+  as_tibble(rownames = "modelo") |>
+  transmute(
+    modelo,
+    mpg,
+    disp,
+    hp,
+    wt,
+    qsec,
+    cyl = ordered(cyl),
+    gear = ordered(gear),
+    am = factor(am, labels = c("automático", "manual")),
+    vs = factor(vs, labels = c("V", "recto")),
+    carb = factor(carb)
+  )
+
+tibble(
+  variable = names(datosCluster)[-1],
+  tratamiento = c(
+    rep("cuantitativa", 5),
+    rep("ordinal", 2),
+    rep("nominal", 3)
+  )
+) |>
+  kable(
+    col.names = c("Variable", "Tratamiento en este capítulo"),
+    caption = "Tipos usados para seleccionar la medida de asociación."
+  )
+```
+
+La clasificación no es una propiedad puramente informática. Por ejemplo, `cyl` podría tratarse como cuantitativa si interesara el cambio por cilindro, como ordinal si solo importara el orden o como nominal si cuatro, seis y ocho cilindros fueran configuraciones sin distancias comparables.
+
+## Asociación entre dos variables
+
+Para agrupar variables necesitamos cuantificar cuánto se parecen. No existe una única medida adecuada para todas las combinaciones de tipos.
+
+### Correlación de Pearson
+
+Para dos variables cuantitativas $X$ e $Y$, la correlación muestral de Pearson es
+
+$$
+r_{XY} =
+\frac{\sum_{i=1}^n (x_i-\bar{x})(y_i-\bar{y})}
+{\sqrt{\sum_{i=1}^n (x_i-\bar{x})^2}
+ \sqrt{\sum_{i=1}^n (y_i-\bar{y})^2}}.
+$$
+
+Es la covarianza expresada en unidades de desviación típica. Toma valores entre $-1$ y $1$: el signo indica la dirección y $|r|$ mide la intensidad de la relación **lineal**. Una transformación lineal de escala no cambia $|r|$, pero los valores atípicos pueden alterarlo mucho.
+
+Una correlación nula no implica independencia. Puede existir una relación curva fuerte cuya pendiente positiva en una zona se compense con una pendiente negativa en otra. Pearson responde a una pregunta precisa: ¿hasta qué punto la nube se aproxima a una recta?
+
+### Correlación de Spearman
+
+Spearman sustituye los valores por sus rangos y calcula Pearson sobre ellos:
+
+$$
+\rho_s = \operatorname{cor}\{R(X),R(Y)\}.
+$$
+
+Si no hay empates, también puede escribirse como
+
+$$
+\rho_s = 1-\frac{6\sum_{i=1}^n d_i^2}{n(n^2-1)},
+$$
+
+donde $d_i$ es la diferencia entre los rangos de $x_i$ e $y_i$. Con empates, R asigna rangos medios y usa directamente la primera definición.
+
+Spearman mide asociación **monótona**: valores altos de una variable tienden a acompañar valores altos, o bajos, de la otra, aunque la relación no sea lineal. Por eso es natural para ordinales. No presupone que el salto entre `4` y `6` cilindros represente la misma distancia sustantiva que el salto entre `6` y `8`; solo usa el orden. A cambio, descarta información sobre la magnitud de los intervalos.
+
+```{r}
+#| label: pearson-spearman-mtcars
+pares_correlacion <- tribble(
+  ~x,     ~y,
+  "mpg",  "wt",
+  "disp", "hp",
+  "qsec", "gear"
+) |>
+  mutate(
+    pearson = map2_dbl(
+      x, y,
+      ~ cor(as.numeric(datosCluster[[.x]]),
+            as.numeric(datosCluster[[.y]]),
+            method = "pearson")
+    ),
+    spearman = map2_dbl(
+      x, y,
+      ~ cor(as.numeric(datosCluster[[.x]]),
+            as.numeric(datosCluster[[.y]]),
+            method = "spearman")
+    )
+  )
+
+pares_correlacion |>
+  mutate(across(c(pearson, spearman), ~ round(.x, 3))) |>
+  kable(
+    col.names = c("Variable X", "Variable Y", "Pearson", "Spearman"),
+    caption = "Pearson y Spearman responden a nociones distintas de asociación."
+  )
+```
+
+Para agrupar variables suele interesar la redundancia y no su dirección. `mpg` y `wt` aportan información parecida aunque su relación sea negativa. Por eso usaremos $|\rho_s|$: $-1$ y $1$ representan asociación máxima. Esta decisión elimina el signo, que habrá que recuperar al interpretar cada grupo.
+
+### V de Cramér
+
+Para dos factores, los rangos no tienen significado cuando al menos uno de ellos es nominal. Partimos de su tabla de contingencia, con frecuencias observadas $O_{ab}$. Bajo independencia, la frecuencia esperada en la celda $(a,b)$ es
+
+$$
+E_{ab} = \frac{n_{a\cdot}n_{\cdot b}}{n},
+$$
+
+y el estadístico chi-cuadrado es
+
+$$
+\chi^2 = \sum_{a=1}^A\sum_{b=1}^B
+\frac{(O_{ab}-E_{ab})^2}{E_{ab}}.
+$$
+
+El valor de $\chi^2$ aumenta con el tamaño muestral y con el número de categorías. La V de Cramér lo normaliza:
+
+$$
+V = \sqrt{\frac{\chi^2}{n\min(A-1,B-1)}}.
+$$
+
+Así, $0\leq V\leq 1$. El valor $0$ indica ausencia de asociación observada y $1$, asociación perfecta en el sentido permitido por la tabla. Es simétrica y no tiene signo: cambiar el orden o el nombre de las categorías no cambia $V$.
+
+Un valor alto no indica qué categorías aparecen juntas; para eso hay que inspeccionar porcentajes condicionados o residuos estandarizados. Además, con muestras pequeñas, muchas categorías o celdas escasas, la estimación puede ser inestable y presentar sesgo positivo. En nuestra matriz, una pareja ordinal--nominal se estudiará así: la ordinal conserva sus categorías, sin convertirlas en una respuesta numérica artificial.
+
+### Eta y la razón de correlación
+
+Cuando una variable $Y$ es cuantitativa y otra $G$ define grupos nominales, podemos medir qué parte de la variabilidad de $Y$ se explica mediante diferencias entre medias de grupo. La descomposición de ANOVA es
+
+$$
+\underbrace{\sum_{i=1}^n(y_i-\bar y)^2}_{SS_T}
+=
+\underbrace{\sum_{g=1}^G n_g(\bar y_g-\bar y)^2}_{SS_B}
++
+\underbrace{\sum_{g=1}^G\sum_{i\in g}(y_i-\bar y_g)^2}_{SS_W}.
+$$
+
+Definimos
+
+$$
+\eta^2(Y\mid G)=\frac{SS_B}{SS_T},
+\qquad
+\eta(Y\mid G)=\sqrt{\eta^2(Y\mid G)}.
+$$
+
+Eta está entre $0$ y $1$. Si las medias de todos los grupos son iguales, $\eta=0$; si dentro de cada grupo todos los valores coinciden y las medias difieren, $\eta=1$. A diferencia de Pearson, puede capturar cualquier patrón de diferencias entre medias, no solo una tendencia lineal. Conceptualmente es direccional: se explica una respuesta estrictamente numérica mediante grupos. La función que construiremos coloca siempre la variable numérica como respuesta, con independencia del orden de los argumentos.
+
+La función `eta_squared()` devuelve $\eta^2$ y tomamos su raíz cuadrada para incorporar $\eta$ a la matriz. Los supuestos habituales del ANOVA son relevantes para pruebas e intervalos de confianza, pero la identidad $SS_T=SS_B+SS_W$ y el cociente descriptivo no necesitan normalidad.
+
+```{r}
+#| label: asociaciones-mixtas-mtcars
+tibble(
+  pareja = c("am - vs", "hp - carb", "qsec - vs"),
+  medida = c("V de Cramér", "eta", "eta"),
+  asociacion = c(
+    DescTools::CramerV(datosCluster$am, datosCluster$vs),
+    sqrt(
+      effectsize::eta_squared(
+        aov(hp ~ carb, data = datosCluster),
+        partial = FALSE,
+        ci = NULL
+      )$Eta2[1]
+    ),
+    sqrt(
+      effectsize::eta_squared(
+        aov(qsec ~ vs, data = datosCluster),
+        partial = FALSE,
+        ci = NULL
+      )$Eta2[1]
+    )
+  )
+) |>
+  mutate(asociacion = round(asociacion, 3)) |>
+  kable(
+    col.names = c("Pareja", "Medida", "Asociación"),
+    caption = "Ejemplos de asociaciones nominales y mixtas en mtcars."
+  )
+```
+
+### Qué medida corresponde a cada pareja
+
+| Variable X | Variable Y | Medida propuesta | Qué considera parecido |
+|---|---|---|---|
+| Ambas numéricas u ordinales | Ambas numéricas u ordinales | $|\rho_s|$ | Ordenación monótona similar, en cualquier dirección |
+| Dos factores, si alguno es nominal | Dos factores, si alguno es nominal | V de Cramér | Distribuciones condicionadas alejadas de la independencia |
+| Numérica | Factor nominal | $\eta$ | Medias numéricas diferentes entre categorías |
+
+No mezclamos directamente los valores originales: construimos medidas entre $0$ y $1$ con una interpretación común aproximada, desde asociación débil hasta asociación fuerte. Que compartan rango no significa que sean estimadores idénticos ni que un $0.6$ tenga exactamente el mismo significado estadístico en los tres casos.
+
+## Una matriz de asociación para datos mixtos
+
+La siguiente función automatiza la selección de la medida a partir de los tipos de ambas variables y devuelve una intensidad de asociación entre $0$ y $1$.
+
+```{r}
+#| label: funcion-metrica-asociacion
+metricaAsociacion <- function(x, y) {
+  if ((is.numeric(x) || is.ordered(x)) &&
+      (is.numeric(y) || is.ordered(y))) {
+    abs(cor(as.numeric(x), as.numeric(y), method = "spearman"))
+  } else if (is.factor(x) && is.factor(y)) {
+    DescTools::CramerV(x, y)
+  } else if (is.numeric(x) || is.ordered(x)) {
+    eta2 <- effectsize::eta_squared(
+      aov(as.numeric(x) ~ y),
+      partial = FALSE
+    )$Eta2
+
+    sqrt(eta2)
+  } else {
+    eta2 <- effectsize::eta_squared(
+      aov(as.numeric(y) ~ x),
+      partial = FALSE
+    )$Eta2
+
+    sqrt(eta2)
+  }
+}
+```
+
+Aplicamos la función a todas las parejas. `modelo` es un identificador, no una variable activa, y por eso se excluye.
+
+```{r}
+#| label: matriz-asociacion-mixta
+#| fig-cap: "Matriz de asociación mixta. Los números resumen intensidad, no dirección."
+#| fig-width: 9
+#| fig-height: 7
+matrizAsoc <- DescTools::PairApply(
+  datosCluster |> select(-modelo),
+  metricaAsociacion,
+  symmetric = TRUE
+)
+
+colores <- c(
+  colorRampPalette(c("#2E7D32", "#FFD600"))(50),
+  colorRampPalette(c("#FFD600", "#FF9100"))(20),
+  colorRampPalette(c("#F9A825", "#D50000"))(30)
+)
+
+corrplot::corrplot(
+  matrizAsoc,
+  type = "upper",
+  diag = FALSE,
+  method = "number",
+  col.lim = c(0, 1),
+  number.cex = 0.7,
+  col = colores,
+  is.corr = FALSE,
+  number.digits = 1
+)
+```
+
+El bloque `mpg`--`disp`--`wt`--`cyl` presenta asociaciones altas. También aparecen vínculos entre `gear` y `am`, y entre `hp` y `carb`. Pero el gráfico no muestra que `mpg` se relaciona **negativamente** con peso y cilindrada, porque tomamos el valor absoluto. Antes de nombrar un bloque hay que volver a los signos, las distribuciones y el significado de las variables.
+
+### De asociación a disimilitud
+
+Podemos transformar una asociación $a_{jk}\in[0,1]$ en la disimilitud
+
+$$
+d_{jk}=1-a_{jk}.
+$$
+
+Dos variables perfectamente asociadas quedan a distancia cero; dos variables sin asociación, a distancia uno. Sobre esta matriz se puede aplicar el clustering jerárquico estudiado anteriormente.
+
+```{r}
+#| label: dendrograma-matriz-asociacion
+#| fig-cap: "Clustering average de las variables a partir de 1 menos la asociación."
+#| fig-width: 9
+#| fig-height: 5
+distancia_asociacion <- as.dist(1 - matrizAsoc)
+arbol_asociacion <- hclust(distancia_asociacion, method = "average")
+
+factoextra::fviz_dend(
+  arbol_asociacion,
+  k = 4,
+  rect = TRUE,
+  show_labels = TRUE,
+  main = "Grupos de variables según asociación bivariante",
+  xlab = "",
+  ylab = "Disimilitud de enlace"
+)
+```
+
+Este dendrograma organiza relaciones por parejas y el resultado depende del enlace. Además, $1-a_{jk}$ no tiene por qué cumplir la desigualdad triangular; `hclust()` puede tratarla como disimilitud, pero no debemos atribuirle automáticamente todas las propiedades de una distancia métrica.
+
+### Precauciones prácticas
+
+- Con datos ausentes, cada celda puede usar una muestra distinta. Conviene acompañar la matriz con los tamaños de muestra por pareja.
+- Una variable constante, un factor con un solo nivel observado o grupos vacíos pueden producir valores no definidos.
+- El valor absoluto reúne asociaciones positivas y negativas. Es útil para redundancia, pero insuficiente para interpretar el sentido.
+- Spearman trata los niveles ordinales como posiciones ordenadas cuando se comparan con otra ordinal o con una numérica; frente a una nominal, la función usa V de Cramér y conserva las categorías.
+- V de Cramér puede ser elevada por tablas dispersas; eta puede ocultar diferencias en dispersión si las medias son parecidas.
+- La matriz es exploratoria. Probar muchas asociaciones y comentar solo las mayores favorece interpretaciones oportunistas.
+
+## ClustOfVar: grupos con una variable sintética
+
+La estrategia anterior construye primero todas las asociaciones bivariantes. `ClustOfVar` plantea una pregunta algo más global: ¿podemos formar grupos de variables de modo que cada grupo quede bien representado por **una sola variable sintética**? [@chavent2012clustofvar]
+
+Pensemos en un grupo formado por `disp`, `wt`, `mpg` y `cyl`. Una variable sintética asigna a cada automóvil una puntuación numérica que resume el patrón compartido del grupo. Un coche grande y pesado podría obtener una puntuación alta, mientras que uno ligero y eficiente obtendría una baja. El signo es arbitrario: multiplicar todas las puntuaciones por $-1$ representa el mismo eje.
+
+Para un cluster de variables $C$, `ClustOfVar` elige la puntuación sintética $z_C$ que maximiza su homogeneidad:
+
+$$
+H(C)=
+\sum_{x_j\in C_{\mathrm{cuanti}}}
+\operatorname{cor}^2(x_j,z_C)
++
+\sum_{q_j\in C_{\mathrm{quali}}}
+\eta^2(z_C\mid q_j).
+$$
+
+Una cuantitativa está bien representada si tiene una correlación lineal alta, positiva o negativa, con $z_C$. Una cualitativa está bien representada si sus categorías separan claramente las puntuaciones de $z_C$. Técnicamente, $z_C$ es la primera componente de un análisis PCAMIX, pero por ahora basta entenderla como el resumen numérico que conserva la mayor coherencia interna del bloque.
+
+Al fusionar dos grupos $A$ y $B$, la pérdida de homogeneidad es
+
+$$
+d(A,B)=H(A)+H(B)-H(A\cup B).
+$$
+
+El algoritmo aglomerativo une la pareja con menor pérdida. La idea se parece a Ward: una fusión es barata cuando un único resumen sigue representando bien las variables reunidas. Sin embargo, la función objetivo no es la suma de cuadrados entre individuos y admite conjuntamente variables cuantitativas y cualitativas.
+
+### Preparación de los datos
+
+`hclustvar()` recibe por separado un `data.frame` cuantitativo y otro cualitativo. En este ejemplo conservamos el orden de `cyl` y `gear` mediante puntuaciones numéricas ordenadas. Esto supone que los niveles consecutivos ocupan posiciones comparables; si esa decisión no fuera defendible, deberían incluirse como factores cualitativos.
+
+```{r}
+#| label: preparar-clustofvar
+X_quanti <- datosCluster |>
+  transmute(
+    mpg,
+    disp,
+    hp,
+    wt,
+    qsec,
+    cyl = as.double(cyl),
+    gear = as.double(gear)
+  ) |>
+  as.data.frame()
+
+X_quali <- datosCluster |>
+  select(am, vs, carb) |>
+  as.data.frame()
+
+arbol_variables <- ClustOfVar::hclustvar(
+  X.quanti = X_quanti,
+  X.quali = X_quali
+)
+```
+
+La conversión final a `data.frame` es necesaria porque la implementación de `PCAmixdata` que usa `ClustOfVar` comprueba las columnas con semántica de `data.frame`, no de tibble.
+
+```{r}
+#| label: dendrograma-clustofvar
+#| fig-cap: "Dendrograma de ClustOfVar. La altura es pérdida de homogeneidad."
+#| fig-width: 9
+#| fig-height: 5
+factoextra::fviz_dend(
+  arbol_variables,
+  k = 4,
+  rect = TRUE,
+  show_labels = TRUE,
+  main = "Clustering jerárquico de variables con ClustOfVar",
+  xlab = "",
+  ylab = "Pérdida de homogeneidad"
+)
+```
+
+El corte en cuatro grupos se usa para aprender a leer la solución, no como afirmación de que haya exactamente cuatro dimensiones verdaderas. Como en cualquier dendrograma, conviene comparar cortes, estabilidad e interpretabilidad.
+
+### Pertenencia y homogeneidad
+
+```{r}
+#| label: particion-clustofvar
+particion_variables <- ClustOfVar::cutreevar(
+  arbol_variables,
+  k = 4,
+  matsim = TRUE
+)
+
+tibble(
+  variable = names(particion_variables$cluster),
+  cluster = unname(particion_variables$cluster)
+) |>
+  arrange(cluster, variable) |>
+  kable(
+    col.names = c("Variable", "Cluster"),
+    caption = "Pertenencia de las variables para k = 4."
+  )
+```
+
+La solución separa cuatro lecturas plausibles de los automóviles:
+
+1. `disp`, `wt`, `mpg` y `cyl`: tamaño del motor, masa y eficiencia;
+2. `hp` y `carb`: potencia y alimentación;
+3. `qsec` y `vs`: aceleración y configuración del motor;
+4. `gear` y `am`: transmisión.
+
+Son nombres interpretativos, no salidas del algoritmo. Además, que `carb` aparezca junto a `hp` no implica que cambiar el carburador cause una potencia determinada.
+
+`cutreevar()` proporciona la asociación cuadrática de cada variable con su resumen. Para una cuantitativa es $r^2$; para una cualitativa, $\eta^2$. Un valor próximo a uno indica que la variable sintética representa bien esa columna.
+
+```{r}
+#| label: representacion-variables-sinteticas
+tabla_representacion <- imap_dfr(
+  particion_variables$var,
+  ~ as_tibble(.x, rownames = "variable") |>
+    transmute(
+      cluster = .y,
+      variable,
+      asociacion_cuadratica = `squared loading`,
+      correlacion = correlation
+    )
+)
+
+tabla_representacion |>
+  mutate(
+    asociacion_cuadratica = round(asociacion_cuadratica, 3),
+    correlacion = round(correlacion, 3)
+  ) |>
+  arrange(cluster, desc(asociacion_cuadratica)) |>
+  kable(
+    col.names = c(
+      "Cluster", "Variable", "Asociación cuadrática", "Correlación"
+    ),
+    caption = "Calidad con la que cada variable queda resumida."
+  )
+```
+
+La columna `correlacion` solo se define para cuantitativas. Su signo orienta el eje: en el primer grupo, `mpg` tiene sentido contrario a `disp`, `wt` y `cyl`. El signo conjunto puede invertirse sin cambiar la solución. Para las cualitativas hay que comparar las medias de la puntuación por categoría, no buscar una correlación cuyo cálculo dependería de codificar arbitrariamente sus niveles.
+
+La homogeneidad explicada de esta partición es
+
+```{r}
+#| label: homogeneidad-clustofvar
+tibble(
+  numero_clusters = particion_variables$k,
+  homogeneidad_explicada = particion_variables$E / 100
+) |>
+  kable(
+    digits = 3,
+    col.names = c("Número de clusters", "Proporción de homogeneidad explicada"),
+    caption = "Resumen global de la partición elegida."
+  )
+```
+
+No debe maximizarse esta cifra sin penalización: con un cluster por variable, la representación es perfecta pero no hemos resumido nada. Elegir $k$ equilibra compresión, homogeneidad, estabilidad e interpretación.
+
+### Las variables sintéticas son nuevas columnas
+
+El objeto `scores` contiene una fila por automóvil y una columna por cluster de variables. Estas columnas son los $z_C$: coordenadas numéricas con media aproximadamente cero que resumen los bloques.
+
+```{r}
+#| label: puntuaciones-sinteticas-clustofvar
+puntuaciones <- particion_variables$scores |>
+  as_tibble() |>
+  mutate(modelo = datosCluster$modelo, .before = 1)
+
+puntuaciones |>
+  slice_head(n = 8) |>
+  mutate(across(starts_with("cluster"), ~ round(.x, 3))) |>
+  kable(
+    col.names = c(
+      "Modelo", "Tamaño/consumo", "Potencia",
+      "Aceleración/motor", "Transmisión"
+    ),
+    caption = "Primeras puntuaciones de las cuatro variables sintéticas."
+  )
+```
+
+```{r}
+#| label: grafico-puntuaciones-sinteticas
+#| fig-cap: "Cada punto es un automóvil descrito por dos resúmenes de bloques de variables."
+#| fig-width: 8
+#| fig-height: 6
+puntuaciones |>
+  mutate(transmision = datosCluster$am) |>
+  ggplot(aes(cluster1, cluster2, color = transmision)) +
+  geom_hline(yintercept = 0, color = "grey75") +
+  geom_vline(xintercept = 0, color = "grey75") +
+  geom_point(size = 2.7) +
+  geom_text(
+    aes(label = modelo),
+    nudge_y = 0.09,
+    size = 2.7,
+    show.legend = FALSE,
+    check_overlap = TRUE
+  ) +
+  labs(
+    x = "Variable sintética 1: tamaño y consumo",
+    y = "Variable sintética 2: potencia",
+    color = "Transmisión"
+  )
+```
+
+Estas puntuaciones pueden utilizarse para describir individuos o como variables reducidas en un análisis posterior. No son promedios simples: su construcción pondera las variables para maximizar la homogeneidad de cada grupo. Antes de usarlas como predictores debe estimarse todo el proceso dentro de cada muestra de entrenamiento para evitar fuga de información.
+
+## Dos enfoques que no tienen por qué coincidir
+
+La matriz personalizada y `ClustOfVar` son complementarios:
+
+| Aspecto | Matriz de asociación personalizada | `ClustOfVar` |
+|---|---|---|
+| Medidas básicas | Spearman, V de Cramér y eta | Pearson al cuadrado, eta al cuadrado y asociación canónica para cualitativas |
+| Criterio de agrupamiento | Linkage elegido sobre $1-a_{jk}$ | Menor pérdida de homogeneidad del resumen sintético |
+| Ordinales | Reconocidas mediante rangos | Requieren codificación cuantitativa justificada o tratamiento cualitativo |
+| Resultado adicional | Asociaciones por parejas | Una puntuación sintética por grupo e individuo |
+| Ventaja principal | Transparencia y flexibilidad | Coherencia conjunta y reducción por bloques |
+
+Por tanto, diferencias entre dendrogramas no indican necesariamente un error. Pueden revelar que una relación monótona no es lineal, que una nominal con muchas categorías se comporta de otro modo bajo V de Cramér o que un conjunto se resume bien conjuntamente aunque alguna pareja tenga asociación modesta.
+
+## Errores frecuentes
+
+- Introducir identificadores, códigos postales o números de categoría como cuantitativas sin justificar su significado.
+- Interpretar $|r|$, V o eta como efectos causales.
+- Llamar «correlación» a todas las celdas de la matriz, aunque varias sean V de Cramér o eta.
+- Elegir el número de clusters solo porque un corte produce nombres cómodos.
+- Olvidar que elevar al cuadrado o tomar el valor absoluto elimina la dirección de la asociación.
+- Interpretar una variable sintética por su signo sin revisar sus asociaciones con las variables originales.
+- Usar puntuaciones estimadas con todos los datos antes de evaluar un modelo predictivo.
+
+## Resumen
+
+- El clustering de variables agrupa columnas que contienen información parecida sobre los mismos individuos.
+- Pearson mide relación lineal; Spearman, relación monótona basada en rangos.
+- V de Cramér mide asociación entre dos nominales y eta resume diferencias de una cuantitativa entre grupos nominales.
+- Una matriz mixta permite construir la disimilitud $1-a_{jk}$, pero combina medidas con significados distintos.
+- `ClustOfVar` forma grupos que pueden resumirse bien mediante una variable sintética numérica.
+- La altura de sus fusiones mide pérdida de homogeneidad y sus `scores` describen a cada individuo sobre los bloques encontrados.
+- Los grupos son herramientas exploratorias dependientes de la codificación, no conceptos naturales descubiertos de forma automática.
+
+## Ejercicios propuestos
+
+1. Compare el dendrograma basado en la matriz mixta usando $|\rho_s|$ con otro que use $r^2$ para las parejas cuantitativas. Localice una fusión que cambie y explique qué noción de asociación produce el cambio.
+2. Trate `cyl` y `gear` primero como ordinales cuantificadas y después como nominales en `ClustOfVar`. Compare grupos, homogeneidad y variables sintéticas. ¿Qué decisión representa mejor una pregunta sobre diseño de automóviles?
+3. Construya dos cuantitativas con asociación monótona fuerte pero no lineal y una tercera relacionada linealmente con una de ellas. Compare Pearson, Spearman y los grupos resultantes.
+4. Para uno de los clusters de variables, dibuje las puntuaciones sintéticas frente a cada cuantitativa y por categorías de cada cualitativa. Verifique gráficamente las asociaciones cuadráticas de la tabla.
+5. Compare cortes con tres, cuatro y cinco grupos. Defienda una solución usando compresión, homogeneidad e interpretación, e indique qué evidencia de estabilidad faltaría.

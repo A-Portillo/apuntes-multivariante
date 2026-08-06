@@ -38,6 +38,7 @@ El curso utilizará principalmente R, RStudio y Quarto. Los ejemplos emplean poc
 #| label: paquetes
 install.packages(c(
   "tidyverse", "knitr", "cluster", "factoextra",
-  "FactoMineR", "psych", "MASS", "caret"
+  "FactoMineR", "psych", "MASS", "caret",
+  "DescTools", "effectsize", "corrplot", "ClustOfVar"
 ))
 ```
