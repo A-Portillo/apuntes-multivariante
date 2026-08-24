@@ -427,7 +427,7 @@ La solución separa cuatro lecturas plausibles de los automóviles:
 
 Son nombres interpretativos, no salidas del algoritmo. Además, que `carb` aparezca junto a `hp` no implica que cambiar el carburador cause una potencia determinada.
 
-`cutreevar()` proporciona la asociación cuadrática de cada variable con su resumen. Para una cuantitativa es $r^2$; para una cualitativa, $\eta^2$. Un valor próximo a uno indica que la variable sintética representa bien esa columna.
+`cutreevar()` proporciona la asociación al cuadrado de cada variable con su resumen. Para una cuantitativa es $r^2$; para una cualitativa, $\eta^2$. Un valor próximo a uno indica que la variable sintética representa bien esa columna.
 
 ```{r}
 #| label: representacion-variables-sinteticas
