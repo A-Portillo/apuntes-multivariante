@@ -21,6 +21,7 @@ Thumbs.db
 # Local datasets not used by the book
 /Spotify/
 /other datasets/
+/juegos multivariante/
 
 /.quarto/
 **/*.quarto_ipynb
