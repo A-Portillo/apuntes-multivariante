@@ -5,6 +5,7 @@
 #| message: false
 library(tidyverse)
 library(knitr)
+library(proxy)
 ```
 
 ## Motivación aplicada

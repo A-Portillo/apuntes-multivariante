@@ -418,23 +418,24 @@ tibble(
 Por tanto, el peso de la separación es inversamente proporcional a la varianza en ese eje.
 
 ```{r}
-distancia_par <- function(p1, p2, datos, S) {
-  x1 <- as.numeric(datos[datos$punto == p1, c("z_disp", "z_wt")])
-  x2 <- as.numeric(datos[datos$punto == p2, c("z_disp", "z_wt")])
-  dif <- x1 - x2
-  tibble(
-    par = paste(p1, p2, sep = "-"),
-    direccion = if_else(par == "A-B", "PC1", "PC2"),
-    euclidea = sqrt(sum(dif^2)),
-    mahalanobis = sqrt(t(dif) %*% solve(S) %*% dif)
+X_puntos <- puntos_maha |>
+  select(z_disp, z_wt) |>
+  as.matrix()
+
+dist_euclidea <- as.matrix(stats::dist(X_puntos))
+dist_mahalanobis <- as.matrix(
+  proxy::dist(
+    X_puntos,
+    method = "Mahalanobis",
+    cov = cov(Z_mtcars)
   )
-}
+)
 
-S <- cov(Z_mtcars)
-
-comparacion <- bind_rows(
-  distancia_par("A", "B", puntos_maha, S),
-  distancia_par("C", "D", puntos_maha, S)
+comparacion <- tibble(
+  par = c("A-B", "C-D"),
+  direccion = c("PC1", "PC2"),
+  euclidea = c(dist_euclidea[1, 2], dist_euclidea[3, 4]),
+  mahalanobis = c(dist_mahalanobis[1, 2], dist_mahalanobis[3, 4])
 )
 
 comparacion |>
