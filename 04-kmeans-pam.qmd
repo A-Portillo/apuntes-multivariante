@@ -5,7 +5,19 @@
 #| message: false
 library(tidyverse)
 library(knitr)
+source("FuncionesDistancias.R")
+source("FuncionesJerarquico.R")
+source("FuncionesKmeansPam.R")
 ```
+
+::: {.callout-note title="Requisitos de las funciones auxiliares"}
+Las filas representan individuos y las columnas, variables. Para k-means se
+necesitan variables numéricas sin valores ausentes; deben escalarse
+cuando sus unidades no sean comparables. Los objetos utilizados por las
+funciones auxiliares deben proceder de `kmeans()` o `cluster::pam()`. Las
+particiones que se comparen deben contener los mismos individuos y estar en el
+mismo orden; la candidata no debe tener más grupos que la referencia.
+:::
 
 ## Motivación aplicada
 
@@ -15,6 +27,13 @@ La diferencia principal es qué representa a cada grupo. k-means usa centroides,
 
 ::: {.callout-note}
 k-means busca grupos compactos alrededor de centroides; si esa geometría no representa bien los datos, el resultado puede ser técnicamente correcto pero sustantivamente débil.
+:::
+
+::: {.callout-important title="El representante define el grupo"}
+Elegir entre k-means y PAM no es solo elegir un algoritmo. Supone decidir si un
+grupo debe resumirse mediante una **media ideal** o mediante una **observación
+real representativa**. Esa decisión determina la función objetivo, la
+sensibilidad a valores extremos y el tipo de datos que podemos utilizar.
 :::
 
 ## Qué es una partición
@@ -67,10 +86,22 @@ Como k-means puede terminar en soluciones distintas según los centros iniciales
 
 ```{r}
 set.seed(123)
-vars_mtcars <- mtcars[, c("mpg", "disp", "hp", "wt", "qsec")]
-X <- scale(vars_mtcars)
-km3 <- kmeans(X, centers = 3, nstart = 25)
-kable(table(km3$cluster), col.names = c("Cluster", "Frecuencia"))
+variables_mtcars <- c("mpg", "disp", "hp", "wt", "qsec")
+datos_mtcars <- mtcars[, variables_mtcars]
+datos_cluster <- preparar_datos_distancias(
+  mtcars,
+  variables = variables_mtcars
+)
+km3 <- kmeans(datos_cluster, centers = 3, nstart = 25)
+resumen_kmeans <- resumir_particion(
+  datos_mtcars,
+  km3$cluster,
+  variables_mtcars
+)
+
+resumen_kmeans |>
+  select(cluster, individuos) |>
+  kable(col.names = c("Cluster", "Frecuencia"))
 tibble(tot_withinss = km3$tot.withinss) |>
   kable()
 ```
@@ -200,14 +231,12 @@ $$
 Como $W_K$ siempre disminuye al aumentar $K$, buscamos un punto donde la mejora adicional empieza a ser pequeña.
 
 ```{r}
-set.seed(123)
-wss <- sapply(1:8, function(k) kmeans(X, centers = k, nstart = 25)$tot.withinss)
-tibble(k = 1:8, wss = wss) |>
-  ggplot(aes(k, wss)) +
-  geom_line() +
-  geom_point(size = 2) +
-  labs(title = "Método del codo", x = "Número de clusters", y = "Suma de cuadrados interna") +
-  theme_minimal()
+grafico_codo_kmeans(
+  datos_cluster,
+  k = 1:8,
+  nstart = 25,
+  semilla = 123
+)
 ```
 
 El codo rara vez es completamente objetivo. Sirve como guía visual.
@@ -226,7 +255,13 @@ Si el gap es grande, los clusters observados son más compactos de lo esperable 
 
 ```{r}
 set.seed(123)
-gap <- cluster::clusGap(X, FUN = kmeans, K.max = 6, B = 20, nstart = 10)
+gap <- cluster::clusGap(
+  datos_cluster,
+  FUN = kmeans,
+  K.max = 6,
+  B = 20,
+  nstart = 10
+)
 as_tibble(gap$Tab, rownames = "k") |>
   mutate(k = as.integer(k)) |>
   ggplot(aes(k, gap)) +
@@ -241,9 +276,14 @@ as_tibble(gap$Tab, rownames = "k") |>
 
 k-means es sensible al escalado, outliers, variables irrelevantes y clusters no esféricos. También presupone que el promedio representa bien cada grupo.
 
+Estas sensibilidades no son problemas independientes: todas cuestionan si el
+centroide y la distancia euclídea al cuadrado son una buena representación del
+problema. Una solución puede ser estable frente a semillas y, sin embargo,
+depender por completo de una variable dominante o de un outlier.
+
 ```{r}
 set.seed(123)
-km_sin_escalar <- kmeans(vars_mtcars, centers = 3, nstart = 25)
+km_sin_escalar <- kmeans(datos_mtcars, centers = 3, nstart = 25)
 kable(table(escalado = km3$cluster, sin_escalar = km_sin_escalar$cluster))
 ```
 
@@ -253,7 +293,7 @@ Un outlier puede arrastrar un centroide o incluso ocupar casi un cluster.
 
 ```{r}
 set.seed(123)
-X_out <- rbind(X[, 1:2], outlier = c(7, 7))
+X_out <- rbind(datos_cluster[, 1:2], outlier = c(7, 7))
 km_out <- kmeans(X_out, centers = 3, nstart = 25)
 as_tibble(X_out, .name_repair = "minimal") |>
   set_names(c("x", "y")) |>
@@ -337,9 +377,16 @@ PAM es un algoritmo clásico de k-medoids. Tiene dos fases:
 La idea del paso SWAP es comparar el coste actual con el coste que se obtendría si un medoide $m$ se reemplazara por una observación $h$. Si la suma total de distancias al medoide más cercano disminuye, el intercambio mejora la partición.
 
 ```{r}
-pam3 <- cluster::pam(X, k = 3)
+pam3 <- cluster::pam(datos_cluster, k = 3)
 kable(table(pam = pam3$clustering, transmision = factor(mtcars$am, labels = c("automatico", "manual"))))
-kable(as.data.frame(pam3$medoids), caption = "Medoides")
+
+medoides_pam <- extraer_medoides(
+  pam3,
+  datos = mtcars,
+  variables = variables_mtcars,
+  id = "rownames"
+)
+kable(medoides_pam, digits = 2, caption = "Medoides")
 ```
 
 ## PAM con distancia de Gower
@@ -356,9 +403,23 @@ mtcars_mixed$carb <- factor(mtcars_mixed$carb)
 
 d_gower <- cluster::daisy(mtcars_mixed, metric = "gower")
 pam_cars <- cluster::pam(d_gower, k = 3, diss = TRUE)
-kable(table(pam_cars$clustering), col.names = c("Cluster", "Frecuencia"))
-tibble(medoide = rownames(mtcars_mixed)[pam_cars$id.med]) |>
-  kable()
+resumen_pam_gower <- resumir_particion(
+  mtcars_mixed,
+  pam_cars$clustering,
+  variables = c("mpg", "hp", "wt")
+)
+
+resumen_pam_gower |>
+  select(cluster, individuos) |>
+  kable(col.names = c("Cluster", "Frecuencia"))
+
+medoides_gower <- extraer_medoides(
+  pam_cars,
+  datos = mtcars_mixed,
+  variables = c("mpg", "cyl", "hp", "wt", "am", "gear"),
+  id = "rownames"
+)
+kable(medoides_gower, digits = 2)
 ```
 
 ## Comparación entre k-means y PAM
@@ -372,23 +433,47 @@ tibble(medoide = rownames(mtcars_mixed)[pam_cars$id.med]) |>
 | Coste computacional | Menor | Mayor |
 | Interpretabilidad del representante | Media abstracta | Caso real representativo |
 
+Que ambas técnicas asignen igual a todos los individuos no vuelve equivalentes
+sus resultados. Los centroides siguen siendo medias potencialmente inexistentes
+y los medoides siguen siendo casos observados. A la inversa, algunas diferencias
+de asignación pueden limitarse a individuos fronterizos y no implicar perfiles
+globales incompatibles.
+
+Como ambos ajustes anteriores contienen los mismos coches, también podemos
+comparar directamente sus asignaciones. La función alinea primero las etiquetas
+de PAM con las de k-means, porque los números de cluster son arbitrarios.
+
+```{r}
+comparacion_kmeans_pam <- comparar_particiones(
+  referencia = km3$cluster,
+  candidata = pam3$clustering
+)
+
+kable(
+  comparacion_kmeans_pam$tabla,
+  caption = "PAM frente a k-means tras alinear las etiquetas"
+)
+kable(
+  comparacion_kmeans_pam$resumen,
+  caption = "Resumen de la comparación"
+)
+```
+
 ## Caracterización preliminar
 
 Después de obtener clusters, hay que describirlos.
 
 ```{r}
-aggregate(vars_mtcars, by = list(cluster = km3$cluster), mean) |>
-  kable(digits = 2)
+resumen_kmeans |>
+  kable()
 ```
 
 También conviene revisar tamaños y dispersión interna:
 
 ```{r}
-data.frame(
-  cluster = seq_along(km3$size),
-  tamano = km3$size,
-  withinss = round(km3$withinss, 2)
-) |>
+resumen_kmeans |>
+  select(cluster, tamano = individuos) |>
+  mutate(withinss = round(km3$withinss, 2)) |>
   kable()
 ```
 
@@ -399,24 +484,52 @@ Un cluster grande y heterogéneo puede indicar que $K$ es demasiado pequeño o q
 Una partición útil no debería depender excesivamente de una semilla concreta. Podemos repetir el algoritmo con varias semillas y mirar la variabilidad de la función objetivo.
 
 ```{r}
-set.seed(1)
-totales <- replicate(20, kmeans(X, centers = 3, nstart = 1)$tot.withinss)
-tibble(
-  minimo = min(totales),
-  mediana = median(totales),
-  media = mean(totales),
-  maximo = max(totales)
-) |>
+evaluacion_semillas <- evaluar_semillas_kmeans(
+  datos = datos_cluster,
+  k = 3,
+  semillas = 1:20
+)
+
+evaluacion_semillas$tabla |>
+  summarise(
+    minimo = min(suma_cuadrados_interna),
+    mediana = median(suma_cuadrados_interna),
+    media = mean(suma_cuadrados_interna),
+    maximo = max(suma_cuadrados_interna)
+  ) |>
   kable(digits = 2)
-tibble(ejecucion = seq_along(totales), tot_withinss = totales) |>
-  ggplot(aes(ejecucion, tot_withinss)) +
-  geom_line() +
-  geom_point(size = 2) +
-  labs(title = "Variabilidad por inicialización", x = "Ejecución", y = "Suma de cuadrados interna") +
-  theme_minimal()
+
+evaluacion_semillas$grafico
 ```
 
 Si hay mucha variabilidad, conviene aumentar `nstart`, revisar datos o plantear otro método.
+
+La estabilidad tiene varias dimensiones:
+
+- **algorítmica**: cambia al modificar la semilla o la inicialización;
+- **muestral**: cambia al retirar o incorporar unas pocas observaciones;
+- **metodológica**: cambia al usar otra selección de variables, escalado o método;
+- **interpretativa**: los perfiles dejan de tener el mismo significado aunque
+  las etiquetas parezcan similares.
+
+`nstart` solo ayuda con la primera. No protege frente a datos mal preparados,
+outliers, una elección inadecuada de $K$ o una geometría que no se ajuste al
+problema.
+
+## Cómo tomar la decisión
+
+| Pregunta | Evidencia útil | Advertencia |
+|---|---|---|
+| ¿Es la media un representante razonable? | centroides, dispersión y outliers | una media puede no parecerse a ningún caso |
+| ¿Necesitamos un prototipo real? | medoides y casos próximos | el medoide tampoco resume toda la variación |
+| ¿Qué valores de $K$ son defendibles? | codo, silhouette, tamaños y perfiles | ningún criterio identifica siempre un $K$ verdadero |
+| ¿Depende de la inicialización? | repeticiones y WSS | igual WSS no implica necesariamente iguales etiquetas |
+| ¿Depende de pocas observaciones? | análisis de sensibilidad | robustez no convierte un dato erróneo en válido |
+
+La elección final debería indicar qué solución se prefiere, qué alternativa
+cercana también sería razonable y qué aspecto del resultado cambia entre
+ambas. Esto es más informativo que declarar ganador al método con una cifra
+ligeramente mejor.
 
 ## Errores frecuentes
 
@@ -440,3 +553,23 @@ k-means y PAM construyen particiones directas. k-means alterna asignación a cen
 4. Simula dos clusters alargados y comprueba cómo responde k-means.
 5. Usa PAM con una distancia de Gower en `mtcars_mixed`.
 6. Explica qué significa que un medoide sea una observación real y por qué eso puede ayudar en un informe aplicado.
+
+## Funciones utilizadas
+
+Las funciones principales empleadas en este tema son:
+
+| Función | Para qué se usa | Uso básico |
+|---|---|---|
+| `kmeans()` | Obtener una partición representada mediante centroides. | `kmeans(datos, centers = k, nstart = 25)` |
+| `cluster::pam()` | Obtener una partición representada mediante medoides. | `cluster::pam(datos, k)` |
+| `cluster::daisy()` | Calcular disimilitudes, incluida la distancia de Gower. | `cluster::daisy(datos, metric = "gower")` |
+| `cluster::clusGap()` | Evaluar el número de grupos mediante el gap statistic. | `cluster::clusGap(datos, FUN = kmeans, K.max = 6)` |
+| `preparar_datos_distancias()` | Seleccionar y estandarizar las variables del análisis. | `preparar_datos_distancias(datos, variables)` |
+| `grafico_codo_kmeans()` | Representar la suma de cuadrados interna para varios valores de k. | `grafico_codo_kmeans(datos, k = 1:8)` |
+| `evaluar_semillas_kmeans()` | Repetir k-means con distintas semillas y estudiar su estabilidad. | `evaluar_semillas_kmeans(datos, k)` |
+| `desescalar_centroides()` | Expresar los centroides en las unidades originales. | `desescalar_centroides(ajuste, datos_escalados)` |
+| `visualizar_centroides()` | Dibujar un mapa de calor de los centroides tipificados. | `visualizar_centroides(ajuste)` |
+| `calcular_vecinos_centroides()` | Encontrar la observación más cercana a cada centroide. | `calcular_vecinos_centroides(ajuste, datos_escalados)` |
+| `extraer_medoides()` | Recuperar las observaciones elegidas como medoides. | `extraer_medoides(ajuste, datos, variables, id)` |
+| `comparar_particiones()` | Comparar dos vectores de asignaciones tras alinear sus etiquetas. | `comparar_particiones(referencia, candidata)` |
+| `resumir_particion()` | Calcular tamaños y medias de las variables en cada grupo. | `resumir_particion(datos, grupos, variables)` |

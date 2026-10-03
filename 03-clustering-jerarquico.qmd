@@ -5,7 +5,17 @@
 #| message: false
 library(tidyverse)
 library(knitr)
+source("FuncionesDistancias.R")
+source("FuncionesJerarquico.R")
 ```
+
+::: {.callout-note title="Requisitos de las funciones auxiliares"}
+Las filas deben representar individuos con identificadores únicos. Los árboles
+se proporcionan como objetos `hclust` dentro de listas nombradas; los resultados
+de DIANA deben convertirse antes con `as.hclust()`. Los árboles que se comparen
+deben contener los mismos individuos y la silhouette debe usar la distancia
+elegida para evaluar la partición.
+:::
 
 ## Motivación aplicada
 
@@ -15,6 +25,13 @@ El clustering jerárquico no produce solo una partición. Produce una historia d
 
 ::: {.callout-note}
 Un dendrograma no descubre una verdad única; muestra una jerarquía inducida por una distancia y un criterio de enlace.
+:::
+
+::: {.callout-important title="Tres decisiones diferentes"}
+La **distancia** define la geometría entre individuos, el **enlace** decide qué
+significa que dos grupos estén próximos y el **corte** transforma el árbol en
+una partición. Un dendrograma atractivo no corrige una distancia inadecuada ni
+elige por sí solo el número de grupos.
 :::
 
 ## Qué es el clustering jerárquico
@@ -39,16 +56,18 @@ El algoritmo necesita:
 La distancia entre clusters se denomina **linkage** o método de enlace.
 
 ```{r}
-vars_mtcars <- mtcars[, c("mpg", "disp", "hp", "wt", "qsec")]
-X <- scale(vars_mtcars)
+variables_mtcars <- c("mpg", "disp", "hp", "wt", "qsec")
+vars_mtcars <- mtcars[, variables_mtcars]
+X <- preparar_datos_distancias(
+  mtcars,
+  variables = variables_mtcars
+)
 d <- dist(X)
 hc_ward <- hclust(d, method = "ward.D2")
-factoextra::fviz_dend(
+visualizar_arbol(
   hc_ward,
   k = 4,
-  rect = TRUE,
-  cex = 0.55,
-  main = "Clustering jerárquico de mtcars"
+  titulo = "Clustering jerárquico de mtcars"
 )
 ```
 
@@ -78,7 +97,7 @@ Intuición: dos clusters se consideran cercanos si existe al menos un puente ent
 
 ```{r}
 hc_single <- hclust(d, method = "single")
-factoextra::fviz_dend(hc_single, show_labels = FALSE, main = "Single linkage")
+visualizar_arbol(hc_single, titulo = "Single linkage")
 ```
 
 Ventaja principal: permite clusters no compactos. Riesgo principal: encadenamiento por puntos intermedios u outliers.
@@ -95,7 +114,7 @@ Intuición: dos clusters solo se fusionan si todos sus puntos están relativamen
 
 ```{r}
 hc_complete <- hclust(d, method = "complete")
-factoextra::fviz_dend(hc_complete, show_labels = FALSE, main = "Complete linkage")
+visualizar_arbol(hc_complete, titulo = "Complete linkage")
 ```
 
 Ventaja principal: evita cadenas largas y produce clusters más compactos. Riesgo principal: puede romper grupos alargados que, sustantivamente, podrían tener sentido como una misma estructura.
@@ -112,7 +131,7 @@ Intuición: no se fija solo en el par más cercano ni en el par más lejano. Res
 
 ```{r}
 hc_average <- hclust(d, method = "average")
-factoextra::fviz_dend(hc_average, show_labels = FALSE, main = "Average linkage")
+visualizar_arbol(hc_average, titulo = "Average linkage")
 ```
 
 Ventaja principal: suele ser más estable que single y menos rígido que complete. Riesgo principal: puede ocultar subestructuras si la media suaviza diferencias importantes.
@@ -152,7 +171,7 @@ $$
 Ward favorece clusters compactos y relativamente equilibrados. Es una opción muy usada cuando se trabaja con variables numéricas escaladas y se busca una partición interpretable.
 
 ```{r}
-factoextra::fviz_dend(hc_ward, show_labels = FALSE, main = "Ward.D2")
+visualizar_arbol(hc_ward, titulo = "Ward.D2")
 ```
 
 ::: {.callout-warning}
@@ -161,22 +180,27 @@ Ward tiene sentido principalmente con distancia euclídea. Usarlo con otras disi
 
 ## Comparación de métodos de enlace
 
+Los enlaces pueden entenderse como distintas prioridades analíticas:
+
+| Enlace | Prioridad | Patrón que puede favorecer | Riesgo principal |
+|---|---|---|---|
+| Single | que exista al menos una conexión próxima | formas alargadas o conectadas | encadenamiento |
+| Complete | controlar la separación más desfavorable | grupos compactos | fragmentar formas alargadas |
+| Average | proximidad media entre grupos | compromiso entre ambos extremos | ocultar heterogeneidad local |
+| Ward.D2 | limitar el aumento de variabilidad interna | grupos compactos y equilibrados | aislar mal formas no esféricas |
+
+Por tanto, elegir enlace no consiste en buscar el árbol que más guste. Consiste
+en decidir qué tipo de cohesión debe definir un grupo en el problema aplicado.
+
 ```{r}
-metodos <- c("single", "complete", "average", "ward.D2")
-arboles <- setNames(
-  lapply(metodos, function(m) hclust(d, method = m)),
-  metodos
+arboles <- list(
+  single = hc_single,
+  complete = hc_complete,
+  average = hc_average,
+  ward.D2 = hc_ward
 )
 
-plots <- lapply(metodos, function(m) {
-  factoextra::fviz_dend(
-    arboles[[m]],
-    show_labels = FALSE,
-    main = m
-  )
-})
-
-gridExtra::grid.arrange(grobs = plots, ncol = 2)
+comparar_arboles(arboles, columnas = 2)
 ```
 
 Los cuatro dendrogramas parten de la misma matriz de distancias, pero inducen jerarquías distintas. Esto no es un problema del método; es una señal de que el enlace forma parte de la pregunta.
@@ -214,23 +238,7 @@ Por tanto:
 La gamma no compara las alturas de las ramas. Dos árboles pueden tener gamma próxima a uno aunque las fusiones ocurran a alturas numéricas distintas. Tampoco es un porcentaje de clusters iguales ni garantiza que las particiones coincidan para un valor concreto de $k$.
 
 ```{r}
-gamma_baker <- matrix(
-  1,
-  nrow = length(metodos),
-  ncol = length(metodos),
-  dimnames = list(metodos, metodos)
-)
-
-for (i in seq_len(length(metodos) - 1)) {
-  for (j in (i + 1):length(metodos)) {
-    gamma_ij <- dendextend::cor_bakers_gamma(
-      arboles[[i]],
-      arboles[[j]]
-    )
-    gamma_baker[i, j] <- gamma_ij
-    gamma_baker[j, i] <- gamma_ij
-  }
-}
+gamma_baker <- baker_gamma(arboles)
 
 kable(
   round(gamma_baker, 4),
@@ -245,15 +253,19 @@ La gamma de Baker sirve para comparar árboles completos. Si solo interesa una p
 :::
 
 ```{r}
-particiones <- data.frame(
-  single = cutree(arboles$single, k = 4),
-  complete = cutree(arboles$complete, k = 4),
-  average = cutree(arboles$average, k = 4),
-  ward = cutree(arboles$ward.D2, k = 4)
+comparacion_single <- comparar_particiones_jerarquico(
+  referencia = arboles$ward.D2,
+  candidato = arboles$single,
+  k = 4
+)
+comparacion_complete <- comparar_particiones_jerarquico(
+  referencia = arboles$ward.D2,
+  candidato = arboles$complete,
+  k = 4
 )
 
-kable(table(particiones$single, particiones$ward), caption = "Single frente a Ward")
-kable(table(particiones$complete, particiones$ward), caption = "Complete frente a Ward")
+kable(comparacion_single$tabla, caption = "Single frente a Ward")
+kable(comparacion_complete$tabla, caption = "Complete frente a Ward")
 ```
 
 Las tablas cruzadas muestran dos situaciones distintas. Single cambia la partición final respecto a Ward. Complete y Ward coinciden para $k=4$, aunque sus alturas no sean iguales. Una coincidencia en un único corte no implica que los árboles sean idénticos; la gamma aporta una comparación de todos los niveles simultáneamente.
@@ -314,20 +326,14 @@ grupos4 <- cutree(hc_ward, k = k_corte)
 
 colores_clusters <- c("#0072B2", "#D55E00", "#009E73", "#CC79A7")
 
-factoextra::fviz_dend(
+visualizar_arbol(
   hc_ward,
   k = k_corte,
-  k_colors = colores_clusters,
-  show_labels = FALSE,
-  rect = TRUE,
-  rect_border = colores_clusters,
-  rect_fill = FALSE
-) +
-  labs(
-    title = "Ward.D2 cortado en cuatro clusters",
-    x = "Coches",
-    y = "Altura de fusión"
-  )
+  titulo = "Ward.D2 cortado en cuatro clusters",
+  eje_x = "Coches",
+  eje_y = "Altura de fusión",
+  colores = colores_clusters
+)
 ```
 
 ```{r}
@@ -335,8 +341,13 @@ tibble(cluster = grupos4) |>
   count(cluster, name = "numero_de_coches") |>
   kable(caption = "Tamaño de los clusters para k = 4")
 
-aggregate(vars_mtcars, by = list(cluster = grupos4), mean) |>
-  kable(digits = 2, caption = "Perfil medio de los cuatro clusters")
+resumir_particion(
+  vars_mtcars,
+  grupos4,
+  variables = names(vars_mtcars),
+  digitos = 2
+) |>
+  kable(caption = "Perfil medio de los cuatro clusters")
 ```
 
 La tabla de medias ayuda a interpretar los clusters. Conviene volver a las variables originales para comunicar resultados, aunque la distancia se haya calculado con variables escaladas.
@@ -379,29 +390,23 @@ h_corte <- 4.5
 grupos_h <- cutree(hc_ward, h = h_corte)
 k_h <- n_distinct(grupos_h)
 
-factoextra::fviz_dend(
+visualizar_arbol(
   hc_ward,
   k = k_h,
-  show_labels = FALSE,
-  rect = TRUE,
-  rect_fill = FALSE,
-  color_labels_by_k = TRUE
+  titulo = paste(
+    "Ward.D2 cortado a altura",
+    h_corte,
+    "—",
+    k_h,
+    "clusters"
+  ),
+  eje_x = "Coches",
+  eje_y = "Altura de fusión"
 ) +
   geom_hline(
     yintercept = h_corte,
     color = "#D55E00",
     linetype = "dashed"
-  ) +
-  labs(
-    title = paste(
-      "Ward.D2 cortado a altura",
-      h_corte,
-      "—",
-      k_h,
-      "clusters"
-    ),
-    x = "Coches",
-    y = "Altura de fusión"
   )
 ```
 
@@ -423,13 +428,11 @@ La elección de $k$ puede apoyarse en:
 - criterios internos como silhouette.
 
 ```{r}
-alturas <- rev(hc_ward$height)
-tibble(fusion = seq_len(15), altura = alturas[1:15]) |>
-  ggplot(aes(fusion, altura)) +
-  geom_line() +
-  geom_point(size = 2) +
-  labs(title = "Saltos en el dendrograma", x = "Fusión desde arriba", y = "Altura") +
-  theme_minimal()
+grafico_codo_jerarquico(
+  hc_ward,
+  ultimas_fusiones = 15,
+  titulo = "Saltos en el dendrograma"
+)
 ```
 
 Un salto grande indica que se están fusionando clusters bastante separados. Cortar antes de ese salto puede ser razonable, pero no es una prueba automática.
@@ -470,29 +473,15 @@ con $-1\leq s(i)\leq 1$. Su interpretación es:
 La silhouette usa la misma matriz de disimilitudes con la que queremos juzgar la partición. En este ejemplo evaluamos cortes del árbol de Ward, pero mantenemos `d` como geometría de referencia:
 
 ```{r}
-evaluacion_silhouette <- map_dfr(2:8, function(k) {
-  grupos_k <- cutree(hc_ward, k = k)
-  sil_k <- cluster::silhouette(grupos_k, d)
+evaluacion <- evaluar_silhouette(
+  hc_ward,
+  d,
+  k = 2:8
+)
+evaluacion_silhouette <- evaluacion$tabla
 
-  tibble(
-    k = k,
-    silhouette_media = mean(sil_k[, "sil_width"]),
-    silhouette_minima = min(sil_k[, "sil_width"]),
-    valores_negativos = sum(sil_k[, "sil_width"] < 0),
-    cluster_mas_pequeno = min(table(grupos_k))
-  )
-})
-
-evaluacion_silhouette |>
-  ggplot(aes(k, silhouette_media)) +
-  geom_line() +
-  geom_point(size = 2) +
-  scale_x_continuous(breaks = 2:8) +
-  labs(
-    title = "Silhouette media para distintos cortes de Ward",
-    x = "Número de clusters",
-    y = "Silhouette media"
-  )
+evaluacion$grafico +
+  labs(title = "Silhouette media para distintos cortes de Ward")
 ```
 
 La media permite comparar cortes, pero puede ocultar observaciones problemáticas y favorecer soluciones con grupos pequeños. Por eso conviene revisar también el mínimo, el número de valores negativos y los tamaños:
@@ -506,17 +495,30 @@ evaluacion_silhouette |>
 Para $k=4$, el gráfico individual permite localizar coches bien asignados, casos fronterizos y posibles asignaciones dudosas:
 
 ```{r}
-silhouette_ward4 <- cluster::silhouette(grupos4, d)
-
-factoextra::fviz_silhouette(
-  silhouette_ward4,
-  label = FALSE,
-  print.summary = FALSE
-) +
+evaluacion$graficos_silueta$k_4 +
   labs(title = "Silhouette por coche: Ward, k = 4")
 ```
 
 En `mtcars`, la silhouette media sigue mejorando para algunos valores relativamente grandes de $k$. Eso no obliga a elegir el máximo: con solo 32 coches, una mejora puede conseguirse fragmentando perfiles en clusters demasiado pequeños para la pregunta aplicada. La silhouette es un diagnóstico interno de compacidad y separación, no una prueba de que exista un número verdadero de grupos.
+
+### Cuando los criterios discrepan
+
+Es habitual que el salto de alturas, la silhouette y la interpretación no
+señalen exactamente el mismo corte. En lugar de forzar una regla automática,
+conviene comparar unas pocas soluciones candidatas:
+
+| Evidencia | Qué aporta | Qué puede pasar por alto |
+|---|---|---|
+| Alturas del árbol | separaciones importantes de la jerarquía | tamaños y utilidad de los perfiles |
+| Silhouette | cohesión y separación bajo la distancia elegida | relevancia sustantiva y estabilidad |
+| Tamaños | detecta fragmentación y grupos testimoniales | separación geométrica |
+| Perfiles | permite interpretar y comunicar | puede racionalizar una solución débil |
+| Sensibilidad | muestra dependencia de decisiones razonables | no decide por sí sola qué solución usar |
+
+Si dos cortes son plausibles, es preferible explicar el compromiso entre ambos
+que presentar uno como el número verdadero de clusters. Una solución más fina
+puede revelar subperfiles útiles, aunque tenga algo menos de silhouette; una
+solución más gruesa puede ser más estable y comunicable.
 
 ## Clustering divisivo
 
@@ -576,29 +578,26 @@ div <- cluster::diana(d)
 hc_diana <- as.hclust(div)
 grupos_diana4 <- cutree(hc_diana, k = 4)
 
-factoextra::fviz_dend(
+visualizar_arbol(
   hc_diana,
   k = 4,
-  k_colors = colores_clusters,
-  show_labels = FALSE,
-  rect = TRUE,
-  rect_border = colores_clusters,
-  rect_fill = FALSE,
-  main = "DIANA: cuatro clusters"
-) +
-  labs(
-    x = "Coches",
-    y = "Diámetro antes de la división"
-  )
+  titulo = "DIANA: cuatro clusters",
+  eje_x = "Coches",
+  eje_y = "Diámetro antes de la división",
+  colores = colores_clusters
+)
 ```
 
 Las alturas del dendrograma de DIANA representan los diámetros de los clusters antes de dividirse. Una división a gran altura indica que se está abriendo un grupo muy heterogéneo.
 
 ```{r}
-kable(
-  table(DIANA = grupos_diana4, Ward = grupos4),
-  caption = "Comparación de los cortes con k = 4"
+comparacion_diana <- comparar_particiones_jerarquico(
+  referencia = hc_ward,
+  candidato = hc_diana,
+  k = 4
 )
+
+kable(comparacion_diana$tabla, caption = "Comparación de los cortes con k = 4")
 ```
 
 DIANA y Ward no producen aquí la misma partición. En particular, DIANA deja un cluster de un solo coche para $k=4$. No es necesariamente un error, pero obliga a revisar si se trata de un perfil sustantivamente singular o de una separación dominada por una observación extrema.
@@ -649,10 +648,29 @@ El resultado cambia si modificamos variables, escalado, distancia o enlace. Tamb
 ```{r}
 X_out <- rbind(X, outlier = rep(5, ncol(X)))
 hc_out <- hclust(dist(X_out), method = "ward.D2")
-factoextra::fviz_dend(hc_out, show_labels = FALSE, main = "Efecto de un outlier artificial")
+visualizar_arbol(hc_out, titulo = "Efecto de un outlier artificial")
 ```
 
 La rama aislada del outlier no debe interpretarse como un cluster sustantivo sin revisar su origen.
+
+La sensibilidad debe estudiarse sobre las decisiones que podrían haberse
+tomado razonablemente de otro modo: variables activas, escalado, distancia,
+enlace y corte. No hace falta probar combinaciones arbitrarias; interesa saber
+si la conclusión aplicada sobrevive a alternativas defendibles.
+
+## Guía de decisión
+
+Una jerarquía puede considerarse bien defendida cuando podemos explicar:
+
+1. qué geometría expresa la distancia elegida;
+2. qué idea de cohesión representa el enlace;
+3. qué cortes son candidatos según alturas, silhouette y tamaños;
+4. qué perfiles se ganan o se pierden al cambiar de corte;
+5. qué observaciones o decisiones hacen inestable la solución.
+
+La conclusión puede ser que existe una solución preferida, que hay dos niveles
+de segmentación útiles o que la estructura jerárquica es débil. Las tres son
+conclusiones legítimas si están apoyadas por la evidencia.
 
 ## Errores frecuentes
 
@@ -664,15 +682,36 @@ La rama aislada del outlier no debe interpretarse como un cluster sustantivo sin
 - No comprobar si un outlier está dominando las últimas fusiones.
 - Presentar una jerarquía como si fuera única e independiente de las decisiones metodológicas.
 
-## Resumen del capítulo
+<!-- ## Resumen del capítulo -->
 
-El clustering jerárquico permite explorar agrupaciones anidadas. Single, complete, average, centroid y Ward traducen ideas distintas de proximidad entre clusters. El valor del dendrograma está en combinar distancia, enlace, corte del árbol y caracterización posterior de los grupos.
+<!-- El clustering jerárquico permite explorar agrupaciones anidadas. Single, complete, average, centroid y Ward traducen ideas distintas de proximidad entre clusters. El valor del dendrograma está en combinar distancia, enlace, corte del árbol y caracterización posterior de los grupos. -->
 
-## Ejercicios propuestos
+<!-- ## Ejercicios propuestos -->
 
-1. Repite el análisis de `mtcars` sin escalar y compara el dendrograma.
-2. Corta el árbol en 3, 4 y 5 grupos y compara la interpretabilidad.
-3. Aplica clustering jerárquico a otro subconjunto de variables de `mtcars` y compara el resultado.
-4. Construye un ejemplo artificial donde single linkage produzca encadenamiento.
-5. Compara complete y Ward en `mtcars` usando variables escaladas.
-6. Explica en qué situación aplicada preferirías un enfoque divisivo.
+<!-- 1. Repite el análisis de `mtcars` sin escalar y compara el dendrograma. -->
+<!-- 2. Corta el árbol en 3, 4 y 5 grupos y compara la interpretabilidad. -->
+<!-- 3. Aplica clustering jerárquico a otro subconjunto de variables de `mtcars` y compara el resultado. -->
+<!-- 4. Construye un ejemplo artificial donde single linkage produzca encadenamiento. -->
+<!-- 5. Compara complete y Ward en `mtcars` usando variables escaladas. -->
+<!-- 6. Explica en qué situación aplicada preferirías un enfoque divisivo. -->
+
+## Funciones utilizadas
+
+Las funciones principales empleadas en este tema son:
+
+| Función | Para qué se usa | Uso básico |
+|---|---|---|
+| `dist()` | Calcular las distancias entre los individuos. | `dist(datos, method = "euclidean")` |
+| `hclust()` | Construir un árbol jerárquico aglomerativo. | `hclust(distancias, method = "ward.D2")` |
+| `cutree()` | Cortar un árbol por número de grupos o por altura. | `cutree(arbol, k = 4)` |
+| `cluster::diana()` | Construir una jerarquía divisiva. | `cluster::diana(distancias)` |
+| `as.hclust()` | Convertir el resultado de DIANA en un objeto `hclust`. | `as.hclust(ajuste_diana)` |
+| `preparar_datos_distancias()` | Seleccionar y estandarizar las variables del análisis. | `preparar_datos_distancias(datos, variables)` |
+| `visualizar_arbol()` | Dibujar un dendrograma y, opcionalmente, mostrar su corte. | `visualizar_arbol(arbol, k = 4)` |
+| `comparar_arboles()` | Mostrar varios dendrogramas con el mismo formato. | `comparar_arboles(arboles)` |
+| `baker_gamma()` | Calcular la gamma de Baker entre varios árboles. | `baker_gamma(arboles)` |
+| `comparar_particiones_jerarquico()` | Comparar los cortes de dos árboles para un mismo k. | `comparar_particiones_jerarquico(arbol1, arbol2, k)` |
+| `grafico_codo_jerarquico()` | Representar las alturas de las últimas fusiones. | `grafico_codo_jerarquico(arbol)` |
+| `evaluar_silhouette()` | Evaluar varios cortes mediante la silhouette. | `evaluar_silhouette(arbol, distancias, k = 2:8)` |
+| `primeras_fusiones()` | Mostrar qué individuos se unen en las primeras fusiones de varios árboles. | `primeras_fusiones(arboles)` |
+| `resumir_particion()` | Calcular tamaños y medias de las variables en cada grupo. | `resumir_particion(datos, grupos, variables)` |

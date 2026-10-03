@@ -5,7 +5,18 @@
 #| message: false
 library(tidyverse)
 library(knitr)
+source("FuncionesDistancias.R")
+source("FuncionesJerarquico.R")
+source("FuncionesKmeansPam.R")
+source("FuncionesInterpretación.R")
 ```
+
+::: {.callout-note title="Requisitos de las funciones auxiliares"}
+Las filas representan individuos y las columnas, variables. La asignación de
+clusters debe guardarse en una columna de los datos y su nombre se pasa como
+texto. Las variables utilizadas en resúmenes, mapas de calor y boxplots deben
+ser numéricas.
+:::
 
 ## Motivación aplicada
 
@@ -21,86 +32,140 @@ Una etiqueta como `cluster 1` no significa nada por sí sola. Hay que describir 
 
 ```{r}
 set.seed(123)
-vars_mtcars <- mtcars[, c("mpg", "disp", "hp", "wt", "qsec")]
-X <- scale(vars_mtcars)
-cl <- kmeans(X, centers = 3, nstart = 25)$cluster
-kable(table(cl), col.names = c("Cluster", "Frecuencia"))
+variables_cluster <- c("mpg", "disp", "hp", "wt", "qsec")
+datos_escalados <- preparar_datos_distancias(
+  mtcars,
+  variables = variables_cluster
+)
+ajuste_kmeans <- kmeans(datos_escalados, centers = 3, nstart = 25)
+
+datos_cluster <- mtcars |>
+  mutate(
+    cluster = factor(ajuste_kmeans$cluster),
+    transmision = factor(am, labels = c("automático", "manual")),
+    cilindros = factor(cyl)
+  )
+
+resumen_particion <- resumir_particion(
+  mtcars,
+  ajuste_kmeans$cluster,
+  variables_cluster
+)
+
+resumen_particion |>
+  select(cluster, individuos) |>
+  kable(col.names = c("Cluster", "Frecuencia"))
 ```
+
+## Cuatro niveles que no deben confundirse
+
+| Nivel | Pregunta | Evidencia habitual |
+|---|---|---|
+| Descripción interna | ¿Cómo son los grupos según las variables que los construyeron? | perfiles, dispersión y tamaños |
+| Caracterización externa | ¿Cómo se relacionan con información que no entró en el ajuste? | tablas de composición y variables suplementarias |
+| Evaluación | ¿Son separados, estables y útiles? | silhouette, sensibilidad y comparación de soluciones |
+| Explicación | ¿Por qué existen o qué los causa? | requiere evidencia adicional; el clustering no la proporciona |
+
+Una diferencia externa puede ayudar a poner nombre a los clusters, pero no
+demuestra que esa variable los haya causado. Del mismo modo, obtener perfiles
+interpretables no demuestra que sean clases naturales de la población.
 
 ## Perfil medio de cada cluster
 
 Las medias en variables originales son fáciles de comunicar.
 
 ```{r}
-perfiles <- aggregate(vars_mtcars, by = list(cluster = cl), mean)
-perfiles |>
-  mutate(across(where(is.numeric), function(x) round(x, 2))) |>
+resumen_clusters <- tabla_resumen_clusters(
+  datos_cluster,
+  cluster = "cluster",
+  variables = variables_cluster
+)
+
+resumen_clusters |>
+  mutate(across(c(media, mediana, minimo, maximo, sd), ~ round(.x, 2))) |>
   kable()
 ```
 
 Si las variables tenían unidades distintas, las medias estandarizadas ayudan a comparar qué rasgos están por encima o por debajo de la media global.
 
-```{r}
-Z <- as.data.frame(scale(vars_mtcars))
-Z$cluster <- factor(cl)
-perfil_z <- aggregate(. ~ cluster, data = Z, mean)
-perfil_z_redondeado <- perfil_z
-perfil_z_redondeado[, -1] <- round(perfil_z_redondeado[, -1], 2)
-kable(perfil_z_redondeado)
-```
+La media debe leerse junto con la mediana y la dispersión. Una diferencia entre
+medias puede proceder de un patrón general o de unas pocas observaciones
+extremas. Además, dos clusters con medias distintas pueden solaparse mucho: el
+perfil describe al conjunto, no a todos sus integrantes.
 
 ## Heatmap de medias estandarizadas
 
 ```{r}
-mat <- as.matrix(perfil_z[, -1])
-rownames(mat) <- paste("Cluster", perfil_z$cluster)
-as_tibble(mat, rownames = "cluster") |>
-  pivot_longer(-cluster, names_to = "variable", values_to = "media_estandarizada") |>
-  ggplot(aes(variable, cluster, fill = media_estandarizada)) +
-  geom_tile(color = "white") +
-  scale_fill_gradient2(low = "#4575b4", mid = "white", high = "#d73027", midpoint = 0) +
-  labs(
-    title = "Perfil estandarizado por cluster",
-    x = "Variable",
-    y = "Cluster",
-    fill = "Media z"
-  ) +
-  theme_minimal()
+crear_heatmap_clusters(
+  datos_cluster,
+  cluster = "cluster",
+  variables = variables_cluster
+)
 ```
 
 El gráfico resume qué variables diferencian los grupos. Debe leerse junto con tamaños y variabilidad interna.
 
+La estandarización del heatmap es global: cada celda indica cuánto se aleja la
+media del cluster de la media total, en desviaciones típicas del conjunto. No
+es una probabilidad ni la proporción de individuos que presenta ese rasgo.
+
 ## Boxplots por cluster
 
 ```{r}
-mtcars_cluster <- vars_mtcars
-mtcars_cluster$cluster <- factor(cl)
-ggplot(mtcars_cluster, aes(cluster, mpg, fill = cluster)) +
-  geom_boxplot(alpha = 0.8, show.legend = FALSE) +
-  labs(title = "Distribución por cluster", x = "Cluster", y = "Millas por galón") +
-  theme_minimal()
+crear_boxplots_clusters(
+  datos_cluster,
+  cluster = "cluster",
+  variables = variables_cluster
+)
 ```
 
 Los boxplots muestran si la diferencia entre perfiles medios es estable o si hay solapamiento.
+
+Cuando la separación de cajas es clara, una variable distingue bien los
+grupos. Cuando hay mucho solapamiento, puede contribuir conjuntamente con otras
+variables sin servir por sí sola para asignar individuos. No conviene convertir
+un perfil multivariante en una regla basada en una única columna.
 
 ## Comparación con etiquetas externas
 
 Cuando existe una etiqueta externa, se puede cruzar con los clusters.
 
 ```{r}
-kable(table(cluster = cl, transmision = factor(mtcars$am, labels = c("automatico", "manual"))))
-kable(table(cluster = cl, cilindros = mtcars$cyl))
+tabla_composicion_clusters(
+  datos_cluster,
+  cluster = "cluster",
+  variable = "transmision"
+) |>
+  kable(caption = "Composición de los clusters por transmisión")
+
+tabla_composicion_clusters(
+  datos_cluster,
+  cluster = "cluster",
+  variable = "cilindros"
+) |>
+  kable(caption = "Composición de los clusters por número de cilindros")
 ```
 
 Esta tabla no valida automáticamente el clustering, pero ayuda a interpretar qué estructura conocida captura.
+
+La variable externa debe incorporarse después de cerrar la partición. Si se
+elige el método o el número de grupos buscando deliberadamente que coincida con
+ella, deja de ser una comparación verdaderamente externa y aumenta el riesgo de
+interpretar una coincidencia buscada como validación independiente.
 
 ## Nombrar clusters
 
 Un nombre útil debe ser breve y estar justificado. En `mtcars`, por ejemplo, podríamos hablar de coches ligeros y eficientes frente a coches pesados y potentes si las medias lo sostienen.
 
+Una pauta razonable es usar dos o tres rasgos realmente distintivos, indicar la
+dirección respecto al conjunto y evitar etiquetas valorativas. «Alta potencia y
+mayor peso» comunica evidencia; «coches buenos» introduce un juicio que el
+análisis no ha medido.
+
 ```{r}
-aggregate(vars_mtcars, by = list(cluster = cl), mean) |>
-  mutate(across(where(is.numeric), function(x) round(x, 2))) |>
+resumen_clusters |>
+  select(cluster, variable, media) |>
+  mutate(media = round(media, 2)) |>
   kable()
 ```
 
@@ -109,28 +174,66 @@ aggregate(vars_mtcars, by = list(cluster = cl), mean) |>
 Los clusters pueden cambiar con pequeñas modificaciones: otra semilla, otra selección de variables o una observación atípica. Una comprobación sencilla es repetir k-means con varias semillas y comparar tamaños o tablas cruzadas.
 
 ```{r}
-set.seed(1)
-res <- replicate(10, kmeans(X, centers = 3, nstart = 1)$tot.withinss)
-tibble(ejecucion = seq_along(res), tot_withinss = round(res, 1)) |>
+evaluacion_semillas <- evaluar_semillas_kmeans(
+  datos_escalados,
+  k = 3,
+  semillas = 1:10,
+  ajuste_referencia = ajuste_kmeans
+)
+
+evaluacion_semillas$tabla |>
+  mutate(across(where(is.numeric), ~ round(.x, 3))) |>
   kable()
+
+evaluacion_semillas$grafico
 ```
+
+La estabilidad frente a semillas solo estudia la parte algorítmica. También
+conviene preguntar si los perfiles sobreviven a retirar observaciones extremas,
+cambiar variables redundantes o considerar otro número de clusters razonable.
+Un cluster que cambia de número no es inestable: las etiquetas son arbitrarias.
+Lo importante es si cambian sus miembros y su significado.
+
+## Comparar soluciones alternativas
+
+Cuando dos soluciones son defendibles, la comparación debería centrarse en sus
+consecuencias:
+
+- qué grupo se divide o se fusiona;
+- si aparecen clusters demasiado pequeños;
+- qué perfiles dejan de distinguirse;
+- qué individuos quedan en la frontera;
+- si las conclusiones externas se mantienen.
+
+Una solución más detallada no es automáticamente mejor. Puede revelar un
+subperfil útil o fragmentar artificialmente un grupo. La decisión depende de si
+la ganancia interpretativa compensa la pérdida de estabilidad y simplicidad.
 
 ## Mini-informe de clustering
 
-Un informe mínimo debería incluir:
+Un informe mínimo debería responder:
 
-- pregunta aplicada;
-- variables activas y motivo de escalado;
-- distancia o algoritmo;
-- criterio para elegir número de clusters;
-- perfil de cada cluster;
-- limitaciones y advertencias.
+| Elemento | Pregunta que debe quedar contestada |
+|---|---|
+| Objetivo | ¿Qué estructura queríamos encontrar? |
+| Construcción | ¿Qué variables y definición de semejanza usamos? |
+| Elección | ¿Por qué ese método y ese número de clusters? |
+| Perfiles | ¿Qué distingue realmente a cada grupo? |
+| Incertidumbre | ¿Qué decisiones alternativas cambian el resultado? |
+| Alcance | ¿Qué no podemos concluir a partir del análisis? |
+
+No es necesario presentar toda la exploración realizada. Sí hay que conservar
+la evidencia que permite entender la decisión final y sus límites.
 
 ## Errores frecuentes
 
 - Describir clusters solo con el algoritmo usado.
 - Nombrar grupos a partir de una única variable.
 - Ignorar clusters pequeños.
+- Describir solo medias y ocultar la dispersión o el solapamiento.
+- Usar una variable activa como si fuera validación externa.
+- Confundir estabilidad frente a semillas con validez general.
+- Interpretar una asociación externa como causalidad.
 - Presentar etiquetas de cluster como clases naturales sin evidencia adicional.
 
 ## Resumen del capítulo
@@ -142,3 +245,17 @@ Interpretar clusters exige volver a los datos originales, caracterizar perfiles 
 1. Crea un perfil de clusters para `mtcars` usando otro subconjunto de variables.
 2. Construye una tabla cluster por transmisión (`am`) y comenta si ayuda a interpretar los grupos.
 3. Redacta tres nombres posibles para clusters de `mtcars` y justifícalos con medias.
+
+## Funciones utilizadas
+
+Las funciones principales empleadas en este tema son:
+
+| Función | Para qué se usa | Uso básico |
+|---|---|---|
+| `kmeans()` | Obtener la partición que se quiere interpretar. | `kmeans(datos, centers = k, nstart = 25)` |
+| `preparar_datos_distancias()` | Seleccionar y estandarizar las variables activas. | `preparar_datos_distancias(datos, variables)` |
+| `tabla_resumen_clusters()` | Calcular medidas descriptivas por cluster y variable. | `tabla_resumen_clusters(datos, cluster, variables)` |
+| `crear_heatmap_clusters()` | Mostrar las medias estandarizadas de los clusters. | `crear_heatmap_clusters(datos, cluster, variables)` |
+| `crear_boxplots_clusters()` | Comparar las distribuciones de varias variables entre clusters. | `crear_boxplots_clusters(datos, cluster, variables)` |
+| `tabla_composicion_clusters()` | Describir cada cluster mediante una variable externa. | `tabla_composicion_clusters(datos, cluster, variable)` |
+| `evaluar_semillas_kmeans()` | Estudiar la sensibilidad de k-means a la inicialización. | `evaluar_semillas_kmeans(datos, k, semillas)` |

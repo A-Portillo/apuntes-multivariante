@@ -5,7 +5,18 @@
 #| message: false
 library(tidyverse)
 library(knitr)
+source("FuncionesDistancias.R")
+
+# En este capítulo trabajaremos con una copia de mtcars.
+datos_distancias <- mtcars
 ```
+
+::: {.callout-note title="Requisitos de las funciones auxiliares"}
+Las filas deben representar individuos y las columnas, variables. Las variables
+que se usen con `dist()` o `scale()` deben ser numéricas. Si se asigna una
+columna como identificador, sus valores deben ser únicos. Antes de escalar se
+deben tratar los valores ausentes y retirar las variables constantes.
+:::
 
 ## Motivación aplicada
 
@@ -16,6 +27,13 @@ El clustering no empieza con el algoritmo, empieza con la decisión de qué sign
 :::
 
 Una misma tabla puede producir grupos distintos si cambiamos la distancia, el escalado o las variables activas. Por eso las distancias no son un detalle técnico: son la traducción matemática de una idea sustantiva de similitud.
+
+::: {.callout-important title="Las tres decisiones que preceden a una distancia"}
+Antes de calcular nada hay que decidir **qué variables participan**, **cómo se
+representan** y **cómo se agregan sus diferencias**. Elegir una distancia sin
+resolver primero las dos primeras cuestiones da una precisión matemática
+aparente a una definición de parecido que todavía no está clara.
+:::
 
 ## Datos como puntos
 
@@ -192,7 +210,7 @@ En dos dimensiones:
 #| fig-cap: "Bolas de radio 1 para las distancias Manhattan, euclídea y Chebyshev."
 #| fig-width: 7
 #| fig-height: 7
-#| echo: true
+#| echo: false
 
 library(ggplot2)
 library(dplyr)
@@ -301,13 +319,13 @@ puntos |>
 ```
 
 ```{r}
-dist_euclidean <- as.matrix(dist(puntos, method = "euclidean"))
-dist_manhattan <- as.matrix(dist(puntos, method = "manhattan"))
-dist_chebyshev <- as.matrix(dist(puntos, method = "maximum"))
+dist_euclidean <- dist(puntos, method = "euclidean")
+dist_manhattan <- dist(puntos, method = "manhattan")
+dist_chebyshev <- dist(puntos, method = "maximum")
 
-kable(round(dist_euclidean, 2), caption = "Distancia euclídea")
-kable(round(dist_manhattan, 2), caption = "Distancia Manhattan")
-kable(round(dist_chebyshev, 2), caption = "Distancia Chebyshev")
+tabla_distancias(dist_euclidean, titulo = "Distancia euclídea")
+tabla_distancias(dist_manhattan, titulo = "Distancia Manhattan")
+tabla_distancias(dist_chebyshev, titulo = "Distancia Chebyshev")
 ```
 
 La comparación entre `A` y `B` reparte la diferencia entre dos variables. La comparación entre `A` y `C` concentra la diferencia en una variable. Manhattan acumula cambios; Chebyshev solo mira el cambio máximo; euclídea queda en una posición intermedia, pero penaliza más las diferencias grandes.
@@ -320,7 +338,9 @@ Construimos dos pares artificiales:
 - `C-D`, separado en la dirección de la segunda componente principal, donde una variable aumenta mientras la otra disminuye. Esa es la dirección corta de la nube.
 
 ```{r}
-X_mtcars <- mtcars[, c("disp", "wt")]
+#| echo: false
+
+X_mtcars <- datos_distancias[, c("disp", "wt")]
 Z_mtcars <- scale(X_mtcars)
 pca_disp_wt <- prcomp(Z_mtcars, center = FALSE, scale. = FALSE)
 
@@ -406,6 +426,8 @@ datos_z |>
 La correlación positiva hace que la nube sea alargada. La dirección PC1 tiene mucha varianza: moverse por ahí es relativamente habitual. La dirección PC2 tiene poca varianza: moverse por ahí es raro porque rompe la relación positiva entre cilindrada y peso.
 
 ```{r}
+#| echo: false
+
 tibble(
   correlacion = rho,
   varianza_PC1 = lambda[1],
@@ -452,12 +474,18 @@ Mahalanobis no solo pregunta cuánto cambian las variables, sino si el cambio si
 Si las variables están en unidades distintas, una variable con mucha dispersión puede dominar la distancia. Por eso es habitual estandarizar:
 
 ```{r}
-vars <- mtcars[, c("mpg", "disp", "hp", "wt")]
-d_sin_escalar <- dist(vars)
-d_escalada <- dist(scale(vars))
+datos_numericos <- preparar_datos_distancias(
+  datos_distancias,
+  variables = c("mpg", "disp", "hp", "wt"),
+  estandarizar = FALSE
+)
+d_sin_escalar <- dist(datos_numericos)
+d_escalada <- dist(scale(datos_numericos))
 
-kable(round(as.matrix(d_sin_escalar)[1:4, 1:4], 1), caption = "Distancias sin escalar")
-kable(round(as.matrix(d_escalada)[1:4, 1:4], 2), caption = "Distancias con variables escaladas")
+tabla_distancias(d_sin_escalar, digitos = 1, primeras = 4,
+                 titulo = "Distancias sin escalar")
+tabla_distancias(d_escalada, digitos = 2, primeras = 4,
+                 titulo = "Distancias con variables escaladas")
 ```
 
 El escalado no es una operación neutra: expresa que las variables se comparan en unidades relativas. Estandarizar equivale a sustituir cada valor por su puntuación típica:
@@ -473,10 +501,23 @@ Después del escalado, una diferencia de una unidad significa una desviación t�
 Dos variables muy correlacionadas pueden duplicar información. Si ambas entran como activas en una distancia euclídea, ese patrón pesa dos veces. La selección de variables forma parte del análisis.
 
 ```{r}
-kable(round(cor(mtcars[, c("mpg", "disp", "hp", "wt", "qsec")]), 2))
+kable(round(cor(datos_distancias[, c("mpg", "disp", "hp", "wt", "qsec")]), 2))
 ```
 
 Una estrategia posible es seleccionar variables no redundantes. Otra es usar una distancia que tenga en cuenta covarianzas, como Mahalanobis. Una tercera es transformar primero los datos, por ejemplo mediante PCA, y calcular distancias en los primeros componentes.
+
+Estas alternativas responden a preguntas distintas. Eliminar una variable
+redundante conserva una medida interpretable; ponderarla permite mantenerla
+pero limita su influencia; Mahalanobis redefine qué diferencias son
+excepcionales según la covariación observada. No deben elegirse solamente por
+el resultado gráfico que produzcan.
+
+::: {.callout-note title="Una forma útil de pensar los pesos"}
+Incluir dos mediciones casi duplicadas equivale a conceder más peso al fenómeno
+que ambas representan. Del mismo modo, estandarizar todas las variables les da
+un peso inicial parecido en unidades de desviación típica, no una importancia
+sustantiva idéntica.
+:::
 
 ## Distancias categóricas
 
@@ -523,7 +564,7 @@ dist_nominal <- function(df) {
   out
 }
 
-kable(dist_nominal(coches_cat))
+tabla_distancias(dist_nominal(coches_cat))
 ```
 
 La interpretación es directa: `0` significa coincidencia completa; `1` significa desacuerdo en todas las variables nominales.
@@ -554,7 +595,8 @@ ordinal_a_01 <- function(x) {
 ordinal_num <- as.data.frame(lapply(ordinales, ordinal_a_01))
 rownames(ordinal_num) <- rownames(ordinales)
 kable(ordinal_num)
-kable(round(as.matrix(dist(ordinal_num, method = "manhattan")) / ncol(ordinal_num), 2))
+dist_ordinal <- dist(ordinal_num, method = "manhattan") / ncol(ordinal_num)
+tabla_distancias(dist_ordinal)
 ```
 
 Esta transformación respeta el orden, pero asume que los saltos entre niveles son equivalentes. Si pasar de `bajo` a `medio` no tiene el mismo significado que pasar de `medio` a `alto`, conviene definir puntuaciones específicas con criterio sustantivo.
@@ -669,19 +711,20 @@ $$
 Esta es una ventaja práctica de Gower: puede promediar solo las variables comparables para cada par.
 
 ## Ejemplo manual de Gower
+Vamos a calcular la distancia de Gower sin usar las funciones de R para ilustrar cómo se haría. Esto es una situación excepcional, de forma rutinaria utilizaremos `cluster::daisy()`.
 
 Construimos una versión mixta de `mtcars`:
 
 ```{r}
-mtcars_mixed <- mtcars
-mtcars_mixed$cyl <- factor(mtcars_mixed$cyl)
-mtcars_mixed$vs <- factor(mtcars_mixed$vs, labels = c("V", "Straight"))
-mtcars_mixed$am <- factor(mtcars_mixed$am, labels = c("automatico", "manual"))
-mtcars_mixed$gear <- factor(mtcars_mixed$gear)
-mtcars_mixed$carb <- factor(mtcars_mixed$carb)
+datos_mixtos <- datos_distancias
+datos_mixtos$cyl <- factor(datos_mixtos$cyl)
+datos_mixtos$vs <- factor(datos_mixtos$vs, labels = c("V", "Straight"))
+datos_mixtos$am <- factor(datos_mixtos$am, labels = c("automatico", "manual"))
+datos_mixtos$gear <- factor(datos_mixtos$gear)
+datos_mixtos$carb <- factor(datos_mixtos$carb)
 tibble(
-  variable = names(mtcars_mixed),
-  clase = sapply(mtcars_mixed, function(x) class(x)[1])
+  variable = names(datos_mixtos),
+  clase = sapply(datos_mixtos, function(x) class(x)[1])
 ) |>
   kable()
 ```
@@ -689,7 +732,7 @@ tibble(
 Calculamos una versión manual de Gower para un subconjunto con variables numéricas y categóricas.
 
 ```{r}
-datos_gower <- mtcars_mixed[1:6, c("mpg", "hp", "wt", "cyl", "am")]
+datos_gower <- datos_mixtos[1:6, c("mpg", "hp", "wt", "cyl", "am")]
 datos_gower |>
   rownames_to_column("modelo") |>
   kable()
@@ -724,14 +767,14 @@ gower_manual <- function(df) {
   out
 }
 
-kable(round(gower_manual(datos_gower), 3))
+tabla_distancias(gower_manual(datos_gower), digitos = 3)
 ```
 
 Ahora comparamos con `cluster::daisy()`.
 
 ```{r}
 gower <- cluster::daisy(datos_gower, metric = "gower")
-kable(round(as.matrix(gower), 3))
+tabla_distancias(gower, digitos = 3)
 ```
 
 La distancia de Gower final es un promedio interpretable: una distancia de 0.25 puede leerse como una disimilitud media del 25% sobre las variables comparadas, siempre que todas hayan sido tratadas con una codificación razonable.
@@ -741,22 +784,17 @@ La distancia de Gower final es un promedio interpretable: una distancia de 0.25 
 El siguiente ejemplo muestra cómo cambia la noción de vecindad al usar solo variables numéricas escaladas o variables mixtas con Gower.
 
 ```{r}
-vecinos <- function(d, individuo, k = 5) {
-  orden <- sort(d[individuo, ])
-  data.frame(
-    vecino = names(orden)[2:(k + 1)],
-    distancia = as.numeric(orden[2:(k + 1)])
-  )
-}
+d_num <- datos_distancias[, c("mpg", "disp", "hp", "wt")] |>
+  scale() |>
+  dist()
 
-d_num <- as.matrix(dist(scale(mtcars[, c("mpg", "disp", "hp", "wt")])))
-vecinos(d_num, "Mazda RX4") |>
+calcular_vecinos(d_num, "Mazda RX4") |>
   kable()
 ```
 
 ```{r}
-d_gower <- as.matrix(cluster::daisy(mtcars_mixed, metric = "gower"))
-vecinos(d_gower, "Mazda RX4") |>
+d_gower <- cluster::daisy(datos_mixtos, metric = "gower")
+calcular_vecinos(d_gower, "Mazda RX4") |>
   kable()
 ```
 
@@ -767,23 +805,14 @@ Si cambian los vecinos más próximos, no significa que una distancia sea verdad
 Un mapa de calor ayuda a ver patrones de proximidad en un subconjunto pequeño.
 
 ```{r}
-d <- as.matrix(dist(scale(mtcars[1:12, c("mpg", "disp", "hp", "wt")])))
-as.data.frame(as.table(d)) |>
-  as_tibble() |>
-  rename(coche_1 = Var1, coche_2 = Var2, distancia = Freq) |>
-  ggplot(aes(coche_1, coche_2, fill = distancia)) +
-  geom_tile(color = "white") +
-  scale_fill_viridis_c(option = "C") +
-  labs(
-    title = "Distancias euclídeas estandarizadas",
-    x = "Coche",
-    y = "Coche",
-    fill = "Distancia"
-  ) +
-  theme_minimal()+
-  theme(
-    axis.text.x = element_text(angle = 45, hjust = 1)
-  )
+distancias_mapa <- datos_distancias[1:12, c("mpg", "disp", "hp", "wt")] |>
+  scale() |>
+  dist()
+
+mapa_calor_distancias(
+  distancias_mapa,
+  titulo = "Distancias euclídeas estandarizadas"
+)
 ```
 
 Los bloques oscuros o claros pueden sugerir proximidades internas, pero el mapa depende por completo de la distancia elegida.
@@ -809,6 +838,33 @@ La elección debe responder a la pregunta aplicada:
 No existe una distancia universalmente mejor. Una distancia es adecuada si representa bien la noción de parecido relevante para la pregunta y los datos.
 :::
 
+| Pregunta aplicada | Evidencia que conviene revisar | Consecuencia de la decisión |
+|---|---|---|
+| ¿Qué rasgos definen el parecido? | significado y calidad de las variables | determina las variables activas |
+| ¿Son comparables las escalas? | rangos, desviaciones y unidades | decide si hay que estandarizar o transformar |
+| ¿Hay información repetida? | asociaciones y conocimiento sustantivo | evita que un fenómeno cuente varias veces |
+| ¿Qué tipo de diferencia importa? | diferencias típicas, máximas o correlacionadas | orienta hacia L1, L2, $L_\infty$ o Mahalanobis |
+| ¿Hay variables de varios tipos? | clasificación como numérica, nominal, ordinal o binaria | determina componentes y pesos de Gower |
+
+La comprobación más informativa no suele ser preguntar qué distancia produce
+el dendrograma más limpio, sino si cambian mucho los vecinos y las conclusiones
+al utilizar otra definición de parecido también defendible. Si cambian, el
+resultado debe presentarse como sensible a esa decisión.
+
+## Guía de decisión
+
+Antes de continuar hacia el clustering deberíamos poder responder:
+
+1. ¿Qué significa, en el problema concreto, que dos individuos sean parecidos?
+2. ¿Qué variables construyen esa semejanza y cuáles se reservan para interpretar?
+3. ¿El escalado expresa diferencias absolutas o diferencias relativas?
+4. ¿Algún fenómeno está sobrerrepresentado por variables redundantes?
+5. ¿Se mantienen los vecinos relevantes con otra elección razonable?
+
+Una respuesta defendible no necesita demostrar que la distancia elegida es la
+única posible. Debe explicar qué noción de semejanza representa y reconocer las
+alternativas que cambiarían materialmente el análisis.
+
 ## Errores frecuentes
 
 - Calcular distancias con variables en escalas incompatibles.
@@ -819,15 +875,35 @@ No existe una distancia universalmente mejor. Una distancia es adecuada si repre
 - Usar Gower sin revisar pesos, rangos y categorías raras.
 - Interpretar una distancia como si fuera objetiva y no dependiera de decisiones previas.
 
-## Resumen del capítulo
+## Funciones utilizadas
 
-Toda técnica de clustering depende de una noción de similitud. Las distancias euclídea, Manhattan, Chebyshev y Mahalanobis inducen geometrías distintas en datos numéricos. Las variables categóricas requieren tratamientos específicos para nominales, ordinales y cíclicas. En datos mixtos, Gower promedia disimilitudes parciales reescaladas, pero sigue dependiendo de codificaciones, pesos y decisiones metodológicas.
+Las funciones principales empleadas en este tema son:
 
-## Ejercicios propuestos
+| Función | Para qué se usa | Uso básico |
+|---|---|---|
+| `scale()` | Estandarizar variables numéricas. | `scale(datos)` |
+| `dist()` | Calcular distancias L1, L2 y $L_\infty$. | `dist(datos, method = "euclidean")` |
+| `proxy::dist()` | Calcular la distancia de Mahalanobis entre todos los individuos. | `proxy::dist(datos, method = "Mahalanobis")` |
+| `cluster::daisy()` | Calcular la distancia de Gower con datos mixtos. | `cluster::daisy(datos, metric = "gower")` |
+| `cor()` | Calcular la matriz de correlaciones. | `cor(datos)` |
+| `prcomp()` | Realizar un análisis de componentes principales. | `prcomp(datos)` |
+| `preparar_datos_distancias()` | Seleccionar las variables y, si se desea, estandarizarlas y añadir identificadores. | `preparar_datos_distancias(datos, variables, id)` |
+| `tabla_distancias()` | Mostrar un objeto de distancias como una tabla. | `tabla_distancias(distancias)` |
+| `mapa_calor_distancias()` | Crear un mapa de calor a partir del resultado de `dist()` o `daisy()`. | `mapa_calor_distancias(distancias)` |
+| `comparar_distancias()` | Comparar varias distancias para un par de individuos. | `comparar_distancias(lista_distancias, individuos)` |
+| `calcular_vecinos()` | Obtener los individuos más próximos a uno dado. | `calcular_vecinos(distancias, individuo, k)` |
+| `diferencias_perfiles()` | Comparar variable a variable dos perfiles numéricos. | `diferencias_perfiles(datos, individuos)` |
+| `tablas_resumen()` | Resumir variables numéricas y nominales. | `tablas_resumen(datos, variables)` |
 
-1. Calcula distancias en `mtcars` con y sin escalado y compara los vecinos más cercanos de `Mazda RX4`.
-2. En `mtcars`, compara los vecinos de `Mazda RX4` usando euclídea, Manhattan y Chebyshev sobre variables escaladas.
-3. Define una distancia para una variable ordinal con cuatro niveles donde los saltos no sean equivalentes.
-4. Propón una codificación circular para la hora del día y calcula la distancia entre las 23:00 y la 01:00.
-5. Explica qué variables de `mtcars` tratarías como categóricas en un análisis mixto y por qué.
-6. Propón una variable suplementaria para interpretar clusters en `mtcars`.
+<!-- ## Resumen del capítulo -->
+
+<!-- Toda técnica de clustering depende de una noción de similitud. Las distancias euclídea, Manhattan, Chebyshev y Mahalanobis inducen geometrías distintas en datos numéricos. Las variables categóricas requieren tratamientos específicos para nominales, ordinales y cíclicas. En datos mixtos, Gower promedia disimilitudes parciales reescaladas, pero sigue dependiendo de codificaciones, pesos y decisiones metodológicas. -->
+
+<!-- ## Ejercicios propuestos -->
+
+<!-- 1. Calcula distancias en `mtcars` con y sin escalado y compara los vecinos más cercanos de `Mazda RX4`. -->
+<!-- 2. En `mtcars`, compara los vecinos de `Mazda RX4` usando euclídea, Manhattan y Chebyshev sobre variables escaladas. -->
+<!-- 3. Define una distancia para una variable ordinal con cuatro niveles donde los saltos no sean equivalentes. -->
+<!-- 4. Propón una codificación circular para la hora del día y calcula la distancia entre las 23:00 y la 01:00. -->
+<!-- 5. Explica qué variables de `mtcars` tratarías como categóricas en un análisis mixto y por qué. -->
+<!-- 6. Propón una variable suplementaria para interpretar clusters en `mtcars`. -->

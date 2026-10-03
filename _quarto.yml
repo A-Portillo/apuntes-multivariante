@@ -20,26 +20,26 @@ book:
         - 03-clustering-jerarquico.qmd
         - 04-kmeans-pam.qmd
         - 05-interpretacion-clusters.qmd
-        - 05-clustering-variables.qmd
+        - 06-clustering-variables.qmd
 
     - part: "Bloque 2. Reducción de dimensión"
       chapters:
-        - 06-pca.qmd
-        - 07-analisis-factorial.qmd
+        - 07-pca.qmd
+        - 08-analisis-factorial.qmd
 
     - part: "Bloque 3. Análisis de correspondencias y datos mixtos"
       chapters:
         - 09-correspondencias.qmd
         - 10-mca.qmd
-        - 08-famd.qmd
+        - 11-famd.qmd
 
     - part: "Bloque 4. Análisis discriminante"
       chapters:
-        - 11-discriminante.qmd
+        - 12-discriminante.qmd
 
     - part: "Casos integradores"
       chapters:
-        - 12-casos-integradores.qmd
+        - 13-casos-integradores.qmd
 
     - part: "Ejercicios"
       chapters:

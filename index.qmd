@@ -21,13 +21,13 @@ Al finalizar el recorrido deberías poder:
 
 ## Mapa del libro
 
-El libro se organiza en cinco bloques:
+El recorrido comienza con la [presentación de la asignatura (00)](00-presentacion.qmd) y la [introducción conceptual (01)](01-introduccion.qmd). Después, el libro se organiza en cinco bloques con una numeración continua:
 
-- **Análisis cluster**: cómo definir similitudes, construir grupos y caracterizarlos.
-- **Reducción de dimensión**: cómo resumir variables numéricas mediante ejes o factores interpretables.
-- **Análisis de correspondencias y datos mixtos**: cómo representar asociaciones entre categorías y extender esa lógica a datos mixtos mediante FAMD.
-- **Análisis discriminante**: cómo clasificar nuevos individuos cuando ya existe una etiqueta conocida.
-- **Casos integradores**: cómo decidir qué técnica usar según la pregunta y los datos.
+- **02–06. Análisis cluster**: [02. Distancias y similitud](02-distancias.qmd), [03. Clustering jerárquico](03-clustering-jerarquico.qmd), [04. k-means y PAM](04-kmeans-pam.qmd), [05. Interpretación de clusters](05-interpretacion-clusters.qmd) y [06. Clustering de variables](06-clustering-variables.qmd).
+- **07–08. Reducción de dimensión**: [07. Análisis de componentes principales](07-pca.qmd) y [08. Análisis factorial exploratorio](08-analisis-factorial.qmd).
+- **09–11. Análisis de correspondencias y datos mixtos**: [09. Análisis de correspondencias simple](09-correspondencias.qmd), [10. Análisis de correspondencias múltiples](10-mca.qmd) y [11. FAMD](11-famd.qmd).
+- **12. Análisis discriminante**: [clasificación mediante análisis discriminante](12-discriminante.qmd).
+- **13. Casos integradores**: [selección de la técnica según la pregunta y los datos](13-casos-integradores.qmd).
 
 ## Software
 
