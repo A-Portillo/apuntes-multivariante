@@ -1,0 +1,2422 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.18">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>11&nbsp; Análisis de correspondencias simple – Técnicas Multivariantes Aplicadas con R</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./10-mca.html" rel="next">
+<link href="./08-analisis-factorial.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-5dd1010b9d59184d24b3865882688ef7.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No se han encontrado resultados",
+    "search-matching-documents-text": "documentos encontrados",
+    "search-copy-link-title": "Copiar el enlace en la búsqueda",
+    "search-hide-matches-text": "Ocultar resultados adicionales",
+    "search-more-match-text": "resultado adicional en este documento",
+    "search-more-matches-text": "resultados adicionales en este documento",
+    "search-clear-button-title": "Borrar",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancelar",
+    "search-submit-button-title": "Enviar",
+    "search-label": "Buscar"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar floating quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./09-correspondencias.html">Bloque 3. Análisis de correspondencias y datos mixtos</a></li><li class="breadcrumb-item"><a href="./09-correspondencias.html"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Análisis de correspondencias simple</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Buscar" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Técnicas Multivariantes Aplicadas con R</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Buscar"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Técnicas Multivariantes Aplicadas con R</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./00-presentacion.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Presentación de la asignatura</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01-introduccion.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Introducción conceptual</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Bloque 1. Análisis cluster</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02-distancias.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Distancias y similitud</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03-clustering-jerarquico.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Clustering jerárquico</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04-kmeans-pam.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">k-means y PAM</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./05-interpretacion-clusters.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Interpretación de clusters</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./06-clustering-variables.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Clustering de variables</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Bloque 2. Reducción de dimensión</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./07-pca.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Análisis de componentes principales</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./08-analisis-factorial.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Análisis factorial exploratorio</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Bloque 3. Análisis de correspondencias y datos mixtos</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./09-correspondencias.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Análisis de correspondencias simple</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./10-mca.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Análisis de correspondencias múltiples</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./11-famd.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">FAMD para datos mixtos</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
+ <span class="menu-text">Bloque 4. Análisis discriminante</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./12-discriminante.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Análisis discriminante</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
+ <span class="menu-text">Casos integradores</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./13-casos-integradores.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Casos integradores</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
+ <span class="menu-text">Ejercicios</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ejercicios.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Ejercicios conceptuales</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true">
+ <span class="menu-text">Apéndice práctico</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./tidyverse.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Guía rápida de tidyverse y dplyr</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Referencias</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Tabla de contenidos</h2>
+   
+  <ul>
+  <li><a href="#motivación-aplicada" id="toc-motivación-aplicada" class="nav-link active" data-scroll-target="#motivación-aplicada"><span class="header-section-number">11.1</span> Motivación aplicada</a></li>
+  <li><a href="#de-una-tabla-a-una-pregunta-geométrica" id="toc-de-una-tabla-a-una-pregunta-geométrica" class="nav-link" data-scroll-target="#de-una-tabla-a-una-pregunta-geométrica"><span class="header-section-number">11.2</span> De una tabla a una pregunta geométrica</a></li>
+  <li><a href="#tabla-de-contingencia" id="toc-tabla-de-contingencia" class="nav-link" data-scroll-target="#tabla-de-contingencia"><span class="header-section-number">11.3</span> Tabla de contingencia</a></li>
+  <li><a href="#independencia" id="toc-independencia" class="nav-link" data-scroll-target="#independencia"><span class="header-section-number">11.4</span> Independencia</a></li>
+  <li><a href="#residuos-chi2" id="toc-residuos-chi2" class="nav-link" data-scroll-target="#residuos-chi2"><span class="header-section-number">11.5</span> Residuos <span class="math inline">\(\chi^2\)</span></a></li>
+  <li><a href="#perfiles-fila-y-columna" id="toc-perfiles-fila-y-columna" class="nav-link" data-scroll-target="#perfiles-fila-y-columna"><span class="header-section-number">11.6</span> Perfiles fila y columna</a></li>
+  <li><a href="#distancia-chi2-entre-perfiles" id="toc-distancia-chi2-entre-perfiles" class="nav-link" data-scroll-target="#distancia-chi2-entre-perfiles"><span class="header-section-number">11.7</span> Distancia <span class="math inline">\(\chi^2\)</span> entre perfiles</a></li>
+  <li><a href="#inercia-total" id="toc-inercia-total" class="nav-link" data-scroll-target="#inercia-total"><span class="header-section-number">11.8</span> Inercia total</a></li>
+  <li><a href="#matriz-de-residuos-estandarizados" id="toc-matriz-de-residuos-estandarizados" class="nav-link" data-scroll-target="#matriz-de-residuos-estandarizados"><span class="header-section-number">11.9</span> Matriz de residuos estandarizados</a></li>
+  <li><a href="#coordenadas-principales" id="toc-coordenadas-principales" class="nav-link" data-scroll-target="#coordenadas-principales"><span class="header-section-number">11.10</span> Coordenadas principales</a></li>
+  <li><a href="#ejemplo-con-dos-dimensiones" id="toc-ejemplo-con-dos-dimensiones" class="nav-link" data-scroll-target="#ejemplo-con-dos-dimensiones"><span class="header-section-number">11.11</span> Ejemplo con dos dimensiones</a></li>
+  <li><a href="#contribuciones" id="toc-contribuciones" class="nav-link" data-scroll-target="#contribuciones"><span class="header-section-number">11.12</span> Contribuciones</a></li>
+  <li><a href="#cos²-o-calidad-de-representación" id="toc-cos²-o-calidad-de-representación" class="nav-link" data-scroll-target="#cos²-o-calidad-de-representación"><span class="header-section-number">11.13</span> Cos² o calidad de representación</a></li>
+  <li><a href="#ca-con-factominer-si-está-disponible" id="toc-ca-con-factominer-si-está-disponible" class="nav-link" data-scroll-target="#ca-con-factominer-si-está-disponible"><span class="header-section-number">11.14</span> CA con FactoMineR si está disponible</a></li>
+  <li><a href="#interpretación-correcta-de-proximidades" id="toc-interpretación-correcta-de-proximidades" class="nav-link" data-scroll-target="#interpretación-correcta-de-proximidades"><span class="header-section-number">11.15</span> Interpretación correcta de proximidades</a></li>
+  <li><a href="#categorías-raras-y-puntos-extremos" id="toc-categorías-raras-y-puntos-extremos" class="nav-link" data-scroll-target="#categorías-raras-y-puntos-extremos"><span class="header-section-number">11.16</span> Categorías raras y puntos extremos</a></li>
+  <li><a href="#errores-frecuentes" id="toc-errores-frecuentes" class="nav-link" data-scroll-target="#errores-frecuentes"><span class="header-section-number">11.17</span> Errores frecuentes</a></li>
+  <li><a href="#resumen-del-capítulo" id="toc-resumen-del-capítulo" class="nav-link" data-scroll-target="#resumen-del-capítulo"><span class="header-section-number">11.18</span> Resumen del capítulo</a></li>
+  <li><a href="#ejercicios-propuestos" id="toc-ejercicios-propuestos" class="nav-link" data-scroll-target="#ejercicios-propuestos"><span class="header-section-number">11.19</span> Ejercicios propuestos</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./09-correspondencias.html">Bloque 3. Análisis de correspondencias y datos mixtos</a></li><li class="breadcrumb-item"><a href="./09-correspondencias.html"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Análisis de correspondencias simple</span></a></li></ol></nav>
+<div class="quarto-title">
+<div class="quarto-title-block"><div><h1 class="title"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Análisis de correspondencias simple</span></h1><button type="button" class="btn code-tools-button dropdown-toggle" id="quarto-code-tools-menu" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi"></i> Código</button><ul class="dropdown-menu dropdown-menu-end" aria-labelelledby="quarto-code-tools-menu"><li><a id="quarto-show-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Mostrar todo el código</a></li><li><a id="quarto-hide-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Ocultar todo el código</a></li><li><hr class="dropdown-divider"></li><li><a id="quarto-view-source" class="dropdown-item" href="javascript:void(0)" role="button">Ver el código fuente</a></li></ul></div></div>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div class="cell">
+<details class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(knitr)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<section id="motivación-aplicada" class="level2" data-number="11.1">
+<h2 data-number="11.1" class="anchored" data-anchor-id="motivación-aplicada"><span class="header-section-number">11.1</span> Motivación aplicada</h2>
+<p>Cuando tenemos dos variables categóricas, una tabla de contingencia muestra cuántos individuos aparecen en cada combinación. Por ejemplo, en <code>Titanic</code> podemos cruzar clase del pasajero y supervivencia.</p>
+<p>Una tabla puede leerse directamente, pero cuando hay muchas filas o columnas cuesta ver qué categorías se asocian. El análisis de correspondencias simple, CA, transforma la tabla en un mapa factorial donde filas y columnas se representan como puntos.</p>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Advertencia
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>El análisis de correspondencias representa desviaciones respecto a la independencia, no relaciones causales ni frecuencias brutas.</p>
+</div>
+</div>
+</section>
+<section id="de-una-tabla-a-una-pregunta-geométrica" class="level2" data-number="11.2">
+<h2 data-number="11.2" class="anchored" data-anchor-id="de-una-tabla-a-una-pregunta-geométrica"><span class="header-section-number">11.2</span> De una tabla a una pregunta geométrica</h2>
+<p>Supongamos una tabla de contingencia <span class="math inline">\(N=(n_{ij})\)</span> con <span class="math inline">\(I\)</span> filas y <span class="math inline">\(J\)</span> columnas. El total de la tabla es:</p>
+<p><span class="math display">\[
+n = \sum_{i=1}^{I}\sum_{j=1}^{J} n_{ij}.
+\]</span></p>
+<p>La matriz de frecuencias relativas es:</p>
+<p><span class="math display">\[
+P = \frac{1}{n}N.
+\]</span></p>
+<p>La masa de la fila <span class="math inline">\(i\)</span> es:</p>
+<p><span class="math display">\[
+r_i = \sum_{j=1}^{J} p_{ij},
+\]</span></p>
+<p>y la masa de la columna <span class="math inline">\(j\)</span> es:</p>
+<p><span class="math display">\[
+c_j = \sum_{i=1}^{I} p_{ij}.
+\]</span></p>
+<p>Las masas son pesos. Una fila con mucha frecuencia total tiene más peso en la geometría que una fila rara.</p>
+</section>
+<section id="tabla-de-contingencia" class="level2" data-number="11.3">
+<h2 data-number="11.3" class="anchored" data-anchor-id="tabla-de-contingencia"><span class="header-section-number">11.3</span> Tabla de contingencia</h2>
+<p>Usamos <code>Titanic</code> para estudiar asociación entre clase y supervivencia.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>titanic <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(Titanic)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>tab <span class="ot">&lt;-</span> <span class="fu">xtabs</span>(Freq <span class="sc">~</span> Class <span class="sc">+</span> Survived, <span class="at">data =</span> titanic)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(tab)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: right;">No</th>
+<th style="text-align: right;">Yes</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">1st</td>
+<td style="text-align: right;">122</td>
+<td style="text-align: right;">203</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2nd</td>
+<td style="text-align: right;">167</td>
+<td style="text-align: right;">118</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">3rd</td>
+<td style="text-align: right;">528</td>
+<td style="text-align: right;">178</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Crew</td>
+<td style="text-align: right;">673</td>
+<td style="text-align: right;">212</td>
+</tr>
+</tbody>
+</table>
+</div>
+<details class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(<span class="fu">round</span>(<span class="fu">prop.table</span>(tab), <span class="dv">3</span>))</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: right;">No</th>
+<th style="text-align: right;">Yes</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">1st</td>
+<td style="text-align: right;">0.055</td>
+<td style="text-align: right;">0.092</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2nd</td>
+<td style="text-align: right;">0.076</td>
+<td style="text-align: right;">0.054</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">3rd</td>
+<td style="text-align: right;">0.240</td>
+<td style="text-align: right;">0.081</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Crew</td>
+<td style="text-align: right;">0.306</td>
+<td style="text-align: right;">0.096</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>La tabla absoluta permite ver tamaños. La tabla relativa permite leer proporciones sobre el total.</p>
+</section>
+<section id="independencia" class="level2" data-number="11.4">
+<h2 data-number="11.4" class="anchored" data-anchor-id="independencia"><span class="header-section-number">11.4</span> Independencia</h2>
+<p>Dos variables categóricas son independientes si la probabilidad conjunta se factoriza como producto de marginales:</p>
+<p><span class="math display">\[
+p_{ij}=r_i c_j.
+\]</span></p>
+<p>Bajo independencia, el valor esperado de la celda <span class="math inline">\((i,j)\)</span> es:</p>
+<p><span class="math display">\[
+e_{ij}=\frac{n_{i+}n_{+j}}{n}.
+\]</span></p>
+<p>En CA, lo importante no son solo las frecuencias observadas, sino cuánto se apartan de lo que esperaríamos bajo independencia.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>chi <span class="ot">&lt;-</span> <span class="fu">chisq.test</span>(tab)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>chi</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Pearson's Chi-squared test
+
+data:  tab
+X-squared = 190.4, df = 3, p-value &lt; 2.2e-16</code></pre>
+</div>
+<details class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(<span class="fu">round</span>(chi<span class="sc">$</span>expected, <span class="dv">1</span>))</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: right;">No</th>
+<th style="text-align: right;">Yes</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">1st</td>
+<td style="text-align: right;">220.0</td>
+<td style="text-align: right;">105.0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2nd</td>
+<td style="text-align: right;">192.9</td>
+<td style="text-align: right;">92.1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">3rd</td>
+<td style="text-align: right;">477.9</td>
+<td style="text-align: right;">228.1</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Crew</td>
+<td style="text-align: right;">599.1</td>
+<td style="text-align: right;">285.9</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<section id="residuos-chi2" class="level2" data-number="11.5">
+<h2 data-number="11.5" class="anchored" data-anchor-id="residuos-chi2"><span class="header-section-number">11.5</span> Residuos <span class="math inline">\(\chi^2\)</span></h2>
+<p>Los residuos estandarizados comparan observado y esperado:</p>
+<p><span class="math display">\[
+res_{ij}=\frac{n_{ij}-e_{ij}}{\sqrt{e_{ij}}}.
+\]</span></p>
+<p>Residuos positivos indican más casos de los esperados bajo independencia; residuos negativos indican menos.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(<span class="fu">round</span>(chi<span class="sc">$</span>residuals, <span class="dv">2</span>))</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: right;">No</th>
+<th style="text-align: right;">Yes</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">1st</td>
+<td style="text-align: right;">-6.61</td>
+<td style="text-align: right;">9.57</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2nd</td>
+<td style="text-align: right;">-1.87</td>
+<td style="text-align: right;">2.70</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">3rd</td>
+<td style="text-align: right;">2.29</td>
+<td style="text-align: right;">-3.32</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Crew</td>
+<td style="text-align: right;">3.02</td>
+<td style="text-align: right;">-4.37</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>Estos residuos son una primera lectura local de la asociación. CA construye una representación global de esas desviaciones.</p>
+</section>
+<section id="perfiles-fila-y-columna" class="level2" data-number="11.6">
+<h2 data-number="11.6" class="anchored" data-anchor-id="perfiles-fila-y-columna"><span class="header-section-number">11.6</span> Perfiles fila y columna</h2>
+<p>El perfil fila de la fila <span class="math inline">\(i\)</span> es la distribución condicional sobre columnas:</p>
+<p><span class="math display">\[
+f_{ij}=\frac{p_{ij}}{r_i}.
+\]</span></p>
+<p>El perfil columna de la columna <span class="math inline">\(j\)</span> es:</p>
+<p><span class="math display">\[
+g_{ij}=\frac{p_{ij}}{c_j}.
+\]</span></p>
+<div class="cell">
+<details class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>perfiles_fila <span class="ot">&lt;-</span> <span class="fu">prop.table</span>(tab, <span class="dv">1</span>)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>perfiles_col <span class="ot">&lt;-</span> <span class="fu">prop.table</span>(tab, <span class="dv">2</span>)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>masas_fila <span class="ot">&lt;-</span> <span class="fu">prop.table</span>(<span class="fu">rowSums</span>(tab))</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>masas_col <span class="ot">&lt;-</span> <span class="fu">prop.table</span>(<span class="fu">colSums</span>(tab))</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(<span class="fu">round</span>(perfiles_fila, <span class="dv">3</span>), <span class="at">caption =</span> <span class="st">"Perfiles fila"</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Perfiles fila</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: right;">No</th>
+<th style="text-align: right;">Yes</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">1st</td>
+<td style="text-align: right;">0.375</td>
+<td style="text-align: right;">0.625</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2nd</td>
+<td style="text-align: right;">0.586</td>
+<td style="text-align: right;">0.414</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">3rd</td>
+<td style="text-align: right;">0.748</td>
+<td style="text-align: right;">0.252</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Crew</td>
+<td style="text-align: right;">0.760</td>
+<td style="text-align: right;">0.240</td>
+</tr>
+</tbody>
+</table>
+</div>
+<details class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(<span class="fu">round</span>(perfiles_col, <span class="dv">3</span>), <span class="at">caption =</span> <span class="st">"Perfiles columna"</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Perfiles columna</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: right;">No</th>
+<th style="text-align: right;">Yes</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">1st</td>
+<td style="text-align: right;">0.082</td>
+<td style="text-align: right;">0.286</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2nd</td>
+<td style="text-align: right;">0.112</td>
+<td style="text-align: right;">0.166</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">3rd</td>
+<td style="text-align: right;">0.354</td>
+<td style="text-align: right;">0.250</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Crew</td>
+<td style="text-align: right;">0.452</td>
+<td style="text-align: right;">0.298</td>
+</tr>
+</tbody>
+</table>
+</div>
+<details class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(<span class="at">fila =</span> <span class="fu">names</span>(masas_fila), <span class="at">masa =</span> <span class="fu">round</span>(<span class="fu">as.numeric</span>(masas_fila), <span class="dv">3</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">caption =</span> <span class="st">"Masas fila"</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Masas fila</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;">fila</th>
+<th style="text-align: right;">masa</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">1st</td>
+<td style="text-align: right;">0.148</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2nd</td>
+<td style="text-align: right;">0.129</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">3rd</td>
+<td style="text-align: right;">0.321</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Crew</td>
+<td style="text-align: right;">0.402</td>
+</tr>
+</tbody>
+</table>
+</div>
+<details class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(<span class="at">columna =</span> <span class="fu">names</span>(masas_col), <span class="at">masa =</span> <span class="fu">round</span>(<span class="fu">as.numeric</span>(masas_col), <span class="dv">3</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">caption =</span> <span class="st">"Masas columna"</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Masas columna</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;">columna</th>
+<th style="text-align: right;">masa</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">No</td>
+<td style="text-align: right;">0.677</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Yes</td>
+<td style="text-align: right;">0.323</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>Las filas se comparan por sus perfiles, no por sus frecuencias absolutas. Dos filas son parecidas si distribuyen sus frecuencias entre columnas de forma parecida.</p>
+</section>
+<section id="distancia-chi2-entre-perfiles" class="level2" data-number="11.7">
+<h2 data-number="11.7" class="anchored" data-anchor-id="distancia-chi2-entre-perfiles"><span class="header-section-number">11.7</span> Distancia <span class="math inline">\(\chi^2\)</span> entre perfiles</h2>
+<p>La distancia <span class="math inline">\(\chi^2\)</span> entre dos perfiles fila <span class="math inline">\(i\)</span> e <span class="math inline">\(i'\)</span> es:</p>
+<p><span class="math display">\[
+d^2(i,i')=
+\sum_{j=1}^{J}\frac{1}{c_j}
+\left(
+\frac{p_{ij}}{r_i}
+-
+\frac{p_{i'j}}{r_{i'}}
+\right)^2.
+\]</span></p>
+<p>Las columnas con masa pequeña pesan más porque diferencias en categorías raras son más informativas geométricamente. Esto también implica una advertencia: categorías raras pueden generar puntos extremos.</p>
+<p>Para columnas se define una distancia análoga ponderando por masas fila:</p>
+<p><span class="math display">\[
+d^2(j,j')=
+\sum_{i=1}^{I}\frac{1}{r_i}
+\left(
+\frac{p_{ij}}{c_j}
+-
+\frac{p_{ij'}}{c_{j'}}
+\right)^2.
+\]</span></p>
+<div class="cell">
+<details class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>P <span class="ot">&lt;-</span> tab <span class="sc">/</span> <span class="fu">sum</span>(tab)</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>r <span class="ot">&lt;-</span> <span class="fu">rowSums</span>(P)</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>c <span class="ot">&lt;-</span> <span class="fu">colSums</span>(P)</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>perfil_f <span class="ot">&lt;-</span> <span class="fu">sweep</span>(P, <span class="dv">1</span>, r, <span class="st">"/"</span>)</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>chi2_dist_rows <span class="ot">&lt;-</span> <span class="cf">function</span>(profiles, masses_col) {</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>  D <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="dv">0</span>, <span class="fu">nrow</span>(profiles), <span class="fu">nrow</span>(profiles), <span class="at">dimnames =</span> <span class="fu">list</span>(<span class="fu">rownames</span>(profiles), <span class="fu">rownames</span>(profiles)))</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">seq_len</span>(<span class="fu">nrow</span>(profiles))) {</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> (h <span class="cf">in</span> <span class="fu">seq_len</span>(<span class="fu">nrow</span>(profiles))) {</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>      D[i, h] <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(<span class="fu">sum</span>((profiles[i, ] <span class="sc">-</span> profiles[h, ])<span class="sc">^</span><span class="dv">2</span> <span class="sc">/</span> masses_col))</span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>  D</span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(<span class="fu">round</span>(<span class="fu">chi2_dist_rows</span>(perfil_f, c), <span class="dv">3</span>))</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: right;">1st</th>
+<th style="text-align: right;">2nd</th>
+<th style="text-align: right;">3rd</th>
+<th style="text-align: right;">Crew</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">1st</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: right;">0.450</td>
+<td style="text-align: right;">0.797</td>
+<td style="text-align: right;">0.823</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2nd</td>
+<td style="text-align: right;">0.450</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: right;">0.346</td>
+<td style="text-align: right;">0.373</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">3rd</td>
+<td style="text-align: right;">0.797</td>
+<td style="text-align: right;">0.346</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: right;">0.027</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Crew</td>
+<td style="text-align: right;">0.823</td>
+<td style="text-align: right;">0.373</td>
+<td style="text-align: right;">0.027</td>
+<td style="text-align: right;">0.000</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>La distancia entre clases no compara cuántos pasajeros había en cada clase, sino cómo se distribuyó la supervivencia dentro de cada clase.</p>
+</section>
+<section id="inercia-total" class="level2" data-number="11.8">
+<h2 data-number="11.8" class="anchored" data-anchor-id="inercia-total"><span class="header-section-number">11.8</span> Inercia total</h2>
+<p>La inercia total de CA mide desviación global respecto a independencia. Está relacionada con el estadístico <span class="math inline">\(\chi^2\)</span>:</p>
+<p><span class="math display">\[
+Inercia = \sum_{i=1}^{I}\sum_{j=1}^{J}
+\frac{(p_{ij}-r_ic_j)^2}{r_ic_j}
+=\frac{\chi^2}{n}.
+\]</span></p>
+<div class="cell">
+<details class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>inercia_total <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(chi<span class="sc">$</span>statistic) <span class="sc">/</span> <span class="fu">sum</span>(tab)</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>inercia_total</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.08650663</code></pre>
+</div>
+</div>
+<p>Si la tabla está muy cerca de independencia, la inercia será pequeña y el mapa tendrá poca estructura que representar.</p>
+</section>
+<section id="matriz-de-residuos-estandarizados" class="level2" data-number="11.9">
+<h2 data-number="11.9" class="anchored" data-anchor-id="matriz-de-residuos-estandarizados"><span class="header-section-number">11.9</span> Matriz de residuos estandarizados</h2>
+<p>CA aplica una descomposición en valores singulares a la matriz de desviaciones estandarizadas:</p>
+<p><span class="math display">\[
+S = D_r^{-1/2}(P-rc^\top)D_c^{-1/2},
+\]</span></p>
+<p>donde <span class="math inline">\(D_r\)</span> y <span class="math inline">\(D_c\)</span> son matrices diagonales con masas fila y columna. Esta matriz contiene desviaciones respecto a independencia expresadas en la geometría <span class="math inline">\(\chi^2\)</span>.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>Dr_inv_sqrt <span class="ot">&lt;-</span> <span class="fu">diag</span>(<span class="dv">1</span> <span class="sc">/</span> <span class="fu">sqrt</span>(r))</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>Dc_inv_sqrt <span class="ot">&lt;-</span> <span class="fu">diag</span>(<span class="dv">1</span> <span class="sc">/</span> <span class="fu">sqrt</span>(c))</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>S <span class="ot">&lt;-</span> Dr_inv_sqrt <span class="sc">%*%</span> (P <span class="sc">-</span> r <span class="sc">%*%</span> <span class="fu">t</span>(c)) <span class="sc">%*%</span> Dc_inv_sqrt</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(<span class="fu">round</span>(S, <span class="dv">4</span>))</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">-0.1408</td>
+<td style="text-align: right;">0.2039</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">-0.0398</td>
+<td style="text-align: right;">0.0576</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0.0488</td>
+<td style="text-align: right;">-0.0707</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.0643</td>
+<td style="text-align: right;">-0.0931</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>La descomposición:</p>
+<p><span class="math display">\[
+S = UDV^\top
+\]</span></p>
+<p>produce dimensiones factoriales. Los valores singulares al cuadrado son inercias principales:</p>
+<p><span class="math display">\[
+\lambda_m = d_m^2.
+\]</span></p>
+</section>
+<section id="coordenadas-principales" class="level2" data-number="11.10">
+<h2 data-number="11.10" class="anchored" data-anchor-id="coordenadas-principales"><span class="header-section-number">11.10</span> Coordenadas principales</h2>
+<p>Las coordenadas principales de filas son:</p>
+<p><span class="math display">\[
+F = D_r^{-1/2}UD.
+\]</span></p>
+<p>Las coordenadas principales de columnas son:</p>
+<p><span class="math display">\[
+G = D_c^{-1/2}VD.
+\]</span></p>
+<div class="cell">
+<details class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>sv <span class="ot">&lt;-</span> <span class="fu">svd</span>(S)</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>row_coord <span class="ot">&lt;-</span> <span class="fu">diag</span>(<span class="dv">1</span> <span class="sc">/</span> <span class="fu">sqrt</span>(r)) <span class="sc">%*%</span> sv<span class="sc">$</span>u <span class="sc">%*%</span> <span class="fu">diag</span>(sv<span class="sc">$</span>d)</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>col_coord <span class="ot">&lt;-</span> <span class="fu">diag</span>(<span class="dv">1</span> <span class="sc">/</span> <span class="fu">sqrt</span>(c)) <span class="sc">%*%</span> sv<span class="sc">$</span>v <span class="sc">%*%</span> <span class="fu">diag</span>(sv<span class="sc">$</span>d)</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(row_coord) <span class="ot">&lt;-</span> <span class="fu">rownames</span>(tab)</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(col_coord) <span class="ot">&lt;-</span> <span class="fu">colnames</span>(tab)</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(row_coord) <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">"Dim"</span>, <span class="fu">seq_len</span>(<span class="fu">ncol</span>(row_coord)))</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(col_coord) <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">"Dim"</span>, <span class="fu">seq_len</span>(<span class="fu">ncol</span>(col_coord)))</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(<span class="at">dimension =</span> <span class="fu">paste0</span>(<span class="st">"Dim"</span>, <span class="fu">seq_along</span>(sv<span class="sc">$</span>d)), <span class="at">inercia =</span> <span class="fu">round</span>(sv<span class="sc">$</span>d<span class="sc">^</span><span class="dv">2</span>, <span class="dv">5</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>()</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">dimension</th>
+<th style="text-align: right;">inercia</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Dim1</td>
+<td style="text-align: right;">0.08651</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Dim2</td>
+<td style="text-align: right;">0.00000</td>
+</tr>
+</tbody>
+</table>
+</div>
+<details class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(<span class="fu">round</span>(row_coord[, <span class="dv">1</span>, <span class="at">drop =</span> <span class="cn">FALSE</span>], <span class="dv">3</span>), <span class="at">caption =</span> <span class="st">"Coordenadas fila"</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Coordenadas fila</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: right;">Dim1</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">1st</td>
+<td style="text-align: right;">-0.645</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2nd</td>
+<td style="text-align: right;">-0.195</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">3rd</td>
+<td style="text-align: right;">0.152</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Crew</td>
+<td style="text-align: right;">0.179</td>
+</tr>
+</tbody>
+</table>
+</div>
+<details class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(<span class="fu">round</span>(col_coord[, <span class="dv">1</span>, <span class="at">drop =</span> <span class="cn">FALSE</span>], <span class="dv">3</span>), <span class="at">caption =</span> <span class="st">"Coordenadas columna"</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Coordenadas columna</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: right;">Dim1</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">No</td>
+<td style="text-align: right;">0.203</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Yes</td>
+<td style="text-align: right;">-0.426</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>Con dos columnas solo hay una dimensión no trivial, porque el rango máximo es <span class="math inline">\(\min(I-1,J-1)\)</span>.</p>
+</section>
+<section id="ejemplo-con-dos-dimensiones" class="level2" data-number="11.11">
+<h2 data-number="11.11" class="anchored" data-anchor-id="ejemplo-con-dos-dimensiones"><span class="header-section-number">11.11</span> Ejemplo con dos dimensiones</h2>
+<p>Para visualizar dos dimensiones, usamos una tabla más rica: clase por combinación de sexo y supervivencia.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>tab2 <span class="ot">&lt;-</span> <span class="fu">xtabs</span>(Freq <span class="sc">~</span> Class <span class="sc">+</span> <span class="fu">interaction</span>(Sex, Survived), <span class="at">data =</span> titanic)</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(tab2)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: right;">Male.No</th>
+<th style="text-align: right;">Female.No</th>
+<th style="text-align: right;">Male.Yes</th>
+<th style="text-align: right;">Female.Yes</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">1st</td>
+<td style="text-align: right;">118</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">62</td>
+<td style="text-align: right;">141</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2nd</td>
+<td style="text-align: right;">154</td>
+<td style="text-align: right;">13</td>
+<td style="text-align: right;">25</td>
+<td style="text-align: right;">93</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">3rd</td>
+<td style="text-align: right;">422</td>
+<td style="text-align: right;">106</td>
+<td style="text-align: right;">88</td>
+<td style="text-align: right;">90</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Crew</td>
+<td style="text-align: right;">670</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">192</td>
+<td style="text-align: right;">20</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="cell">
+<details class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>ca_manual <span class="ot">&lt;-</span> <span class="cf">function</span>(tabla) {</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  P <span class="ot">&lt;-</span> tabla <span class="sc">/</span> <span class="fu">sum</span>(tabla)</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>  r <span class="ot">&lt;-</span> <span class="fu">rowSums</span>(P)</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>  c <span class="ot">&lt;-</span> <span class="fu">colSums</span>(P)</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>  S <span class="ot">&lt;-</span> <span class="fu">diag</span>(<span class="dv">1</span> <span class="sc">/</span> <span class="fu">sqrt</span>(r)) <span class="sc">%*%</span> (P <span class="sc">-</span> r <span class="sc">%*%</span> <span class="fu">t</span>(c)) <span class="sc">%*%</span> <span class="fu">diag</span>(<span class="dv">1</span> <span class="sc">/</span> <span class="fu">sqrt</span>(c))</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>  sv <span class="ot">&lt;-</span> <span class="fu">svd</span>(S)</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>  nf <span class="ot">&lt;-</span> <span class="fu">min</span>(<span class="fu">nrow</span>(tabla) <span class="sc">-</span> <span class="dv">1</span>, <span class="fu">ncol</span>(tabla) <span class="sc">-</span> <span class="dv">1</span>)</span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>  row_coord <span class="ot">&lt;-</span> <span class="fu">diag</span>(<span class="dv">1</span> <span class="sc">/</span> <span class="fu">sqrt</span>(r)) <span class="sc">%*%</span> sv<span class="sc">$</span>u[, <span class="fu">seq_len</span>(nf), drop <span class="ot">=</span> <span class="cn">FALSE</span>] <span class="sc">%*%</span> <span class="fu">diag</span>(sv<span class="sc">$</span>d[<span class="fu">seq_len</span>(nf)], nf)</span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>  col_coord <span class="ot">&lt;-</span> <span class="fu">diag</span>(<span class="dv">1</span> <span class="sc">/</span> <span class="fu">sqrt</span>(c)) <span class="sc">%*%</span> sv<span class="sc">$</span>v[, <span class="fu">seq_len</span>(nf), drop <span class="ot">=</span> <span class="cn">FALSE</span>] <span class="sc">%*%</span> <span class="fu">diag</span>(sv<span class="sc">$</span>d[<span class="fu">seq_len</span>(nf)], nf)</span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rownames</span>(row_coord) <span class="ot">&lt;-</span> <span class="fu">rownames</span>(tabla)</span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rownames</span>(col_coord) <span class="ot">&lt;-</span> <span class="fu">colnames</span>(tabla)</span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(<span class="at">P =</span> P, <span class="at">r =</span> r, <span class="at">c =</span> c, <span class="at">d =</span> sv<span class="sc">$</span>d[<span class="fu">seq_len</span>(nf)], <span class="at">row =</span> row_coord, <span class="at">col =</span> col_coord)</span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a>ca2 <span class="ot">&lt;-</span> <span class="fu">ca_manual</span>(tab2)</span>
+<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(<span class="at">dimension =</span> <span class="fu">paste0</span>(<span class="st">"Dim"</span>, <span class="fu">seq_along</span>(ca2<span class="sc">$</span>d)), <span class="at">proporcion =</span> <span class="fu">round</span>(ca2<span class="sc">$</span>d<span class="sc">^</span><span class="dv">2</span> <span class="sc">/</span> <span class="fu">sum</span>(ca2<span class="sc">$</span>d<span class="sc">^</span><span class="dv">2</span>), <span class="dv">3</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb20-17"><a href="#cb20-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>()</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">dimension</th>
+<th style="text-align: right;">proporcion</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Dim1</td>
+<td style="text-align: right;">0.666</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Dim2</td>
+<td style="text-align: right;">0.315</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Dim3</td>
+<td style="text-align: right;">0.019</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="cell">
+<details class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">bind_rows</span>(</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as_tibble</span>(ca2<span class="sc">$</span>row[, <span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>], <span class="at">rownames =</span> <span class="st">"categoria"</span>) <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">tipo =</span> <span class="st">"Fila"</span>),</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as_tibble</span>(ca2<span class="sc">$</span>col[, <span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>], <span class="at">rownames =</span> <span class="st">"categoria"</span>) <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">tipo =</span> <span class="st">"Columna"</span>)</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_names</span>(<span class="fu">c</span>(<span class="st">"categoria"</span>, <span class="st">"Dim1"</span>, <span class="st">"Dim2"</span>, <span class="st">"tipo"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(Dim1, Dim2, <span class="at">color =</span> tipo, <span class="at">shape =</span> tipo, <span class="at">label =</span> categoria)) <span class="sc">+</span></span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="dv">0</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">color =</span> <span class="st">"gray60"</span>) <span class="sc">+</span></span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="dv">0</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">color =</span> <span class="st">"gray60"</span>) <span class="sc">+</span></span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="at">nudge_y =</span> <span class="fl">0.03</span>, <span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Mapa CA aproximado"</span>, <span class="at">x =</span> <span class="st">"Dimensión 1"</span>, <span class="at">y =</span> <span class="st">"Dimensión 2"</span>, <span class="at">color =</span> <span class="st">""</span>, <span class="at">shape =</span> <span class="st">""</span>) <span class="sc">+</span></span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="09-correspondencias_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>El mapa debe leerse como representación de asociaciones. Una clase cercana a una categoría columna sugiere asociación relativa, no necesariamente frecuencia absoluta alta.</p>
+</section>
+<section id="contribuciones" class="level2" data-number="11.12">
+<h2 data-number="11.12" class="anchored" data-anchor-id="contribuciones"><span class="header-section-number">11.12</span> Contribuciones</h2>
+<p>La contribución de una fila <span class="math inline">\(i\)</span> a la dimensión <span class="math inline">\(m\)</span> mide cuánto participa en la construcción de ese eje:</p>
+<p><span class="math display">\[
+ctr_{im}=\frac{r_i f_{im}^2}{\lambda_m}.
+\]</span></p>
+<p>Para columnas:</p>
+<p><span class="math display">\[
+ctr_{jm}=\frac{c_j g_{jm}^2}{\lambda_m}.
+\]</span></p>
+<div class="cell">
+<details class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>lambda2 <span class="ot">&lt;-</span> ca2<span class="sc">$</span>d<span class="sc">^</span><span class="dv">2</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>ctr_rows <span class="ot">&lt;-</span> <span class="fu">sweep</span>(ca2<span class="sc">$</span>row<span class="sc">^</span><span class="dv">2</span>, <span class="dv">2</span>, lambda2, <span class="st">"/"</span>) <span class="sc">*</span> <span class="fu">as.numeric</span>(ca2<span class="sc">$</span>r)</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>ctr_cols <span class="ot">&lt;-</span> <span class="fu">sweep</span>(ca2<span class="sc">$</span>col<span class="sc">^</span><span class="dv">2</span>, <span class="dv">2</span>, lambda2, <span class="st">"/"</span>) <span class="sc">*</span> <span class="fu">as.numeric</span>(ca2<span class="sc">$</span>c)</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(ctr_rows) <span class="ot">&lt;-</span> <span class="fu">rownames</span>(tab2)</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(ctr_cols) <span class="ot">&lt;-</span> <span class="fu">colnames</span>(tab2)</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(<span class="fu">round</span>(ctr_rows, <span class="dv">3</span>), <span class="at">caption =</span> <span class="st">"Contribuciones de filas"</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Contribuciones de filas</caption>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">1st</td>
+<td style="text-align: right;">0.467</td>
+<td style="text-align: right;">0.135</td>
+<td style="text-align: right;">0.250</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2nd</td>
+<td style="text-align: right;">0.152</td>
+<td style="text-align: right;">0.003</td>
+<td style="text-align: right;">0.716</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">3rd</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: right;">0.646</td>
+<td style="text-align: right;">0.033</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Crew</td>
+<td style="text-align: right;">0.381</td>
+<td style="text-align: right;">0.216</td>
+<td style="text-align: right;">0.000</td>
+</tr>
+</tbody>
+</table>
+</div>
+<details class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(<span class="fu">round</span>(ctr_cols, <span class="dv">3</span>), <span class="at">caption =</span> <span class="st">"Contribuciones de columnas"</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Contribuciones de columnas</caption>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Male.No</td>
+<td style="text-align: right;">0.161</td>
+<td style="text-align: right;">0.003</td>
+<td style="text-align: right;">0.216</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Female.No</td>
+<td style="text-align: right;">0.004</td>
+<td style="text-align: right;">0.884</td>
+<td style="text-align: right;">0.055</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Male.Yes</td>
+<td style="text-align: right;">0.020</td>
+<td style="text-align: right;">0.093</td>
+<td style="text-align: right;">0.720</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Female.Yes</td>
+<td style="text-align: right;">0.815</td>
+<td style="text-align: right;">0.020</td>
+<td style="text-align: right;">0.008</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>Una categoría con alta contribución ayuda a definir la dimensión. Una categoría con baja contribución no debería protagonizar la interpretación del eje.</p>
+</section>
+<section id="cos²-o-calidad-de-representación" class="level2" data-number="11.13">
+<h2 data-number="11.13" class="anchored" data-anchor-id="cos²-o-calidad-de-representación"><span class="header-section-number">11.13</span> Cos² o calidad de representación</h2>
+<p>El cos² mide qué proporción de la distancia de un punto al origen queda representada en una dimensión o conjunto de dimensiones. Para una fila:</p>
+<p><span class="math display">\[
+cos^2_{im}=\frac{f_{im}^2}{\sum_{h} f_{ih}^2}.
+\]</span></p>
+<div class="cell">
+<details class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>cos2_rows <span class="ot">&lt;-</span> ca2<span class="sc">$</span>row<span class="sc">^</span><span class="dv">2</span> <span class="sc">/</span> <span class="fu">rowSums</span>(ca2<span class="sc">$</span>row<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>cos2_cols <span class="ot">&lt;-</span> ca2<span class="sc">$</span>col<span class="sc">^</span><span class="dv">2</span> <span class="sc">/</span> <span class="fu">rowSums</span>(ca2<span class="sc">$</span>col<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(<span class="fu">round</span>(cos2_rows, <span class="dv">3</span>), <span class="at">caption =</span> <span class="st">"Cos² de filas"</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Cos² de filas</caption>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">1st</td>
+<td style="text-align: right;">0.867</td>
+<td style="text-align: right;">0.119</td>
+<td style="text-align: right;">0.014</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2nd</td>
+<td style="text-align: right;">0.872</td>
+<td style="text-align: right;">0.007</td>
+<td style="text-align: right;">0.120</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">3rd</td>
+<td style="text-align: right;">0.001</td>
+<td style="text-align: right;">0.996</td>
+<td style="text-align: right;">0.003</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Crew</td>
+<td style="text-align: right;">0.788</td>
+<td style="text-align: right;">0.212</td>
+<td style="text-align: right;">0.000</td>
+</tr>
+</tbody>
+</table>
+</div>
+<details class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(<span class="fu">round</span>(cos2_cols, <span class="dv">3</span>), <span class="at">caption =</span> <span class="st">"Cos² de columnas"</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Cos² de columnas</caption>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Male.No</td>
+<td style="text-align: right;">0.954</td>
+<td style="text-align: right;">0.009</td>
+<td style="text-align: right;">0.038</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Female.No</td>
+<td style="text-align: right;">0.010</td>
+<td style="text-align: right;">0.986</td>
+<td style="text-align: right;">0.004</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Male.Yes</td>
+<td style="text-align: right;">0.232</td>
+<td style="text-align: right;">0.520</td>
+<td style="text-align: right;">0.248</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Female.Yes</td>
+<td style="text-align: right;">0.988</td>
+<td style="text-align: right;">0.011</td>
+<td style="text-align: right;">0.000</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>Un punto puede estar visualmente lejos, pero si está mal representado en el plano mostrado, conviene no interpretarlo demasiado.</p>
+</section>
+<section id="ca-con-factominer-si-está-disponible" class="level2" data-number="11.14">
+<h2 data-number="11.14" class="anchored" data-anchor-id="ca-con-factominer-si-está-disponible"><span class="header-section-number">11.14</span> CA con FactoMineR si está disponible</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>ca <span class="ot">&lt;-</span> FactoMineR<span class="sc">::</span><span class="fu">CA</span>(tab2, <span class="at">graph =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(ca<span class="sc">$</span>eig, <span class="at">digits =</span> <span class="dv">3</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 8%">
+<col style="width: 14%">
+<col style="width: 31%">
+<col style="width: 45%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: right;">eigenvalue</th>
+<th style="text-align: right;">percentage of variance</th>
+<th style="text-align: right;">cumulative percentage of variance</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">dim 1</td>
+<td style="text-align: right;">0.175</td>
+<td style="text-align: right;">66.560</td>
+<td style="text-align: right;">66.560</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">dim 2</td>
+<td style="text-align: right;">0.083</td>
+<td style="text-align: right;">31.494</td>
+<td style="text-align: right;">98.054</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">dim 3</td>
+<td style="text-align: right;">0.005</td>
+<td style="text-align: right;">1.946</td>
+<td style="text-align: right;">100.000</td>
+</tr>
+</tbody>
+</table>
+</div>
+<details class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(ca<span class="sc">$</span>row<span class="sc">$</span>coord, <span class="at">digits =</span> <span class="dv">3</span>, <span class="at">caption =</span> <span class="st">"Coordenadas fila"</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Coordenadas fila</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: right;">Dim 1</th>
+<th style="text-align: right;">Dim 2</th>
+<th style="text-align: right;">Dim 3</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">1st</td>
+<td style="text-align: right;">0.744</td>
+<td style="text-align: right;">-0.275</td>
+<td style="text-align: right;">0.093</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2nd</td>
+<td style="text-align: right;">0.453</td>
+<td style="text-align: right;">-0.042</td>
+<td style="text-align: right;">-0.168</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">3rd</td>
+<td style="text-align: right;">-0.014</td>
+<td style="text-align: right;">0.408</td>
+<td style="text-align: right;">0.023</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Crew</td>
+<td style="text-align: right;">-0.407</td>
+<td style="text-align: right;">-0.211</td>
+<td style="text-align: right;">0.002</td>
+</tr>
+</tbody>
+</table>
+</div>
+<details class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(ca<span class="sc">$</span>col<span class="sc">$</span>coord, <span class="at">digits =</span> <span class="dv">3</span>, <span class="at">caption =</span> <span class="st">"Coordenadas columna"</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Coordenadas columna</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: right;">Dim 1</th>
+<th style="text-align: right;">Dim 2</th>
+<th style="text-align: right;">Dim 3</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Male.No</td>
+<td style="text-align: right;">-0.213</td>
+<td style="text-align: right;">-0.021</td>
+<td style="text-align: right;">-0.042</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Female.No</td>
+<td style="text-align: right;">0.116</td>
+<td style="text-align: right;">1.131</td>
+<td style="text-align: right;">0.070</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Male.Yes</td>
+<td style="text-align: right;">-0.144</td>
+<td style="text-align: right;">-0.215</td>
+<td style="text-align: right;">0.149</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Female.Yes</td>
+<td style="text-align: right;">0.956</td>
+<td style="text-align: right;">-0.103</td>
+<td style="text-align: right;">-0.017</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<section id="interpretación-correcta-de-proximidades" class="level2" data-number="11.15">
+<h2 data-number="11.15" class="anchored" data-anchor-id="interpretación-correcta-de-proximidades"><span class="header-section-number">11.15</span> Interpretación correcta de proximidades</h2>
+<p>Al interpretar un mapa CA:</p>
+<ul>
+<li>proximidad entre una fila y una columna sugiere asociación relativa;</li>
+<li>proximidad entre filas significa perfiles columna parecidos;</li>
+<li>proximidad entre columnas significa perfiles fila parecidos;</li>
+<li>el origen representa comportamiento medio;</li>
+<li>puntos alejados del origen se apartan más de la independencia;</li>
+<li>masas, contribuciones y cos² deben acompañar siempre la lectura visual.</li>
+</ul>
+<p>La proximidad entre categorías de la misma variable debe interpretarse con cautela. Lo central es cómo filas y columnas se asocian a las dimensiones y qué calidad tiene la representación.</p>
+</section>
+<section id="categorías-raras-y-puntos-extremos" class="level2" data-number="11.16">
+<h2 data-number="11.16" class="anchored" data-anchor-id="categorías-raras-y-puntos-extremos"><span class="header-section-number">11.16</span> Categorías raras y puntos extremos</h2>
+<p>Categorías con masa baja pueden aparecer muy alejadas y dominar visualmente el mapa. Antes de interpretar un punto extremo hay que revisar:</p>
+<ul>
+<li>su frecuencia;</li>
+<li>su contribución;</li>
+<li>su cos²;</li>
+<li>si responde a una estructura estable o a un recuento pequeño.</li>
+</ul>
+</section>
+<section id="errores-frecuentes" class="level2" data-number="11.17">
+<h2 data-number="11.17" class="anchored" data-anchor-id="errores-frecuentes"><span class="header-section-number">11.17</span> Errores frecuentes</h2>
+<ul>
+<li>Interpretar el mapa como si mostrara frecuencias absolutas.</li>
+<li>Confundir asociación con causalidad.</li>
+<li>Ignorar masas, contribuciones y cos².</li>
+<li>Dar importancia a categorías raras sin comprobar su peso.</li>
+<li>Leer distancias entre puntos mal representados.</li>
+<li>Olvidar que CA representa desviaciones respecto a independencia.</li>
+</ul>
+</section>
+<section id="resumen-del-capítulo" class="level2" data-number="11.18">
+<h2 data-number="11.18" class="anchored" data-anchor-id="resumen-del-capítulo"><span class="header-section-number">11.18</span> Resumen del capítulo</h2>
+<p>CA convierte una tabla de contingencia en un mapa de perfiles. Parte de la independencia, mide desviaciones mediante la distancia <span class="math inline">\(\chi^2\)</span> y descompone la inercia en dimensiones factoriales. Su interpretación se basa en perfiles, masas, inercia, contribuciones, cos² y cautela ante categorías raras.</p>
+</section>
+<section id="ejercicios-propuestos" class="level2" data-number="11.19">
+<h2 data-number="11.19" class="anchored" data-anchor-id="ejercicios-propuestos"><span class="header-section-number">11.19</span> Ejercicios propuestos</h2>
+<ol type="1">
+<li>Analiza la tabla <code>Sex</code> por <code>Survived</code> en <code>Titanic</code>.</li>
+<li>Calcula residuos <span class="math inline">\(\chi^2\)</span> para <code>Class</code> por <code>Survived</code> e interpreta las celdas más extremas.</li>
+<li>Explica por qué una categoría rara puede quedar lejos del origen.</li>
+<li>Calcula masas fila y columna para una tabla de contingencia propia.</li>
+<li>Interpreta contribuciones y cos² en la tabla <code>Class</code> por <code>Sex:Survived</code>.</li>
+</ol>
+
+
+<!-- -->
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copiado");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copiado");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+    const viewSource = window.document.getElementById('quarto-view-source') ||
+                       window.document.getElementById('quarto-code-tools-source');
+    if (viewSource) {
+      const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+      viewSource.addEventListener("click", function(e) {
+        if (sourceUrl) {
+          // rstudio viewer pane
+          if (/\bcapabilities=\b/.test(window.location)) {
+            window.open(sourceUrl);
+          } else {
+            window.location.href = sourceUrl;
+          }
+        } else {
+          const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+          modal.show();
+        }
+        return false;
+      });
+    }
+    function toggleCodeHandler(show) {
+      return function(e) {
+        const cellDetails = window.document.querySelectorAll(".cell details.code-fold");
+        for (let i=0; i<cellDetails.length; i++) {
+          const details = cellDetails[i];
+          if (show) {
+            details.open = true;
+          } else {
+            details.removeAttribute("open");
+          }
+        }
+        const cellCodeDivs = window.document.querySelectorAll(".cell div.sourceCode.cell-code");
+        const fromCls = show ? "hidden" : "unhidden";
+        const toCls = show ? "unhidden" : "hidden";
+        for (let i=0; i<cellCodeDivs.length; i++) {
+          const codeDiv = cellCodeDivs[i];
+          if (codeDiv.classList.contains(fromCls)) {
+            codeDiv.classList.remove(fromCls);
+            codeDiv.classList.add(toCls);
+          } 
+        }
+        return false;
+      }
+    }
+    const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+    if (hideAllCode) {
+      hideAllCode.addEventListener("click", toggleCodeHandler(false));
+    }
+    const showAllCode = window.document.getElementById("quarto-show-all-code");
+    if (showAllCode) {
+      showAllCode.addEventListener("click", toggleCodeHandler(true));
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./08-analisis-factorial.html" class="pagination-link" aria-label="Análisis factorial exploratorio">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Análisis factorial exploratorio</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./10-mca.html" class="pagination-link" aria-label="Análisis de correspondencias múltiples">
+        <span class="nav-page-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Análisis de correspondencias múltiples</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Ejecutar el código</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb29" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu"># Análisis de correspondencias simple</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: setup</span></span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: false</span></span>
+<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb29-9"><a href="#cb29-9" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(knitr)</span>
+<span id="cb29-10"><a href="#cb29-10" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb29-11"><a href="#cb29-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-12"><a href="#cb29-12" aria-hidden="true" tabindex="-1"></a><span class="fu">## Motivación aplicada</span></span>
+<span id="cb29-13"><a href="#cb29-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-14"><a href="#cb29-14" aria-hidden="true" tabindex="-1"></a>Cuando tenemos dos variables categóricas, una tabla de contingencia muestra cuántos individuos aparecen en cada combinación. Por ejemplo, en <span class="in">`Titanic`</span> podemos cruzar clase del pasajero y supervivencia.</span>
+<span id="cb29-15"><a href="#cb29-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-16"><a href="#cb29-16" aria-hidden="true" tabindex="-1"></a>Una tabla puede leerse directamente, pero cuando hay muchas filas o columnas cuesta ver qué categorías se asocian. El análisis de correspondencias simple, CA, transforma la tabla en un mapa factorial donde filas y columnas se representan como puntos.</span>
+<span id="cb29-17"><a href="#cb29-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-18"><a href="#cb29-18" aria-hidden="true" tabindex="-1"></a>::: {.callout-warning}</span>
+<span id="cb29-19"><a href="#cb29-19" aria-hidden="true" tabindex="-1"></a>El análisis de correspondencias representa desviaciones respecto a la independencia, no relaciones causales ni frecuencias brutas.</span>
+<span id="cb29-20"><a href="#cb29-20" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb29-21"><a href="#cb29-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-22"><a href="#cb29-22" aria-hidden="true" tabindex="-1"></a><span class="fu">## De una tabla a una pregunta geométrica</span></span>
+<span id="cb29-23"><a href="#cb29-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-24"><a href="#cb29-24" aria-hidden="true" tabindex="-1"></a>Supongamos una tabla de contingencia $N=(n_{ij})$ con $I$ filas y $J$ columnas. El total de la tabla es:</span>
+<span id="cb29-25"><a href="#cb29-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-26"><a href="#cb29-26" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb29-27"><a href="#cb29-27" aria-hidden="true" tabindex="-1"></a>n = \sum_{i=1}^{I}\sum_{j=1}^{J} n_{ij}.</span>
+<span id="cb29-28"><a href="#cb29-28" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb29-29"><a href="#cb29-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-30"><a href="#cb29-30" aria-hidden="true" tabindex="-1"></a>La matriz de frecuencias relativas es:</span>
+<span id="cb29-31"><a href="#cb29-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-32"><a href="#cb29-32" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb29-33"><a href="#cb29-33" aria-hidden="true" tabindex="-1"></a>P = \frac{1}{n}N.</span>
+<span id="cb29-34"><a href="#cb29-34" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb29-35"><a href="#cb29-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-36"><a href="#cb29-36" aria-hidden="true" tabindex="-1"></a>La masa de la fila $i$ es:</span>
+<span id="cb29-37"><a href="#cb29-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-38"><a href="#cb29-38" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb29-39"><a href="#cb29-39" aria-hidden="true" tabindex="-1"></a>r_i = \sum_{j=1}^{J} p_{ij},</span>
+<span id="cb29-40"><a href="#cb29-40" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb29-41"><a href="#cb29-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-42"><a href="#cb29-42" aria-hidden="true" tabindex="-1"></a>y la masa de la columna $j$ es:</span>
+<span id="cb29-43"><a href="#cb29-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-44"><a href="#cb29-44" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb29-45"><a href="#cb29-45" aria-hidden="true" tabindex="-1"></a>c_j = \sum_{i=1}^{I} p_{ij}.</span>
+<span id="cb29-46"><a href="#cb29-46" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb29-47"><a href="#cb29-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-48"><a href="#cb29-48" aria-hidden="true" tabindex="-1"></a>Las masas son pesos. Una fila con mucha frecuencia total tiene más peso en la geometría que una fila rara.</span>
+<span id="cb29-49"><a href="#cb29-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-50"><a href="#cb29-50" aria-hidden="true" tabindex="-1"></a><span class="fu">## Tabla de contingencia</span></span>
+<span id="cb29-51"><a href="#cb29-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-52"><a href="#cb29-52" aria-hidden="true" tabindex="-1"></a>Usamos <span class="in">`Titanic`</span> para estudiar asociación entre clase y supervivencia.</span>
+<span id="cb29-53"><a href="#cb29-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-56"><a href="#cb29-56" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb29-57"><a href="#cb29-57" aria-hidden="true" tabindex="-1"></a>titanic <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(Titanic)</span>
+<span id="cb29-58"><a href="#cb29-58" aria-hidden="true" tabindex="-1"></a>tab <span class="ot">&lt;-</span> <span class="fu">xtabs</span>(Freq <span class="sc">~</span> Class <span class="sc">+</span> Survived, <span class="at">data =</span> titanic)</span>
+<span id="cb29-59"><a href="#cb29-59" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(tab)</span>
+<span id="cb29-60"><a href="#cb29-60" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(<span class="fu">round</span>(<span class="fu">prop.table</span>(tab), <span class="dv">3</span>))</span>
+<span id="cb29-61"><a href="#cb29-61" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb29-62"><a href="#cb29-62" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-63"><a href="#cb29-63" aria-hidden="true" tabindex="-1"></a>La tabla absoluta permite ver tamaños. La tabla relativa permite leer proporciones sobre el total.</span>
+<span id="cb29-64"><a href="#cb29-64" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-65"><a href="#cb29-65" aria-hidden="true" tabindex="-1"></a><span class="fu">## Independencia</span></span>
+<span id="cb29-66"><a href="#cb29-66" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-67"><a href="#cb29-67" aria-hidden="true" tabindex="-1"></a>Dos variables categóricas son independientes si la probabilidad conjunta se factoriza como producto de marginales:</span>
+<span id="cb29-68"><a href="#cb29-68" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-69"><a href="#cb29-69" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb29-70"><a href="#cb29-70" aria-hidden="true" tabindex="-1"></a>p_{ij}=r_i c_j.</span>
+<span id="cb29-71"><a href="#cb29-71" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb29-72"><a href="#cb29-72" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-73"><a href="#cb29-73" aria-hidden="true" tabindex="-1"></a>Bajo independencia, el valor esperado de la celda $(i,j)$ es:</span>
+<span id="cb29-74"><a href="#cb29-74" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-75"><a href="#cb29-75" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb29-76"><a href="#cb29-76" aria-hidden="true" tabindex="-1"></a>e_{ij}=\frac{n_{i+}n_{+j}}{n}.</span>
+<span id="cb29-77"><a href="#cb29-77" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb29-78"><a href="#cb29-78" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-79"><a href="#cb29-79" aria-hidden="true" tabindex="-1"></a>En CA, lo importante no son solo las frecuencias observadas, sino cuánto se apartan de lo que esperaríamos bajo independencia.</span>
+<span id="cb29-80"><a href="#cb29-80" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-83"><a href="#cb29-83" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb29-84"><a href="#cb29-84" aria-hidden="true" tabindex="-1"></a>chi <span class="ot">&lt;-</span> <span class="fu">chisq.test</span>(tab)</span>
+<span id="cb29-85"><a href="#cb29-85" aria-hidden="true" tabindex="-1"></a>chi</span>
+<span id="cb29-86"><a href="#cb29-86" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(<span class="fu">round</span>(chi<span class="sc">$</span>expected, <span class="dv">1</span>))</span>
+<span id="cb29-87"><a href="#cb29-87" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb29-88"><a href="#cb29-88" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-89"><a href="#cb29-89" aria-hidden="true" tabindex="-1"></a><span class="fu">## Residuos $\chi^2$</span></span>
+<span id="cb29-90"><a href="#cb29-90" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-91"><a href="#cb29-91" aria-hidden="true" tabindex="-1"></a>Los residuos estandarizados comparan observado y esperado:</span>
+<span id="cb29-92"><a href="#cb29-92" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-93"><a href="#cb29-93" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb29-94"><a href="#cb29-94" aria-hidden="true" tabindex="-1"></a>res_{ij}=\frac{n_{ij}-e_{ij}}{\sqrt{e_{ij}}}.</span>
+<span id="cb29-95"><a href="#cb29-95" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb29-96"><a href="#cb29-96" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-97"><a href="#cb29-97" aria-hidden="true" tabindex="-1"></a>Residuos positivos indican más casos de los esperados bajo independencia; residuos negativos indican menos.</span>
+<span id="cb29-98"><a href="#cb29-98" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-101"><a href="#cb29-101" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb29-102"><a href="#cb29-102" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(<span class="fu">round</span>(chi<span class="sc">$</span>residuals, <span class="dv">2</span>))</span>
+<span id="cb29-103"><a href="#cb29-103" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb29-104"><a href="#cb29-104" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-105"><a href="#cb29-105" aria-hidden="true" tabindex="-1"></a>Estos residuos son una primera lectura local de la asociación. CA construye una representación global de esas desviaciones.</span>
+<span id="cb29-106"><a href="#cb29-106" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-107"><a href="#cb29-107" aria-hidden="true" tabindex="-1"></a><span class="fu">## Perfiles fila y columna</span></span>
+<span id="cb29-108"><a href="#cb29-108" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-109"><a href="#cb29-109" aria-hidden="true" tabindex="-1"></a>El perfil fila de la fila $i$ es la distribución condicional sobre columnas:</span>
+<span id="cb29-110"><a href="#cb29-110" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-111"><a href="#cb29-111" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb29-112"><a href="#cb29-112" aria-hidden="true" tabindex="-1"></a>f_{ij}=\frac{p_{ij}}{r_i}.</span>
+<span id="cb29-113"><a href="#cb29-113" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb29-114"><a href="#cb29-114" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-115"><a href="#cb29-115" aria-hidden="true" tabindex="-1"></a>El perfil columna de la columna $j$ es:</span>
+<span id="cb29-116"><a href="#cb29-116" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-117"><a href="#cb29-117" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb29-118"><a href="#cb29-118" aria-hidden="true" tabindex="-1"></a>g_{ij}=\frac{p_{ij}}{c_j}.</span>
+<span id="cb29-119"><a href="#cb29-119" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb29-120"><a href="#cb29-120" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-123"><a href="#cb29-123" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb29-124"><a href="#cb29-124" aria-hidden="true" tabindex="-1"></a>perfiles_fila <span class="ot">&lt;-</span> <span class="fu">prop.table</span>(tab, <span class="dv">1</span>)</span>
+<span id="cb29-125"><a href="#cb29-125" aria-hidden="true" tabindex="-1"></a>perfiles_col <span class="ot">&lt;-</span> <span class="fu">prop.table</span>(tab, <span class="dv">2</span>)</span>
+<span id="cb29-126"><a href="#cb29-126" aria-hidden="true" tabindex="-1"></a>masas_fila <span class="ot">&lt;-</span> <span class="fu">prop.table</span>(<span class="fu">rowSums</span>(tab))</span>
+<span id="cb29-127"><a href="#cb29-127" aria-hidden="true" tabindex="-1"></a>masas_col <span class="ot">&lt;-</span> <span class="fu">prop.table</span>(<span class="fu">colSums</span>(tab))</span>
+<span id="cb29-128"><a href="#cb29-128" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-129"><a href="#cb29-129" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(<span class="fu">round</span>(perfiles_fila, <span class="dv">3</span>), <span class="at">caption =</span> <span class="st">"Perfiles fila"</span>)</span>
+<span id="cb29-130"><a href="#cb29-130" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(<span class="fu">round</span>(perfiles_col, <span class="dv">3</span>), <span class="at">caption =</span> <span class="st">"Perfiles columna"</span>)</span>
+<span id="cb29-131"><a href="#cb29-131" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(<span class="at">fila =</span> <span class="fu">names</span>(masas_fila), <span class="at">masa =</span> <span class="fu">round</span>(<span class="fu">as.numeric</span>(masas_fila), <span class="dv">3</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb29-132"><a href="#cb29-132" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">caption =</span> <span class="st">"Masas fila"</span>)</span>
+<span id="cb29-133"><a href="#cb29-133" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(<span class="at">columna =</span> <span class="fu">names</span>(masas_col), <span class="at">masa =</span> <span class="fu">round</span>(<span class="fu">as.numeric</span>(masas_col), <span class="dv">3</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb29-134"><a href="#cb29-134" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">caption =</span> <span class="st">"Masas columna"</span>)</span>
+<span id="cb29-135"><a href="#cb29-135" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb29-136"><a href="#cb29-136" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-137"><a href="#cb29-137" aria-hidden="true" tabindex="-1"></a>Las filas se comparan por sus perfiles, no por sus frecuencias absolutas. Dos filas son parecidas si distribuyen sus frecuencias entre columnas de forma parecida.</span>
+<span id="cb29-138"><a href="#cb29-138" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-139"><a href="#cb29-139" aria-hidden="true" tabindex="-1"></a><span class="fu">## Distancia $\chi^2$ entre perfiles</span></span>
+<span id="cb29-140"><a href="#cb29-140" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-141"><a href="#cb29-141" aria-hidden="true" tabindex="-1"></a>La distancia $\chi^2$ entre dos perfiles fila $i$ e $i'$ es:</span>
+<span id="cb29-142"><a href="#cb29-142" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-143"><a href="#cb29-143" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb29-144"><a href="#cb29-144" aria-hidden="true" tabindex="-1"></a>d^2(i,i')=</span>
+<span id="cb29-145"><a href="#cb29-145" aria-hidden="true" tabindex="-1"></a>\sum_{j=1}^{J}\frac{1}{c_j}</span>
+<span id="cb29-146"><a href="#cb29-146" aria-hidden="true" tabindex="-1"></a>\left(</span>
+<span id="cb29-147"><a href="#cb29-147" aria-hidden="true" tabindex="-1"></a>\frac{p_{ij}}{r_i}</span>
+<span id="cb29-148"><a href="#cb29-148" aria-hidden="true" tabindex="-1"></a>-</span>
+<span id="cb29-149"><a href="#cb29-149" aria-hidden="true" tabindex="-1"></a>\frac{p_{i'j}}{r_{i'}}</span>
+<span id="cb29-150"><a href="#cb29-150" aria-hidden="true" tabindex="-1"></a>\right)^2.</span>
+<span id="cb29-151"><a href="#cb29-151" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb29-152"><a href="#cb29-152" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-153"><a href="#cb29-153" aria-hidden="true" tabindex="-1"></a>Las columnas con masa pequeña pesan más porque diferencias en categorías raras son más informativas geométricamente. Esto también implica una advertencia: categorías raras pueden generar puntos extremos.</span>
+<span id="cb29-154"><a href="#cb29-154" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-155"><a href="#cb29-155" aria-hidden="true" tabindex="-1"></a>Para columnas se define una distancia análoga ponderando por masas fila:</span>
+<span id="cb29-156"><a href="#cb29-156" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-157"><a href="#cb29-157" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb29-158"><a href="#cb29-158" aria-hidden="true" tabindex="-1"></a>d^2(j,j')=</span>
+<span id="cb29-159"><a href="#cb29-159" aria-hidden="true" tabindex="-1"></a>\sum_{i=1}^{I}\frac{1}{r_i}</span>
+<span id="cb29-160"><a href="#cb29-160" aria-hidden="true" tabindex="-1"></a>\left(</span>
+<span id="cb29-161"><a href="#cb29-161" aria-hidden="true" tabindex="-1"></a>\frac{p_{ij}}{c_j}</span>
+<span id="cb29-162"><a href="#cb29-162" aria-hidden="true" tabindex="-1"></a>-</span>
+<span id="cb29-163"><a href="#cb29-163" aria-hidden="true" tabindex="-1"></a>\frac{p_{ij'}}{c_{j'}}</span>
+<span id="cb29-164"><a href="#cb29-164" aria-hidden="true" tabindex="-1"></a>\right)^2.</span>
+<span id="cb29-165"><a href="#cb29-165" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb29-166"><a href="#cb29-166" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-169"><a href="#cb29-169" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb29-170"><a href="#cb29-170" aria-hidden="true" tabindex="-1"></a>P <span class="ot">&lt;-</span> tab <span class="sc">/</span> <span class="fu">sum</span>(tab)</span>
+<span id="cb29-171"><a href="#cb29-171" aria-hidden="true" tabindex="-1"></a>r <span class="ot">&lt;-</span> <span class="fu">rowSums</span>(P)</span>
+<span id="cb29-172"><a href="#cb29-172" aria-hidden="true" tabindex="-1"></a>c <span class="ot">&lt;-</span> <span class="fu">colSums</span>(P)</span>
+<span id="cb29-173"><a href="#cb29-173" aria-hidden="true" tabindex="-1"></a>perfil_f <span class="ot">&lt;-</span> <span class="fu">sweep</span>(P, <span class="dv">1</span>, r, <span class="st">"/"</span>)</span>
+<span id="cb29-174"><a href="#cb29-174" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-175"><a href="#cb29-175" aria-hidden="true" tabindex="-1"></a>chi2_dist_rows <span class="ot">&lt;-</span> <span class="cf">function</span>(profiles, masses_col) {</span>
+<span id="cb29-176"><a href="#cb29-176" aria-hidden="true" tabindex="-1"></a>  D <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="dv">0</span>, <span class="fu">nrow</span>(profiles), <span class="fu">nrow</span>(profiles), <span class="at">dimnames =</span> <span class="fu">list</span>(<span class="fu">rownames</span>(profiles), <span class="fu">rownames</span>(profiles)))</span>
+<span id="cb29-177"><a href="#cb29-177" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">seq_len</span>(<span class="fu">nrow</span>(profiles))) {</span>
+<span id="cb29-178"><a href="#cb29-178" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> (h <span class="cf">in</span> <span class="fu">seq_len</span>(<span class="fu">nrow</span>(profiles))) {</span>
+<span id="cb29-179"><a href="#cb29-179" aria-hidden="true" tabindex="-1"></a>      D[i, h] <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(<span class="fu">sum</span>((profiles[i, ] <span class="sc">-</span> profiles[h, ])<span class="sc">^</span><span class="dv">2</span> <span class="sc">/</span> masses_col))</span>
+<span id="cb29-180"><a href="#cb29-180" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb29-181"><a href="#cb29-181" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb29-182"><a href="#cb29-182" aria-hidden="true" tabindex="-1"></a>  D</span>
+<span id="cb29-183"><a href="#cb29-183" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb29-184"><a href="#cb29-184" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-185"><a href="#cb29-185" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(<span class="fu">round</span>(<span class="fu">chi2_dist_rows</span>(perfil_f, c), <span class="dv">3</span>))</span>
+<span id="cb29-186"><a href="#cb29-186" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb29-187"><a href="#cb29-187" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-188"><a href="#cb29-188" aria-hidden="true" tabindex="-1"></a>La distancia entre clases no compara cuántos pasajeros había en cada clase, sino cómo se distribuyó la supervivencia dentro de cada clase.</span>
+<span id="cb29-189"><a href="#cb29-189" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-190"><a href="#cb29-190" aria-hidden="true" tabindex="-1"></a><span class="fu">## Inercia total</span></span>
+<span id="cb29-191"><a href="#cb29-191" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-192"><a href="#cb29-192" aria-hidden="true" tabindex="-1"></a>La inercia total de CA mide desviación global respecto a independencia. Está relacionada con el estadístico $\chi^2$:</span>
+<span id="cb29-193"><a href="#cb29-193" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-194"><a href="#cb29-194" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb29-195"><a href="#cb29-195" aria-hidden="true" tabindex="-1"></a>Inercia = \sum_{i=1}^{I}\sum_{j=1}^{J}</span>
+<span id="cb29-196"><a href="#cb29-196" aria-hidden="true" tabindex="-1"></a>\frac{(p_{ij}-r_ic_j)^2}{r_ic_j}</span>
+<span id="cb29-197"><a href="#cb29-197" aria-hidden="true" tabindex="-1"></a>=\frac{\chi^2}{n}.</span>
+<span id="cb29-198"><a href="#cb29-198" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb29-199"><a href="#cb29-199" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-202"><a href="#cb29-202" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb29-203"><a href="#cb29-203" aria-hidden="true" tabindex="-1"></a>inercia_total <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(chi<span class="sc">$</span>statistic) <span class="sc">/</span> <span class="fu">sum</span>(tab)</span>
+<span id="cb29-204"><a href="#cb29-204" aria-hidden="true" tabindex="-1"></a>inercia_total</span>
+<span id="cb29-205"><a href="#cb29-205" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb29-206"><a href="#cb29-206" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-207"><a href="#cb29-207" aria-hidden="true" tabindex="-1"></a>Si la tabla está muy cerca de independencia, la inercia será pequeña y el mapa tendrá poca estructura que representar.</span>
+<span id="cb29-208"><a href="#cb29-208" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-209"><a href="#cb29-209" aria-hidden="true" tabindex="-1"></a><span class="fu">## Matriz de residuos estandarizados</span></span>
+<span id="cb29-210"><a href="#cb29-210" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-211"><a href="#cb29-211" aria-hidden="true" tabindex="-1"></a>CA aplica una descomposición en valores singulares a la matriz de desviaciones estandarizadas:</span>
+<span id="cb29-212"><a href="#cb29-212" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-213"><a href="#cb29-213" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb29-214"><a href="#cb29-214" aria-hidden="true" tabindex="-1"></a>S = D_r^{-1/2}(P-rc^\top)D_c^{-1/2},</span>
+<span id="cb29-215"><a href="#cb29-215" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb29-216"><a href="#cb29-216" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-217"><a href="#cb29-217" aria-hidden="true" tabindex="-1"></a>donde $D_r$ y $D_c$ son matrices diagonales con masas fila y columna. Esta matriz contiene desviaciones respecto a independencia expresadas en la geometría $\chi^2$.</span>
+<span id="cb29-218"><a href="#cb29-218" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-221"><a href="#cb29-221" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb29-222"><a href="#cb29-222" aria-hidden="true" tabindex="-1"></a>Dr_inv_sqrt <span class="ot">&lt;-</span> <span class="fu">diag</span>(<span class="dv">1</span> <span class="sc">/</span> <span class="fu">sqrt</span>(r))</span>
+<span id="cb29-223"><a href="#cb29-223" aria-hidden="true" tabindex="-1"></a>Dc_inv_sqrt <span class="ot">&lt;-</span> <span class="fu">diag</span>(<span class="dv">1</span> <span class="sc">/</span> <span class="fu">sqrt</span>(c))</span>
+<span id="cb29-224"><a href="#cb29-224" aria-hidden="true" tabindex="-1"></a>S <span class="ot">&lt;-</span> Dr_inv_sqrt <span class="sc">%*%</span> (P <span class="sc">-</span> r <span class="sc">%*%</span> <span class="fu">t</span>(c)) <span class="sc">%*%</span> Dc_inv_sqrt</span>
+<span id="cb29-225"><a href="#cb29-225" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(<span class="fu">round</span>(S, <span class="dv">4</span>))</span>
+<span id="cb29-226"><a href="#cb29-226" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb29-227"><a href="#cb29-227" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-228"><a href="#cb29-228" aria-hidden="true" tabindex="-1"></a>La descomposición:</span>
+<span id="cb29-229"><a href="#cb29-229" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-230"><a href="#cb29-230" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb29-231"><a href="#cb29-231" aria-hidden="true" tabindex="-1"></a>S = UDV^\top</span>
+<span id="cb29-232"><a href="#cb29-232" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb29-233"><a href="#cb29-233" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-234"><a href="#cb29-234" aria-hidden="true" tabindex="-1"></a>produce dimensiones factoriales. Los valores singulares al cuadrado son inercias principales:</span>
+<span id="cb29-235"><a href="#cb29-235" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-236"><a href="#cb29-236" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb29-237"><a href="#cb29-237" aria-hidden="true" tabindex="-1"></a>\lambda_m = d_m^2.</span>
+<span id="cb29-238"><a href="#cb29-238" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb29-239"><a href="#cb29-239" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-240"><a href="#cb29-240" aria-hidden="true" tabindex="-1"></a><span class="fu">## Coordenadas principales</span></span>
+<span id="cb29-241"><a href="#cb29-241" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-242"><a href="#cb29-242" aria-hidden="true" tabindex="-1"></a>Las coordenadas principales de filas son:</span>
+<span id="cb29-243"><a href="#cb29-243" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-244"><a href="#cb29-244" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb29-245"><a href="#cb29-245" aria-hidden="true" tabindex="-1"></a>F = D_r^{-1/2}UD.</span>
+<span id="cb29-246"><a href="#cb29-246" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb29-247"><a href="#cb29-247" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-248"><a href="#cb29-248" aria-hidden="true" tabindex="-1"></a>Las coordenadas principales de columnas son:</span>
+<span id="cb29-249"><a href="#cb29-249" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-250"><a href="#cb29-250" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb29-251"><a href="#cb29-251" aria-hidden="true" tabindex="-1"></a>G = D_c^{-1/2}VD.</span>
+<span id="cb29-252"><a href="#cb29-252" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb29-253"><a href="#cb29-253" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-256"><a href="#cb29-256" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb29-257"><a href="#cb29-257" aria-hidden="true" tabindex="-1"></a>sv <span class="ot">&lt;-</span> <span class="fu">svd</span>(S)</span>
+<span id="cb29-258"><a href="#cb29-258" aria-hidden="true" tabindex="-1"></a>row_coord <span class="ot">&lt;-</span> <span class="fu">diag</span>(<span class="dv">1</span> <span class="sc">/</span> <span class="fu">sqrt</span>(r)) <span class="sc">%*%</span> sv<span class="sc">$</span>u <span class="sc">%*%</span> <span class="fu">diag</span>(sv<span class="sc">$</span>d)</span>
+<span id="cb29-259"><a href="#cb29-259" aria-hidden="true" tabindex="-1"></a>col_coord <span class="ot">&lt;-</span> <span class="fu">diag</span>(<span class="dv">1</span> <span class="sc">/</span> <span class="fu">sqrt</span>(c)) <span class="sc">%*%</span> sv<span class="sc">$</span>v <span class="sc">%*%</span> <span class="fu">diag</span>(sv<span class="sc">$</span>d)</span>
+<span id="cb29-260"><a href="#cb29-260" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(row_coord) <span class="ot">&lt;-</span> <span class="fu">rownames</span>(tab)</span>
+<span id="cb29-261"><a href="#cb29-261" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(col_coord) <span class="ot">&lt;-</span> <span class="fu">colnames</span>(tab)</span>
+<span id="cb29-262"><a href="#cb29-262" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(row_coord) <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">"Dim"</span>, <span class="fu">seq_len</span>(<span class="fu">ncol</span>(row_coord)))</span>
+<span id="cb29-263"><a href="#cb29-263" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(col_coord) <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">"Dim"</span>, <span class="fu">seq_len</span>(<span class="fu">ncol</span>(col_coord)))</span>
+<span id="cb29-264"><a href="#cb29-264" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-265"><a href="#cb29-265" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(<span class="at">dimension =</span> <span class="fu">paste0</span>(<span class="st">"Dim"</span>, <span class="fu">seq_along</span>(sv<span class="sc">$</span>d)), <span class="at">inercia =</span> <span class="fu">round</span>(sv<span class="sc">$</span>d<span class="sc">^</span><span class="dv">2</span>, <span class="dv">5</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb29-266"><a href="#cb29-266" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>()</span>
+<span id="cb29-267"><a href="#cb29-267" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(<span class="fu">round</span>(row_coord[, <span class="dv">1</span>, <span class="at">drop =</span> <span class="cn">FALSE</span>], <span class="dv">3</span>), <span class="at">caption =</span> <span class="st">"Coordenadas fila"</span>)</span>
+<span id="cb29-268"><a href="#cb29-268" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(<span class="fu">round</span>(col_coord[, <span class="dv">1</span>, <span class="at">drop =</span> <span class="cn">FALSE</span>], <span class="dv">3</span>), <span class="at">caption =</span> <span class="st">"Coordenadas columna"</span>)</span>
+<span id="cb29-269"><a href="#cb29-269" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb29-270"><a href="#cb29-270" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-271"><a href="#cb29-271" aria-hidden="true" tabindex="-1"></a>Con dos columnas solo hay una dimensión no trivial, porque el rango máximo es $\min(I-1,J-1)$.</span>
+<span id="cb29-272"><a href="#cb29-272" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-273"><a href="#cb29-273" aria-hidden="true" tabindex="-1"></a><span class="fu">## Ejemplo con dos dimensiones</span></span>
+<span id="cb29-274"><a href="#cb29-274" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-275"><a href="#cb29-275" aria-hidden="true" tabindex="-1"></a>Para visualizar dos dimensiones, usamos una tabla más rica: clase por combinación de sexo y supervivencia.</span>
+<span id="cb29-276"><a href="#cb29-276" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-279"><a href="#cb29-279" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb29-280"><a href="#cb29-280" aria-hidden="true" tabindex="-1"></a>tab2 <span class="ot">&lt;-</span> <span class="fu">xtabs</span>(Freq <span class="sc">~</span> Class <span class="sc">+</span> <span class="fu">interaction</span>(Sex, Survived), <span class="at">data =</span> titanic)</span>
+<span id="cb29-281"><a href="#cb29-281" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(tab2)</span>
+<span id="cb29-282"><a href="#cb29-282" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb29-283"><a href="#cb29-283" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-286"><a href="#cb29-286" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb29-287"><a href="#cb29-287" aria-hidden="true" tabindex="-1"></a>ca_manual <span class="ot">&lt;-</span> <span class="cf">function</span>(tabla) {</span>
+<span id="cb29-288"><a href="#cb29-288" aria-hidden="true" tabindex="-1"></a>  P <span class="ot">&lt;-</span> tabla <span class="sc">/</span> <span class="fu">sum</span>(tabla)</span>
+<span id="cb29-289"><a href="#cb29-289" aria-hidden="true" tabindex="-1"></a>  r <span class="ot">&lt;-</span> <span class="fu">rowSums</span>(P)</span>
+<span id="cb29-290"><a href="#cb29-290" aria-hidden="true" tabindex="-1"></a>  c <span class="ot">&lt;-</span> <span class="fu">colSums</span>(P)</span>
+<span id="cb29-291"><a href="#cb29-291" aria-hidden="true" tabindex="-1"></a>  S <span class="ot">&lt;-</span> <span class="fu">diag</span>(<span class="dv">1</span> <span class="sc">/</span> <span class="fu">sqrt</span>(r)) <span class="sc">%*%</span> (P <span class="sc">-</span> r <span class="sc">%*%</span> <span class="fu">t</span>(c)) <span class="sc">%*%</span> <span class="fu">diag</span>(<span class="dv">1</span> <span class="sc">/</span> <span class="fu">sqrt</span>(c))</span>
+<span id="cb29-292"><a href="#cb29-292" aria-hidden="true" tabindex="-1"></a>  sv <span class="ot">&lt;-</span> <span class="fu">svd</span>(S)</span>
+<span id="cb29-293"><a href="#cb29-293" aria-hidden="true" tabindex="-1"></a>  nf <span class="ot">&lt;-</span> <span class="fu">min</span>(<span class="fu">nrow</span>(tabla) <span class="sc">-</span> <span class="dv">1</span>, <span class="fu">ncol</span>(tabla) <span class="sc">-</span> <span class="dv">1</span>)</span>
+<span id="cb29-294"><a href="#cb29-294" aria-hidden="true" tabindex="-1"></a>  row_coord <span class="ot">&lt;-</span> <span class="fu">diag</span>(<span class="dv">1</span> <span class="sc">/</span> <span class="fu">sqrt</span>(r)) <span class="sc">%*%</span> sv<span class="sc">$</span>u[, <span class="fu">seq_len</span>(nf), drop <span class="ot">=</span> <span class="cn">FALSE</span>] <span class="sc">%*%</span> <span class="fu">diag</span>(sv<span class="sc">$</span>d[<span class="fu">seq_len</span>(nf)], nf)</span>
+<span id="cb29-295"><a href="#cb29-295" aria-hidden="true" tabindex="-1"></a>  col_coord <span class="ot">&lt;-</span> <span class="fu">diag</span>(<span class="dv">1</span> <span class="sc">/</span> <span class="fu">sqrt</span>(c)) <span class="sc">%*%</span> sv<span class="sc">$</span>v[, <span class="fu">seq_len</span>(nf), drop <span class="ot">=</span> <span class="cn">FALSE</span>] <span class="sc">%*%</span> <span class="fu">diag</span>(sv<span class="sc">$</span>d[<span class="fu">seq_len</span>(nf)], nf)</span>
+<span id="cb29-296"><a href="#cb29-296" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rownames</span>(row_coord) <span class="ot">&lt;-</span> <span class="fu">rownames</span>(tabla)</span>
+<span id="cb29-297"><a href="#cb29-297" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rownames</span>(col_coord) <span class="ot">&lt;-</span> <span class="fu">colnames</span>(tabla)</span>
+<span id="cb29-298"><a href="#cb29-298" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(<span class="at">P =</span> P, <span class="at">r =</span> r, <span class="at">c =</span> c, <span class="at">d =</span> sv<span class="sc">$</span>d[<span class="fu">seq_len</span>(nf)], <span class="at">row =</span> row_coord, <span class="at">col =</span> col_coord)</span>
+<span id="cb29-299"><a href="#cb29-299" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb29-300"><a href="#cb29-300" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-301"><a href="#cb29-301" aria-hidden="true" tabindex="-1"></a>ca2 <span class="ot">&lt;-</span> <span class="fu">ca_manual</span>(tab2)</span>
+<span id="cb29-302"><a href="#cb29-302" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(<span class="at">dimension =</span> <span class="fu">paste0</span>(<span class="st">"Dim"</span>, <span class="fu">seq_along</span>(ca2<span class="sc">$</span>d)), <span class="at">proporcion =</span> <span class="fu">round</span>(ca2<span class="sc">$</span>d<span class="sc">^</span><span class="dv">2</span> <span class="sc">/</span> <span class="fu">sum</span>(ca2<span class="sc">$</span>d<span class="sc">^</span><span class="dv">2</span>), <span class="dv">3</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb29-303"><a href="#cb29-303" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>()</span>
+<span id="cb29-304"><a href="#cb29-304" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb29-305"><a href="#cb29-305" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-308"><a href="#cb29-308" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb29-309"><a href="#cb29-309" aria-hidden="true" tabindex="-1"></a><span class="fu">bind_rows</span>(</span>
+<span id="cb29-310"><a href="#cb29-310" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as_tibble</span>(ca2<span class="sc">$</span>row[, <span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>], <span class="at">rownames =</span> <span class="st">"categoria"</span>) <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">tipo =</span> <span class="st">"Fila"</span>),</span>
+<span id="cb29-311"><a href="#cb29-311" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as_tibble</span>(ca2<span class="sc">$</span>col[, <span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>], <span class="at">rownames =</span> <span class="st">"categoria"</span>) <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">tipo =</span> <span class="st">"Columna"</span>)</span>
+<span id="cb29-312"><a href="#cb29-312" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
+<span id="cb29-313"><a href="#cb29-313" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_names</span>(<span class="fu">c</span>(<span class="st">"categoria"</span>, <span class="st">"Dim1"</span>, <span class="st">"Dim2"</span>, <span class="st">"tipo"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb29-314"><a href="#cb29-314" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(Dim1, Dim2, <span class="at">color =</span> tipo, <span class="at">shape =</span> tipo, <span class="at">label =</span> categoria)) <span class="sc">+</span></span>
+<span id="cb29-315"><a href="#cb29-315" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="dv">0</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">color =</span> <span class="st">"gray60"</span>) <span class="sc">+</span></span>
+<span id="cb29-316"><a href="#cb29-316" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="dv">0</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">color =</span> <span class="st">"gray60"</span>) <span class="sc">+</span></span>
+<span id="cb29-317"><a href="#cb29-317" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
+<span id="cb29-318"><a href="#cb29-318" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="at">nudge_y =</span> <span class="fl">0.03</span>, <span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
+<span id="cb29-319"><a href="#cb29-319" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Mapa CA aproximado"</span>, <span class="at">x =</span> <span class="st">"Dimensión 1"</span>, <span class="at">y =</span> <span class="st">"Dimensión 2"</span>, <span class="at">color =</span> <span class="st">""</span>, <span class="at">shape =</span> <span class="st">""</span>) <span class="sc">+</span></span>
+<span id="cb29-320"><a href="#cb29-320" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span>
+<span id="cb29-321"><a href="#cb29-321" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb29-322"><a href="#cb29-322" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-323"><a href="#cb29-323" aria-hidden="true" tabindex="-1"></a>El mapa debe leerse como representación de asociaciones. Una clase cercana a una categoría columna sugiere asociación relativa, no necesariamente frecuencia absoluta alta.</span>
+<span id="cb29-324"><a href="#cb29-324" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-325"><a href="#cb29-325" aria-hidden="true" tabindex="-1"></a><span class="fu">## Contribuciones</span></span>
+<span id="cb29-326"><a href="#cb29-326" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-327"><a href="#cb29-327" aria-hidden="true" tabindex="-1"></a>La contribución de una fila $i$ a la dimensión $m$ mide cuánto participa en la construcción de ese eje:</span>
+<span id="cb29-328"><a href="#cb29-328" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-329"><a href="#cb29-329" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb29-330"><a href="#cb29-330" aria-hidden="true" tabindex="-1"></a>ctr_{im}=\frac{r_i f_{im}^2}{\lambda_m}.</span>
+<span id="cb29-331"><a href="#cb29-331" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb29-332"><a href="#cb29-332" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-333"><a href="#cb29-333" aria-hidden="true" tabindex="-1"></a>Para columnas:</span>
+<span id="cb29-334"><a href="#cb29-334" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-335"><a href="#cb29-335" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb29-336"><a href="#cb29-336" aria-hidden="true" tabindex="-1"></a>ctr_{jm}=\frac{c_j g_{jm}^2}{\lambda_m}.</span>
+<span id="cb29-337"><a href="#cb29-337" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb29-338"><a href="#cb29-338" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-341"><a href="#cb29-341" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb29-342"><a href="#cb29-342" aria-hidden="true" tabindex="-1"></a>lambda2 <span class="ot">&lt;-</span> ca2<span class="sc">$</span>d<span class="sc">^</span><span class="dv">2</span></span>
+<span id="cb29-343"><a href="#cb29-343" aria-hidden="true" tabindex="-1"></a>ctr_rows <span class="ot">&lt;-</span> <span class="fu">sweep</span>(ca2<span class="sc">$</span>row<span class="sc">^</span><span class="dv">2</span>, <span class="dv">2</span>, lambda2, <span class="st">"/"</span>) <span class="sc">*</span> <span class="fu">as.numeric</span>(ca2<span class="sc">$</span>r)</span>
+<span id="cb29-344"><a href="#cb29-344" aria-hidden="true" tabindex="-1"></a>ctr_cols <span class="ot">&lt;-</span> <span class="fu">sweep</span>(ca2<span class="sc">$</span>col<span class="sc">^</span><span class="dv">2</span>, <span class="dv">2</span>, lambda2, <span class="st">"/"</span>) <span class="sc">*</span> <span class="fu">as.numeric</span>(ca2<span class="sc">$</span>c)</span>
+<span id="cb29-345"><a href="#cb29-345" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(ctr_rows) <span class="ot">&lt;-</span> <span class="fu">rownames</span>(tab2)</span>
+<span id="cb29-346"><a href="#cb29-346" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(ctr_cols) <span class="ot">&lt;-</span> <span class="fu">colnames</span>(tab2)</span>
+<span id="cb29-347"><a href="#cb29-347" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(<span class="fu">round</span>(ctr_rows, <span class="dv">3</span>), <span class="at">caption =</span> <span class="st">"Contribuciones de filas"</span>)</span>
+<span id="cb29-348"><a href="#cb29-348" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(<span class="fu">round</span>(ctr_cols, <span class="dv">3</span>), <span class="at">caption =</span> <span class="st">"Contribuciones de columnas"</span>)</span>
+<span id="cb29-349"><a href="#cb29-349" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb29-350"><a href="#cb29-350" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-351"><a href="#cb29-351" aria-hidden="true" tabindex="-1"></a>Una categoría con alta contribución ayuda a definir la dimensión. Una categoría con baja contribución no debería protagonizar la interpretación del eje.</span>
+<span id="cb29-352"><a href="#cb29-352" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-353"><a href="#cb29-353" aria-hidden="true" tabindex="-1"></a><span class="fu">## Cos² o calidad de representación</span></span>
+<span id="cb29-354"><a href="#cb29-354" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-355"><a href="#cb29-355" aria-hidden="true" tabindex="-1"></a>El cos² mide qué proporción de la distancia de un punto al origen queda representada en una dimensión o conjunto de dimensiones. Para una fila:</span>
+<span id="cb29-356"><a href="#cb29-356" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-357"><a href="#cb29-357" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb29-358"><a href="#cb29-358" aria-hidden="true" tabindex="-1"></a>cos^2_{im}=\frac{f_{im}^2}{\sum_{h} f_{ih}^2}.</span>
+<span id="cb29-359"><a href="#cb29-359" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb29-360"><a href="#cb29-360" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-363"><a href="#cb29-363" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb29-364"><a href="#cb29-364" aria-hidden="true" tabindex="-1"></a>cos2_rows <span class="ot">&lt;-</span> ca2<span class="sc">$</span>row<span class="sc">^</span><span class="dv">2</span> <span class="sc">/</span> <span class="fu">rowSums</span>(ca2<span class="sc">$</span>row<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb29-365"><a href="#cb29-365" aria-hidden="true" tabindex="-1"></a>cos2_cols <span class="ot">&lt;-</span> ca2<span class="sc">$</span>col<span class="sc">^</span><span class="dv">2</span> <span class="sc">/</span> <span class="fu">rowSums</span>(ca2<span class="sc">$</span>col<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb29-366"><a href="#cb29-366" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(<span class="fu">round</span>(cos2_rows, <span class="dv">3</span>), <span class="at">caption =</span> <span class="st">"Cos² de filas"</span>)</span>
+<span id="cb29-367"><a href="#cb29-367" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(<span class="fu">round</span>(cos2_cols, <span class="dv">3</span>), <span class="at">caption =</span> <span class="st">"Cos² de columnas"</span>)</span>
+<span id="cb29-368"><a href="#cb29-368" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb29-369"><a href="#cb29-369" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-370"><a href="#cb29-370" aria-hidden="true" tabindex="-1"></a>Un punto puede estar visualmente lejos, pero si está mal representado en el plano mostrado, conviene no interpretarlo demasiado.</span>
+<span id="cb29-371"><a href="#cb29-371" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-372"><a href="#cb29-372" aria-hidden="true" tabindex="-1"></a><span class="fu">## CA con FactoMineR si está disponible</span></span>
+<span id="cb29-373"><a href="#cb29-373" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-376"><a href="#cb29-376" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb29-377"><a href="#cb29-377" aria-hidden="true" tabindex="-1"></a>ca <span class="ot">&lt;-</span> FactoMineR<span class="sc">::</span><span class="fu">CA</span>(tab2, <span class="at">graph =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb29-378"><a href="#cb29-378" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(ca<span class="sc">$</span>eig, <span class="at">digits =</span> <span class="dv">3</span>)</span>
+<span id="cb29-379"><a href="#cb29-379" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(ca<span class="sc">$</span>row<span class="sc">$</span>coord, <span class="at">digits =</span> <span class="dv">3</span>, <span class="at">caption =</span> <span class="st">"Coordenadas fila"</span>)</span>
+<span id="cb29-380"><a href="#cb29-380" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(ca<span class="sc">$</span>col<span class="sc">$</span>coord, <span class="at">digits =</span> <span class="dv">3</span>, <span class="at">caption =</span> <span class="st">"Coordenadas columna"</span>)</span>
+<span id="cb29-381"><a href="#cb29-381" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb29-382"><a href="#cb29-382" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-383"><a href="#cb29-383" aria-hidden="true" tabindex="-1"></a><span class="fu">## Interpretación correcta de proximidades</span></span>
+<span id="cb29-384"><a href="#cb29-384" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-385"><a href="#cb29-385" aria-hidden="true" tabindex="-1"></a>Al interpretar un mapa CA:</span>
+<span id="cb29-386"><a href="#cb29-386" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-387"><a href="#cb29-387" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>proximidad entre una fila y una columna sugiere asociación relativa;</span>
+<span id="cb29-388"><a href="#cb29-388" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>proximidad entre filas significa perfiles columna parecidos;</span>
+<span id="cb29-389"><a href="#cb29-389" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>proximidad entre columnas significa perfiles fila parecidos;</span>
+<span id="cb29-390"><a href="#cb29-390" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>el origen representa comportamiento medio;</span>
+<span id="cb29-391"><a href="#cb29-391" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>puntos alejados del origen se apartan más de la independencia;</span>
+<span id="cb29-392"><a href="#cb29-392" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>masas, contribuciones y cos² deben acompañar siempre la lectura visual.</span>
+<span id="cb29-393"><a href="#cb29-393" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-394"><a href="#cb29-394" aria-hidden="true" tabindex="-1"></a>La proximidad entre categorías de la misma variable debe interpretarse con cautela. Lo central es cómo filas y columnas se asocian a las dimensiones y qué calidad tiene la representación.</span>
+<span id="cb29-395"><a href="#cb29-395" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-396"><a href="#cb29-396" aria-hidden="true" tabindex="-1"></a><span class="fu">## Categorías raras y puntos extremos</span></span>
+<span id="cb29-397"><a href="#cb29-397" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-398"><a href="#cb29-398" aria-hidden="true" tabindex="-1"></a>Categorías con masa baja pueden aparecer muy alejadas y dominar visualmente el mapa. Antes de interpretar un punto extremo hay que revisar:</span>
+<span id="cb29-399"><a href="#cb29-399" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-400"><a href="#cb29-400" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>su frecuencia;</span>
+<span id="cb29-401"><a href="#cb29-401" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>su contribución;</span>
+<span id="cb29-402"><a href="#cb29-402" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>su cos²;</span>
+<span id="cb29-403"><a href="#cb29-403" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>si responde a una estructura estable o a un recuento pequeño.</span>
+<span id="cb29-404"><a href="#cb29-404" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-405"><a href="#cb29-405" aria-hidden="true" tabindex="-1"></a><span class="fu">## Errores frecuentes</span></span>
+<span id="cb29-406"><a href="#cb29-406" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-407"><a href="#cb29-407" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Interpretar el mapa como si mostrara frecuencias absolutas.</span>
+<span id="cb29-408"><a href="#cb29-408" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Confundir asociación con causalidad.</span>
+<span id="cb29-409"><a href="#cb29-409" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Ignorar masas, contribuciones y cos².</span>
+<span id="cb29-410"><a href="#cb29-410" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Dar importancia a categorías raras sin comprobar su peso.</span>
+<span id="cb29-411"><a href="#cb29-411" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Leer distancias entre puntos mal representados.</span>
+<span id="cb29-412"><a href="#cb29-412" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Olvidar que CA representa desviaciones respecto a independencia.</span>
+<span id="cb29-413"><a href="#cb29-413" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-414"><a href="#cb29-414" aria-hidden="true" tabindex="-1"></a><span class="fu">## Resumen del capítulo</span></span>
+<span id="cb29-415"><a href="#cb29-415" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-416"><a href="#cb29-416" aria-hidden="true" tabindex="-1"></a>CA convierte una tabla de contingencia en un mapa de perfiles. Parte de la independencia, mide desviaciones mediante la distancia $\chi^2$ y descompone la inercia en dimensiones factoriales. Su interpretación se basa en perfiles, masas, inercia, contribuciones, cos² y cautela ante categorías raras.</span>
+<span id="cb29-417"><a href="#cb29-417" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-418"><a href="#cb29-418" aria-hidden="true" tabindex="-1"></a><span class="fu">## Ejercicios propuestos</span></span>
+<span id="cb29-419"><a href="#cb29-419" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-420"><a href="#cb29-420" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>Analiza la tabla <span class="in">`Sex`</span> por <span class="in">`Survived`</span> en <span class="in">`Titanic`</span>.</span>
+<span id="cb29-421"><a href="#cb29-421" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>Calcula residuos $\chi^2$ para <span class="in">`Class`</span> por <span class="in">`Survived`</span> e interpreta las celdas más extremas.</span>
+<span id="cb29-422"><a href="#cb29-422" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>Explica por qué una categoría rara puede quedar lejos del origen.</span>
+<span id="cb29-423"><a href="#cb29-423" aria-hidden="true" tabindex="-1"></a><span class="ss">4. </span>Calcula masas fila y columna para una tabla de contingencia propia.</span>
+<span id="cb29-424"><a href="#cb29-424" aria-hidden="true" tabindex="-1"></a><span class="ss">5. </span>Interpreta contribuciones y cos² en la tabla <span class="in">`Class`</span> por <span class="in">`Sex:Survived`</span>.</span>
+</code></pre></div><button title="Copiar al portapapeles" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
+</div></div></div></div></div>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

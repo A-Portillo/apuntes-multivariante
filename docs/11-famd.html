@@ -1,0 +1,2176 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.18">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>13&nbsp; FAMD para datos mixtos – Técnicas Multivariantes Aplicadas con R</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./12-discriminante.html" rel="next">
+<link href="./10-mca.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-5dd1010b9d59184d24b3865882688ef7.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No se han encontrado resultados",
+    "search-matching-documents-text": "documentos encontrados",
+    "search-copy-link-title": "Copiar el enlace en la búsqueda",
+    "search-hide-matches-text": "Ocultar resultados adicionales",
+    "search-more-match-text": "resultado adicional en este documento",
+    "search-more-matches-text": "resultados adicionales en este documento",
+    "search-clear-button-title": "Borrar",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancelar",
+    "search-submit-button-title": "Enviar",
+    "search-label": "Buscar"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar floating quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./09-correspondencias.html">Bloque 3. Análisis de correspondencias y datos mixtos</a></li><li class="breadcrumb-item"><a href="./11-famd.html"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">FAMD para datos mixtos</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Buscar" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Técnicas Multivariantes Aplicadas con R</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Buscar"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Técnicas Multivariantes Aplicadas con R</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./00-presentacion.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Presentación de la asignatura</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01-introduccion.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Introducción conceptual</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Bloque 1. Análisis cluster</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02-distancias.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Distancias y similitud</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03-clustering-jerarquico.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Clustering jerárquico</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04-kmeans-pam.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">k-means y PAM</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./05-interpretacion-clusters.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Interpretación de clusters</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./06-clustering-variables.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Clustering de variables</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Bloque 2. Reducción de dimensión</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./07-pca.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Análisis de componentes principales</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./08-analisis-factorial.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Análisis factorial exploratorio</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Bloque 3. Análisis de correspondencias y datos mixtos</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./09-correspondencias.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Análisis de correspondencias simple</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./10-mca.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Análisis de correspondencias múltiples</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./11-famd.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">FAMD para datos mixtos</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
+ <span class="menu-text">Bloque 4. Análisis discriminante</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./12-discriminante.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Análisis discriminante</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
+ <span class="menu-text">Casos integradores</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./13-casos-integradores.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Casos integradores</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
+ <span class="menu-text">Ejercicios</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ejercicios.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Ejercicios conceptuales</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true">
+ <span class="menu-text">Apéndice práctico</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./tidyverse.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Guía rápida de tidyverse y dplyr</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Referencias</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Tabla de contenidos</h2>
+   
+  <ul>
+  <li><a href="#motivación-aplicada" id="toc-motivación-aplicada" class="nav-link active" data-scroll-target="#motivación-aplicada"><span class="header-section-number">13.1</span> Motivación aplicada</a></li>
+  <li><a href="#qué-problema-resuelve-famd" id="toc-qué-problema-resuelve-famd" class="nav-link" data-scroll-target="#qué-problema-resuelve-famd"><span class="header-section-number">13.2</span> Qué problema resuelve FAMD</a></li>
+  <li><a href="#dataset-mtcars_mixed" id="toc-dataset-mtcars_mixed" class="nav-link" data-scroll-target="#dataset-mtcars_mixed"><span class="header-section-number">13.3</span> Dataset <code>mtcars_mixed</code></a></li>
+  <li><a href="#de-pca-y-mca-a-famd" id="toc-de-pca-y-mca-a-famd" class="nav-link" data-scroll-target="#de-pca-y-mca-a-famd"><span class="header-section-number">13.4</span> De PCA y MCA a FAMD</a></li>
+  <li><a href="#bloque-numérico" id="toc-bloque-numérico" class="nav-link" data-scroll-target="#bloque-numérico"><span class="header-section-number">13.5</span> Bloque numérico</a></li>
+  <li><a href="#bloque-categórico" id="toc-bloque-categórico" class="nav-link" data-scroll-target="#bloque-categórico"><span class="header-section-number">13.6</span> Bloque categórico</a></li>
+  <li><a href="#equilibrio-por-bloques" id="toc-equilibrio-por-bloques" class="nav-link" data-scroll-target="#equilibrio-por-bloques"><span class="header-section-number">13.7</span> Equilibrio por bloques</a></li>
+  <li><a href="#distancia-mixta-inducida" id="toc-distancia-mixta-inducida" class="nav-link" data-scroll-target="#distancia-mixta-inducida"><span class="header-section-number">13.8</span> Distancia mixta inducida</a></li>
+  <li><a href="#variables-activas-y-suplementarias" id="toc-variables-activas-y-suplementarias" class="nav-link" data-scroll-target="#variables-activas-y-suplementarias"><span class="header-section-number">13.9</span> Variables activas y suplementarias</a></li>
+  <li><a href="#ejecución-con-factominer-si-está-disponible" id="toc-ejecución-con-factominer-si-está-disponible" class="nav-link" data-scroll-target="#ejecución-con-factominer-si-está-disponible"><span class="header-section-number">13.10</span> Ejecución con FactoMineR si está disponible</a></li>
+  <li><a href="#aproximación-reproducible-con-base-r" id="toc-aproximación-reproducible-con-base-r" class="nav-link" data-scroll-target="#aproximación-reproducible-con-base-r"><span class="header-section-number">13.11</span> Aproximación reproducible con base R</a></li>
+  <li><a href="#coordenadas-de-individuos" id="toc-coordenadas-de-individuos" class="nav-link" data-scroll-target="#coordenadas-de-individuos"><span class="header-section-number">13.12</span> Coordenadas de individuos</a></li>
+  <li><a href="#interpretación-de-variables-numéricas" id="toc-interpretación-de-variables-numéricas" class="nav-link" data-scroll-target="#interpretación-de-variables-numéricas"><span class="header-section-number">13.13</span> Interpretación de variables numéricas</a></li>
+  <li><a href="#interpretación-de-variables-categóricas" id="toc-interpretación-de-variables-categóricas" class="nav-link" data-scroll-target="#interpretación-de-variables-categóricas"><span class="header-section-number">13.14</span> Interpretación de variables categóricas</a></li>
+  <li><a href="#contribuciones-y-cos²" id="toc-contribuciones-y-cos²" class="nav-link" data-scroll-target="#contribuciones-y-cos²"><span class="header-section-number">13.15</span> Contribuciones y cos²</a></li>
+  <li><a href="#visualización-conjunta" id="toc-visualización-conjunta" class="nav-link" data-scroll-target="#visualización-conjunta"><span class="header-section-number">13.16</span> Visualización conjunta</a></li>
+  <li><a href="#famd-y-clustering-posterior" id="toc-famd-y-clustering-posterior" class="nav-link" data-scroll-target="#famd-y-clustering-posterior"><span class="header-section-number">13.17</span> FAMD y clustering posterior</a></li>
+  <li><a href="#relación-con-pca-mca-y-gower" id="toc-relación-con-pca-mca-y-gower" class="nav-link" data-scroll-target="#relación-con-pca-mca-y-gower"><span class="header-section-number">13.18</span> Relación con PCA, MCA y Gower</a></li>
+  <li><a href="#limitaciones" id="toc-limitaciones" class="nav-link" data-scroll-target="#limitaciones"><span class="header-section-number">13.19</span> Limitaciones</a></li>
+  <li><a href="#errores-frecuentes" id="toc-errores-frecuentes" class="nav-link" data-scroll-target="#errores-frecuentes"><span class="header-section-number">13.20</span> Errores frecuentes</a></li>
+  <li><a href="#resumen-del-capítulo" id="toc-resumen-del-capítulo" class="nav-link" data-scroll-target="#resumen-del-capítulo"><span class="header-section-number">13.21</span> Resumen del capítulo</a></li>
+  <li><a href="#ejercicios-propuestos" id="toc-ejercicios-propuestos" class="nav-link" data-scroll-target="#ejercicios-propuestos"><span class="header-section-number">13.22</span> Ejercicios propuestos</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./09-correspondencias.html">Bloque 3. Análisis de correspondencias y datos mixtos</a></li><li class="breadcrumb-item"><a href="./11-famd.html"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">FAMD para datos mixtos</span></a></li></ol></nav>
+<div class="quarto-title">
+<div class="quarto-title-block"><div><h1 class="title"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">FAMD para datos mixtos</span></h1><button type="button" class="btn code-tools-button dropdown-toggle" id="quarto-code-tools-menu" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi"></i> Código</button><ul class="dropdown-menu dropdown-menu-end" aria-labelelledby="quarto-code-tools-menu"><li><a id="quarto-show-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Mostrar todo el código</a></li><li><a id="quarto-hide-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Ocultar todo el código</a></li><li><hr class="dropdown-divider"></li><li><a id="quarto-view-source" class="dropdown-item" href="javascript:void(0)" role="button">Ver el código fuente</a></li></ul></div></div>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div class="cell">
+<details class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(knitr)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<section id="motivación-aplicada" class="level2" data-number="13.1">
+<h2 data-number="13.1" class="anchored" data-anchor-id="motivación-aplicada"><span class="header-section-number">13.1</span> Motivación aplicada</h2>
+<p>Después de estudiar PCA y MCA ya tenemos dos geometrías claras:</p>
+<ul>
+<li>PCA resume variables numéricas mediante ejes de máxima varianza;</li>
+<li>MCA representa variables categóricas mediante tablas indicadoras, masas, distancia <span class="math inline">\(\chi^2\)</span> e inercia.</li>
+</ul>
+<p>El problema práctico aparece cuando una misma tabla tiene ambos tipos de variables. En <code>mtcars</code>, consumo, potencia y peso son numéricos, mientras que cilindros, tipo de motor, transmisión o número de marchas pueden tratarse como categorías.</p>
+<p>Si queremos representar coches en un único mapa factorial, no basta con aplicar PCA a todo ni con aplicar MCA solo a las variables categóricas. FAMD combina las dos lógicas en una geometría común.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Nota
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>FAMD puede verse como una extensión de PCA y MCA: usa la estandarización de variables numéricas y la geometría ponderada de modalidades categóricas para construir ejes comunes de inercia.</p>
+</div>
+</div>
+</section>
+<section id="qué-problema-resuelve-famd" class="level2" data-number="13.2">
+<h2 data-number="13.2" class="anchored" data-anchor-id="qué-problema-resuelve-famd"><span class="header-section-number">13.2</span> Qué problema resuelve FAMD</h2>
+<p>FAMD, análisis factorial de datos mixtos, responde a preguntas como:</p>
+<ul>
+<li>¿qué individuos se parecen cuando algunos rasgos son numéricos y otros categóricos?</li>
+<li>¿qué dimensiones resumen conjuntamente medidas y modalidades?</li>
+<li>¿qué variables numéricas y qué categorías construyen cada eje?</li>
+<li>¿podemos usar las coordenadas factoriales para clustering posterior?</li>
+</ul>
+<p>El reto es equilibrar fuentes de información heterogéneas. Una diferencia de 50 caballos de potencia no se compara directamente con cambiar de transmisión automática a manual. Además, una variable categórica con muchas modalidades genera muchas columnas indicadoras y podría pesar más que una variable con pocas modalidades si no se corrige.</p>
+</section>
+<section id="dataset-mtcars_mixed" class="level2" data-number="13.3">
+<h2 data-number="13.3" class="anchored" data-anchor-id="dataset-mtcars_mixed"><span class="header-section-number">13.3</span> Dataset <code>mtcars_mixed</code></h2>
+<p>Construimos una versión mixta de <code>mtcars</code>. Algunas variables discretas se tratan como factores porque representan categorías técnicas.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>mtcars_mixed <span class="ot">&lt;-</span> mtcars</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>mtcars_mixed<span class="sc">$</span>cyl <span class="ot">&lt;-</span> <span class="fu">factor</span>(mtcars_mixed<span class="sc">$</span>cyl)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>mtcars_mixed<span class="sc">$</span>vs <span class="ot">&lt;-</span> <span class="fu">factor</span>(mtcars_mixed<span class="sc">$</span>vs, <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"V"</span>, <span class="st">"Straight"</span>))</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>mtcars_mixed<span class="sc">$</span>am <span class="ot">&lt;-</span> <span class="fu">factor</span>(mtcars_mixed<span class="sc">$</span>am, <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"automatico"</span>, <span class="st">"manual"</span>))</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>mtcars_mixed<span class="sc">$</span>gear <span class="ot">&lt;-</span> <span class="fu">factor</span>(mtcars_mixed<span class="sc">$</span>gear)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>mtcars_mixed<span class="sc">$</span>carb <span class="ot">&lt;-</span> <span class="fu">factor</span>(mtcars_mixed<span class="sc">$</span>carb)</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">variable =</span> <span class="fu">names</span>(mtcars_mixed),</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">clase =</span> <span class="fu">sapply</span>(mtcars_mixed, <span class="cf">function</span>(x) <span class="fu">class</span>(x)[<span class="dv">1</span>])</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>()</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">variable</th>
+<th style="text-align: left;">clase</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">mpg</td>
+<td style="text-align: left;">numeric</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">cyl</td>
+<td style="text-align: left;">factor</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">disp</td>
+<td style="text-align: left;">numeric</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">hp</td>
+<td style="text-align: left;">numeric</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">drat</td>
+<td style="text-align: left;">numeric</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">wt</td>
+<td style="text-align: left;">numeric</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">qsec</td>
+<td style="text-align: left;">numeric</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">vs</td>
+<td style="text-align: left;">factor</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">am</td>
+<td style="text-align: left;">factor</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">gear</td>
+<td style="text-align: left;">factor</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">carb</td>
+<td style="text-align: left;">factor</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>La decisión de tratar <code>cyl</code>, <code>gear</code> o <code>carb</code> como factores no es automática. En otro análisis podríamos tratarlas como ordinales o numéricas discretas. La codificación debe responder a la pregunta aplicada.</p>
+</section>
+<section id="de-pca-y-mca-a-famd" class="level2" data-number="13.4">
+<h2 data-number="13.4" class="anchored" data-anchor-id="de-pca-y-mca-a-famd"><span class="header-section-number">13.4</span> De PCA y MCA a FAMD</h2>
+<p>Recordemos las dos piezas:</p>
+<ul>
+<li>en PCA, cada variable numérica se centra y normalmente se escala;</li>
+<li>en MCA, cada variable categórica se transforma en columnas indicadoras, y las modalidades se ponderan según sus masas.</li>
+</ul>
+<p>FAMD construye una matriz transformada que contiene ambos bloques. Después aplica una descomposición factorial sobre esa matriz. La inercia de los ejes resume variabilidad numérica y asociaciones categóricas en una misma escala.</p>
+<p>La idea no es que cada columna transformada pese igual, sino que cada <strong>variable original</strong> tenga una influencia comparable. Esto es crucial: una variable categórica con seis modalidades no debería pesar seis veces más que una variable binaria solo porque genera más columnas.</p>
+</section>
+<section id="bloque-numérico" class="level2" data-number="13.5">
+<h2 data-number="13.5" class="anchored" data-anchor-id="bloque-numérico"><span class="header-section-number">13.5</span> Bloque numérico</h2>
+<p>Para una variable numérica <span class="math inline">\(X_j\)</span>, FAMD usa la versión centrada y escalada:</p>
+<p><span class="math display">\[
+z_{ij}=\frac{x_{ij}-\bar{x}_j}{s_j}.
+\]</span></p>
+<p>Así, cada variable numérica parte con media 0 y varianza 1. En términos de inercia, cada variable numérica activa aporta inicialmente una unidad de variabilidad comparable.</p>
+<p>Si una variable numérica es muy asimétrica, puede convenir transformarla antes. FAMD no sustituye el diagnóstico de variables.</p>
+</section>
+<section id="bloque-categórico" class="level2" data-number="13.6">
+<h2 data-number="13.6" class="anchored" data-anchor-id="bloque-categórico"><span class="header-section-number">13.6</span> Bloque categórico</h2>
+<p>Para una variable categórica <span class="math inline">\(Y_j\)</span> con modalidades <span class="math inline">\(1,\ldots,L_j\)</span>, construimos columnas indicadoras:</p>
+<p><span class="math display">\[
+g_{i\ell} =
+\begin{cases}
+1, &amp; \text{si el individuo } i \text{ pertenece a la modalidad } \ell,\\
+0, &amp; \text{en otro caso.}
+\end{cases}
+\]</span></p>
+<p>La masa de la modalidad <span class="math inline">\(\ell\)</span> es:</p>
+<p><span class="math display">\[
+p_\ell=\frac{n_\ell}{n}.
+\]</span></p>
+<p>Como en MCA, las modalidades no se tratan como columnas ordinarias. Se centran respecto a su frecuencia y se ponderan por su masa. Una forma intuitiva de escribir la columna transformada es:</p>
+<p><span class="math display">\[
+\tilde{g}_{i\ell}=\frac{g_{i\ell}-p_\ell}{\sqrt{p_\ell}}.
+\]</span></p>
+<p>Esta transformación conecta con la distancia <span class="math inline">\(\chi^2\)</span>: diferir en modalidades raras puede pesar más que diferir en modalidades muy frecuentes.</p>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Advertencia
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Que una modalidad rara aparezca lejos del origen no significa automáticamente que sea sustantivamente importante. Primero hay que mirar su masa, contribución y cos².</p>
+</div>
+</div>
+</section>
+<section id="equilibrio-por-bloques" class="level2" data-number="13.7">
+<h2 data-number="13.7" class="anchored" data-anchor-id="equilibrio-por-bloques"><span class="header-section-number">13.7</span> Equilibrio por bloques</h2>
+<p>Si concatenamos todas las columnas <span class="math inline">\(\tilde{g}_{i\ell}\)</span> sin más, una variable con muchas modalidades puede dominar. Por eso FAMD pondera el bloque de cada variable categórica para que su peso global sea comparable al de una variable numérica activa.</p>
+<p>De forma esquemática, la matriz de trabajo puede pensarse como:</p>
+<p><span class="math display">\[
+X^* = [Z_{num} \mid Z_{cat}],
+\]</span></p>
+<p>donde <span class="math inline">\(Z_{num}\)</span> contiene variables numéricas estandarizadas y <span class="math inline">\(Z_{cat}\)</span> contiene indicadores centrados y ponderados por masas y bloques.</p>
+<p>FAMD aplica una descomposición tipo PCA sobre <span class="math inline">\(X^*\)</span>, pero la interpretación aprovecha lo aprendido en MCA: masas, inercia, contribuciones, cos² y modalidades.</p>
+</section>
+<section id="distancia-mixta-inducida" class="level2" data-number="13.8">
+<h2 data-number="13.8" class="anchored" data-anchor-id="distancia-mixta-inducida"><span class="header-section-number">13.8</span> Distancia mixta inducida</h2>
+<p>FAMD induce una noción de distancia entre individuos que suma información numérica y categórica.</p>
+<p>Para la parte numérica:</p>
+<p><span class="math display">\[
+d^2_{num}(i,i')=\sum_{j \in Q}\left(\frac{x_{ij}-x_{i'j}}{s_j}\right)^2.
+\]</span></p>
+<p>Para la parte categórica, la diferencia depende de las modalidades y de sus masas, de forma análoga a MCA:</p>
+<p><span class="math display">\[
+d^2_{cat}(i,i') \approx \sum_{\ell \in M}\frac{1}{p_\ell}(g_{i\ell}-g_{i'\ell})^2,
+\]</span></p>
+<p>con ponderaciones adicionales para equilibrar variables. En conjunto:</p>
+<p><span class="math display">\[
+d^2(i,i')=d^2_{num}(i,i')+d^2_{cat}(i,i').
+\]</span></p>
+<p>La fórmula exacta depende de la normalización implementada, pero la lectura es clara: dos individuos son próximos si tienen valores numéricos parecidos y perfiles categóricos parecidos, considerando escalas y masas.</p>
+</section>
+<section id="variables-activas-y-suplementarias" class="level2" data-number="13.9">
+<h2 data-number="13.9" class="anchored" data-anchor-id="variables-activas-y-suplementarias"><span class="header-section-number">13.9</span> Variables activas y suplementarias</h2>
+<p>Las variables activas construyen los ejes. Las suplementarias se proyectan después para ayudar a interpretar.</p>
+<p>Por ejemplo, podríamos usar <code>am</code> como suplementaria si queremos ver cómo se distribuye la transmisión sin que defina los ejes. Si <code>am</code> entra como activa, los ejes pueden organizarse en parte alrededor de la diferencia automático/manual.</p>
+<p>Esta distinción es especialmente útil en FAMD porque una variable categórica activa puede tener un efecto fuerte en la geometría si sus modalidades separan bien a los individuos.</p>
+</section>
+<section id="ejecución-con-factominer-si-está-disponible" class="level2" data-number="13.10">
+<h2 data-number="13.10" class="anchored" data-anchor-id="ejecución-con-factominer-si-está-disponible"><span class="header-section-number">13.10</span> Ejecución con FactoMineR si está disponible</h2>
+<p><code>FactoMineR::FAMD()</code> implementa el método completo y devuelve coordenadas, contribuciones, cos² e inercia explicada.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>famd <span class="ot">&lt;-</span> FactoMineR<span class="sc">::</span><span class="fu">FAMD</span>(mtcars_mixed, <span class="at">graph =</span> <span class="cn">FALSE</span>, <span class="at">ncp =</span> <span class="dv">5</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(famd<span class="sc">$</span>eig, <span class="at">digits =</span> <span class="dv">3</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 9%">
+<col style="width: 14%">
+<col style="width: 30%">
+<col style="width: 45%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: right;">eigenvalue</th>
+<th style="text-align: right;">percentage of variance</th>
+<th style="text-align: right;">cumulative percentage of variance</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">comp 1</td>
+<td style="text-align: right;">7.099</td>
+<td style="text-align: right;">41.761</td>
+<td style="text-align: right;">41.761</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">comp 2</td>
+<td style="text-align: right;">2.878</td>
+<td style="text-align: right;">16.930</td>
+<td style="text-align: right;">58.691</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">comp 3</td>
+<td style="text-align: right;">1.621</td>
+<td style="text-align: right;">9.534</td>
+<td style="text-align: right;">68.225</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">comp 4</td>
+<td style="text-align: right;">1.254</td>
+<td style="text-align: right;">7.379</td>
+<td style="text-align: right;">75.604</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">comp 5</td>
+<td style="text-align: right;">1.106</td>
+<td style="text-align: right;">6.505</td>
+<td style="text-align: right;">82.109</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>La tabla de autovalores se interpreta como en PCA/MCA: cada dimensión explica una parte de la inercia total.</p>
+</section>
+<section id="aproximación-reproducible-con-base-r" class="level2" data-number="13.11">
+<h2 data-number="13.11" class="anchored" data-anchor-id="aproximación-reproducible-con-base-r"><span class="header-section-number">13.11</span> Aproximación reproducible con base R</h2>
+<p>El siguiente código no sustituye a una implementación completa de FAMD, pero ilustra la construcción de una matriz mixta equilibrada antes de aplicar una descomposición tipo PCA.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>num <span class="ot">&lt;-</span> mtcars_mixed[<span class="fu">sapply</span>(mtcars_mixed, is.numeric)]</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>cat_vars <span class="ot">&lt;-</span> mtcars_mixed[<span class="fu">sapply</span>(mtcars_mixed, is.factor)]</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>Xnum <span class="ot">&lt;-</span> <span class="fu">scale</span>(num)</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>dummy_blocks <span class="ot">&lt;-</span> <span class="fu">lapply</span>(<span class="fu">names</span>(cat_vars), <span class="cf">function</span>(v) {</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  mm <span class="ot">&lt;-</span> <span class="fu">model.matrix</span>(<span class="sc">~</span> x <span class="sc">-</span> <span class="dv">1</span>, <span class="at">data =</span> <span class="fu">data.frame</span>(<span class="at">x =</span> cat_vars[[v]]))</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  frec <span class="ot">&lt;-</span> <span class="fu">colMeans</span>(mm)</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  mm_centered <span class="ot">&lt;-</span> <span class="fu">sweep</span>(mm, <span class="dv">2</span>, frec, <span class="st">"-"</span>)</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>  mm_weighted <span class="ot">&lt;-</span> <span class="fu">sweep</span>(mm_centered, <span class="dv">2</span>, <span class="fu">sqrt</span>(frec), <span class="st">"/"</span>)</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">colnames</span>(mm_weighted) <span class="ot">&lt;-</span> <span class="fu">paste</span>(v, <span class="fu">levels</span>(cat_vars[[v]]), <span class="at">sep =</span> <span class="st">"_"</span>)</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>  mm_weighted <span class="sc">/</span> <span class="fu">sqrt</span>(<span class="fu">ncol</span>(mm_weighted))</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>Xcat <span class="ot">&lt;-</span> <span class="fu">do.call</span>(cbind, dummy_blocks)</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>Xmix <span class="ot">&lt;-</span> <span class="fu">cbind</span>(Xnum, Xcat)</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>pca_mix <span class="ot">&lt;-</span> <span class="fu">prcomp</span>(Xmix, <span class="at">center =</span> <span class="cn">FALSE</span>, <span class="at">scale. =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(<span class="fu">round</span>(<span class="fu">summary</span>(pca_mix)<span class="sc">$</span>importance[, <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>], <span class="dv">3</span>))</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: right;">PC1</th>
+<th style="text-align: right;">PC2</th>
+<th style="text-align: right;">PC3</th>
+<th style="text-align: right;">PC4</th>
+<th style="text-align: right;">PC5</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Standard deviation</td>
+<td style="text-align: right;">2.291</td>
+<td style="text-align: right;">1.308</td>
+<td style="text-align: right;">0.705</td>
+<td style="text-align: right;">0.681</td>
+<td style="text-align: right;">0.563</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Proportion of Variance</td>
+<td style="text-align: right;">0.566</td>
+<td style="text-align: right;">0.185</td>
+<td style="text-align: right;">0.054</td>
+<td style="text-align: right;">0.050</td>
+<td style="text-align: right;">0.034</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Cumulative Proportion</td>
+<td style="text-align: right;">0.566</td>
+<td style="text-align: right;">0.751</td>
+<td style="text-align: right;">0.804</td>
+<td style="text-align: right;">0.854</td>
+<td style="text-align: right;">0.889</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>El código hace tres cosas: estandariza variables numéricas, convierte factores en indicadores centrados y ponderados, y aplica PCA a la matriz transformada. La ponderación por bloques evita que una variable con muchas modalidades domine automáticamente.</p>
+</section>
+<section id="coordenadas-de-individuos" class="level2" data-number="13.12">
+<h2 data-number="13.12" class="anchored" data-anchor-id="coordenadas-de-individuos"><span class="header-section-number">13.12</span> Coordenadas de individuos</h2>
+<p>Las coordenadas de individuos son sus posiciones en los ejes mixtos.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>coords <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(pca_mix<span class="sc">$</span>x[, <span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>])</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>coords <span class="sc">|&gt;</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">modelo =</span> <span class="fu">rownames</span>(mtcars), <span class="at">transmision =</span> mtcars_mixed<span class="sc">$</span>am) <span class="sc">|&gt;</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(PC1, PC2, <span class="at">color =</span> transmision, <span class="at">label =</span> modelo)) <span class="sc">+</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="fl">2.4</span>, <span class="at">alpha =</span> <span class="fl">0.85</span>) <span class="sc">+</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="at">nudge_y =</span> <span class="fl">0.15</span>, <span class="at">size =</span> <span class="fl">2.8</span>, <span class="at">show.legend =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Representación mixta de mtcars"</span>, <span class="at">x =</span> <span class="st">"Dimensión 1"</span>, <span class="at">y =</span> <span class="st">"Dimensión 2"</span>, <span class="at">color =</span> <span class="st">"Transmisión"</span>) <span class="sc">+</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="11-famd_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Dos coches cercanos en este plano tienen perfiles parecidos combinando variables numéricas y categorías activas. Como en MCA, la cercanía debe interpretarse junto con la inercia explicada y la calidad de representación.</p>
+</section>
+<section id="interpretación-de-variables-numéricas" class="level2" data-number="13.13">
+<h2 data-number="13.13" class="anchored" data-anchor-id="interpretación-de-variables-numéricas"><span class="header-section-number">13.13</span> Interpretación de variables numéricas</h2>
+<p>Las variables numéricas se interpretan mediante su relación con los ejes. En una implementación completa se usan correlaciones variable-dimensión.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>cargas_num <span class="ot">&lt;-</span> pca_mix<span class="sc">$</span>rotation[<span class="fu">colnames</span>(Xnum), <span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>]</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(<span class="fu">round</span>(cargas_num, <span class="dv">3</span>))</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: right;">PC1</th>
+<th style="text-align: right;">PC2</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">mpg</td>
+<td style="text-align: right;">-0.407</td>
+<td style="text-align: right;">0.049</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">disp</td>
+<td style="text-align: right;">0.417</td>
+<td style="text-align: right;">-0.051</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">hp</td>
+<td style="text-align: right;">0.375</td>
+<td style="text-align: right;">0.302</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">drat</td>
+<td style="text-align: right;">-0.333</td>
+<td style="text-align: right;">0.334</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">wt</td>
+<td style="text-align: right;">0.388</td>
+<td style="text-align: right;">-0.230</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">qsec</td>
+<td style="text-align: right;">-0.227</td>
+<td style="text-align: right;">-0.618</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>Una carga alta en valor absoluto indica que la variable contribuye a ordenar individuos en esa dimensión. El signo debe interpretarse de forma relativa: cambiar el signo completo de un eje no cambia el análisis.</p>
+</section>
+<section id="interpretación-de-variables-categóricas" class="level2" data-number="13.14">
+<h2 data-number="13.14" class="anchored" data-anchor-id="interpretación-de-variables-categóricas"><span class="header-section-number">13.14</span> Interpretación de variables categóricas</h2>
+<p>Para variables categóricas, una herramienta útil es la razón de correlación, o <span class="math inline">\(\eta^2\)</span>, entre una variable categórica <span class="math inline">\(Y\)</span> y una dimensión factorial <span class="math inline">\(Z_m\)</span>:</p>
+<p><span class="math display">\[
+\eta^2(Y,Z_m)=
+\frac{\sum_{\ell} \frac{n_\ell}{n}(\bar{z}_{\ell m}-\bar{z}_m)^2}
+{Var(Z_m)}.
+\]</span></p>
+<p>Aquí <span class="math inline">\(\bar{z}_{\ell m}\)</span> es la media de la dimensión <span class="math inline">\(m\)</span> entre individuos de la modalidad <span class="math inline">\(\ell\)</span>. Si <span class="math inline">\(\eta^2\)</span> es alto, la variable categórica separa bien a los individuos a lo largo de esa dimensión.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>eta2 <span class="ot">&lt;-</span> <span class="cf">function</span>(y, z) {</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  medias <span class="ot">&lt;-</span> <span class="fu">tapply</span>(z, y, mean)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  pesos <span class="ot">&lt;-</span> <span class="fu">prop.table</span>(<span class="fu">table</span>(y))</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sum</span>(pesos <span class="sc">*</span> (medias <span class="sc">-</span> <span class="fu">mean</span>(z))<span class="sc">^</span><span class="dv">2</span>) <span class="sc">/</span> <span class="fu">var</span>(z)</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>eta_cat <span class="ot">&lt;-</span> <span class="fu">sapply</span>(cat_vars, <span class="cf">function</span>(y) <span class="fu">c</span>(<span class="at">Dim1 =</span> <span class="fu">eta2</span>(y, pca_mix<span class="sc">$</span>x[, <span class="dv">1</span>]), <span class="at">Dim2 =</span> <span class="fu">eta2</span>(y, pca_mix<span class="sc">$</span>x[, <span class="dv">2</span>])))</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(<span class="fu">round</span>(<span class="fu">t</span>(eta_cat), <span class="dv">3</span>))</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: right;">Dim1</th>
+<th style="text-align: right;">Dim2</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">cyl</td>
+<td style="text-align: right;">0.878</td>
+<td style="text-align: right;">0.010</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">vs</td>
+<td style="text-align: right;">0.586</td>
+<td style="text-align: right;">0.152</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">am</td>
+<td style="text-align: right;">0.340</td>
+<td style="text-align: right;">0.467</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">gear</td>
+<td style="text-align: right;">0.593</td>
+<td style="text-align: right;">0.598</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">carb</td>
+<td style="text-align: right;">0.410</td>
+<td style="text-align: right;">0.369</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>Las modalidades concretas se interpretan por su posición y contribución. Una modalidad alejada puede caracterizar una región del mapa, pero solo si tiene suficiente masa y buena calidad de representación.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>cargas_cat <span class="ot">&lt;-</span> pca_mix<span class="sc">$</span>rotation[<span class="fu">colnames</span>(Xcat), <span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>]</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(<span class="fu">round</span>(cargas_cat[<span class="dv">1</span><span class="sc">:</span><span class="fu">min</span>(<span class="dv">10</span>, <span class="fu">nrow</span>(cargas_cat)), ], <span class="dv">3</span>))</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: right;">PC1</th>
+<th style="text-align: right;">PC2</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">cyl_4</td>
+<td style="text-align: right;">-0.173</td>
+<td style="text-align: right;">-0.019</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">cyl_6</td>
+<td style="text-align: right;">-0.023</td>
+<td style="text-align: right;">-0.023</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">cyl_8</td>
+<td style="text-align: right;">0.170</td>
+<td style="text-align: right;">0.033</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">vs_V</td>
+<td style="text-align: right;">0.161</td>
+<td style="text-align: right;">0.144</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">vs_Straight</td>
+<td style="text-align: right;">-0.183</td>
+<td style="text-align: right;">-0.163</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">am_automatico</td>
+<td style="text-align: right;">0.118</td>
+<td style="text-align: right;">-0.243</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">am_manual</td>
+<td style="text-align: right;">-0.143</td>
+<td style="text-align: right;">0.294</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">gear_3</td>
+<td style="text-align: right;">0.136</td>
+<td style="text-align: right;">-0.146</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">gear_4</td>
+<td style="text-align: right;">-0.147</td>
+<td style="text-align: right;">-0.042</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">gear_5</td>
+<td style="text-align: right;">-0.007</td>
+<td style="text-align: right;">0.318</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="cell">
+<details class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>frecuencias_cat <span class="ot">&lt;-</span> <span class="fu">unlist</span>(<span class="fu">lapply</span>(cat_vars, <span class="cf">function</span>(x) <span class="fu">prop.table</span>(<span class="fu">table</span>(x))))</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(<span class="at">categoria =</span> <span class="fu">names</span>(frecuencias_cat), <span class="at">frecuencia =</span> <span class="fu">round</span>(<span class="fu">as.numeric</span>(frecuencias_cat), <span class="dv">3</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>()</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">categoria</th>
+<th style="text-align: right;">frecuencia</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">cyl.4</td>
+<td style="text-align: right;">0.344</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">cyl.6</td>
+<td style="text-align: right;">0.219</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">cyl.8</td>
+<td style="text-align: right;">0.438</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">vs.V</td>
+<td style="text-align: right;">0.562</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">vs.Straight</td>
+<td style="text-align: right;">0.438</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">am.automatico</td>
+<td style="text-align: right;">0.594</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">am.manual</td>
+<td style="text-align: right;">0.406</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">gear.3</td>
+<td style="text-align: right;">0.469</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">gear.4</td>
+<td style="text-align: right;">0.375</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">gear.5</td>
+<td style="text-align: right;">0.156</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">carb.1</td>
+<td style="text-align: right;">0.219</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">carb.2</td>
+<td style="text-align: right;">0.312</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">carb.3</td>
+<td style="text-align: right;">0.094</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">carb.4</td>
+<td style="text-align: right;">0.312</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">carb.6</td>
+<td style="text-align: right;">0.031</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">carb.8</td>
+<td style="text-align: right;">0.031</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<section id="contribuciones-y-cos²" class="level2" data-number="13.15">
+<h2 data-number="13.15" class="anchored" data-anchor-id="contribuciones-y-cos²"><span class="header-section-number">13.15</span> Contribuciones y cos²</h2>
+<p>Como en PCA y MCA, interesa distinguir contribución y calidad de representación.</p>
+<p>Para una columna transformada <span class="math inline">\(v\)</span> y una dimensión <span class="math inline">\(m\)</span>, una contribución simplificada puede calcularse como:</p>
+<p><span class="math display">\[
+ctr_{vm} = \frac{loading_{vm}^2}{\sum_v loading_{vm}^2}.
+\]</span></p>
+<div class="cell">
+<details class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>contrib_dim1 <span class="ot">&lt;-</span> pca_mix<span class="sc">$</span>rotation[, <span class="dv">1</span>]<span class="sc">^</span><span class="dv">2</span> <span class="sc">/</span> <span class="fu">sum</span>(pca_mix<span class="sc">$</span>rotation[, <span class="dv">1</span>]<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(<span class="at">variable =</span> <span class="fu">names</span>(contrib_dim1), <span class="at">contribucion =</span> <span class="fu">round</span>(contrib_dim1, <span class="dv">3</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(contribucion)) <span class="sc">|&gt;</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice_head</span>(<span class="at">n =</span> <span class="dv">10</span>) <span class="sc">|&gt;</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>()</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">variable</th>
+<th style="text-align: right;">contribucion</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">disp</td>
+<td style="text-align: right;">0.174</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">mpg</td>
+<td style="text-align: right;">0.166</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">wt</td>
+<td style="text-align: right;">0.151</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">hp</td>
+<td style="text-align: right;">0.141</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">drat</td>
+<td style="text-align: right;">0.111</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">qsec</td>
+<td style="text-align: right;">0.051</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">vs_Straight</td>
+<td style="text-align: right;">0.033</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">cyl_4</td>
+<td style="text-align: right;">0.030</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">cyl_8</td>
+<td style="text-align: right;">0.029</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">vs_V</td>
+<td style="text-align: right;">0.026</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>En FAMD formal, las contribuciones respetan masas y pesos. La lógica interpretativa es la misma que en MCA: una categoría puede estar lejos, pero si contribuye poco o está mal representada, no debe dominar la lectura.</p>
+</section>
+<section id="visualización-conjunta" class="level2" data-number="13.16">
+<h2 data-number="13.16" class="anchored" data-anchor-id="visualización-conjunta"><span class="header-section-number">13.16</span> Visualización conjunta</h2>
+<p>Una visualización conjunta puede mostrar individuos y categorías. Con base R hacemos una versión sencilla con las categorías más asociadas a las dos primeras dimensiones.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>cat_norma <span class="ot">&lt;-</span> <span class="fu">rowSums</span>(cargas_cat<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>destacadas <span class="ot">&lt;-</span> <span class="fu">names</span>(<span class="fu">sort</span>(cat_norma, <span class="at">decreasing =</span> <span class="cn">TRUE</span>))[<span class="dv">1</span><span class="sc">:</span><span class="dv">6</span>]</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>coords <span class="sc">|&gt;</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">modelo =</span> <span class="fu">rownames</span>(mtcars)) <span class="sc">|&gt;</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(PC1, PC2)) <span class="sc">+</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="dv">0</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">color =</span> <span class="st">"gray60"</span>) <span class="sc">+</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="dv">0</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">color =</span> <span class="st">"gray60"</span>) <span class="sc">+</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">color =</span> <span class="st">"gray55"</span>, <span class="at">size =</span> <span class="dv">2</span>, <span class="at">alpha =</span> <span class="fl">0.8</span>) <span class="sc">+</span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> modelo), <span class="at">nudge_y =</span> <span class="fl">0.15</span>, <span class="at">size =</span> <span class="fl">2.6</span>, <span class="at">color =</span> <span class="st">"gray30"</span>) <span class="sc">+</span></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(</span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> <span class="fu">as_tibble</span>(cargas_cat[destacadas, <span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>] <span class="sc">*</span> <span class="dv">4</span>, <span class="at">rownames =</span> <span class="st">"categoria"</span>),</span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(PC1, PC2),</span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">inherit.aes =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">shape =</span> <span class="dv">17</span>,</span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">"#d73027"</span>,</span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">size =</span> <span class="dv">3</span></span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(</span>
+<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> <span class="fu">as_tibble</span>(cargas_cat[destacadas, <span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>] <span class="sc">*</span> <span class="dv">4</span>, <span class="at">rownames =</span> <span class="st">"categoria"</span>),</span>
+<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(PC1, PC2, <span class="at">label =</span> categoria),</span>
+<span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">inherit.aes =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb11-22"><a href="#cb11-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">nudge_y =</span> <span class="fl">0.2</span>,</span>
+<span id="cb11-23"><a href="#cb11-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">"#d73027"</span>,</span>
+<span id="cb11-24"><a href="#cb11-24" aria-hidden="true" tabindex="-1"></a>    <span class="at">size =</span> <span class="dv">3</span></span>
+<span id="cb11-25"><a href="#cb11-25" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb11-26"><a href="#cb11-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Individuos y categorías destacadas"</span>, <span class="at">x =</span> <span class="st">"Dimensión 1"</span>, <span class="at">y =</span> <span class="st">"Dimensión 2"</span>) <span class="sc">+</span></span>
+<span id="cb11-27"><a href="#cb11-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="11-famd_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Esta figura es orientativa. En informes formales conviene usar herramientas específicas de FAMD cuando estén disponibles, porque respetan mejor pesos, contribuciones y cos².</p>
+</section>
+<section id="famd-y-clustering-posterior" class="level2" data-number="13.17">
+<h2 data-number="13.17" class="anchored" data-anchor-id="famd-y-clustering-posterior"><span class="header-section-number">13.17</span> FAMD y clustering posterior</h2>
+<p>Las coordenadas factoriales pueden usarse como entrada para clustering. Esto suele reducir ruido y permite combinar variables mixtas en una representación común.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>cl <span class="ot">&lt;-</span> <span class="fu">kmeans</span>(pca_mix<span class="sc">$</span>x[, <span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>], <span class="at">centers =</span> <span class="dv">3</span>, <span class="at">nstart =</span> <span class="dv">25</span>)<span class="sc">$</span>cluster</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(<span class="fu">table</span>(<span class="at">cluster =</span> cl, <span class="at">transmision =</span> mtcars_mixed<span class="sc">$</span>am))</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: right;">automatico</th>
+<th style="text-align: right;">manual</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">12</td>
+<td style="text-align: right;">2</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">8</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">3</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>Después del clustering hay que volver a las variables originales para caracterizar grupos.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">aggregate</span>(num, <span class="at">by =</span> <span class="fu">list</span>(<span class="at">cluster =</span> cl), mean) <span class="sc">|&gt;</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">digits =</span> <span class="dv">2</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: right;">cluster</th>
+<th style="text-align: right;">mpg</th>
+<th style="text-align: right;">disp</th>
+<th style="text-align: right;">hp</th>
+<th style="text-align: right;">drat</th>
+<th style="text-align: right;">wt</th>
+<th style="text-align: right;">qsec</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">15.10</td>
+<td style="text-align: right;">353.10</td>
+<td style="text-align: right;">209.21</td>
+<td style="text-align: right;">3.23</td>
+<td style="text-align: right;">4.00</td>
+<td style="text-align: right;">16.77</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">26.66</td>
+<td style="text-align: right;">105.14</td>
+<td style="text-align: right;">82.64</td>
+<td style="text-align: right;">4.07</td>
+<td style="text-align: right;">2.29</td>
+<td style="text-align: right;">19.14</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">19.74</td>
+<td style="text-align: right;">183.31</td>
+<td style="text-align: right;">122.29</td>
+<td style="text-align: right;">3.59</td>
+<td style="text-align: right;">3.12</td>
+<td style="text-align: right;">17.98</td>
+</tr>
+</tbody>
+</table>
+</div>
+<details class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(<span class="fu">table</span>(<span class="at">cluster =</span> cl, <span class="at">cilindros =</span> mtcars_mixed<span class="sc">$</span>cyl))</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: right;">4</th>
+<th style="text-align: right;">6</th>
+<th style="text-align: right;">8</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">14</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">11</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">0</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<section id="relación-con-pca-mca-y-gower" class="level2" data-number="13.18">
+<h2 data-number="13.18" class="anchored" data-anchor-id="relación-con-pca-mca-y-gower"><span class="header-section-number">13.18</span> Relación con PCA, MCA y Gower</h2>
+<p>FAMD toma de PCA la idea de ejes de máxima inercia para variables numéricas estandarizadas. Toma de MCA la representación de modalidades, masas, distancia <span class="math inline">\(\chi^2\)</span>, contribuciones y cos². Se relaciona con Gower porque ambas estrategias comparan individuos con datos mixtos.</p>
+<p>La diferencia es que Gower se centra en una matriz de disimilitudes, útil para clustering. FAMD construye ejes factoriales, útiles para visualizar, interpretar variables y luego, si se desea, hacer clustering sobre coordenadas.</p>
+</section>
+<section id="limitaciones" class="level2" data-number="13.19">
+<h2 data-number="13.19" class="anchored" data-anchor-id="limitaciones"><span class="header-section-number">13.19</span> Limitaciones</h2>
+<p>FAMD no elimina la necesidad de seleccionar variables. Categorías raras, variables redundantes o codificaciones poco justificadas pueden distorsionar los ejes.</p>
+<p>Limitaciones concretas:</p>
+<ul>
+<li>las categorías raras pueden quedar sobrerrepresentadas;</li>
+<li>variables categóricas con muchas modalidades requieren revisión;</li>
+<li>variables numéricas muy asimétricas pueden necesitar transformación;</li>
+<li>los ejes son lineales en el espacio transformado;</li>
+<li>la interpretación depende de qué variables fueron activas;</li>
+<li>con pocas observaciones, los mapas pueden ser inestables.</li>
+</ul>
+</section>
+<section id="errores-frecuentes" class="level2" data-number="13.20">
+<h2 data-number="13.20" class="anchored" data-anchor-id="errores-frecuentes"><span class="header-section-number">13.20</span> Errores frecuentes</h2>
+<ul>
+<li>Convertir factores en números y aplicar PCA.</li>
+<li>Incluir demasiadas categorías raras.</li>
+<li>Interpretar categorías alejadas sin revisar frecuencia, contribución y cos².</li>
+<li>Usar FAMD como caja negra antes de definir variables activas.</li>
+<li>Confundir variables suplementarias con variables activas.</li>
+<li>Hacer clustering sobre dimensiones sin revisar cuánta inercia explican.</li>
+<li>Nombrar ejes solo por una categoría llamativa y no por el conjunto de contribuciones.</li>
+</ul>
+</section>
+<section id="resumen-del-capítulo" class="level2" data-number="13.21">
+<h2 data-number="13.21" class="anchored" data-anchor-id="resumen-del-capítulo"><span class="header-section-number">13.21</span> Resumen del capítulo</h2>
+<p>FAMD ofrece una representación factorial para datos mixtos. Estandariza variables numéricas, transforma variables categóricas siguiendo la lógica de MCA y construye ejes comunes de inercia. Su utilidad depende de equilibrar bloques, distinguir variables activas y suplementarias, revisar frecuencias de categorías e interpretar coordenadas con contribuciones y cos².</p>
+</section>
+<section id="ejercicios-propuestos" class="level2" data-number="13.22">
+<h2 data-number="13.22" class="anchored" data-anchor-id="ejercicios-propuestos"><span class="header-section-number">13.22</span> Ejercicios propuestos</h2>
+<ol type="1">
+<li>Repite el análisis dejando <code>am</code> fuera de las variables activas y úsala solo para colorear.</li>
+<li>Identifica qué categorías de <code>mtcars_mixed</code> tienen pocos casos.</li>
+<li>Aplica clustering a las primeras dimensiones y describe los grupos.</li>
+<li>Compara una distancia de Gower con clustering sobre coordenadas FAMD.</li>
+<li>Explica por qué una variable categórica con muchas modalidades puede dominar si no se pondera.</li>
+<li>Propón qué variables de un dataset musical serían numéricas, categóricas, activas y suplementarias.</li>
+</ol>
+
+
+<!-- -->
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copiado");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copiado");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+    const viewSource = window.document.getElementById('quarto-view-source') ||
+                       window.document.getElementById('quarto-code-tools-source');
+    if (viewSource) {
+      const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+      viewSource.addEventListener("click", function(e) {
+        if (sourceUrl) {
+          // rstudio viewer pane
+          if (/\bcapabilities=\b/.test(window.location)) {
+            window.open(sourceUrl);
+          } else {
+            window.location.href = sourceUrl;
+          }
+        } else {
+          const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+          modal.show();
+        }
+        return false;
+      });
+    }
+    function toggleCodeHandler(show) {
+      return function(e) {
+        const cellDetails = window.document.querySelectorAll(".cell details.code-fold");
+        for (let i=0; i<cellDetails.length; i++) {
+          const details = cellDetails[i];
+          if (show) {
+            details.open = true;
+          } else {
+            details.removeAttribute("open");
+          }
+        }
+        const cellCodeDivs = window.document.querySelectorAll(".cell div.sourceCode.cell-code");
+        const fromCls = show ? "hidden" : "unhidden";
+        const toCls = show ? "unhidden" : "hidden";
+        for (let i=0; i<cellCodeDivs.length; i++) {
+          const codeDiv = cellCodeDivs[i];
+          if (codeDiv.classList.contains(fromCls)) {
+            codeDiv.classList.remove(fromCls);
+            codeDiv.classList.add(toCls);
+          } 
+        }
+        return false;
+      }
+    }
+    const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+    if (hideAllCode) {
+      hideAllCode.addEventListener("click", toggleCodeHandler(false));
+    }
+    const showAllCode = window.document.getElementById("quarto-show-all-code");
+    if (showAllCode) {
+      showAllCode.addEventListener("click", toggleCodeHandler(true));
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./10-mca.html" class="pagination-link" aria-label="Análisis de correspondencias múltiples">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Análisis de correspondencias múltiples</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./12-discriminante.html" class="pagination-link" aria-label="Análisis discriminante">
+        <span class="nav-page-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Análisis discriminante</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Ejecutar el código</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu"># FAMD para datos mixtos</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: setup</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: false</span></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(knitr)</span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a><span class="fu">## Motivación aplicada</span></span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>Después de estudiar PCA y MCA ya tenemos dos geometrías claras:</span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>PCA resume variables numéricas mediante ejes de máxima varianza;</span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>MCA representa variables categóricas mediante tablas indicadoras, masas, distancia $\chi^2$ e inercia.</span>
+<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a>El problema práctico aparece cuando una misma tabla tiene ambos tipos de variables. En <span class="in">`mtcars`</span>, consumo, potencia y peso son numéricos, mientras que cilindros, tipo de motor, transmisión o número de marchas pueden tratarse como categorías.</span>
+<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-21"><a href="#cb15-21" aria-hidden="true" tabindex="-1"></a>Si queremos representar coches en un único mapa factorial, no basta con aplicar PCA a todo ni con aplicar MCA solo a las variables categóricas. FAMD combina las dos lógicas en una geometría común.</span>
+<span id="cb15-22"><a href="#cb15-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-23"><a href="#cb15-23" aria-hidden="true" tabindex="-1"></a>::: {.callout-note}</span>
+<span id="cb15-24"><a href="#cb15-24" aria-hidden="true" tabindex="-1"></a>FAMD puede verse como una extensión de PCA y MCA: usa la estandarización de variables numéricas y la geometría ponderada de modalidades categóricas para construir ejes comunes de inercia.</span>
+<span id="cb15-25"><a href="#cb15-25" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb15-26"><a href="#cb15-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-27"><a href="#cb15-27" aria-hidden="true" tabindex="-1"></a><span class="fu">## Qué problema resuelve FAMD</span></span>
+<span id="cb15-28"><a href="#cb15-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-29"><a href="#cb15-29" aria-hidden="true" tabindex="-1"></a>FAMD, análisis factorial de datos mixtos, responde a preguntas como:</span>
+<span id="cb15-30"><a href="#cb15-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-31"><a href="#cb15-31" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>¿qué individuos se parecen cuando algunos rasgos son numéricos y otros categóricos?</span>
+<span id="cb15-32"><a href="#cb15-32" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>¿qué dimensiones resumen conjuntamente medidas y modalidades?</span>
+<span id="cb15-33"><a href="#cb15-33" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>¿qué variables numéricas y qué categorías construyen cada eje?</span>
+<span id="cb15-34"><a href="#cb15-34" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>¿podemos usar las coordenadas factoriales para clustering posterior?</span>
+<span id="cb15-35"><a href="#cb15-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-36"><a href="#cb15-36" aria-hidden="true" tabindex="-1"></a>El reto es equilibrar fuentes de información heterogéneas. Una diferencia de 50 caballos de potencia no se compara directamente con cambiar de transmisión automática a manual. Además, una variable categórica con muchas modalidades genera muchas columnas indicadoras y podría pesar más que una variable con pocas modalidades si no se corrige.</span>
+<span id="cb15-37"><a href="#cb15-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-38"><a href="#cb15-38" aria-hidden="true" tabindex="-1"></a><span class="fu">## Dataset `mtcars_mixed`</span></span>
+<span id="cb15-39"><a href="#cb15-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-40"><a href="#cb15-40" aria-hidden="true" tabindex="-1"></a>Construimos una versión mixta de <span class="in">`mtcars`</span>. Algunas variables discretas se tratan como factores porque representan categorías técnicas.</span>
+<span id="cb15-41"><a href="#cb15-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-44"><a href="#cb15-44" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb15-45"><a href="#cb15-45" aria-hidden="true" tabindex="-1"></a>mtcars_mixed <span class="ot">&lt;-</span> mtcars</span>
+<span id="cb15-46"><a href="#cb15-46" aria-hidden="true" tabindex="-1"></a>mtcars_mixed<span class="sc">$</span>cyl <span class="ot">&lt;-</span> <span class="fu">factor</span>(mtcars_mixed<span class="sc">$</span>cyl)</span>
+<span id="cb15-47"><a href="#cb15-47" aria-hidden="true" tabindex="-1"></a>mtcars_mixed<span class="sc">$</span>vs <span class="ot">&lt;-</span> <span class="fu">factor</span>(mtcars_mixed<span class="sc">$</span>vs, <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"V"</span>, <span class="st">"Straight"</span>))</span>
+<span id="cb15-48"><a href="#cb15-48" aria-hidden="true" tabindex="-1"></a>mtcars_mixed<span class="sc">$</span>am <span class="ot">&lt;-</span> <span class="fu">factor</span>(mtcars_mixed<span class="sc">$</span>am, <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"automatico"</span>, <span class="st">"manual"</span>))</span>
+<span id="cb15-49"><a href="#cb15-49" aria-hidden="true" tabindex="-1"></a>mtcars_mixed<span class="sc">$</span>gear <span class="ot">&lt;-</span> <span class="fu">factor</span>(mtcars_mixed<span class="sc">$</span>gear)</span>
+<span id="cb15-50"><a href="#cb15-50" aria-hidden="true" tabindex="-1"></a>mtcars_mixed<span class="sc">$</span>carb <span class="ot">&lt;-</span> <span class="fu">factor</span>(mtcars_mixed<span class="sc">$</span>carb)</span>
+<span id="cb15-51"><a href="#cb15-51" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(</span>
+<span id="cb15-52"><a href="#cb15-52" aria-hidden="true" tabindex="-1"></a>  <span class="at">variable =</span> <span class="fu">names</span>(mtcars_mixed),</span>
+<span id="cb15-53"><a href="#cb15-53" aria-hidden="true" tabindex="-1"></a>  <span class="at">clase =</span> <span class="fu">sapply</span>(mtcars_mixed, <span class="cf">function</span>(x) <span class="fu">class</span>(x)[<span class="dv">1</span>])</span>
+<span id="cb15-54"><a href="#cb15-54" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
+<span id="cb15-55"><a href="#cb15-55" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>()</span>
+<span id="cb15-56"><a href="#cb15-56" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb15-57"><a href="#cb15-57" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-58"><a href="#cb15-58" aria-hidden="true" tabindex="-1"></a>La decisión de tratar <span class="in">`cyl`</span>, <span class="in">`gear`</span> o <span class="in">`carb`</span> como factores no es automática. En otro análisis podríamos tratarlas como ordinales o numéricas discretas. La codificación debe responder a la pregunta aplicada.</span>
+<span id="cb15-59"><a href="#cb15-59" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-60"><a href="#cb15-60" aria-hidden="true" tabindex="-1"></a><span class="fu">## De PCA y MCA a FAMD</span></span>
+<span id="cb15-61"><a href="#cb15-61" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-62"><a href="#cb15-62" aria-hidden="true" tabindex="-1"></a>Recordemos las dos piezas:</span>
+<span id="cb15-63"><a href="#cb15-63" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-64"><a href="#cb15-64" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>en PCA, cada variable numérica se centra y normalmente se escala;</span>
+<span id="cb15-65"><a href="#cb15-65" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>en MCA, cada variable categórica se transforma en columnas indicadoras, y las modalidades se ponderan según sus masas.</span>
+<span id="cb15-66"><a href="#cb15-66" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-67"><a href="#cb15-67" aria-hidden="true" tabindex="-1"></a>FAMD construye una matriz transformada que contiene ambos bloques. Después aplica una descomposición factorial sobre esa matriz. La inercia de los ejes resume variabilidad numérica y asociaciones categóricas en una misma escala.</span>
+<span id="cb15-68"><a href="#cb15-68" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-69"><a href="#cb15-69" aria-hidden="true" tabindex="-1"></a>La idea no es que cada columna transformada pese igual, sino que cada **variable original** tenga una influencia comparable. Esto es crucial: una variable categórica con seis modalidades no debería pesar seis veces más que una variable binaria solo porque genera más columnas.</span>
+<span id="cb15-70"><a href="#cb15-70" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-71"><a href="#cb15-71" aria-hidden="true" tabindex="-1"></a><span class="fu">## Bloque numérico</span></span>
+<span id="cb15-72"><a href="#cb15-72" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-73"><a href="#cb15-73" aria-hidden="true" tabindex="-1"></a>Para una variable numérica $X_j$, FAMD usa la versión centrada y escalada:</span>
+<span id="cb15-74"><a href="#cb15-74" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-75"><a href="#cb15-75" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb15-76"><a href="#cb15-76" aria-hidden="true" tabindex="-1"></a>z_{ij}=\frac{x_{ij}-\bar{x}_j}{s_j}.</span>
+<span id="cb15-77"><a href="#cb15-77" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb15-78"><a href="#cb15-78" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-79"><a href="#cb15-79" aria-hidden="true" tabindex="-1"></a>Así, cada variable numérica parte con media 0 y varianza 1. En términos de inercia, cada variable numérica activa aporta inicialmente una unidad de variabilidad comparable.</span>
+<span id="cb15-80"><a href="#cb15-80" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-81"><a href="#cb15-81" aria-hidden="true" tabindex="-1"></a>Si una variable numérica es muy asimétrica, puede convenir transformarla antes. FAMD no sustituye el diagnóstico de variables.</span>
+<span id="cb15-82"><a href="#cb15-82" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-83"><a href="#cb15-83" aria-hidden="true" tabindex="-1"></a><span class="fu">## Bloque categórico</span></span>
+<span id="cb15-84"><a href="#cb15-84" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-85"><a href="#cb15-85" aria-hidden="true" tabindex="-1"></a>Para una variable categórica $Y_j$ con modalidades $1,\ldots,L_j$, construimos columnas indicadoras:</span>
+<span id="cb15-86"><a href="#cb15-86" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-87"><a href="#cb15-87" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb15-88"><a href="#cb15-88" aria-hidden="true" tabindex="-1"></a>g_{i\ell} =</span>
+<span id="cb15-89"><a href="#cb15-89" aria-hidden="true" tabindex="-1"></a>\begin{cases}</span>
+<span id="cb15-90"><a href="#cb15-90" aria-hidden="true" tabindex="-1"></a>1, &amp; \text{si el individuo } i \text{ pertenece a la modalidad } \ell,<span class="sc">\\</span></span>
+<span id="cb15-91"><a href="#cb15-91" aria-hidden="true" tabindex="-1"></a>0, &amp; \text{en otro caso.}</span>
+<span id="cb15-92"><a href="#cb15-92" aria-hidden="true" tabindex="-1"></a>\end{cases}</span>
+<span id="cb15-93"><a href="#cb15-93" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb15-94"><a href="#cb15-94" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-95"><a href="#cb15-95" aria-hidden="true" tabindex="-1"></a>La masa de la modalidad $\ell$ es:</span>
+<span id="cb15-96"><a href="#cb15-96" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-97"><a href="#cb15-97" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb15-98"><a href="#cb15-98" aria-hidden="true" tabindex="-1"></a>p_\ell=\frac{n_\ell}{n}.</span>
+<span id="cb15-99"><a href="#cb15-99" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb15-100"><a href="#cb15-100" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-101"><a href="#cb15-101" aria-hidden="true" tabindex="-1"></a>Como en MCA, las modalidades no se tratan como columnas ordinarias. Se centran respecto a su frecuencia y se ponderan por su masa. Una forma intuitiva de escribir la columna transformada es:</span>
+<span id="cb15-102"><a href="#cb15-102" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-103"><a href="#cb15-103" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb15-104"><a href="#cb15-104" aria-hidden="true" tabindex="-1"></a>\tilde{g}_{i\ell}=\frac{g_{i\ell}-p_\ell}{\sqrt{p_\ell}}.</span>
+<span id="cb15-105"><a href="#cb15-105" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb15-106"><a href="#cb15-106" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-107"><a href="#cb15-107" aria-hidden="true" tabindex="-1"></a>Esta transformación conecta con la distancia $\chi^2$: diferir en modalidades raras puede pesar más que diferir en modalidades muy frecuentes.</span>
+<span id="cb15-108"><a href="#cb15-108" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-109"><a href="#cb15-109" aria-hidden="true" tabindex="-1"></a>::: {.callout-warning}</span>
+<span id="cb15-110"><a href="#cb15-110" aria-hidden="true" tabindex="-1"></a>Que una modalidad rara aparezca lejos del origen no significa automáticamente que sea sustantivamente importante. Primero hay que mirar su masa, contribución y cos².</span>
+<span id="cb15-111"><a href="#cb15-111" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb15-112"><a href="#cb15-112" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-113"><a href="#cb15-113" aria-hidden="true" tabindex="-1"></a><span class="fu">## Equilibrio por bloques</span></span>
+<span id="cb15-114"><a href="#cb15-114" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-115"><a href="#cb15-115" aria-hidden="true" tabindex="-1"></a>Si concatenamos todas las columnas $\tilde{g}_{i\ell}$ sin más, una variable con muchas modalidades puede dominar. Por eso FAMD pondera el bloque de cada variable categórica para que su peso global sea comparable al de una variable numérica activa.</span>
+<span id="cb15-116"><a href="#cb15-116" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-117"><a href="#cb15-117" aria-hidden="true" tabindex="-1"></a>De forma esquemática, la matriz de trabajo puede pensarse como:</span>
+<span id="cb15-118"><a href="#cb15-118" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-119"><a href="#cb15-119" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb15-120"><a href="#cb15-120" aria-hidden="true" tabindex="-1"></a>X^* = <span class="co">[</span><span class="ot">Z_{num} \mid Z_{cat}</span><span class="co">]</span>,</span>
+<span id="cb15-121"><a href="#cb15-121" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb15-122"><a href="#cb15-122" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-123"><a href="#cb15-123" aria-hidden="true" tabindex="-1"></a>donde $Z_{num}$ contiene variables numéricas estandarizadas y $Z_{cat}$ contiene indicadores centrados y ponderados por masas y bloques.</span>
+<span id="cb15-124"><a href="#cb15-124" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-125"><a href="#cb15-125" aria-hidden="true" tabindex="-1"></a>FAMD aplica una descomposición tipo PCA sobre $X^*$, pero la interpretación aprovecha lo aprendido en MCA: masas, inercia, contribuciones, cos² y modalidades.</span>
+<span id="cb15-126"><a href="#cb15-126" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-127"><a href="#cb15-127" aria-hidden="true" tabindex="-1"></a><span class="fu">## Distancia mixta inducida</span></span>
+<span id="cb15-128"><a href="#cb15-128" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-129"><a href="#cb15-129" aria-hidden="true" tabindex="-1"></a>FAMD induce una noción de distancia entre individuos que suma información numérica y categórica.</span>
+<span id="cb15-130"><a href="#cb15-130" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-131"><a href="#cb15-131" aria-hidden="true" tabindex="-1"></a>Para la parte numérica:</span>
+<span id="cb15-132"><a href="#cb15-132" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-133"><a href="#cb15-133" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb15-134"><a href="#cb15-134" aria-hidden="true" tabindex="-1"></a>d^2_{num}(i,i')=\sum_{j \in Q}\left(\frac{x_{ij}-x_{i'j}}{s_j}\right)^2.</span>
+<span id="cb15-135"><a href="#cb15-135" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb15-136"><a href="#cb15-136" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-137"><a href="#cb15-137" aria-hidden="true" tabindex="-1"></a>Para la parte categórica, la diferencia depende de las modalidades y de sus masas, de forma análoga a MCA:</span>
+<span id="cb15-138"><a href="#cb15-138" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-139"><a href="#cb15-139" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb15-140"><a href="#cb15-140" aria-hidden="true" tabindex="-1"></a>d^2_{cat}(i,i') \approx \sum_{\ell \in M}\frac{1}{p_\ell}(g_{i\ell}-g_{i'\ell})^2,</span>
+<span id="cb15-141"><a href="#cb15-141" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb15-142"><a href="#cb15-142" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-143"><a href="#cb15-143" aria-hidden="true" tabindex="-1"></a>con ponderaciones adicionales para equilibrar variables. En conjunto:</span>
+<span id="cb15-144"><a href="#cb15-144" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-145"><a href="#cb15-145" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb15-146"><a href="#cb15-146" aria-hidden="true" tabindex="-1"></a>d^2(i,i')=d^2_{num}(i,i')+d^2_{cat}(i,i').</span>
+<span id="cb15-147"><a href="#cb15-147" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb15-148"><a href="#cb15-148" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-149"><a href="#cb15-149" aria-hidden="true" tabindex="-1"></a>La fórmula exacta depende de la normalización implementada, pero la lectura es clara: dos individuos son próximos si tienen valores numéricos parecidos y perfiles categóricos parecidos, considerando escalas y masas.</span>
+<span id="cb15-150"><a href="#cb15-150" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-151"><a href="#cb15-151" aria-hidden="true" tabindex="-1"></a><span class="fu">## Variables activas y suplementarias</span></span>
+<span id="cb15-152"><a href="#cb15-152" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-153"><a href="#cb15-153" aria-hidden="true" tabindex="-1"></a>Las variables activas construyen los ejes. Las suplementarias se proyectan después para ayudar a interpretar.</span>
+<span id="cb15-154"><a href="#cb15-154" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-155"><a href="#cb15-155" aria-hidden="true" tabindex="-1"></a>Por ejemplo, podríamos usar <span class="in">`am`</span> como suplementaria si queremos ver cómo se distribuye la transmisión sin que defina los ejes. Si <span class="in">`am`</span> entra como activa, los ejes pueden organizarse en parte alrededor de la diferencia automático/manual.</span>
+<span id="cb15-156"><a href="#cb15-156" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-157"><a href="#cb15-157" aria-hidden="true" tabindex="-1"></a>Esta distinción es especialmente útil en FAMD porque una variable categórica activa puede tener un efecto fuerte en la geometría si sus modalidades separan bien a los individuos.</span>
+<span id="cb15-158"><a href="#cb15-158" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-159"><a href="#cb15-159" aria-hidden="true" tabindex="-1"></a><span class="fu">## Ejecución con FactoMineR si está disponible</span></span>
+<span id="cb15-160"><a href="#cb15-160" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-161"><a href="#cb15-161" aria-hidden="true" tabindex="-1"></a><span class="in">`FactoMineR::FAMD()`</span> implementa el método completo y devuelve coordenadas, contribuciones, cos² e inercia explicada.</span>
+<span id="cb15-162"><a href="#cb15-162" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-165"><a href="#cb15-165" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb15-166"><a href="#cb15-166" aria-hidden="true" tabindex="-1"></a>famd <span class="ot">&lt;-</span> FactoMineR<span class="sc">::</span><span class="fu">FAMD</span>(mtcars_mixed, <span class="at">graph =</span> <span class="cn">FALSE</span>, <span class="at">ncp =</span> <span class="dv">5</span>)</span>
+<span id="cb15-167"><a href="#cb15-167" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(famd<span class="sc">$</span>eig, <span class="at">digits =</span> <span class="dv">3</span>)</span>
+<span id="cb15-168"><a href="#cb15-168" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb15-169"><a href="#cb15-169" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-170"><a href="#cb15-170" aria-hidden="true" tabindex="-1"></a>La tabla de autovalores se interpreta como en PCA/MCA: cada dimensión explica una parte de la inercia total.</span>
+<span id="cb15-171"><a href="#cb15-171" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-172"><a href="#cb15-172" aria-hidden="true" tabindex="-1"></a><span class="fu">## Aproximación reproducible con base R</span></span>
+<span id="cb15-173"><a href="#cb15-173" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-174"><a href="#cb15-174" aria-hidden="true" tabindex="-1"></a>El siguiente código no sustituye a una implementación completa de FAMD, pero ilustra la construcción de una matriz mixta equilibrada antes de aplicar una descomposición tipo PCA.</span>
+<span id="cb15-175"><a href="#cb15-175" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-178"><a href="#cb15-178" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb15-179"><a href="#cb15-179" aria-hidden="true" tabindex="-1"></a>num <span class="ot">&lt;-</span> mtcars_mixed[<span class="fu">sapply</span>(mtcars_mixed, is.numeric)]</span>
+<span id="cb15-180"><a href="#cb15-180" aria-hidden="true" tabindex="-1"></a>cat_vars <span class="ot">&lt;-</span> mtcars_mixed[<span class="fu">sapply</span>(mtcars_mixed, is.factor)]</span>
+<span id="cb15-181"><a href="#cb15-181" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-182"><a href="#cb15-182" aria-hidden="true" tabindex="-1"></a>Xnum <span class="ot">&lt;-</span> <span class="fu">scale</span>(num)</span>
+<span id="cb15-183"><a href="#cb15-183" aria-hidden="true" tabindex="-1"></a>dummy_blocks <span class="ot">&lt;-</span> <span class="fu">lapply</span>(<span class="fu">names</span>(cat_vars), <span class="cf">function</span>(v) {</span>
+<span id="cb15-184"><a href="#cb15-184" aria-hidden="true" tabindex="-1"></a>  mm <span class="ot">&lt;-</span> <span class="fu">model.matrix</span>(<span class="sc">~</span> x <span class="sc">-</span> <span class="dv">1</span>, <span class="at">data =</span> <span class="fu">data.frame</span>(<span class="at">x =</span> cat_vars[[v]]))</span>
+<span id="cb15-185"><a href="#cb15-185" aria-hidden="true" tabindex="-1"></a>  frec <span class="ot">&lt;-</span> <span class="fu">colMeans</span>(mm)</span>
+<span id="cb15-186"><a href="#cb15-186" aria-hidden="true" tabindex="-1"></a>  mm_centered <span class="ot">&lt;-</span> <span class="fu">sweep</span>(mm, <span class="dv">2</span>, frec, <span class="st">"-"</span>)</span>
+<span id="cb15-187"><a href="#cb15-187" aria-hidden="true" tabindex="-1"></a>  mm_weighted <span class="ot">&lt;-</span> <span class="fu">sweep</span>(mm_centered, <span class="dv">2</span>, <span class="fu">sqrt</span>(frec), <span class="st">"/"</span>)</span>
+<span id="cb15-188"><a href="#cb15-188" aria-hidden="true" tabindex="-1"></a>  <span class="fu">colnames</span>(mm_weighted) <span class="ot">&lt;-</span> <span class="fu">paste</span>(v, <span class="fu">levels</span>(cat_vars[[v]]), <span class="at">sep =</span> <span class="st">"_"</span>)</span>
+<span id="cb15-189"><a href="#cb15-189" aria-hidden="true" tabindex="-1"></a>  mm_weighted <span class="sc">/</span> <span class="fu">sqrt</span>(<span class="fu">ncol</span>(mm_weighted))</span>
+<span id="cb15-190"><a href="#cb15-190" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb15-191"><a href="#cb15-191" aria-hidden="true" tabindex="-1"></a>Xcat <span class="ot">&lt;-</span> <span class="fu">do.call</span>(cbind, dummy_blocks)</span>
+<span id="cb15-192"><a href="#cb15-192" aria-hidden="true" tabindex="-1"></a>Xmix <span class="ot">&lt;-</span> <span class="fu">cbind</span>(Xnum, Xcat)</span>
+<span id="cb15-193"><a href="#cb15-193" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-194"><a href="#cb15-194" aria-hidden="true" tabindex="-1"></a>pca_mix <span class="ot">&lt;-</span> <span class="fu">prcomp</span>(Xmix, <span class="at">center =</span> <span class="cn">FALSE</span>, <span class="at">scale. =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb15-195"><a href="#cb15-195" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(<span class="fu">round</span>(<span class="fu">summary</span>(pca_mix)<span class="sc">$</span>importance[, <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>], <span class="dv">3</span>))</span>
+<span id="cb15-196"><a href="#cb15-196" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb15-197"><a href="#cb15-197" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-198"><a href="#cb15-198" aria-hidden="true" tabindex="-1"></a>El código hace tres cosas: estandariza variables numéricas, convierte factores en indicadores centrados y ponderados, y aplica PCA a la matriz transformada. La ponderación por bloques evita que una variable con muchas modalidades domine automáticamente.</span>
+<span id="cb15-199"><a href="#cb15-199" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-200"><a href="#cb15-200" aria-hidden="true" tabindex="-1"></a><span class="fu">## Coordenadas de individuos</span></span>
+<span id="cb15-201"><a href="#cb15-201" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-202"><a href="#cb15-202" aria-hidden="true" tabindex="-1"></a>Las coordenadas de individuos son sus posiciones en los ejes mixtos.</span>
+<span id="cb15-203"><a href="#cb15-203" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-206"><a href="#cb15-206" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb15-207"><a href="#cb15-207" aria-hidden="true" tabindex="-1"></a>coords <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(pca_mix<span class="sc">$</span>x[, <span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>])</span>
+<span id="cb15-208"><a href="#cb15-208" aria-hidden="true" tabindex="-1"></a>coords <span class="sc">|&gt;</span></span>
+<span id="cb15-209"><a href="#cb15-209" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">modelo =</span> <span class="fu">rownames</span>(mtcars), <span class="at">transmision =</span> mtcars_mixed<span class="sc">$</span>am) <span class="sc">|&gt;</span></span>
+<span id="cb15-210"><a href="#cb15-210" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(PC1, PC2, <span class="at">color =</span> transmision, <span class="at">label =</span> modelo)) <span class="sc">+</span></span>
+<span id="cb15-211"><a href="#cb15-211" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="fl">2.4</span>, <span class="at">alpha =</span> <span class="fl">0.85</span>) <span class="sc">+</span></span>
+<span id="cb15-212"><a href="#cb15-212" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="at">nudge_y =</span> <span class="fl">0.15</span>, <span class="at">size =</span> <span class="fl">2.8</span>, <span class="at">show.legend =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb15-213"><a href="#cb15-213" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Representación mixta de mtcars"</span>, <span class="at">x =</span> <span class="st">"Dimensión 1"</span>, <span class="at">y =</span> <span class="st">"Dimensión 2"</span>, <span class="at">color =</span> <span class="st">"Transmisión"</span>) <span class="sc">+</span></span>
+<span id="cb15-214"><a href="#cb15-214" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span>
+<span id="cb15-215"><a href="#cb15-215" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb15-216"><a href="#cb15-216" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-217"><a href="#cb15-217" aria-hidden="true" tabindex="-1"></a>Dos coches cercanos en este plano tienen perfiles parecidos combinando variables numéricas y categorías activas. Como en MCA, la cercanía debe interpretarse junto con la inercia explicada y la calidad de representación.</span>
+<span id="cb15-218"><a href="#cb15-218" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-219"><a href="#cb15-219" aria-hidden="true" tabindex="-1"></a><span class="fu">## Interpretación de variables numéricas</span></span>
+<span id="cb15-220"><a href="#cb15-220" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-221"><a href="#cb15-221" aria-hidden="true" tabindex="-1"></a>Las variables numéricas se interpretan mediante su relación con los ejes. En una implementación completa se usan correlaciones variable-dimensión.</span>
+<span id="cb15-222"><a href="#cb15-222" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-225"><a href="#cb15-225" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb15-226"><a href="#cb15-226" aria-hidden="true" tabindex="-1"></a>cargas_num <span class="ot">&lt;-</span> pca_mix<span class="sc">$</span>rotation[<span class="fu">colnames</span>(Xnum), <span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>]</span>
+<span id="cb15-227"><a href="#cb15-227" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(<span class="fu">round</span>(cargas_num, <span class="dv">3</span>))</span>
+<span id="cb15-228"><a href="#cb15-228" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb15-229"><a href="#cb15-229" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-230"><a href="#cb15-230" aria-hidden="true" tabindex="-1"></a>Una carga alta en valor absoluto indica que la variable contribuye a ordenar individuos en esa dimensión. El signo debe interpretarse de forma relativa: cambiar el signo completo de un eje no cambia el análisis.</span>
+<span id="cb15-231"><a href="#cb15-231" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-232"><a href="#cb15-232" aria-hidden="true" tabindex="-1"></a><span class="fu">## Interpretación de variables categóricas</span></span>
+<span id="cb15-233"><a href="#cb15-233" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-234"><a href="#cb15-234" aria-hidden="true" tabindex="-1"></a>Para variables categóricas, una herramienta útil es la razón de correlación, o $\eta^2$, entre una variable categórica $Y$ y una dimensión factorial $Z_m$:</span>
+<span id="cb15-235"><a href="#cb15-235" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-236"><a href="#cb15-236" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb15-237"><a href="#cb15-237" aria-hidden="true" tabindex="-1"></a>\eta^2(Y,Z_m)=</span>
+<span id="cb15-238"><a href="#cb15-238" aria-hidden="true" tabindex="-1"></a>\frac{\sum_{\ell} \frac{n_\ell}{n}(\bar{z}_{\ell m}-\bar{z}_m)^2}</span>
+<span id="cb15-239"><a href="#cb15-239" aria-hidden="true" tabindex="-1"></a>{Var(Z_m)}.</span>
+<span id="cb15-240"><a href="#cb15-240" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb15-241"><a href="#cb15-241" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-242"><a href="#cb15-242" aria-hidden="true" tabindex="-1"></a>Aquí $\bar{z}_{\ell m}$ es la media de la dimensión $m$ entre individuos de la modalidad $\ell$. Si $\eta^2$ es alto, la variable categórica separa bien a los individuos a lo largo de esa dimensión.</span>
+<span id="cb15-243"><a href="#cb15-243" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-246"><a href="#cb15-246" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb15-247"><a href="#cb15-247" aria-hidden="true" tabindex="-1"></a>eta2 <span class="ot">&lt;-</span> <span class="cf">function</span>(y, z) {</span>
+<span id="cb15-248"><a href="#cb15-248" aria-hidden="true" tabindex="-1"></a>  medias <span class="ot">&lt;-</span> <span class="fu">tapply</span>(z, y, mean)</span>
+<span id="cb15-249"><a href="#cb15-249" aria-hidden="true" tabindex="-1"></a>  pesos <span class="ot">&lt;-</span> <span class="fu">prop.table</span>(<span class="fu">table</span>(y))</span>
+<span id="cb15-250"><a href="#cb15-250" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sum</span>(pesos <span class="sc">*</span> (medias <span class="sc">-</span> <span class="fu">mean</span>(z))<span class="sc">^</span><span class="dv">2</span>) <span class="sc">/</span> <span class="fu">var</span>(z)</span>
+<span id="cb15-251"><a href="#cb15-251" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb15-252"><a href="#cb15-252" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-253"><a href="#cb15-253" aria-hidden="true" tabindex="-1"></a>eta_cat <span class="ot">&lt;-</span> <span class="fu">sapply</span>(cat_vars, <span class="cf">function</span>(y) <span class="fu">c</span>(<span class="at">Dim1 =</span> <span class="fu">eta2</span>(y, pca_mix<span class="sc">$</span>x[, <span class="dv">1</span>]), <span class="at">Dim2 =</span> <span class="fu">eta2</span>(y, pca_mix<span class="sc">$</span>x[, <span class="dv">2</span>])))</span>
+<span id="cb15-254"><a href="#cb15-254" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(<span class="fu">round</span>(<span class="fu">t</span>(eta_cat), <span class="dv">3</span>))</span>
+<span id="cb15-255"><a href="#cb15-255" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb15-256"><a href="#cb15-256" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-257"><a href="#cb15-257" aria-hidden="true" tabindex="-1"></a>Las modalidades concretas se interpretan por su posición y contribución. Una modalidad alejada puede caracterizar una región del mapa, pero solo si tiene suficiente masa y buena calidad de representación.</span>
+<span id="cb15-258"><a href="#cb15-258" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-261"><a href="#cb15-261" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb15-262"><a href="#cb15-262" aria-hidden="true" tabindex="-1"></a>cargas_cat <span class="ot">&lt;-</span> pca_mix<span class="sc">$</span>rotation[<span class="fu">colnames</span>(Xcat), <span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>]</span>
+<span id="cb15-263"><a href="#cb15-263" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(<span class="fu">round</span>(cargas_cat[<span class="dv">1</span><span class="sc">:</span><span class="fu">min</span>(<span class="dv">10</span>, <span class="fu">nrow</span>(cargas_cat)), ], <span class="dv">3</span>))</span>
+<span id="cb15-264"><a href="#cb15-264" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb15-265"><a href="#cb15-265" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-268"><a href="#cb15-268" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb15-269"><a href="#cb15-269" aria-hidden="true" tabindex="-1"></a>frecuencias_cat <span class="ot">&lt;-</span> <span class="fu">unlist</span>(<span class="fu">lapply</span>(cat_vars, <span class="cf">function</span>(x) <span class="fu">prop.table</span>(<span class="fu">table</span>(x))))</span>
+<span id="cb15-270"><a href="#cb15-270" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(<span class="at">categoria =</span> <span class="fu">names</span>(frecuencias_cat), <span class="at">frecuencia =</span> <span class="fu">round</span>(<span class="fu">as.numeric</span>(frecuencias_cat), <span class="dv">3</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb15-271"><a href="#cb15-271" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>()</span>
+<span id="cb15-272"><a href="#cb15-272" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb15-273"><a href="#cb15-273" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-274"><a href="#cb15-274" aria-hidden="true" tabindex="-1"></a><span class="fu">## Contribuciones y cos²</span></span>
+<span id="cb15-275"><a href="#cb15-275" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-276"><a href="#cb15-276" aria-hidden="true" tabindex="-1"></a>Como en PCA y MCA, interesa distinguir contribución y calidad de representación.</span>
+<span id="cb15-277"><a href="#cb15-277" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-278"><a href="#cb15-278" aria-hidden="true" tabindex="-1"></a>Para una columna transformada $v$ y una dimensión $m$, una contribución simplificada puede calcularse como:</span>
+<span id="cb15-279"><a href="#cb15-279" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-280"><a href="#cb15-280" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb15-281"><a href="#cb15-281" aria-hidden="true" tabindex="-1"></a>ctr_{vm} = \frac{loading_{vm}^2}{\sum_v loading_{vm}^2}.</span>
+<span id="cb15-282"><a href="#cb15-282" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb15-283"><a href="#cb15-283" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-286"><a href="#cb15-286" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb15-287"><a href="#cb15-287" aria-hidden="true" tabindex="-1"></a>contrib_dim1 <span class="ot">&lt;-</span> pca_mix<span class="sc">$</span>rotation[, <span class="dv">1</span>]<span class="sc">^</span><span class="dv">2</span> <span class="sc">/</span> <span class="fu">sum</span>(pca_mix<span class="sc">$</span>rotation[, <span class="dv">1</span>]<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb15-288"><a href="#cb15-288" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(<span class="at">variable =</span> <span class="fu">names</span>(contrib_dim1), <span class="at">contribucion =</span> <span class="fu">round</span>(contrib_dim1, <span class="dv">3</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb15-289"><a href="#cb15-289" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(contribucion)) <span class="sc">|&gt;</span></span>
+<span id="cb15-290"><a href="#cb15-290" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice_head</span>(<span class="at">n =</span> <span class="dv">10</span>) <span class="sc">|&gt;</span></span>
+<span id="cb15-291"><a href="#cb15-291" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>()</span>
+<span id="cb15-292"><a href="#cb15-292" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb15-293"><a href="#cb15-293" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-294"><a href="#cb15-294" aria-hidden="true" tabindex="-1"></a>En FAMD formal, las contribuciones respetan masas y pesos. La lógica interpretativa es la misma que en MCA: una categoría puede estar lejos, pero si contribuye poco o está mal representada, no debe dominar la lectura.</span>
+<span id="cb15-295"><a href="#cb15-295" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-296"><a href="#cb15-296" aria-hidden="true" tabindex="-1"></a><span class="fu">## Visualización conjunta</span></span>
+<span id="cb15-297"><a href="#cb15-297" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-298"><a href="#cb15-298" aria-hidden="true" tabindex="-1"></a>Una visualización conjunta puede mostrar individuos y categorías. Con base R hacemos una versión sencilla con las categorías más asociadas a las dos primeras dimensiones.</span>
+<span id="cb15-299"><a href="#cb15-299" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-302"><a href="#cb15-302" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb15-303"><a href="#cb15-303" aria-hidden="true" tabindex="-1"></a>cat_norma <span class="ot">&lt;-</span> <span class="fu">rowSums</span>(cargas_cat<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb15-304"><a href="#cb15-304" aria-hidden="true" tabindex="-1"></a>destacadas <span class="ot">&lt;-</span> <span class="fu">names</span>(<span class="fu">sort</span>(cat_norma, <span class="at">decreasing =</span> <span class="cn">TRUE</span>))[<span class="dv">1</span><span class="sc">:</span><span class="dv">6</span>]</span>
+<span id="cb15-305"><a href="#cb15-305" aria-hidden="true" tabindex="-1"></a>coords <span class="sc">|&gt;</span></span>
+<span id="cb15-306"><a href="#cb15-306" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">modelo =</span> <span class="fu">rownames</span>(mtcars)) <span class="sc">|&gt;</span></span>
+<span id="cb15-307"><a href="#cb15-307" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(PC1, PC2)) <span class="sc">+</span></span>
+<span id="cb15-308"><a href="#cb15-308" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="dv">0</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">color =</span> <span class="st">"gray60"</span>) <span class="sc">+</span></span>
+<span id="cb15-309"><a href="#cb15-309" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="dv">0</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">color =</span> <span class="st">"gray60"</span>) <span class="sc">+</span></span>
+<span id="cb15-310"><a href="#cb15-310" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">color =</span> <span class="st">"gray55"</span>, <span class="at">size =</span> <span class="dv">2</span>, <span class="at">alpha =</span> <span class="fl">0.8</span>) <span class="sc">+</span></span>
+<span id="cb15-311"><a href="#cb15-311" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> modelo), <span class="at">nudge_y =</span> <span class="fl">0.15</span>, <span class="at">size =</span> <span class="fl">2.6</span>, <span class="at">color =</span> <span class="st">"gray30"</span>) <span class="sc">+</span></span>
+<span id="cb15-312"><a href="#cb15-312" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(</span>
+<span id="cb15-313"><a href="#cb15-313" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> <span class="fu">as_tibble</span>(cargas_cat[destacadas, <span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>] <span class="sc">*</span> <span class="dv">4</span>, <span class="at">rownames =</span> <span class="st">"categoria"</span>),</span>
+<span id="cb15-314"><a href="#cb15-314" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(PC1, PC2),</span>
+<span id="cb15-315"><a href="#cb15-315" aria-hidden="true" tabindex="-1"></a>    <span class="at">inherit.aes =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb15-316"><a href="#cb15-316" aria-hidden="true" tabindex="-1"></a>    <span class="at">shape =</span> <span class="dv">17</span>,</span>
+<span id="cb15-317"><a href="#cb15-317" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">"#d73027"</span>,</span>
+<span id="cb15-318"><a href="#cb15-318" aria-hidden="true" tabindex="-1"></a>    <span class="at">size =</span> <span class="dv">3</span></span>
+<span id="cb15-319"><a href="#cb15-319" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb15-320"><a href="#cb15-320" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(</span>
+<span id="cb15-321"><a href="#cb15-321" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> <span class="fu">as_tibble</span>(cargas_cat[destacadas, <span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>] <span class="sc">*</span> <span class="dv">4</span>, <span class="at">rownames =</span> <span class="st">"categoria"</span>),</span>
+<span id="cb15-322"><a href="#cb15-322" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(PC1, PC2, <span class="at">label =</span> categoria),</span>
+<span id="cb15-323"><a href="#cb15-323" aria-hidden="true" tabindex="-1"></a>    <span class="at">inherit.aes =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb15-324"><a href="#cb15-324" aria-hidden="true" tabindex="-1"></a>    <span class="at">nudge_y =</span> <span class="fl">0.2</span>,</span>
+<span id="cb15-325"><a href="#cb15-325" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">"#d73027"</span>,</span>
+<span id="cb15-326"><a href="#cb15-326" aria-hidden="true" tabindex="-1"></a>    <span class="at">size =</span> <span class="dv">3</span></span>
+<span id="cb15-327"><a href="#cb15-327" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb15-328"><a href="#cb15-328" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Individuos y categorías destacadas"</span>, <span class="at">x =</span> <span class="st">"Dimensión 1"</span>, <span class="at">y =</span> <span class="st">"Dimensión 2"</span>) <span class="sc">+</span></span>
+<span id="cb15-329"><a href="#cb15-329" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span>
+<span id="cb15-330"><a href="#cb15-330" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb15-331"><a href="#cb15-331" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-332"><a href="#cb15-332" aria-hidden="true" tabindex="-1"></a>Esta figura es orientativa. En informes formales conviene usar herramientas específicas de FAMD cuando estén disponibles, porque respetan mejor pesos, contribuciones y cos².</span>
+<span id="cb15-333"><a href="#cb15-333" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-334"><a href="#cb15-334" aria-hidden="true" tabindex="-1"></a><span class="fu">## FAMD y clustering posterior</span></span>
+<span id="cb15-335"><a href="#cb15-335" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-336"><a href="#cb15-336" aria-hidden="true" tabindex="-1"></a>Las coordenadas factoriales pueden usarse como entrada para clustering. Esto suele reducir ruido y permite combinar variables mixtas en una representación común.</span>
+<span id="cb15-337"><a href="#cb15-337" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-340"><a href="#cb15-340" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb15-341"><a href="#cb15-341" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb15-342"><a href="#cb15-342" aria-hidden="true" tabindex="-1"></a>cl <span class="ot">&lt;-</span> <span class="fu">kmeans</span>(pca_mix<span class="sc">$</span>x[, <span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>], <span class="at">centers =</span> <span class="dv">3</span>, <span class="at">nstart =</span> <span class="dv">25</span>)<span class="sc">$</span>cluster</span>
+<span id="cb15-343"><a href="#cb15-343" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(<span class="fu">table</span>(<span class="at">cluster =</span> cl, <span class="at">transmision =</span> mtcars_mixed<span class="sc">$</span>am))</span>
+<span id="cb15-344"><a href="#cb15-344" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb15-345"><a href="#cb15-345" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-346"><a href="#cb15-346" aria-hidden="true" tabindex="-1"></a>Después del clustering hay que volver a las variables originales para caracterizar grupos.</span>
+<span id="cb15-347"><a href="#cb15-347" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-350"><a href="#cb15-350" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb15-351"><a href="#cb15-351" aria-hidden="true" tabindex="-1"></a><span class="fu">aggregate</span>(num, <span class="at">by =</span> <span class="fu">list</span>(<span class="at">cluster =</span> cl), mean) <span class="sc">|&gt;</span></span>
+<span id="cb15-352"><a href="#cb15-352" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">digits =</span> <span class="dv">2</span>)</span>
+<span id="cb15-353"><a href="#cb15-353" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(<span class="fu">table</span>(<span class="at">cluster =</span> cl, <span class="at">cilindros =</span> mtcars_mixed<span class="sc">$</span>cyl))</span>
+<span id="cb15-354"><a href="#cb15-354" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb15-355"><a href="#cb15-355" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-356"><a href="#cb15-356" aria-hidden="true" tabindex="-1"></a><span class="fu">## Relación con PCA, MCA y Gower</span></span>
+<span id="cb15-357"><a href="#cb15-357" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-358"><a href="#cb15-358" aria-hidden="true" tabindex="-1"></a>FAMD toma de PCA la idea de ejes de máxima inercia para variables numéricas estandarizadas. Toma de MCA la representación de modalidades, masas, distancia $\chi^2$, contribuciones y cos². Se relaciona con Gower porque ambas estrategias comparan individuos con datos mixtos.</span>
+<span id="cb15-359"><a href="#cb15-359" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-360"><a href="#cb15-360" aria-hidden="true" tabindex="-1"></a>La diferencia es que Gower se centra en una matriz de disimilitudes, útil para clustering. FAMD construye ejes factoriales, útiles para visualizar, interpretar variables y luego, si se desea, hacer clustering sobre coordenadas.</span>
+<span id="cb15-361"><a href="#cb15-361" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-362"><a href="#cb15-362" aria-hidden="true" tabindex="-1"></a><span class="fu">## Limitaciones</span></span>
+<span id="cb15-363"><a href="#cb15-363" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-364"><a href="#cb15-364" aria-hidden="true" tabindex="-1"></a>FAMD no elimina la necesidad de seleccionar variables. Categorías raras, variables redundantes o codificaciones poco justificadas pueden distorsionar los ejes.</span>
+<span id="cb15-365"><a href="#cb15-365" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-366"><a href="#cb15-366" aria-hidden="true" tabindex="-1"></a>Limitaciones concretas:</span>
+<span id="cb15-367"><a href="#cb15-367" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-368"><a href="#cb15-368" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>las categorías raras pueden quedar sobrerrepresentadas;</span>
+<span id="cb15-369"><a href="#cb15-369" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>variables categóricas con muchas modalidades requieren revisión;</span>
+<span id="cb15-370"><a href="#cb15-370" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>variables numéricas muy asimétricas pueden necesitar transformación;</span>
+<span id="cb15-371"><a href="#cb15-371" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>los ejes son lineales en el espacio transformado;</span>
+<span id="cb15-372"><a href="#cb15-372" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>la interpretación depende de qué variables fueron activas;</span>
+<span id="cb15-373"><a href="#cb15-373" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>con pocas observaciones, los mapas pueden ser inestables.</span>
+<span id="cb15-374"><a href="#cb15-374" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-375"><a href="#cb15-375" aria-hidden="true" tabindex="-1"></a><span class="fu">## Errores frecuentes</span></span>
+<span id="cb15-376"><a href="#cb15-376" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-377"><a href="#cb15-377" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Convertir factores en números y aplicar PCA.</span>
+<span id="cb15-378"><a href="#cb15-378" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Incluir demasiadas categorías raras.</span>
+<span id="cb15-379"><a href="#cb15-379" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Interpretar categorías alejadas sin revisar frecuencia, contribución y cos².</span>
+<span id="cb15-380"><a href="#cb15-380" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Usar FAMD como caja negra antes de definir variables activas.</span>
+<span id="cb15-381"><a href="#cb15-381" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Confundir variables suplementarias con variables activas.</span>
+<span id="cb15-382"><a href="#cb15-382" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Hacer clustering sobre dimensiones sin revisar cuánta inercia explican.</span>
+<span id="cb15-383"><a href="#cb15-383" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Nombrar ejes solo por una categoría llamativa y no por el conjunto de contribuciones.</span>
+<span id="cb15-384"><a href="#cb15-384" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-385"><a href="#cb15-385" aria-hidden="true" tabindex="-1"></a><span class="fu">## Resumen del capítulo</span></span>
+<span id="cb15-386"><a href="#cb15-386" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-387"><a href="#cb15-387" aria-hidden="true" tabindex="-1"></a>FAMD ofrece una representación factorial para datos mixtos. Estandariza variables numéricas, transforma variables categóricas siguiendo la lógica de MCA y construye ejes comunes de inercia. Su utilidad depende de equilibrar bloques, distinguir variables activas y suplementarias, revisar frecuencias de categorías e interpretar coordenadas con contribuciones y cos².</span>
+<span id="cb15-388"><a href="#cb15-388" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-389"><a href="#cb15-389" aria-hidden="true" tabindex="-1"></a><span class="fu">## Ejercicios propuestos</span></span>
+<span id="cb15-390"><a href="#cb15-390" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-391"><a href="#cb15-391" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>Repite el análisis dejando <span class="in">`am`</span> fuera de las variables activas y úsala solo para colorear.</span>
+<span id="cb15-392"><a href="#cb15-392" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>Identifica qué categorías de <span class="in">`mtcars_mixed`</span> tienen pocos casos.</span>
+<span id="cb15-393"><a href="#cb15-393" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>Aplica clustering a las primeras dimensiones y describe los grupos.</span>
+<span id="cb15-394"><a href="#cb15-394" aria-hidden="true" tabindex="-1"></a><span class="ss">4. </span>Compara una distancia de Gower con clustering sobre coordenadas FAMD.</span>
+<span id="cb15-395"><a href="#cb15-395" aria-hidden="true" tabindex="-1"></a><span class="ss">5. </span>Explica por qué una variable categórica con muchas modalidades puede dominar si no se pondera.</span>
+<span id="cb15-396"><a href="#cb15-396" aria-hidden="true" tabindex="-1"></a><span class="ss">6. </span>Propón qué variables de un dataset musical serían numéricas, categóricas, activas y suplementarias.</span>
+</code></pre></div><button title="Copiar al portapapeles" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
+</div></div></div></div></div>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

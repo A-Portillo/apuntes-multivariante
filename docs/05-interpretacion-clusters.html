@@ -1,0 +1,1930 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.18">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>7&nbsp; Interpretación de clusters – Técnicas Multivariantes Aplicadas con R</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./06-clustering-variables.html" rel="next">
+<link href="./04-kmeans-pam.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-5dd1010b9d59184d24b3865882688ef7.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No se han encontrado resultados",
+    "search-matching-documents-text": "documentos encontrados",
+    "search-copy-link-title": "Copiar el enlace en la búsqueda",
+    "search-hide-matches-text": "Ocultar resultados adicionales",
+    "search-more-match-text": "resultado adicional en este documento",
+    "search-more-matches-text": "resultados adicionales en este documento",
+    "search-clear-button-title": "Borrar",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancelar",
+    "search-submit-button-title": "Enviar",
+    "search-label": "Buscar"
+  }
+}</script>
+
+
+</head>
+
+<body class="nav-sidebar floating quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./02-distancias.html">Bloque 1. Análisis cluster</a></li><li class="breadcrumb-item"><a href="./05-interpretacion-clusters.html"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Interpretación de clusters</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Buscar" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Técnicas Multivariantes Aplicadas con R</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Buscar"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Técnicas Multivariantes Aplicadas con R</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./00-presentacion.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Presentación de la asignatura</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01-introduccion.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Introducción conceptual</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Bloque 1. Análisis cluster</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02-distancias.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Distancias y similitud</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03-clustering-jerarquico.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Clustering jerárquico</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04-kmeans-pam.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">k-means y PAM</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./05-interpretacion-clusters.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Interpretación de clusters</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./06-clustering-variables.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Clustering de variables</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Bloque 2. Reducción de dimensión</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./07-pca.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Análisis de componentes principales</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./08-analisis-factorial.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Análisis factorial exploratorio</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Bloque 3. Análisis de correspondencias y datos mixtos</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./09-correspondencias.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Análisis de correspondencias simple</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./10-mca.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Análisis de correspondencias múltiples</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./11-famd.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">FAMD para datos mixtos</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
+ <span class="menu-text">Bloque 4. Análisis discriminante</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./12-discriminante.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Análisis discriminante</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
+ <span class="menu-text">Casos integradores</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./13-casos-integradores.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Casos integradores</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
+ <span class="menu-text">Ejercicios</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ejercicios.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Ejercicios conceptuales</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true">
+ <span class="menu-text">Apéndice práctico</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./tidyverse.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Guía rápida de tidyverse y dplyr</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Referencias</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Tabla de contenidos</h2>
+   
+  <ul>
+  <li><a href="#motivación-aplicada" id="toc-motivación-aplicada" class="nav-link active" data-scroll-target="#motivación-aplicada"><span class="header-section-number">7.1</span> Motivación aplicada</a></li>
+  <li><a href="#el-clustering-no-termina-con-etiquetas" id="toc-el-clustering-no-termina-con-etiquetas" class="nav-link" data-scroll-target="#el-clustering-no-termina-con-etiquetas"><span class="header-section-number">7.2</span> El clustering no termina con etiquetas</a></li>
+  <li><a href="#cuatro-niveles-que-no-deben-confundirse" id="toc-cuatro-niveles-que-no-deben-confundirse" class="nav-link" data-scroll-target="#cuatro-niveles-que-no-deben-confundirse"><span class="header-section-number">7.3</span> Cuatro niveles que no deben confundirse</a></li>
+  <li><a href="#perfil-medio-de-cada-cluster" id="toc-perfil-medio-de-cada-cluster" class="nav-link" data-scroll-target="#perfil-medio-de-cada-cluster"><span class="header-section-number">7.4</span> Perfil medio de cada cluster</a></li>
+  <li><a href="#heatmap-de-medias-estandarizadas" id="toc-heatmap-de-medias-estandarizadas" class="nav-link" data-scroll-target="#heatmap-de-medias-estandarizadas"><span class="header-section-number">7.5</span> Heatmap de medias estandarizadas</a></li>
+  <li><a href="#boxplots-por-cluster" id="toc-boxplots-por-cluster" class="nav-link" data-scroll-target="#boxplots-por-cluster"><span class="header-section-number">7.6</span> Boxplots por cluster</a></li>
+  <li><a href="#comparación-con-etiquetas-externas" id="toc-comparación-con-etiquetas-externas" class="nav-link" data-scroll-target="#comparación-con-etiquetas-externas"><span class="header-section-number">7.7</span> Comparación con etiquetas externas</a></li>
+  <li><a href="#nombrar-clusters" id="toc-nombrar-clusters" class="nav-link" data-scroll-target="#nombrar-clusters"><span class="header-section-number">7.8</span> Nombrar clusters</a></li>
+  <li><a href="#estabilidad-e-incertidumbre" id="toc-estabilidad-e-incertidumbre" class="nav-link" data-scroll-target="#estabilidad-e-incertidumbre"><span class="header-section-number">7.9</span> Estabilidad e incertidumbre</a></li>
+  <li><a href="#comparar-soluciones-alternativas" id="toc-comparar-soluciones-alternativas" class="nav-link" data-scroll-target="#comparar-soluciones-alternativas"><span class="header-section-number">7.10</span> Comparar soluciones alternativas</a></li>
+  <li><a href="#mini-informe-de-clustering" id="toc-mini-informe-de-clustering" class="nav-link" data-scroll-target="#mini-informe-de-clustering"><span class="header-section-number">7.11</span> Mini-informe de clustering</a></li>
+  <li><a href="#errores-frecuentes" id="toc-errores-frecuentes" class="nav-link" data-scroll-target="#errores-frecuentes"><span class="header-section-number">7.12</span> Errores frecuentes</a></li>
+  <li><a href="#resumen-del-capítulo" id="toc-resumen-del-capítulo" class="nav-link" data-scroll-target="#resumen-del-capítulo"><span class="header-section-number">7.13</span> Resumen del capítulo</a></li>
+  <li><a href="#ejercicios-propuestos" id="toc-ejercicios-propuestos" class="nav-link" data-scroll-target="#ejercicios-propuestos"><span class="header-section-number">7.14</span> Ejercicios propuestos</a></li>
+  <li><a href="#funciones-utilizadas" id="toc-funciones-utilizadas" class="nav-link" data-scroll-target="#funciones-utilizadas"><span class="header-section-number">7.15</span> Funciones utilizadas</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./02-distancias.html">Bloque 1. Análisis cluster</a></li><li class="breadcrumb-item"><a href="./05-interpretacion-clusters.html"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Interpretación de clusters</span></a></li></ol></nav>
+<div class="quarto-title">
+<div class="quarto-title-block"><div><h1 class="title"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Interpretación de clusters</span></h1><button type="button" class="btn code-tools-button dropdown-toggle" id="quarto-code-tools-menu" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi"></i> Código</button><ul class="dropdown-menu dropdown-menu-end" aria-labelelledby="quarto-code-tools-menu"><li><a id="quarto-show-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Mostrar todo el código</a></li><li><a id="quarto-hide-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Ocultar todo el código</a></li><li><hr class="dropdown-divider"></li><li><a id="quarto-view-source" class="dropdown-item" href="javascript:void(0)" role="button">Ver el código fuente</a></li></ul></div></div>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div class="cell">
+<details class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(knitr)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"FuncionesDistancias.R"</span>)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"FuncionesJerarquico.R"</span>)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"FuncionesKmeansPam.R"</span>)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"FuncionesInterpretación.R"</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<div class="callout callout-style-default callout-note callout-titled" title="Requisitos de las funciones auxiliares">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>Requisitos de las funciones auxiliares
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Las filas representan individuos y las columnas, variables. La asignación de clusters debe guardarse en una columna de los datos y su nombre se pasa como texto. Las variables utilizadas en resúmenes, mapas de calor y boxplots deben ser numéricas.</p>
+</div>
+</div>
+<section id="motivación-aplicada" class="level2" data-number="7.1">
+<h2 data-number="7.1" class="anchored" data-anchor-id="motivación-aplicada"><span class="header-section-number">7.1</span> Motivación aplicada</h2>
+<p>Obtener etiquetas de cluster es solo el primer paso. Si no sabemos qué caracteriza a cada grupo, el análisis no es comunicable.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Nombrar clusters es una decisión interpretativa; debe estar respaldada por variables que realmente diferencien los grupos.</p>
+</div>
+</div>
+</section>
+<section id="el-clustering-no-termina-con-etiquetas" class="level2" data-number="7.2">
+<h2 data-number="7.2" class="anchored" data-anchor-id="el-clustering-no-termina-con-etiquetas"><span class="header-section-number">7.2</span> El clustering no termina con etiquetas</h2>
+<p>Una etiqueta como <code>cluster 1</code> no significa nada por sí sola. Hay que describir tamaño, perfil medio, dispersión interna, variables distintivas y relación con etiquetas externas si existen.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>variables_cluster <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"mpg"</span>, <span class="st">"disp"</span>, <span class="st">"hp"</span>, <span class="st">"wt"</span>, <span class="st">"qsec"</span>)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>datos_escalados <span class="ot">&lt;-</span> <span class="fu">preparar_datos_distancias</span>(</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  mtcars,</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">variables =</span> variables_cluster</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>ajuste_kmeans <span class="ot">&lt;-</span> <span class="fu">kmeans</span>(datos_escalados, <span class="at">centers =</span> <span class="dv">3</span>, <span class="at">nstart =</span> <span class="dv">25</span>)</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>datos_cluster <span class="ot">&lt;-</span> mtcars <span class="sc">|&gt;</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">cluster =</span> <span class="fu">factor</span>(ajuste_kmeans<span class="sc">$</span>cluster),</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">transmision =</span> <span class="fu">factor</span>(am, <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"automático"</span>, <span class="st">"manual"</span>)),</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">cilindros =</span> <span class="fu">factor</span>(cyl)</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>resumen_particion <span class="ot">&lt;-</span> <span class="fu">resumir_particion</span>(</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>  mtcars,</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>  ajuste_kmeans<span class="sc">$</span>cluster,</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>  variables_cluster</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>resumen_particion <span class="sc">|&gt;</span></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(cluster, individuos) <span class="sc">|&gt;</span></span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">"Cluster"</span>, <span class="st">"Frecuencia"</span>))</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Cluster</th>
+<th style="text-align: right;">Frecuencia</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">1</td>
+<td style="text-align: right;">6</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2</td>
+<td style="text-align: right;">14</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">3</td>
+<td style="text-align: right;">12</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<section id="cuatro-niveles-que-no-deben-confundirse" class="level2" data-number="7.3">
+<h2 data-number="7.3" class="anchored" data-anchor-id="cuatro-niveles-que-no-deben-confundirse"><span class="header-section-number">7.3</span> Cuatro niveles que no deben confundirse</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Nivel</th>
+<th>Pregunta</th>
+<th>Evidencia habitual</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Descripción interna</td>
+<td>¿Cómo son los grupos según las variables que los construyeron?</td>
+<td>perfiles, dispersión y tamaños</td>
+</tr>
+<tr class="even">
+<td>Caracterización externa</td>
+<td>¿Cómo se relacionan con información que no entró en el ajuste?</td>
+<td>tablas de composición y variables suplementarias</td>
+</tr>
+<tr class="odd">
+<td>Evaluación</td>
+<td>¿Son separados, estables y útiles?</td>
+<td>silhouette, sensibilidad y comparación de soluciones</td>
+</tr>
+<tr class="even">
+<td>Explicación</td>
+<td>¿Por qué existen o qué los causa?</td>
+<td>requiere evidencia adicional; el clustering no la proporciona</td>
+</tr>
+</tbody>
+</table>
+<p>Una diferencia externa puede ayudar a poner nombre a los clusters, pero no demuestra que esa variable los haya causado. Del mismo modo, obtener perfiles interpretables no demuestra que sean clases naturales de la población.</p>
+</section>
+<section id="perfil-medio-de-cada-cluster" class="level2" data-number="7.4">
+<h2 data-number="7.4" class="anchored" data-anchor-id="perfil-medio-de-cada-cluster"><span class="header-section-number">7.4</span> Perfil medio de cada cluster</h2>
+<p>Las medias en variables originales son fáciles de comunicar.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>resumen_clusters <span class="ot">&lt;-</span> <span class="fu">tabla_resumen_clusters</span>(</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  datos_cluster,</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">cluster =</span> <span class="st">"cluster"</span>,</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">variables =</span> variables_cluster</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>resumen_clusters <span class="sc">|&gt;</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">c</span>(media, mediana, minimo, maximo, sd), <span class="sc">~</span> <span class="fu">round</span>(.x, <span class="dv">2</span>))) <span class="sc">|&gt;</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>()</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">cluster</th>
+<th style="text-align: left;">variable</th>
+<th style="text-align: right;">n</th>
+<th style="text-align: right;">media</th>
+<th style="text-align: right;">mediana</th>
+<th style="text-align: right;">minimo</th>
+<th style="text-align: right;">maximo</th>
+<th style="text-align: right;">sd</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">disp</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">86.65</td>
+<td style="text-align: right;">78.85</td>
+<td style="text-align: right;">71.10</td>
+<td style="text-align: right;">120.30</td>
+<td style="text-align: right;">18.37</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">hp</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">75.50</td>
+<td style="text-align: right;">66.00</td>
+<td style="text-align: right;">52.00</td>
+<td style="text-align: right;">113.00</td>
+<td style="text-align: right;">22.31</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">mpg</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">30.07</td>
+<td style="text-align: right;">30.40</td>
+<td style="text-align: right;">26.00</td>
+<td style="text-align: right;">33.90</td>
+<td style="text-align: right;">2.99</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">qsec</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">18.40</td>
+<td style="text-align: right;">18.71</td>
+<td style="text-align: right;">16.70</td>
+<td style="text-align: right;">19.90</td>
+<td style="text-align: right;">1.33</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">wt</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">1.87</td>
+<td style="text-align: right;">1.89</td>
+<td style="text-align: right;">1.51</td>
+<td style="text-align: right;">2.20</td>
+<td style="text-align: right;">0.28</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2</td>
+<td style="text-align: left;">disp</td>
+<td style="text-align: right;">14</td>
+<td style="text-align: right;">353.10</td>
+<td style="text-align: right;">350.50</td>
+<td style="text-align: right;">275.80</td>
+<td style="text-align: right;">472.00</td>
+<td style="text-align: right;">67.77</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">2</td>
+<td style="text-align: left;">hp</td>
+<td style="text-align: right;">14</td>
+<td style="text-align: right;">209.21</td>
+<td style="text-align: right;">192.50</td>
+<td style="text-align: right;">150.00</td>
+<td style="text-align: right;">335.00</td>
+<td style="text-align: right;">50.98</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2</td>
+<td style="text-align: left;">mpg</td>
+<td style="text-align: right;">14</td>
+<td style="text-align: right;">15.10</td>
+<td style="text-align: right;">15.20</td>
+<td style="text-align: right;">10.40</td>
+<td style="text-align: right;">19.20</td>
+<td style="text-align: right;">2.56</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">2</td>
+<td style="text-align: left;">qsec</td>
+<td style="text-align: right;">14</td>
+<td style="text-align: right;">16.77</td>
+<td style="text-align: right;">17.18</td>
+<td style="text-align: right;">14.50</td>
+<td style="text-align: right;">18.00</td>
+<td style="text-align: right;">1.20</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2</td>
+<td style="text-align: left;">wt</td>
+<td style="text-align: right;">14</td>
+<td style="text-align: right;">4.00</td>
+<td style="text-align: right;">3.76</td>
+<td style="text-align: right;">3.17</td>
+<td style="text-align: right;">5.42</td>
+<td style="text-align: right;">0.76</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">3</td>
+<td style="text-align: left;">disp</td>
+<td style="text-align: right;">12</td>
+<td style="text-align: right;">159.98</td>
+<td style="text-align: right;">153.35</td>
+<td style="text-align: right;">108.00</td>
+<td style="text-align: right;">258.00</td>
+<td style="text-align: right;">43.20</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">3</td>
+<td style="text-align: left;">hp</td>
+<td style="text-align: right;">12</td>
+<td style="text-align: right;">109.33</td>
+<td style="text-align: right;">109.50</td>
+<td style="text-align: right;">62.00</td>
+<td style="text-align: right;">175.00</td>
+<td style="text-align: right;">26.23</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">3</td>
+<td style="text-align: left;">mpg</td>
+<td style="text-align: right;">12</td>
+<td style="text-align: right;">20.92</td>
+<td style="text-align: right;">21.20</td>
+<td style="text-align: right;">17.80</td>
+<td style="text-align: right;">24.40</td>
+<td style="text-align: right;">1.96</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">3</td>
+<td style="text-align: left;">qsec</td>
+<td style="text-align: right;">12</td>
+<td style="text-align: right;">18.83</td>
+<td style="text-align: right;">18.75</td>
+<td style="text-align: right;">15.50</td>
+<td style="text-align: right;">22.90</td>
+<td style="text-align: right;">1.95</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">3</td>
+<td style="text-align: left;">wt</td>
+<td style="text-align: right;">12</td>
+<td style="text-align: right;">2.98</td>
+<td style="text-align: right;">3.01</td>
+<td style="text-align: right;">2.32</td>
+<td style="text-align: right;">3.46</td>
+<td style="text-align: right;">0.39</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>Si las variables tenían unidades distintas, las medias estandarizadas ayudan a comparar qué rasgos están por encima o por debajo de la media global.</p>
+<p>La media debe leerse junto con la mediana y la dispersión. Una diferencia entre medias puede proceder de un patrón general o de unas pocas observaciones extremas. Además, dos clusters con medias distintas pueden solaparse mucho: el perfil describe al conjunto, no a todos sus integrantes.</p>
+</section>
+<section id="heatmap-de-medias-estandarizadas" class="level2" data-number="7.5">
+<h2 data-number="7.5" class="anchored" data-anchor-id="heatmap-de-medias-estandarizadas"><span class="header-section-number">7.5</span> Heatmap de medias estandarizadas</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">crear_heatmap_clusters</span>(</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  datos_cluster,</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">cluster =</span> <span class="st">"cluster"</span>,</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">variables =</span> variables_cluster</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="05-interpretacion-clusters_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>El gráfico resume qué variables diferencian los grupos. Debe leerse junto con tamaños y variabilidad interna.</p>
+<p>La estandarización del heatmap es global: cada celda indica cuánto se aleja la media del cluster de la media total, en desviaciones típicas del conjunto. No es una probabilidad ni la proporción de individuos que presenta ese rasgo.</p>
+</section>
+<section id="boxplots-por-cluster" class="level2" data-number="7.6">
+<h2 data-number="7.6" class="anchored" data-anchor-id="boxplots-por-cluster"><span class="header-section-number">7.6</span> Boxplots por cluster</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">crear_boxplots_clusters</span>(</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  datos_cluster,</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">cluster =</span> <span class="st">"cluster"</span>,</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">variables =</span> variables_cluster</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="05-interpretacion-clusters_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Los boxplots muestran si la diferencia entre perfiles medios es estable o si hay solapamiento.</p>
+<p>Cuando la separación de cajas es clara, una variable distingue bien los grupos. Cuando hay mucho solapamiento, puede contribuir conjuntamente con otras variables sin servir por sí sola para asignar individuos. No conviene convertir un perfil multivariante en una regla basada en una única columna.</p>
+</section>
+<section id="comparación-con-etiquetas-externas" class="level2" data-number="7.7">
+<h2 data-number="7.7" class="anchored" data-anchor-id="comparación-con-etiquetas-externas"><span class="header-section-number">7.7</span> Comparación con etiquetas externas</h2>
+<p>Cuando existe una etiqueta externa, se puede cruzar con los clusters.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tabla_composicion_clusters</span>(</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  datos_cluster,</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">cluster =</span> <span class="st">"cluster"</span>,</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">variable =</span> <span class="st">"transmision"</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">caption =</span> <span class="st">"Composición de los clusters por transmisión"</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Composición de los clusters por transmisión</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;">cluster</th>
+<th style="text-align: left;">categoria</th>
+<th style="text-align: right;">frecuencia</th>
+<th style="text-align: right;">porcentaje</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">manual</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">100.0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2</td>
+<td style="text-align: left;">automático</td>
+<td style="text-align: right;">12</td>
+<td style="text-align: right;">85.7</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">2</td>
+<td style="text-align: left;">manual</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">14.3</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">3</td>
+<td style="text-align: left;">automático</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">58.3</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">3</td>
+<td style="text-align: left;">manual</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">41.7</td>
+</tr>
+</tbody>
+</table>
+</div>
+<details class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tabla_composicion_clusters</span>(</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  datos_cluster,</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">cluster =</span> <span class="st">"cluster"</span>,</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">variable =</span> <span class="st">"cilindros"</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">caption =</span> <span class="st">"Composición de los clusters por número de cilindros"</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Composición de los clusters por número de cilindros</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;">cluster</th>
+<th style="text-align: left;">categoria</th>
+<th style="text-align: right;">frecuencia</th>
+<th style="text-align: right;">porcentaje</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">4</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">100.0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2</td>
+<td style="text-align: left;">8</td>
+<td style="text-align: right;">14</td>
+<td style="text-align: right;">100.0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">3</td>
+<td style="text-align: left;">4</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">41.7</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">3</td>
+<td style="text-align: left;">6</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">58.3</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>Esta tabla no valida automáticamente el clustering, pero ayuda a interpretar qué estructura conocida captura.</p>
+<p>La variable externa debe incorporarse después de cerrar la partición. Si se elige el método o el número de grupos buscando deliberadamente que coincida con ella, deja de ser una comparación verdaderamente externa y aumenta el riesgo de interpretar una coincidencia buscada como validación independiente.</p>
+</section>
+<section id="nombrar-clusters" class="level2" data-number="7.8">
+<h2 data-number="7.8" class="anchored" data-anchor-id="nombrar-clusters"><span class="header-section-number">7.8</span> Nombrar clusters</h2>
+<p>Un nombre útil debe ser breve y estar justificado. En <code>mtcars</code>, por ejemplo, podríamos hablar de coches ligeros y eficientes frente a coches pesados y potentes si las medias lo sostienen.</p>
+<p>Una pauta razonable es usar dos o tres rasgos realmente distintivos, indicar la dirección respecto al conjunto y evitar etiquetas valorativas. «Alta potencia y mayor peso» comunica evidencia; «coches buenos» introduce un juicio que el análisis no ha medido.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>resumen_clusters <span class="sc">|&gt;</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(cluster, variable, media) <span class="sc">|&gt;</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">media =</span> <span class="fu">round</span>(media, <span class="dv">2</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>()</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">cluster</th>
+<th style="text-align: left;">variable</th>
+<th style="text-align: right;">media</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">disp</td>
+<td style="text-align: right;">86.65</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">hp</td>
+<td style="text-align: right;">75.50</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">mpg</td>
+<td style="text-align: right;">30.07</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">qsec</td>
+<td style="text-align: right;">18.40</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">wt</td>
+<td style="text-align: right;">1.87</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2</td>
+<td style="text-align: left;">disp</td>
+<td style="text-align: right;">353.10</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">2</td>
+<td style="text-align: left;">hp</td>
+<td style="text-align: right;">209.21</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2</td>
+<td style="text-align: left;">mpg</td>
+<td style="text-align: right;">15.10</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">2</td>
+<td style="text-align: left;">qsec</td>
+<td style="text-align: right;">16.77</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2</td>
+<td style="text-align: left;">wt</td>
+<td style="text-align: right;">4.00</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">3</td>
+<td style="text-align: left;">disp</td>
+<td style="text-align: right;">159.98</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">3</td>
+<td style="text-align: left;">hp</td>
+<td style="text-align: right;">109.33</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">3</td>
+<td style="text-align: left;">mpg</td>
+<td style="text-align: right;">20.92</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">3</td>
+<td style="text-align: left;">qsec</td>
+<td style="text-align: right;">18.83</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">3</td>
+<td style="text-align: left;">wt</td>
+<td style="text-align: right;">2.98</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<section id="estabilidad-e-incertidumbre" class="level2" data-number="7.9">
+<h2 data-number="7.9" class="anchored" data-anchor-id="estabilidad-e-incertidumbre"><span class="header-section-number">7.9</span> Estabilidad e incertidumbre</h2>
+<p>Los clusters pueden cambiar con pequeñas modificaciones: otra semilla, otra selección de variables o una observación atípica. Una comprobación sencilla es repetir k-means con varias semillas y comparar tamaños o tablas cruzadas.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>evaluacion_semillas <span class="ot">&lt;-</span> <span class="fu">evaluar_semillas_kmeans</span>(</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  datos_escalados,</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">k =</span> <span class="dv">3</span>,</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">semillas =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>,</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">ajuste_referencia =</span> ajuste_kmeans</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>evaluacion_semillas<span class="sc">$</span>tabla <span class="sc">|&gt;</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">where</span>(is.numeric), <span class="sc">~</span> <span class="fu">round</span>(.x, <span class="dv">3</span>))) <span class="sc">|&gt;</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>()</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: right;">semilla</th>
+<th style="text-align: right;">suma_cuadrados_interna</th>
+<th style="text-align: right;">ari_con_referencia</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">56.425</td>
+<td style="text-align: right;">0.475</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">52.885</td>
+<td style="text-align: right;">0.270</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">54.100</td>
+<td style="text-align: right;">0.485</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">51.135</td>
+<td style="text-align: right;">1.000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">53.190</td>
+<td style="text-align: right;">0.748</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">53.504</td>
+<td style="text-align: right;">0.748</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">53.504</td>
+<td style="text-align: right;">0.748</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">51.135</td>
+<td style="text-align: right;">1.000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">9</td>
+<td style="text-align: right;">56.740</td>
+<td style="text-align: right;">0.661</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">52.885</td>
+<td style="text-align: right;">0.270</td>
+</tr>
+</tbody>
+</table>
+</div>
+<details class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>evaluacion_semillas<span class="sc">$</span>grafico</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="05-interpretacion-clusters_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>La estabilidad frente a semillas solo estudia la parte algorítmica. También conviene preguntar si los perfiles sobreviven a retirar observaciones extremas, cambiar variables redundantes o considerar otro número de clusters razonable. Un cluster que cambia de número no es inestable: las etiquetas son arbitrarias. Lo importante es si cambian sus miembros y su significado.</p>
+</section>
+<section id="comparar-soluciones-alternativas" class="level2" data-number="7.10">
+<h2 data-number="7.10" class="anchored" data-anchor-id="comparar-soluciones-alternativas"><span class="header-section-number">7.10</span> Comparar soluciones alternativas</h2>
+<p>Cuando dos soluciones son defendibles, la comparación debería centrarse en sus consecuencias:</p>
+<ul>
+<li>qué grupo se divide o se fusiona;</li>
+<li>si aparecen clusters demasiado pequeños;</li>
+<li>qué perfiles dejan de distinguirse;</li>
+<li>qué individuos quedan en la frontera;</li>
+<li>si las conclusiones externas se mantienen.</li>
+</ul>
+<p>Una solución más detallada no es automáticamente mejor. Puede revelar un subperfil útil o fragmentar artificialmente un grupo. La decisión depende de si la ganancia interpretativa compensa la pérdida de estabilidad y simplicidad.</p>
+</section>
+<section id="mini-informe-de-clustering" class="level2" data-number="7.11">
+<h2 data-number="7.11" class="anchored" data-anchor-id="mini-informe-de-clustering"><span class="header-section-number">7.11</span> Mini-informe de clustering</h2>
+<p>Un informe mínimo debería responder:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Elemento</th>
+<th>Pregunta que debe quedar contestada</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Objetivo</td>
+<td>¿Qué estructura queríamos encontrar?</td>
+</tr>
+<tr class="even">
+<td>Construcción</td>
+<td>¿Qué variables y definición de semejanza usamos?</td>
+</tr>
+<tr class="odd">
+<td>Elección</td>
+<td>¿Por qué ese método y ese número de clusters?</td>
+</tr>
+<tr class="even">
+<td>Perfiles</td>
+<td>¿Qué distingue realmente a cada grupo?</td>
+</tr>
+<tr class="odd">
+<td>Incertidumbre</td>
+<td>¿Qué decisiones alternativas cambian el resultado?</td>
+</tr>
+<tr class="even">
+<td>Alcance</td>
+<td>¿Qué no podemos concluir a partir del análisis?</td>
+</tr>
+</tbody>
+</table>
+<p>No es necesario presentar toda la exploración realizada. Sí hay que conservar la evidencia que permite entender la decisión final y sus límites.</p>
+</section>
+<section id="errores-frecuentes" class="level2" data-number="7.12">
+<h2 data-number="7.12" class="anchored" data-anchor-id="errores-frecuentes"><span class="header-section-number">7.12</span> Errores frecuentes</h2>
+<ul>
+<li>Describir clusters solo con el algoritmo usado.</li>
+<li>Nombrar grupos a partir de una única variable.</li>
+<li>Ignorar clusters pequeños.</li>
+<li>Describir solo medias y ocultar la dispersión o el solapamiento.</li>
+<li>Usar una variable activa como si fuera validación externa.</li>
+<li>Confundir estabilidad frente a semillas con validez general.</li>
+<li>Interpretar una asociación externa como causalidad.</li>
+<li>Presentar etiquetas de cluster como clases naturales sin evidencia adicional.</li>
+</ul>
+</section>
+<section id="resumen-del-capítulo" class="level2" data-number="7.13">
+<h2 data-number="7.13" class="anchored" data-anchor-id="resumen-del-capítulo"><span class="header-section-number">7.13</span> Resumen del capítulo</h2>
+<p>Interpretar clusters exige volver a los datos originales, caracterizar perfiles y reconocer incertidumbre. La etiqueta de cluster es una ayuda, no una conclusión completa.</p>
+</section>
+<section id="ejercicios-propuestos" class="level2" data-number="7.14">
+<h2 data-number="7.14" class="anchored" data-anchor-id="ejercicios-propuestos"><span class="header-section-number">7.14</span> Ejercicios propuestos</h2>
+<ol type="1">
+<li>Crea un perfil de clusters para <code>mtcars</code> usando otro subconjunto de variables.</li>
+<li>Construye una tabla cluster por transmisión (<code>am</code>) y comenta si ayuda a interpretar los grupos.</li>
+<li>Redacta tres nombres posibles para clusters de <code>mtcars</code> y justifícalos con medias.</li>
+</ol>
+</section>
+<section id="funciones-utilizadas" class="level2" data-number="7.15">
+<h2 data-number="7.15" class="anchored" data-anchor-id="funciones-utilizadas"><span class="header-section-number">7.15</span> Funciones utilizadas</h2>
+<p>Las funciones principales empleadas en este tema son:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Función</th>
+<th>Para qué se usa</th>
+<th>Uso básico</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>kmeans()</code></td>
+<td>Obtener la partición que se quiere interpretar.</td>
+<td><code>kmeans(datos, centers = k, nstart = 25)</code></td>
+</tr>
+<tr class="even">
+<td><code>preparar_datos_distancias()</code></td>
+<td>Seleccionar y estandarizar las variables activas.</td>
+<td><code>preparar_datos_distancias(datos, variables)</code></td>
+</tr>
+<tr class="odd">
+<td><code>tabla_resumen_clusters()</code></td>
+<td>Calcular medidas descriptivas por cluster y variable.</td>
+<td><code>tabla_resumen_clusters(datos, cluster, variables)</code></td>
+</tr>
+<tr class="even">
+<td><code>crear_heatmap_clusters()</code></td>
+<td>Mostrar las medias estandarizadas de los clusters.</td>
+<td><code>crear_heatmap_clusters(datos, cluster, variables)</code></td>
+</tr>
+<tr class="odd">
+<td><code>crear_boxplots_clusters()</code></td>
+<td>Comparar las distribuciones de varias variables entre clusters.</td>
+<td><code>crear_boxplots_clusters(datos, cluster, variables)</code></td>
+</tr>
+<tr class="even">
+<td><code>tabla_composicion_clusters()</code></td>
+<td>Describir cada cluster mediante una variable externa.</td>
+<td><code>tabla_composicion_clusters(datos, cluster, variable)</code></td>
+</tr>
+<tr class="odd">
+<td><code>evaluar_semillas_kmeans()</code></td>
+<td>Estudiar la sensibilidad de k-means a la inicialización.</td>
+<td><code>evaluar_semillas_kmeans(datos, k, semillas)</code></td>
+</tr>
+</tbody>
+</table>
+
+
+<!-- -->
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copiado");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copiado");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+    const viewSource = window.document.getElementById('quarto-view-source') ||
+                       window.document.getElementById('quarto-code-tools-source');
+    if (viewSource) {
+      const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+      viewSource.addEventListener("click", function(e) {
+        if (sourceUrl) {
+          // rstudio viewer pane
+          if (/\bcapabilities=\b/.test(window.location)) {
+            window.open(sourceUrl);
+          } else {
+            window.location.href = sourceUrl;
+          }
+        } else {
+          const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+          modal.show();
+        }
+        return false;
+      });
+    }
+    function toggleCodeHandler(show) {
+      return function(e) {
+        const cellDetails = window.document.querySelectorAll(".cell details.code-fold");
+        for (let i=0; i<cellDetails.length; i++) {
+          const details = cellDetails[i];
+          if (show) {
+            details.open = true;
+          } else {
+            details.removeAttribute("open");
+          }
+        }
+        const cellCodeDivs = window.document.querySelectorAll(".cell div.sourceCode.cell-code");
+        const fromCls = show ? "hidden" : "unhidden";
+        const toCls = show ? "unhidden" : "hidden";
+        for (let i=0; i<cellCodeDivs.length; i++) {
+          const codeDiv = cellCodeDivs[i];
+          if (codeDiv.classList.contains(fromCls)) {
+            codeDiv.classList.remove(fromCls);
+            codeDiv.classList.add(toCls);
+          } 
+        }
+        return false;
+      }
+    }
+    const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+    if (hideAllCode) {
+      hideAllCode.addEventListener("click", toggleCodeHandler(false));
+    }
+    const showAllCode = window.document.getElementById("quarto-show-all-code");
+    if (showAllCode) {
+      showAllCode.addEventListener("click", toggleCodeHandler(true));
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./04-kmeans-pam.html" class="pagination-link" aria-label="k-means y PAM">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">k-means y PAM</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./06-clustering-variables.html" class="pagination-link" aria-label="Clustering de variables">
+        <span class="nav-page-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Clustering de variables</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Ejecutar el código</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu"># Interpretación de clusters</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: setup</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: false</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(knitr)</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"FuncionesDistancias.R"</span>)</span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"FuncionesJerarquico.R"</span>)</span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"FuncionesKmeansPam.R"</span>)</span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"FuncionesInterpretación.R"</span>)</span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>::: {.callout-note title="Requisitos de las funciones auxiliares"}</span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a>Las filas representan individuos y las columnas, variables. La asignación de</span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a>clusters debe guardarse en una columna de los datos y su nombre se pasa como</span>
+<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a>texto. Las variables utilizadas en resúmenes, mapas de calor y boxplots deben</span>
+<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a>ser numéricas.</span>
+<span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb11-22"><a href="#cb11-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-23"><a href="#cb11-23" aria-hidden="true" tabindex="-1"></a><span class="fu">## Motivación aplicada</span></span>
+<span id="cb11-24"><a href="#cb11-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-25"><a href="#cb11-25" aria-hidden="true" tabindex="-1"></a>Obtener etiquetas de cluster es solo el primer paso. Si no sabemos qué caracteriza a cada grupo, el análisis no es comunicable.</span>
+<span id="cb11-26"><a href="#cb11-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-27"><a href="#cb11-27" aria-hidden="true" tabindex="-1"></a>::: {.callout-tip}</span>
+<span id="cb11-28"><a href="#cb11-28" aria-hidden="true" tabindex="-1"></a>Nombrar clusters es una decisión interpretativa; debe estar respaldada por variables que realmente diferencien los grupos.</span>
+<span id="cb11-29"><a href="#cb11-29" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb11-30"><a href="#cb11-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-31"><a href="#cb11-31" aria-hidden="true" tabindex="-1"></a><span class="fu">## El clustering no termina con etiquetas</span></span>
+<span id="cb11-32"><a href="#cb11-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-33"><a href="#cb11-33" aria-hidden="true" tabindex="-1"></a>Una etiqueta como <span class="in">`cluster 1`</span> no significa nada por sí sola. Hay que describir tamaño, perfil medio, dispersión interna, variables distintivas y relación con etiquetas externas si existen.</span>
+<span id="cb11-34"><a href="#cb11-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-37"><a href="#cb11-37" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb11-38"><a href="#cb11-38" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb11-39"><a href="#cb11-39" aria-hidden="true" tabindex="-1"></a>variables_cluster <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"mpg"</span>, <span class="st">"disp"</span>, <span class="st">"hp"</span>, <span class="st">"wt"</span>, <span class="st">"qsec"</span>)</span>
+<span id="cb11-40"><a href="#cb11-40" aria-hidden="true" tabindex="-1"></a>datos_escalados <span class="ot">&lt;-</span> <span class="fu">preparar_datos_distancias</span>(</span>
+<span id="cb11-41"><a href="#cb11-41" aria-hidden="true" tabindex="-1"></a>  mtcars,</span>
+<span id="cb11-42"><a href="#cb11-42" aria-hidden="true" tabindex="-1"></a>  <span class="at">variables =</span> variables_cluster</span>
+<span id="cb11-43"><a href="#cb11-43" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb11-44"><a href="#cb11-44" aria-hidden="true" tabindex="-1"></a>ajuste_kmeans <span class="ot">&lt;-</span> <span class="fu">kmeans</span>(datos_escalados, <span class="at">centers =</span> <span class="dv">3</span>, <span class="at">nstart =</span> <span class="dv">25</span>)</span>
+<span id="cb11-45"><a href="#cb11-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-46"><a href="#cb11-46" aria-hidden="true" tabindex="-1"></a>datos_cluster <span class="ot">&lt;-</span> mtcars <span class="sc">|&gt;</span></span>
+<span id="cb11-47"><a href="#cb11-47" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb11-48"><a href="#cb11-48" aria-hidden="true" tabindex="-1"></a>    <span class="at">cluster =</span> <span class="fu">factor</span>(ajuste_kmeans<span class="sc">$</span>cluster),</span>
+<span id="cb11-49"><a href="#cb11-49" aria-hidden="true" tabindex="-1"></a>    <span class="at">transmision =</span> <span class="fu">factor</span>(am, <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"automático"</span>, <span class="st">"manual"</span>)),</span>
+<span id="cb11-50"><a href="#cb11-50" aria-hidden="true" tabindex="-1"></a>    <span class="at">cilindros =</span> <span class="fu">factor</span>(cyl)</span>
+<span id="cb11-51"><a href="#cb11-51" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb11-52"><a href="#cb11-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-53"><a href="#cb11-53" aria-hidden="true" tabindex="-1"></a>resumen_particion <span class="ot">&lt;-</span> <span class="fu">resumir_particion</span>(</span>
+<span id="cb11-54"><a href="#cb11-54" aria-hidden="true" tabindex="-1"></a>  mtcars,</span>
+<span id="cb11-55"><a href="#cb11-55" aria-hidden="true" tabindex="-1"></a>  ajuste_kmeans<span class="sc">$</span>cluster,</span>
+<span id="cb11-56"><a href="#cb11-56" aria-hidden="true" tabindex="-1"></a>  variables_cluster</span>
+<span id="cb11-57"><a href="#cb11-57" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb11-58"><a href="#cb11-58" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-59"><a href="#cb11-59" aria-hidden="true" tabindex="-1"></a>resumen_particion <span class="sc">|&gt;</span></span>
+<span id="cb11-60"><a href="#cb11-60" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(cluster, individuos) <span class="sc">|&gt;</span></span>
+<span id="cb11-61"><a href="#cb11-61" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">"Cluster"</span>, <span class="st">"Frecuencia"</span>))</span>
+<span id="cb11-62"><a href="#cb11-62" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb11-63"><a href="#cb11-63" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-64"><a href="#cb11-64" aria-hidden="true" tabindex="-1"></a><span class="fu">## Cuatro niveles que no deben confundirse</span></span>
+<span id="cb11-65"><a href="#cb11-65" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-66"><a href="#cb11-66" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Nivel <span class="pp">|</span> Pregunta <span class="pp">|</span> Evidencia habitual <span class="pp">|</span></span>
+<span id="cb11-67"><a href="#cb11-67" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|---|</span></span>
+<span id="cb11-68"><a href="#cb11-68" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Descripción interna <span class="pp">|</span> ¿Cómo son los grupos según las variables que los construyeron? <span class="pp">|</span> perfiles, dispersión y tamaños <span class="pp">|</span></span>
+<span id="cb11-69"><a href="#cb11-69" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Caracterización externa <span class="pp">|</span> ¿Cómo se relacionan con información que no entró en el ajuste? <span class="pp">|</span> tablas de composición y variables suplementarias <span class="pp">|</span></span>
+<span id="cb11-70"><a href="#cb11-70" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Evaluación <span class="pp">|</span> ¿Son separados, estables y útiles? <span class="pp">|</span> silhouette, sensibilidad y comparación de soluciones <span class="pp">|</span></span>
+<span id="cb11-71"><a href="#cb11-71" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Explicación <span class="pp">|</span> ¿Por qué existen o qué los causa? <span class="pp">|</span> requiere evidencia adicional; el clustering no la proporciona <span class="pp">|</span></span>
+<span id="cb11-72"><a href="#cb11-72" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-73"><a href="#cb11-73" aria-hidden="true" tabindex="-1"></a>Una diferencia externa puede ayudar a poner nombre a los clusters, pero no</span>
+<span id="cb11-74"><a href="#cb11-74" aria-hidden="true" tabindex="-1"></a>demuestra que esa variable los haya causado. Del mismo modo, obtener perfiles</span>
+<span id="cb11-75"><a href="#cb11-75" aria-hidden="true" tabindex="-1"></a>interpretables no demuestra que sean clases naturales de la población.</span>
+<span id="cb11-76"><a href="#cb11-76" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-77"><a href="#cb11-77" aria-hidden="true" tabindex="-1"></a><span class="fu">## Perfil medio de cada cluster</span></span>
+<span id="cb11-78"><a href="#cb11-78" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-79"><a href="#cb11-79" aria-hidden="true" tabindex="-1"></a>Las medias en variables originales son fáciles de comunicar.</span>
+<span id="cb11-80"><a href="#cb11-80" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-83"><a href="#cb11-83" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb11-84"><a href="#cb11-84" aria-hidden="true" tabindex="-1"></a>resumen_clusters <span class="ot">&lt;-</span> <span class="fu">tabla_resumen_clusters</span>(</span>
+<span id="cb11-85"><a href="#cb11-85" aria-hidden="true" tabindex="-1"></a>  datos_cluster,</span>
+<span id="cb11-86"><a href="#cb11-86" aria-hidden="true" tabindex="-1"></a>  <span class="at">cluster =</span> <span class="st">"cluster"</span>,</span>
+<span id="cb11-87"><a href="#cb11-87" aria-hidden="true" tabindex="-1"></a>  <span class="at">variables =</span> variables_cluster</span>
+<span id="cb11-88"><a href="#cb11-88" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb11-89"><a href="#cb11-89" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-90"><a href="#cb11-90" aria-hidden="true" tabindex="-1"></a>resumen_clusters <span class="sc">|&gt;</span></span>
+<span id="cb11-91"><a href="#cb11-91" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">c</span>(media, mediana, minimo, maximo, sd), <span class="sc">~</span> <span class="fu">round</span>(.x, <span class="dv">2</span>))) <span class="sc">|&gt;</span></span>
+<span id="cb11-92"><a href="#cb11-92" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>()</span>
+<span id="cb11-93"><a href="#cb11-93" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb11-94"><a href="#cb11-94" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-95"><a href="#cb11-95" aria-hidden="true" tabindex="-1"></a>Si las variables tenían unidades distintas, las medias estandarizadas ayudan a comparar qué rasgos están por encima o por debajo de la media global.</span>
+<span id="cb11-96"><a href="#cb11-96" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-97"><a href="#cb11-97" aria-hidden="true" tabindex="-1"></a>La media debe leerse junto con la mediana y la dispersión. Una diferencia entre</span>
+<span id="cb11-98"><a href="#cb11-98" aria-hidden="true" tabindex="-1"></a>medias puede proceder de un patrón general o de unas pocas observaciones</span>
+<span id="cb11-99"><a href="#cb11-99" aria-hidden="true" tabindex="-1"></a>extremas. Además, dos clusters con medias distintas pueden solaparse mucho: el</span>
+<span id="cb11-100"><a href="#cb11-100" aria-hidden="true" tabindex="-1"></a>perfil describe al conjunto, no a todos sus integrantes.</span>
+<span id="cb11-101"><a href="#cb11-101" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-102"><a href="#cb11-102" aria-hidden="true" tabindex="-1"></a><span class="fu">## Heatmap de medias estandarizadas</span></span>
+<span id="cb11-103"><a href="#cb11-103" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-106"><a href="#cb11-106" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb11-107"><a href="#cb11-107" aria-hidden="true" tabindex="-1"></a><span class="fu">crear_heatmap_clusters</span>(</span>
+<span id="cb11-108"><a href="#cb11-108" aria-hidden="true" tabindex="-1"></a>  datos_cluster,</span>
+<span id="cb11-109"><a href="#cb11-109" aria-hidden="true" tabindex="-1"></a>  <span class="at">cluster =</span> <span class="st">"cluster"</span>,</span>
+<span id="cb11-110"><a href="#cb11-110" aria-hidden="true" tabindex="-1"></a>  <span class="at">variables =</span> variables_cluster</span>
+<span id="cb11-111"><a href="#cb11-111" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb11-112"><a href="#cb11-112" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb11-113"><a href="#cb11-113" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-114"><a href="#cb11-114" aria-hidden="true" tabindex="-1"></a>El gráfico resume qué variables diferencian los grupos. Debe leerse junto con tamaños y variabilidad interna.</span>
+<span id="cb11-115"><a href="#cb11-115" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-116"><a href="#cb11-116" aria-hidden="true" tabindex="-1"></a>La estandarización del heatmap es global: cada celda indica cuánto se aleja la</span>
+<span id="cb11-117"><a href="#cb11-117" aria-hidden="true" tabindex="-1"></a>media del cluster de la media total, en desviaciones típicas del conjunto. No</span>
+<span id="cb11-118"><a href="#cb11-118" aria-hidden="true" tabindex="-1"></a>es una probabilidad ni la proporción de individuos que presenta ese rasgo.</span>
+<span id="cb11-119"><a href="#cb11-119" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-120"><a href="#cb11-120" aria-hidden="true" tabindex="-1"></a><span class="fu">## Boxplots por cluster</span></span>
+<span id="cb11-121"><a href="#cb11-121" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-124"><a href="#cb11-124" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb11-125"><a href="#cb11-125" aria-hidden="true" tabindex="-1"></a><span class="fu">crear_boxplots_clusters</span>(</span>
+<span id="cb11-126"><a href="#cb11-126" aria-hidden="true" tabindex="-1"></a>  datos_cluster,</span>
+<span id="cb11-127"><a href="#cb11-127" aria-hidden="true" tabindex="-1"></a>  <span class="at">cluster =</span> <span class="st">"cluster"</span>,</span>
+<span id="cb11-128"><a href="#cb11-128" aria-hidden="true" tabindex="-1"></a>  <span class="at">variables =</span> variables_cluster</span>
+<span id="cb11-129"><a href="#cb11-129" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb11-130"><a href="#cb11-130" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb11-131"><a href="#cb11-131" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-132"><a href="#cb11-132" aria-hidden="true" tabindex="-1"></a>Los boxplots muestran si la diferencia entre perfiles medios es estable o si hay solapamiento.</span>
+<span id="cb11-133"><a href="#cb11-133" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-134"><a href="#cb11-134" aria-hidden="true" tabindex="-1"></a>Cuando la separación de cajas es clara, una variable distingue bien los</span>
+<span id="cb11-135"><a href="#cb11-135" aria-hidden="true" tabindex="-1"></a>grupos. Cuando hay mucho solapamiento, puede contribuir conjuntamente con otras</span>
+<span id="cb11-136"><a href="#cb11-136" aria-hidden="true" tabindex="-1"></a>variables sin servir por sí sola para asignar individuos. No conviene convertir</span>
+<span id="cb11-137"><a href="#cb11-137" aria-hidden="true" tabindex="-1"></a>un perfil multivariante en una regla basada en una única columna.</span>
+<span id="cb11-138"><a href="#cb11-138" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-139"><a href="#cb11-139" aria-hidden="true" tabindex="-1"></a><span class="fu">## Comparación con etiquetas externas</span></span>
+<span id="cb11-140"><a href="#cb11-140" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-141"><a href="#cb11-141" aria-hidden="true" tabindex="-1"></a>Cuando existe una etiqueta externa, se puede cruzar con los clusters.</span>
+<span id="cb11-142"><a href="#cb11-142" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-145"><a href="#cb11-145" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb11-146"><a href="#cb11-146" aria-hidden="true" tabindex="-1"></a><span class="fu">tabla_composicion_clusters</span>(</span>
+<span id="cb11-147"><a href="#cb11-147" aria-hidden="true" tabindex="-1"></a>  datos_cluster,</span>
+<span id="cb11-148"><a href="#cb11-148" aria-hidden="true" tabindex="-1"></a>  <span class="at">cluster =</span> <span class="st">"cluster"</span>,</span>
+<span id="cb11-149"><a href="#cb11-149" aria-hidden="true" tabindex="-1"></a>  <span class="at">variable =</span> <span class="st">"transmision"</span></span>
+<span id="cb11-150"><a href="#cb11-150" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
+<span id="cb11-151"><a href="#cb11-151" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">caption =</span> <span class="st">"Composición de los clusters por transmisión"</span>)</span>
+<span id="cb11-152"><a href="#cb11-152" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-153"><a href="#cb11-153" aria-hidden="true" tabindex="-1"></a><span class="fu">tabla_composicion_clusters</span>(</span>
+<span id="cb11-154"><a href="#cb11-154" aria-hidden="true" tabindex="-1"></a>  datos_cluster,</span>
+<span id="cb11-155"><a href="#cb11-155" aria-hidden="true" tabindex="-1"></a>  <span class="at">cluster =</span> <span class="st">"cluster"</span>,</span>
+<span id="cb11-156"><a href="#cb11-156" aria-hidden="true" tabindex="-1"></a>  <span class="at">variable =</span> <span class="st">"cilindros"</span></span>
+<span id="cb11-157"><a href="#cb11-157" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
+<span id="cb11-158"><a href="#cb11-158" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">caption =</span> <span class="st">"Composición de los clusters por número de cilindros"</span>)</span>
+<span id="cb11-159"><a href="#cb11-159" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb11-160"><a href="#cb11-160" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-161"><a href="#cb11-161" aria-hidden="true" tabindex="-1"></a>Esta tabla no valida automáticamente el clustering, pero ayuda a interpretar qué estructura conocida captura.</span>
+<span id="cb11-162"><a href="#cb11-162" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-163"><a href="#cb11-163" aria-hidden="true" tabindex="-1"></a>La variable externa debe incorporarse después de cerrar la partición. Si se</span>
+<span id="cb11-164"><a href="#cb11-164" aria-hidden="true" tabindex="-1"></a>elige el método o el número de grupos buscando deliberadamente que coincida con</span>
+<span id="cb11-165"><a href="#cb11-165" aria-hidden="true" tabindex="-1"></a>ella, deja de ser una comparación verdaderamente externa y aumenta el riesgo de</span>
+<span id="cb11-166"><a href="#cb11-166" aria-hidden="true" tabindex="-1"></a>interpretar una coincidencia buscada como validación independiente.</span>
+<span id="cb11-167"><a href="#cb11-167" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-168"><a href="#cb11-168" aria-hidden="true" tabindex="-1"></a><span class="fu">## Nombrar clusters</span></span>
+<span id="cb11-169"><a href="#cb11-169" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-170"><a href="#cb11-170" aria-hidden="true" tabindex="-1"></a>Un nombre útil debe ser breve y estar justificado. En <span class="in">`mtcars`</span>, por ejemplo, podríamos hablar de coches ligeros y eficientes frente a coches pesados y potentes si las medias lo sostienen.</span>
+<span id="cb11-171"><a href="#cb11-171" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-172"><a href="#cb11-172" aria-hidden="true" tabindex="-1"></a>Una pauta razonable es usar dos o tres rasgos realmente distintivos, indicar la</span>
+<span id="cb11-173"><a href="#cb11-173" aria-hidden="true" tabindex="-1"></a>dirección respecto al conjunto y evitar etiquetas valorativas. «Alta potencia y</span>
+<span id="cb11-174"><a href="#cb11-174" aria-hidden="true" tabindex="-1"></a>mayor peso» comunica evidencia; «coches buenos» introduce un juicio que el</span>
+<span id="cb11-175"><a href="#cb11-175" aria-hidden="true" tabindex="-1"></a>análisis no ha medido.</span>
+<span id="cb11-176"><a href="#cb11-176" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-179"><a href="#cb11-179" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb11-180"><a href="#cb11-180" aria-hidden="true" tabindex="-1"></a>resumen_clusters <span class="sc">|&gt;</span></span>
+<span id="cb11-181"><a href="#cb11-181" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(cluster, variable, media) <span class="sc">|&gt;</span></span>
+<span id="cb11-182"><a href="#cb11-182" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">media =</span> <span class="fu">round</span>(media, <span class="dv">2</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb11-183"><a href="#cb11-183" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>()</span>
+<span id="cb11-184"><a href="#cb11-184" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb11-185"><a href="#cb11-185" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-186"><a href="#cb11-186" aria-hidden="true" tabindex="-1"></a><span class="fu">## Estabilidad e incertidumbre</span></span>
+<span id="cb11-187"><a href="#cb11-187" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-188"><a href="#cb11-188" aria-hidden="true" tabindex="-1"></a>Los clusters pueden cambiar con pequeñas modificaciones: otra semilla, otra selección de variables o una observación atípica. Una comprobación sencilla es repetir k-means con varias semillas y comparar tamaños o tablas cruzadas.</span>
+<span id="cb11-189"><a href="#cb11-189" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-192"><a href="#cb11-192" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb11-193"><a href="#cb11-193" aria-hidden="true" tabindex="-1"></a>evaluacion_semillas <span class="ot">&lt;-</span> <span class="fu">evaluar_semillas_kmeans</span>(</span>
+<span id="cb11-194"><a href="#cb11-194" aria-hidden="true" tabindex="-1"></a>  datos_escalados,</span>
+<span id="cb11-195"><a href="#cb11-195" aria-hidden="true" tabindex="-1"></a>  <span class="at">k =</span> <span class="dv">3</span>,</span>
+<span id="cb11-196"><a href="#cb11-196" aria-hidden="true" tabindex="-1"></a>  <span class="at">semillas =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>,</span>
+<span id="cb11-197"><a href="#cb11-197" aria-hidden="true" tabindex="-1"></a>  <span class="at">ajuste_referencia =</span> ajuste_kmeans</span>
+<span id="cb11-198"><a href="#cb11-198" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb11-199"><a href="#cb11-199" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-200"><a href="#cb11-200" aria-hidden="true" tabindex="-1"></a>evaluacion_semillas<span class="sc">$</span>tabla <span class="sc">|&gt;</span></span>
+<span id="cb11-201"><a href="#cb11-201" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">where</span>(is.numeric), <span class="sc">~</span> <span class="fu">round</span>(.x, <span class="dv">3</span>))) <span class="sc">|&gt;</span></span>
+<span id="cb11-202"><a href="#cb11-202" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>()</span>
+<span id="cb11-203"><a href="#cb11-203" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-204"><a href="#cb11-204" aria-hidden="true" tabindex="-1"></a>evaluacion_semillas<span class="sc">$</span>grafico</span>
+<span id="cb11-205"><a href="#cb11-205" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb11-206"><a href="#cb11-206" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-207"><a href="#cb11-207" aria-hidden="true" tabindex="-1"></a>La estabilidad frente a semillas solo estudia la parte algorítmica. También</span>
+<span id="cb11-208"><a href="#cb11-208" aria-hidden="true" tabindex="-1"></a>conviene preguntar si los perfiles sobreviven a retirar observaciones extremas,</span>
+<span id="cb11-209"><a href="#cb11-209" aria-hidden="true" tabindex="-1"></a>cambiar variables redundantes o considerar otro número de clusters razonable.</span>
+<span id="cb11-210"><a href="#cb11-210" aria-hidden="true" tabindex="-1"></a>Un cluster que cambia de número no es inestable: las etiquetas son arbitrarias.</span>
+<span id="cb11-211"><a href="#cb11-211" aria-hidden="true" tabindex="-1"></a>Lo importante es si cambian sus miembros y su significado.</span>
+<span id="cb11-212"><a href="#cb11-212" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-213"><a href="#cb11-213" aria-hidden="true" tabindex="-1"></a><span class="fu">## Comparar soluciones alternativas</span></span>
+<span id="cb11-214"><a href="#cb11-214" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-215"><a href="#cb11-215" aria-hidden="true" tabindex="-1"></a>Cuando dos soluciones son defendibles, la comparación debería centrarse en sus</span>
+<span id="cb11-216"><a href="#cb11-216" aria-hidden="true" tabindex="-1"></a>consecuencias:</span>
+<span id="cb11-217"><a href="#cb11-217" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-218"><a href="#cb11-218" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>qué grupo se divide o se fusiona;</span>
+<span id="cb11-219"><a href="#cb11-219" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>si aparecen clusters demasiado pequeños;</span>
+<span id="cb11-220"><a href="#cb11-220" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>qué perfiles dejan de distinguirse;</span>
+<span id="cb11-221"><a href="#cb11-221" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>qué individuos quedan en la frontera;</span>
+<span id="cb11-222"><a href="#cb11-222" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>si las conclusiones externas se mantienen.</span>
+<span id="cb11-223"><a href="#cb11-223" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-224"><a href="#cb11-224" aria-hidden="true" tabindex="-1"></a>Una solución más detallada no es automáticamente mejor. Puede revelar un</span>
+<span id="cb11-225"><a href="#cb11-225" aria-hidden="true" tabindex="-1"></a>subperfil útil o fragmentar artificialmente un grupo. La decisión depende de si</span>
+<span id="cb11-226"><a href="#cb11-226" aria-hidden="true" tabindex="-1"></a>la ganancia interpretativa compensa la pérdida de estabilidad y simplicidad.</span>
+<span id="cb11-227"><a href="#cb11-227" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-228"><a href="#cb11-228" aria-hidden="true" tabindex="-1"></a><span class="fu">## Mini-informe de clustering</span></span>
+<span id="cb11-229"><a href="#cb11-229" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-230"><a href="#cb11-230" aria-hidden="true" tabindex="-1"></a>Un informe mínimo debería responder:</span>
+<span id="cb11-231"><a href="#cb11-231" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-232"><a href="#cb11-232" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Elemento <span class="pp">|</span> Pregunta que debe quedar contestada <span class="pp">|</span></span>
+<span id="cb11-233"><a href="#cb11-233" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|</span></span>
+<span id="cb11-234"><a href="#cb11-234" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Objetivo <span class="pp">|</span> ¿Qué estructura queríamos encontrar? <span class="pp">|</span></span>
+<span id="cb11-235"><a href="#cb11-235" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Construcción <span class="pp">|</span> ¿Qué variables y definición de semejanza usamos? <span class="pp">|</span></span>
+<span id="cb11-236"><a href="#cb11-236" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Elección <span class="pp">|</span> ¿Por qué ese método y ese número de clusters? <span class="pp">|</span></span>
+<span id="cb11-237"><a href="#cb11-237" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Perfiles <span class="pp">|</span> ¿Qué distingue realmente a cada grupo? <span class="pp">|</span></span>
+<span id="cb11-238"><a href="#cb11-238" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Incertidumbre <span class="pp">|</span> ¿Qué decisiones alternativas cambian el resultado? <span class="pp">|</span></span>
+<span id="cb11-239"><a href="#cb11-239" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Alcance <span class="pp">|</span> ¿Qué no podemos concluir a partir del análisis? <span class="pp">|</span></span>
+<span id="cb11-240"><a href="#cb11-240" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-241"><a href="#cb11-241" aria-hidden="true" tabindex="-1"></a>No es necesario presentar toda la exploración realizada. Sí hay que conservar</span>
+<span id="cb11-242"><a href="#cb11-242" aria-hidden="true" tabindex="-1"></a>la evidencia que permite entender la decisión final y sus límites.</span>
+<span id="cb11-243"><a href="#cb11-243" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-244"><a href="#cb11-244" aria-hidden="true" tabindex="-1"></a><span class="fu">## Errores frecuentes</span></span>
+<span id="cb11-245"><a href="#cb11-245" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-246"><a href="#cb11-246" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Describir clusters solo con el algoritmo usado.</span>
+<span id="cb11-247"><a href="#cb11-247" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Nombrar grupos a partir de una única variable.</span>
+<span id="cb11-248"><a href="#cb11-248" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Ignorar clusters pequeños.</span>
+<span id="cb11-249"><a href="#cb11-249" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Describir solo medias y ocultar la dispersión o el solapamiento.</span>
+<span id="cb11-250"><a href="#cb11-250" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Usar una variable activa como si fuera validación externa.</span>
+<span id="cb11-251"><a href="#cb11-251" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Confundir estabilidad frente a semillas con validez general.</span>
+<span id="cb11-252"><a href="#cb11-252" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Interpretar una asociación externa como causalidad.</span>
+<span id="cb11-253"><a href="#cb11-253" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Presentar etiquetas de cluster como clases naturales sin evidencia adicional.</span>
+<span id="cb11-254"><a href="#cb11-254" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-255"><a href="#cb11-255" aria-hidden="true" tabindex="-1"></a><span class="fu">## Resumen del capítulo</span></span>
+<span id="cb11-256"><a href="#cb11-256" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-257"><a href="#cb11-257" aria-hidden="true" tabindex="-1"></a>Interpretar clusters exige volver a los datos originales, caracterizar perfiles y reconocer incertidumbre. La etiqueta de cluster es una ayuda, no una conclusión completa.</span>
+<span id="cb11-258"><a href="#cb11-258" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-259"><a href="#cb11-259" aria-hidden="true" tabindex="-1"></a><span class="fu">## Ejercicios propuestos</span></span>
+<span id="cb11-260"><a href="#cb11-260" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-261"><a href="#cb11-261" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>Crea un perfil de clusters para <span class="in">`mtcars`</span> usando otro subconjunto de variables.</span>
+<span id="cb11-262"><a href="#cb11-262" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>Construye una tabla cluster por transmisión (<span class="in">`am`</span>) y comenta si ayuda a interpretar los grupos.</span>
+<span id="cb11-263"><a href="#cb11-263" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>Redacta tres nombres posibles para clusters de <span class="in">`mtcars`</span> y justifícalos con medias.</span>
+<span id="cb11-264"><a href="#cb11-264" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-265"><a href="#cb11-265" aria-hidden="true" tabindex="-1"></a><span class="fu">## Funciones utilizadas</span></span>
+<span id="cb11-266"><a href="#cb11-266" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-267"><a href="#cb11-267" aria-hidden="true" tabindex="-1"></a>Las funciones principales empleadas en este tema son:</span>
+<span id="cb11-268"><a href="#cb11-268" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-269"><a href="#cb11-269" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Función <span class="pp">|</span> Para qué se usa <span class="pp">|</span> Uso básico <span class="pp">|</span></span>
+<span id="cb11-270"><a href="#cb11-270" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|---|</span></span>
+<span id="cb11-271"><a href="#cb11-271" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`kmeans()`</span> <span class="pp">|</span> Obtener la partición que se quiere interpretar. <span class="pp">|</span> <span class="in">`kmeans(datos, centers = k, nstart = 25)`</span> <span class="pp">|</span></span>
+<span id="cb11-272"><a href="#cb11-272" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`preparar_datos_distancias()`</span> <span class="pp">|</span> Seleccionar y estandarizar las variables activas. <span class="pp">|</span> <span class="in">`preparar_datos_distancias(datos, variables)`</span> <span class="pp">|</span></span>
+<span id="cb11-273"><a href="#cb11-273" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`tabla_resumen_clusters()`</span> <span class="pp">|</span> Calcular medidas descriptivas por cluster y variable. <span class="pp">|</span> <span class="in">`tabla_resumen_clusters(datos, cluster, variables)`</span> <span class="pp">|</span></span>
+<span id="cb11-274"><a href="#cb11-274" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`crear_heatmap_clusters()`</span> <span class="pp">|</span> Mostrar las medias estandarizadas de los clusters. <span class="pp">|</span> <span class="in">`crear_heatmap_clusters(datos, cluster, variables)`</span> <span class="pp">|</span></span>
+<span id="cb11-275"><a href="#cb11-275" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`crear_boxplots_clusters()`</span> <span class="pp">|</span> Comparar las distribuciones de varias variables entre clusters. <span class="pp">|</span> <span class="in">`crear_boxplots_clusters(datos, cluster, variables)`</span> <span class="pp">|</span></span>
+<span id="cb11-276"><a href="#cb11-276" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`tabla_composicion_clusters()`</span> <span class="pp">|</span> Describir cada cluster mediante una variable externa. <span class="pp">|</span> <span class="in">`tabla_composicion_clusters(datos, cluster, variable)`</span> <span class="pp">|</span></span>
+<span id="cb11-277"><a href="#cb11-277" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`evaluar_semillas_kmeans()`</span> <span class="pp">|</span> Estudiar la sensibilidad de k-means a la inicialización. <span class="pp">|</span> <span class="in">`evaluar_semillas_kmeans(datos, k, semillas)`</span> <span class="pp">|</span></span>
+</code></pre></div><button title="Copiar al portapapeles" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
+</div></div></div></div></div>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
