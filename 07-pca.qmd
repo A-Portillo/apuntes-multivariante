@@ -32,9 +32,10 @@ z2 <- rnorm(n, sd = 0.35)
 theta <- pi / 5
 R <- matrix(c(cos(theta), -sin(theta), sin(theta), cos(theta)), nrow = 2)
 X_sim <- cbind(z1, z2) %*% t(R)
+X_sim <- scale(X_sim, center = TRUE, scale = FALSE)
 colnames(X_sim) <- c("x1", "x2")
 
-pca_sim <- prcomp(X_sim, center = TRUE, scale. = FALSE)
+pca_sim <- prcomp(X_sim, center = FALSE, scale. = FALSE)
 
 visualizar_direcciones_2d(X_sim, pca_sim$rotation) +
   labs(
@@ -325,15 +326,40 @@ Dos variables casi duplicadas no aportan dos ideas independientes: hacen que esa
 Seleccionar variables, transformar y escalar son decisiones sustantivas. Deben tomarse antes de mirar qué versión produce el gráfico más atractivo.
 :::
 
+### Convención utilizada en el capítulo
+
+Sea $X_0$ la matriz original, con medias por columnas reunidas en $\bar x$, y sea $D_s$ la matriz diagonal que contiene sus desviaciones típicas. La matriz estandarizada es
+
+$$
+X
+=
+(X_0-\mathbf 1\bar x^\top)D_s^{-1}.
+$$
+
+Salvo en las ilustraciones geométricas iniciales y en la comparación explícita entre covarianzas y correlaciones, trabajaremos con esta matriz estandarizada y la denotaremos simplemente por $X$. Por tanto, cada componente es una combinación de variables estandarizadas:
+
+$$
+PC_k
+=
+\sum_{j=1}^p
+a_{jk}\frac{X_{0j}-\bar X_j}{s_j}.
+$$
+
+Esta convención simplifica los cálculos y hace comparable el peso inicial de las variables. No convierte la estandarización en una regla universal: en una aplicación debe seguir justificándose si las diferencias de escala contienen información relevante.
+
+::: {.callout-note}
+Los coeficientes de `rotation` se aplican a las variables centradas y estandarizadas. Del mismo modo, el error de reconstrucción se medirá inicialmente en unidades estandarizadas; para recuperar las unidades originales hay que deshacer el escalado y el centrado.
+:::
+
 ## Qué optimiza PCA
 
-Sea $X$ la matriz de datos centrada, con los individuos en las filas, y
+Sea $X$ la matriz estandarizada, con los individuos en las filas, y
 
 $$
 S=\frac{1}{n-1}X^\top X
 $$
 
-su matriz de covarianzas. Para una dirección unitaria $a$, los scores son $Xa$ y su varianza es
+su matriz de covarianzas, que en este caso coincide con la matriz de correlaciones de las variables originales. Para una dirección unitaria $a$, los scores son $Xa$ y su varianza es
 
 $$
 \operatorname{Var}(Xa)=a^\top Sa.
@@ -384,6 +410,65 @@ $$
 
 El autovector determina la dirección y su autovalor mide la varianza capturada. PC1 usa el autovector asociado al mayor autovalor.
 
+### Por qué existe una base ortonormal de autovectores
+
+La matriz $S$ es real y simétrica. Estas dos propiedades garantizan que puede diagonalizarse usando una base ortonormal de autovectores.
+
+El cociente de Rayleigh
+
+$$
+R(a)=a^\top Sa,
+\qquad a^\top a=1,
+$$
+
+es continuo y la esfera unidad es compacta, por lo que $R(a)$ alcanza un máximo. El cálculo anterior mediante multiplicadores de Lagrange muestra que un vector donde se alcanza ese máximo satisface
+
+$$
+Sa_1=\lambda_1a_1.
+$$
+
+Consideremos ahora el complemento ortogonal
+
+$$
+a_1^\perp=\{x:a_1^\top x=0\}.
+$$
+
+Este subespacio es invariante por $S$. En efecto, si $x\in a_1^\perp$,
+
+$$
+a_1^\top Sx
+=(Sa_1)^\top x
+=\lambda_1a_1^\top x
+=0.
+$$
+
+Por tanto, $Sx\in a_1^\perp$. La restricción de $S$ a este subespacio vuelve a ser simétrica. Repitiendo el argumento en dimensiones cada vez menores obtenemos una base ortonormal de autovectores $a_1,\ldots,a_p$. Si los reunimos como columnas de $A$,
+
+$$
+A^\top A=I,
+\qquad
+\boxed{S=A\Lambda A^\top}.
+$$
+
+La simetría también explica directamente la ortogonalidad. Si $Su=\lambda u$ y $Sv=\mu v$, entonces
+
+$$
+\lambda u^\top v
+=(Su)^\top v
+=u^\top Sv
+=\mu u^\top v.
+$$
+
+Cuando $\lambda\neq\mu$, necesariamente $u^\top v=0$. Si un autovalor está repetido, podemos elegir una base ortonormal dentro de su espacio propio.
+
+La diagonalización anterior muestra que todos los autovalores son reales. Además, una matriz de covarianzas es semidefinida positiva:
+
+$$
+a^\top Sa=\operatorname{Var}(Xa)\geq 0.
+$$
+
+Por ello todos sus autovalores son no negativos.
+
 ### Componentes posteriores
 
 La segunda componente resuelve el mismo problema añadiendo ortogonalidad respecto de la primera:
@@ -395,40 +480,142 @@ a^\top a=1,
 \qquad a^\top a_1=0.
 $$
 
-El resultado es el autovector del segundo mayor autovalor, y así sucesivamente. Si reunimos los autovectores como columnas de $A$,
+El resultado es el autovector del segundo mayor autovalor, y así sucesivamente. Sin embargo, también podemos formular directamente la elección del subespacio completo de dimensión $q$. Sea
 
 $$
-S=A\Lambda A^\top,
-\qquad A^\top A=I,
+A_q=(a_1,\ldots,a_q),
+\qquad A_q^\top A_q=I_q.
 $$
 
-y definimos los scores $Z=XA$, entonces
+La varianza total de los $q$ scores es
 
 $$
-\operatorname{Cov}(Z)=A^\top SA=\Lambda.
+\operatorname{tr}(A_q^\top SA_q),
 $$
 
-Esta igualdad resume tres hechos: las componentes están incorreladas, la varianza de PC$_k$ es $\lambda_k$ y la covarianza queda diagonal en el nuevo sistema.
+y PCA resuelve
 
-Cuando hay autovalores iguales, las direcciones individuales dentro de su subespacio pueden no ser únicas. El subespacio representado sí es el mismo.
+$$
+\boxed{
+\max_{A_q^\top A_q=I_q}
+\operatorname{tr}(A_q^\top SA_q)
+=
+\sum_{k=1}^q\lambda_k.
+}
+$$
+
+Para ver por qué es un óptimo global, consideremos cualquier matriz $Q$ con $Q^\top Q=I_q$. Como $A$ es una base ortonormal, podemos escribir $Q=AC$. Entonces
+
+$$
+\operatorname{tr}(Q^\top SQ)
+=
+\operatorname{tr}(C^\top\Lambda C)
+=
+\sum_{k=1}^p\lambda_k w_k,
+$$
+
+donde $w_k=\sum_{j=1}^q c_{kj}^2$, de modo que $0\leq w_k\leq1$ y $\sum_k w_k=q$. Como $\lambda_1\geq\cdots\geq\lambda_p$, la suma se maximiza asignando peso uno a los $q$ mayores autovalores y cero al resto. Así, las primeras $q$ componentes optimizan conjuntamente el subespacio, no solo una sucesión de decisiones locales.
+
+Para todas las componentes, los scores $Z=XA$ cumplen
+
+$$
+\operatorname{Cov}(Z)
+=A^\top SA
+=\Lambda.
+$$
+
+Por tanto, las componentes están incorreladas y la varianza de PC$_k$ es $\lambda_k$.
+
+::: {.callout-note title="Incorrelación no significa independencia"}
+PCA produce componentes incorreladas, pero no necesariamente independientes. Por ejemplo, si $U\sim\operatorname{Uniforme}(-1,1)$ y $V=U^2-1/3$, entonces $\operatorname{Cov}(U,V)=0$, aunque $V$ está completamente determinado por $U$. Si el vector original es normal multivariante, las componentes son conjuntamente normales y, en ese caso particular, la incorrelación sí implica independencia.
+:::
+
+Cuando hay autovalores repetidos, los vectores concretos dentro de su espacio propio no son únicos. El espacio propio completo sí lo es, pero el subespacio principal de dimensión $q$ puede no ser único si el corte separa un autovalor repetido. Una condición suficiente para que el subespacio de las primeras $q$ componentes sea único es
+
+$$
+\lambda_q>\lambda_{q+1}.
+$$
 
 ### Varianza total y traza
 
-La varianza total es la suma de las varianzas originales:
+La varianza total es la suma de las varianzas de las variables de trabajo:
 
 $$
-\operatorname{tr}(S)=\lambda_1+\cdots+\lambda_p.
+\operatorname{tr}(S)
+=p
+=\lambda_1+\cdots+\lambda_p.
 $$
 
-PCA no crea varianza: la redistribuye entre ejes nuevos, ordenados de mayor a menor. La proporción explicada por PC$_k$ es
+La igualdad $\operatorname{tr}(S)=p$ se debe a que las $p$ variables estandarizadas tienen varianza uno. PCA no crea varianza: la redistribuye entre ejes nuevos, ordenados de mayor a menor. La proporción explicada por PC$_k$ es
 
 $$
 \frac{\lambda_k}{\sum_{m=1}^p\lambda_m}.
 $$
 
+### Ejemplo analítico con dos variables
+
+Consideremos dos variables estandarizadas con correlación $0<\rho<1$:
+
+$$
+S=
+\begin{pmatrix}
+1 & \rho\\
+\rho & 1
+\end{pmatrix}.
+$$
+
+La ecuación característica es
+
+$$
+\det(S-\lambda I)
+=(1-\lambda)^2-\rho^2=0,
+$$
+
+por lo que
+
+$$
+\lambda_1=1+\rho,
+\qquad
+\lambda_2=1-\rho.
+$$
+
+Una base ortonormal de autovectores es
+
+$$
+a_1=\frac{1}{\sqrt2}
+\begin{pmatrix}1\\1\end{pmatrix},
+\qquad
+a_2=\frac{1}{\sqrt2}
+\begin{pmatrix}1\\-1\end{pmatrix}.
+$$
+
+Por tanto,
+
+$$
+PC_1=\frac{X_1+X_2}{\sqrt2},
+\qquad
+PC_2=\frac{X_1-X_2}{\sqrt2}.
+$$
+
+PC1 representa la variación común y PC2 el contraste entre las variables. La proporción de varianza explicada por PC1 es
+
+$$
+\frac{1+\rho}{2}.
+$$
+
+Además,
+
+$$
+\operatorname{Cor}(X_1,PC_1)
+=\operatorname{Cor}(X_2,PC_1)
+=\sqrt{\frac{1+\rho}{2}},
+$$
+
+mientras que las correlaciones con PC2 tienen signos opuestos y magnitud $\sqrt{(1-\rho)/2}$. Cuando $\rho\to1$, casi toda la variabilidad queda en la dirección común y la matriz se aproxima a rango uno. Cuando $\rho=0$, ambos autovalores coinciden y cualquier base ortonormal del plano es una solución PCA válida.
+
 ## SVD y `prcomp()`
 
-El PCA también puede obtenerse sin formar explícitamente $S$. Para una matriz centrada,
+El PCA también puede obtenerse sin formar explícitamente $S$. Para la matriz estandarizada,
 
 $$
 X=UDV^\top.
@@ -451,6 +638,14 @@ A=V,
 Z=XV=UD.
 $$
 
+Si conservamos únicamente los primeros $q$ términos,
+
+$$
+X_q=U_qD_qV_q^\top,
+$$
+
+obtenemos la reconstrucción PCA de rango $q$. Más adelante veremos por qué esta aproximación es óptima.
+
 `prcomp()` usa esta descomposición SVD, que suele ser numéricamente preferible a calcular `eigen(cov(X))`.
 
 Para datos centrados,
@@ -467,12 +662,12 @@ Usaremos seis variables numéricas para conectar las fórmulas con un ejemplo pe
 
 ```{r}
 #| label: pca-mtcars
-X <- mtcars |>
+datos_pca <- mtcars |>
   select(mpg, disp, hp, drat, wt, qsec)
-Xsc <- scale(X)
-S <- cov(Xsc)
+X <- scale(datos_pca)
+S <- cov(X)
 eig <- eigen(S)
-pca_mtcars <- prcomp(X, center = TRUE, scale. = TRUE)
+pca_mtcars <- prcomp(datos_pca, center = TRUE, scale. = TRUE)
 
 kable(summary(pca_mtcars)$importance, digits = 3)
 kable(round(pca_mtcars$rotation, 3), caption = "Coeficientes de las componentes")
@@ -490,7 +685,7 @@ Los elementos principales del resultado son:
 #| include: false
 stopifnot(isTRUE(all.equal(eig$values, pca_mtcars$sdev^2)))
 stopifnot(isTRUE(all.equal(
-  unname(Xsc %*% pca_mtcars$rotation),
+  unname(X %*% pca_mtcars$rotation),
   unname(pca_mtcars$x)
 )))
 stopifnot(isTRUE(all.equal(sum(diag(S)), sum(pca_mtcars$sdev^2))))
@@ -568,14 +763,14 @@ coord_var <- sweep(
   pca_mtcars$sdev,
   "*"
 )
-coord_var_check <- cor(Xsc, pca_mtcars$x)
+coord_var_check <- cor(X, pca_mtcars$x)
 
 stopifnot(isTRUE(all.equal(unname(coord_var), unname(coord_var_check))))
 
 resumen_variables <- resumir_variables_pca(
   pca_mtcars,
-  X,
-  componentes = seq_len(ncol(X))
+  datos_pca,
+  componentes = seq_len(ncol(datos_pca))
 )
 coord_var_12 <- resumen_variables |>
   filter(componente %in% c("PC1", "PC2")) |>
@@ -591,7 +786,7 @@ En distintos libros y paquetes, *loading* puede referirse a convenciones diferen
 
 ```{r}
 #| label: circulo-correlaciones
-circulo_correlaciones_pca(pca_mtcars, X, componentes = c(1, 2))
+circulo_correlaciones_pca(pca_mtcars, datos_pca, componentes = c(1, 2))
 ```
 
 Flechas próximas sugieren correlación positiva; flechas opuestas, correlación negativa; flechas aproximadamente perpendiculares, asociación lineal débil. Una longitud próxima a uno indica buena representación en PC1--PC2. La lectura angular es aproximada porque solo mostramos dos componentes.
@@ -858,16 +1053,16 @@ $$
 
 ```{r}
 #| label: individuo-suplementario
-es_nuevo <- rownames(X) == "Toyota Corolla"
+es_nuevo <- rownames(datos_pca) == "Toyota Corolla"
 pca_referencia <- prcomp(
-  X[!es_nuevo, ],
+  datos_pca[!es_nuevo, ],
   center = TRUE,
   scale. = TRUE
 )
 
 predict(
   pca_referencia,
-  newdata = X[es_nuevo, , drop = FALSE]
+  newdata = datos_pca[es_nuevo, , drop = FALSE]
 )[, 1:2, drop = FALSE] |>
   round(3) |>
   kable(caption = "Proyección de un individuo suplementario")
@@ -910,7 +1105,7 @@ El análisis paralelo compara los autovalores observados con los de datos aleato
 ```{r}
 #| label: analisis-paralelo
 paralelo <- analisis_paralelo_pca(
-  X,
+  datos_pca,
   simulaciones = 500,
   percentil = 0.95,
   semilla = 321
@@ -954,11 +1149,11 @@ La elección entre ambas geometrías no es automática. Usar covarianzas conserv
 
 ```{r}
 #| label: covarianzas-correlaciones
-kable(round(cov(X), 2), caption = "Matriz de covarianzas")
-kable(round(cor(X), 2), caption = "Matriz de correlaciones")
+kable(round(cov(datos_pca), 2), caption = "Matriz de covarianzas")
+kable(round(cor(datos_pca), 2), caption = "Matriz de correlaciones")
 
-pca_mtcars_cov <- prcomp(X, center = TRUE, scale. = FALSE)
-pca_mtcars_cor <- prcomp(X, center = TRUE, scale. = TRUE)
+pca_mtcars_cov <- prcomp(datos_pca, center = TRUE, scale. = FALSE)
+pca_mtcars_cor <- prcomp(datos_pca, center = TRUE, scale. = TRUE)
 
 tibble(
   componente = colnames(summary(pca_mtcars_cov)$importance),
@@ -980,28 +1175,69 @@ A_q=(a_1,\ldots,a_q),
 Z_q=XA_q,
 $$
 
-la reconstrucción en el espacio original centrado es
+la reconstrucción en el espacio estandarizado es
 
 $$
-\boxed{\hat X_q=Z_qA_q^\top=XA_qA_q^\top}.
+\boxed{
+\hat X_q
+=Z_qA_q^\top
+=XA_qA_q^\top
+=XP_q
+}.
 $$
 
-La matriz $P_q=A_qA_q^\top$ proyecta sobre el subespacio generado por las primeras $q$ componentes. Con la convención de covarianza que divide por $n-1$,
+La matriz $P_q=A_qA_q^\top$ es simétrica e idempotente, por lo que proyecta ortogonalmente sobre el subespacio generado por las primeras $q$ componentes. Usando $P_q^\top=P_q$, $P_q^2=P_q$ y la propiedad cíclica de la traza,
+
+$$
+\begin{aligned}
+\|X-XP_q\|_F^2
+&=\operatorname{tr}\!\left[(X-XP_q)^\top(X-XP_q)\right]\\
+&=\operatorname{tr}(X^\top X)
+-\operatorname{tr}(A_q^\top X^\top XA_q)\\
+&=(n-1)\left[
+\operatorname{tr}(S)
+-\operatorname{tr}(A_q^\top SA_q)
+\right].
+\end{aligned}
+$$
+
+El primer término es fijo. Por tanto,
+
+$$
+\boxed{
+\min_{A_q^\top A_q=I_q}
+\|X-XA_qA_q^\top\|_F^2
+\quad\Longleftrightarrow\quad
+\max_{A_q^\top A_q=I_q}
+\operatorname{tr}(A_q^\top SA_q)
+}.
+$$
+
+Maximizar la varianza retenida y minimizar el error de reconstrucción son exactamente el mismo problema. Como el máximo anterior es $\sum_{k=1}^q\lambda_k$,
 
 $$
 \|X-\hat X_q\|_F^2
 =(n-1)\sum_{k=q+1}^{p}\lambda_k.
 $$
 
-La varianza descartada es exactamente el error cuadrático de reconstrucción. Además, entre todas las aproximaciones lineales de rango $q$, PCA minimiza ese error.
+La varianza descartada es exactamente el error cuadrático de reconstrucción en coordenadas estandarizadas. Además, el resultado se extiende a cualquier aproximación de rango $q$. Si una matriz $B$ tiene rango como máximo $q$, todas sus filas pertenecen a algún subespacio $L$ de dimensión $q$. La proyección ortogonal de cada fila de $X$ sobre $L$ nunca puede estar más lejos que la correspondiente fila de $B$. Elegir el mejor $L$ conduce precisamente al subespacio PCA.
+
+En términos de la SVD,
+
+$$
+\hat X_q
+=U_qD_qV_q^\top,
+$$
+
+la SVD truncada. Esta propiedad se conoce como teorema de Eckart--Young. Para reconstruir después en las unidades originales deben reintroducirse las desviaciones típicas y las medias.
 
 ```{r}
 #| label: error-reconstruccion
 X_aprox_2 <- reconstruir_pca(pca_mtcars, q = 2)
 evaluacion_reconstruccion <- evaluar_reconstruccion_pca(
   pca_mtcars,
-  X,
-  q = seq_len(ncol(X))
+  datos_pca,
+  q = seq_len(ncol(datos_pca))
 )
 evaluacion_reconstruccion$grafico
 
@@ -1023,7 +1259,7 @@ El error total puede ocultar dónde se concentra la pérdida. Antes de aceptar d
 #| label: diagnostico-reconstruccion
 diagnostico_2 <- diagnosticar_reconstruccion_pca(
   pca_mtcars,
-  X,
+  datos_pca,
   q = 2,
   id = rownames(mtcars)
 )
@@ -1069,7 +1305,7 @@ Por tanto, truncar el PCA nunca aumenta una distancia euclídea, pero no reduce 
 ```{r}
 #| label: distancias-pca
 stopifnot(isTRUE(all.equal(
-  as.vector(dist(Xsc)),
+  as.vector(dist(X)),
   as.vector(dist(pca_mtcars$x))
 )))
 
@@ -1176,7 +1412,8 @@ Aunque PCA no usa la respuesta, sí aprende la distribución de las covariables.
 
 - PCA es lineal y está pensado para variables numéricas.
 - Maximiza varianza, no separación de grupos ni capacidad predictiva.
-- Puede ser sensible a valores atípicos.
+- La covarianza y la correlación son sensibles a valores atípicos; una sola observación extrema puede orientar las primeras componentes. Estandarizar no elimina este problema.
+- `prcomp()` requiere una matriz numérica completa. Eliminar individuos o imputar valores ausentes modifica el análisis y debe justificarse.
 - Las componentes pueden ser difíciles de interpretar.
 - Una dirección de baja varianza puede ser importante para la pregunta aplicada.
 - Los ejes cambian si cambian el escalado, las variables activas o la población.
@@ -1190,6 +1427,7 @@ Que una componente explique mucha varianza no implica que sea causal, estable ni
 
 - Aplicar PCA sin centrar los datos.
 - Estandarizar de forma automática sin pensar qué geometría responde a la pregunta.
+- Aplicar los coeficientes de `rotation` directamente a variables en unidades originales cuando el PCA se ajustó con `scale. = TRUE`.
 - Interpretar PC1--PC2 sin revisar la varianza explicada y los cos².
 - Confundir los coeficientes de `rotation` con correlaciones variable--componente.
 - Calcular el cos² de variables como `rotation^2`; eso da contribuciones, no cos².
@@ -1222,7 +1460,7 @@ La elección de $q$ puede ser distinta para dos tareas. Dos componentes pueden b
 
 ## Resumen del capítulo
 
-PCA proyecta una nube sobre ejes ortogonales que ordenan su variabilidad. Maximizar la varianza proyectada equivale a minimizar el error de reconstrucción, y la optimización conduce a los autovectores de la matriz de covarianzas o correlaciones. Los autovalores son las varianzas de los nuevos ejes; SVD permite obtenerlos directamente desde la matriz de datos.
+PCA proyecta una nube estandarizada sobre ejes ortogonales que ordenan su variabilidad. La simetría de la matriz de correlaciones garantiza una base ortonormal de autovectores, y su carácter semidefinido positivo garantiza autovalores no negativos. Las primeras $q$ componentes maximizan conjuntamente la varianza retenida. Esta optimización equivale a minimizar el error de reconstrucción y conduce a la SVD truncada.
 
 Para interpretar el resultado hay que distinguir coeficientes, scores, coordenadas de variables, cos² y contribuciones. La rotación completa conserva las distancias euclídeas; retener $q$ componentes significa proyectar sobre un subespacio y aceptar pérdida de reconstrucción y de distancias. Variables e individuos suplementarios permiten contrastar la solución sin modificarla. La compresión puede ser útil, pero la máxima varianza no garantiza relevancia externa ni estabilidad de cada eje.
 
@@ -1230,15 +1468,15 @@ Para interpretar el resultado hay que distinguir coeficientes, scores, coordenad
 
 1. Aplica PCA a `mtcars` con escalado e interpreta PC1 y PC2 usando coeficientes, contribuciones y círculo de correlaciones.
 2. Compara PCA de `mtcars` con y sin escalado. Explica qué geometría responde a cada análisis.
-3. Verifica numéricamente que `var(pca$x[, k])` coincide con `pca$sdev[k]^2`.
+3. Demuestra que $P=AA^\top$ es una proyección ortogonal cuando $A^\top A=I$: comprueba que $P^\top=P$ y $P^2=P$.
 4. Simula una nube alargada en dos dimensiones y dibuja la proyección sobre una dirección distinta de PC1. Compara varianza y error.
-5. Comprueba que las correlaciones variable--componente coinciden con `sweep(rotation, 2, sdev, "*")`.
-6. Encuentra un coche bien representado en PC1--PC2 y otro mal representado. Compara sus scores en todas las componentes.
-7. Reconstruye `mtcars` con uno, dos y tres componentes y compara los errores con la suma de autovalores descartados.
-8. Explica por qué PCA no tiene por qué encontrar la dirección que mejor separa coches automáticos y manuales.
-9. Diseña correctamente un pipeline de validación en el que PCA preceda a un modelo predictivo.
-10. Comprueba que las distancias calculadas con todas las componentes coinciden con las de los datos estandarizados. Identifica una pareja mal representada al usar solo PC1--PC2.
-11. Deja fuera una observación al ajustar el PCA y proyéctala después con `predict()`. Explica por qué no debe volver a estimarse el PCA.
+5. Partiendo de $S=A\Lambda A^\top$ y $Z=XA$, demuestra que $\operatorname{Cov}(Z)=\Lambda$.
+6. Para variables estandarizadas, demuestra que $\operatorname{Cor}(X_j,PC_k)=a_{jk}\sqrt{\lambda_k}$ y deduce el cos² de la variable en esa componente.
+7. Resuelve completamente el PCA de dos variables con correlación $\rho$: calcula autovalores, autovectores, componentes, varianza explicada, correlaciones y cos². Discute $\rho=0$ y $\rho=1$.
+8. A partir de la expresión con trazas, demuestra que $\|X-\hat X_q\|_F^2=(n-1)\sum_{k=q+1}^p\lambda_k$. Después verifícalo reconstruyendo `mtcars` con uno, dos y tres componentes.
+9. Explica por qué PCA no tiene por qué encontrar la dirección que mejor separa coches automáticos y manuales.
+10. Diseña correctamente un pipeline de validación en el que PCA preceda a un modelo predictivo y explica cómo proyectarías un individuo nuevo.
+11. Comprueba que las distancias calculadas con todas las componentes coinciden con las de los datos estandarizados. Identifica una pareja mal representada al usar solo PC1--PC2.
 12. Elige una variable suplementaria y estudia su relación con las componentes sin permitir que participe en el ajuste.
 
 ## Funciones utilizadas
@@ -1247,7 +1485,7 @@ Para interpretar el resultado hay que distinguir coeficientes, scores, coordenad
 |---|---|---|
 | `prcomp()` | Ajustar el PCA. El escalado es una decisión del análisis. | `prcomp(datos, center = TRUE, scale. = TRUE)` |
 | `predict()` | Proyectar individuos nuevos usando el centro, la escala y los ejes ya estimados. | `predict(pca, newdata = nuevos)` |
-| `eigen()` | Obtener autovalores y autovectores de una matriz simétrica. | `eigen(cov(datos))` |
+| `eigen()` | Obtener autovalores y autovectores de la matriz de correlaciones. | `eigen(cor(datos))` |
 | `visualizar_direcciones_2d()` | Dibujar direcciones sobre datos con dos variables. | `visualizar_direcciones_2d(datos, direcciones)` |
 | `preparar_proyeccion()` | Calcular scores, puntos proyectados y error para una dirección bidimensional. | `preparar_proyeccion(datos, direccion, nombre)` |
 | `resumir_varianza_pca()` | Obtener autovalores, varianza explicada, umbrales, Kaiser y gráficos. | `resultado <- resumir_varianza_pca(pca)` |
@@ -1256,7 +1494,7 @@ Para interpretar el resultado hay que distinguir coeficientes, scores, coordenad
 | `resumir_individuos_pca()` | Obtener scores, distancias y cos² de los individuos. | `resumir_individuos_pca(pca, c(1, 2))` |
 | `visualizar_individuos_pca()` | Dibujar el mapa de individuos, opcionalmente por grupos o cos². | `visualizar_individuos_pca(pca, c(1, 2))` |
 | `analisis_paralelo_pca()` | Comparar los autovalores observados con una referencia aleatoria. | `analisis_paralelo_pca(datos)` |
-| `reconstruir_pca()` | Reconstruir los datos conservando las primeras `q` componentes. | `reconstruir_pca(pca, q = 2)` |
+| `reconstruir_pca()` | Reconstruir los datos conservando las primeras `q` componentes, opcionalmente en unidades originales. | `reconstruir_pca(pca, q = 2, escala_original = TRUE)` |
 | `evaluar_reconstruccion_pca()` | Comparar error empírico, error teórico y varianza descartada. | `evaluar_reconstruccion_pca(pca, datos)` |
 | `diagnosticar_reconstruccion_pca()` | Localizar la pérdida por variables e individuos. | `diagnosticar_reconstruccion_pca(pca, datos, q = 2)` |
 | `evaluar_distancias_pca()` | Comprobar qué distancias se conservan al retener `q` componentes. | `evaluar_distancias_pca(pca, q = 2)` |
