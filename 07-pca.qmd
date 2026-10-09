@@ -412,45 +412,90 @@ El autovector determina la dirección y su autovalor mide la varianza capturada.
 
 ### Por qué existe una base ortonormal de autovectores
 
-La matriz $S$ es real y simétrica. Estas dos propiedades garantizan que puede diagonalizarse usando una base ortonormal de autovectores.
+La matriz $S$ es real y simétrica. Para justificar algebraicamente su diagonalización partimos de la **forma real de Jordan**. Toda matriz real es semejante a una matriz por bloques que puede contener:
 
-El cociente de Rayleigh
+- bloques de Jordan $J_m(\lambda)$ asociados a autovalores reales;
+- bloques reales de dimensión par asociados a parejas de autovalores complejos conjugados $a\pm bi$.
 
-$$
-R(a)=a^\top Sa,
-\qquad a^\top a=1,
-$$
-
-es continuo y la esfera unidad es compacta, por lo que $R(a)$ alcanza un máximo. El cálculo anterior mediante multiplicadores de Lagrange muestra que un vector donde se alcanza ese máximo satisface
+Los bloques reales del primer tipo tienen la forma
 
 $$
-Sa_1=\lambda_1a_1.
+J_m(\lambda)=
+\begin{pmatrix}
+\lambda & 1 & & 0\\
+& \lambda & \ddots & \\
+& & \ddots & 1\\
+0 & & & \lambda
+\end{pmatrix},
 $$
 
-Consideremos ahora el complemento ortogonal
+mientras que una pareja $a\pm bi$ se representa inicialmente mediante bloques $2\times2$ como
 
 $$
-a_1^\perp=\{x:a_1^\top x=0\}.
+C(a,b)=
+\begin{pmatrix}
+a & b\\
+-b & a
+\end{pmatrix},
 $$
 
-Este subespacio es invariante por $S$. En efecto, si $x\in a_1^\perp$,
+que también pueden formar cadenas de Jordan reales de dimensión mayor.
+
+Por tanto, primero debemos demostrar que en una matriz simétrica no aparecen autovalores complejos y, después, que sus bloques reales de Jordan tienen tamaño uno.
+
+#### Los autovalores son reales
+
+Consideremos momentáneamente $S$ como matriz sobre $\mathbb C$. Si
 
 $$
-a_1^\top Sx
-=(Sa_1)^\top x
-=\lambda_1a_1^\top x
-=0.
+Sv=\lambda v,
+\qquad v\neq0,
 $$
 
-Por tanto, $Sx\in a_1^\perp$. La restricción de $S$ a este subespacio vuelve a ser simétrica. Repitiendo el argumento en dimensiones cada vez menores obtenemos una base ortonormal de autovectores $a_1,\ldots,a_p$. Si los reunimos como columnas de $A$,
+entonces
 
 $$
-A^\top A=I,
+\lambda
+=\frac{v^*Sv}{v^*v},
+$$
+
+donde $v^*$ denota el traspuesto conjugado. Como $S^*=S$,
+
+$$
+\overline{v^*Sv}
+=v^*S^*v
+=v^*Sv.
+$$
+
+El numerador es real y $v^*v>0$, por lo que $\lambda\in\mathbb R$. En consecuencia, la forma real de Jordan de $S$ no contiene los bloques de dimensión par asociados a parejas complejas.
+
+#### No existen bloques de Jordan no triviales
+
+Supongamos que existiera un bloque $J_m(\lambda)$ con $m\geq2$. Entonces existiría una cadena de Jordan con vectores reales $v_1\neq0$ y $v_2$ tales que
+
+$$
+(S-\lambda I)v_1=0,
 \qquad
-\boxed{S=A\Lambda A^\top}.
+(S-\lambda I)v_2=v_1.
 $$
 
-La simetría también explica directamente la ortogonalidad. Si $Su=\lambda u$ y $Sv=\mu v$, entonces
+Como $S-\lambda I$ es simétrica,
+
+$$
+\begin{aligned}
+\|v_1\|^2
+&=v_1^\top v_1\\
+&=v_1^\top(S-\lambda I)v_2\\
+&=((S-\lambda I)v_1)^\top v_2\\
+&=0,
+\end{aligned}
+$$
+
+lo que contradice $v_1\neq0$. Por tanto, todos los bloques tienen tamaño uno y $S$ es diagonalizable sobre $\mathbb R$.
+
+#### La base puede elegirse ortonormal
+
+Si $Su=\lambda u$ y $Sv=\mu v$, entonces
 
 $$
 \lambda u^\top v
@@ -459,15 +504,25 @@ $$
 =\mu u^\top v.
 $$
 
-Cuando $\lambda\neq\mu$, necesariamente $u^\top v=0$. Si un autovalor está repetido, podemos elegir una base ortonormal dentro de su espacio propio.
+Cuando $\lambda\neq\mu$, necesariamente $u^\top v=0$: los espacios propios asociados a autovalores distintos son ortogonales. Dentro de un espacio propio correspondiente a un autovalor repetido podemos aplicar Gram--Schmidt, porque cualquier combinación lineal de sus vectores continúa siendo un autovector con el mismo autovalor.
 
-La diagonalización anterior muestra que todos los autovalores son reales. Además, una matriz de covarianzas es semidefinida positiva:
+Así obtenemos una base ortonormal $a_1,\ldots,a_p$. Si reunimos estos vectores como columnas de $A$,
 
 $$
-a^\top Sa=\operatorname{Var}(Xa)\geq 0.
+A^\top A=I,
+\qquad
+\boxed{S=A\Lambda A^\top}.
 $$
 
-Por ello todos sus autovalores son no negativos.
+Un autovalor repetido no implica un bloque de Jordan no trivial. Por ejemplo, la matriz identidad tiene un único autovalor repetido, pero su forma de Jordan contiene únicamente bloques $1\times1$. Los vectores concretos elegidos dentro del espacio propio no son únicos.
+
+Finalmente, una matriz de covarianzas es semidefinida positiva:
+
+$$
+a^\top Sa=\operatorname{Var}(Xa)\geq0.
+$$
+
+Si $Sa=\lambda a$, entonces $\lambda\|a\|^2=a^\top Sa\geq0$, de modo que todos los autovalores son no negativos.
 
 ### Componentes posteriores
 
@@ -504,7 +559,32 @@ $$
 }
 $$
 
-Para ver por qué es un óptimo global, consideremos cualquier matriz $Q$ con $Q^\top Q=I_q$. Como $A$ es una base ortonormal, podemos escribir $Q=AC$. Entonces
+Para ver por qué es un óptimo global, consideremos cualquier matriz $Q\in\mathbb R^{p\times q}$ con $Q^\top Q=I_q$. Sus columnas forman cualquier otro conjunto candidato de $q$ direcciones ortonormales.
+
+Como $A$ es una matriz ortogonal, $AA^\top=I_p$. Definimos
+
+$$
+C=A^\top Q.
+$$
+
+Entonces
+
+$$
+Q=AA^\top Q=AC,
+$$
+
+de modo que las columnas de $C$ son las coordenadas de las direcciones de $Q$ en la base de autovectores $A$. Además,
+
+$$
+C^\top C
+=Q^\top AA^\top Q
+=Q^\top Q
+=I_q.
+$$
+
+Por tanto, $C\in\mathbb R^{p\times q}$ tiene columnas ortonormales. No es, en general, una matriz de giro porque no es cuadrada cuando $q<p$; representa un sistema ortonormal de $q$ direcciones dentro de $\mathbb R^p$. Solo si $q=p$ es una matriz ortogonal completa, que puede representar una rotación o una reflexión.
+
+Usando $S=A\Lambda A^\top$,
 
 $$
 \operatorname{tr}(Q^\top SQ)
@@ -514,12 +594,51 @@ $$
 \sum_{k=1}^p\lambda_k w_k,
 $$
 
-donde $w_k=\sum_{j=1}^q c_{kj}^2$, de modo que $0\leq w_k\leq1$ y $\sum_k w_k=q$. Como $\lambda_1\geq\cdots\geq\lambda_p$, la suma se maximiza asignando peso uno a los $q$ mayores autovalores y cero al resto. Así, las primeras $q$ componentes optimizan conjuntamente el subespacio, no solo una sucesión de decisiones locales.
+donde
 
-Para todas las componentes, los scores $Z=XA$ cumplen
+$$
+w_k=\sum_{j=1}^q c_{kj}^2
+=\|C^\top e_k\|^2.
+$$
+
+La matriz $CC^\top$ es la proyección ortogonal sobre el subespacio generado por las columnas de $C$. Por ello, la proyección del vector unitario $e_k$ no puede tener una longitud mayor que la original:
+
+$$
+0\leq w_k
+=e_k^\top CC^\top e_k
+\leq\|e_k\|^2
+=1.
+$$
+
+Además,
+
+$$
+\sum_{k=1}^p w_k
+=\operatorname{tr}(CC^\top)
+=\operatorname{tr}(C^\top C)
+=q.
+$$
+
+Los pesos reparten, por tanto, $q$ unidades entre los autovalores, sin poder asignar más de una unidad a ninguno. Como $\lambda_1\geq\cdots\geq\lambda_p$, la suma se maximiza tomando $w_1=\cdots=w_q=1$ y el resto cero. Así, las primeras $q$ componentes optimizan conjuntamente el subespacio, no solo una sucesión de decisiones locales.
+
+Para justificar la covarianza de los scores, observemos primero que las ecuaciones $Sa_k=\lambda_k a_k$ para todas las columnas pueden escribirse conjuntamente como
+
+$$
+SA=A\Lambda.
+$$
+
+Multiplicando por $A^\top$ y usando $A^\top A=I$,
+
+$$
+\boxed{A^\top SA=\Lambda}.
+$$
+
+Para todas las componentes, los scores son $Z=XA$. Como $X$ está centrada,
 
 $$
 \operatorname{Cov}(Z)
+=\frac{1}{n-1}Z^\top Z
+=A^\top\left(\frac{1}{n-1}X^\top X\right)A
 =A^\top SA
 =\Lambda.
 $$
@@ -793,7 +912,14 @@ Flechas próximas sugieren correlación positiva; flechas opuestas, correlación
 
 ## Cos² y contribuciones
 
-Estas medidas responden a preguntas diferentes.
+El nombre cos² es literal: mide el cuadrado del coseno de un ángulo. Sin embargo, variables e individuos se representan en espacios diferentes.
+
+| Objeto | Vector geométrico | Espacio | Ángulo considerado |
+|---|---|---|---|
+| Variable $X_j$ | Columna $x_j$, con un valor por individuo | $\mathbb R^n$ | Entre la variable $x_j$ y el score $z_k$ |
+| Individuo $i$ | Fila $x_i$, con un valor por variable | $\mathbb R^p$ | Entre el perfil $x_i$ y el eje principal $a_k$ |
+
+Esta dualidad explica por qué las fórmulas son parecidas, aunque su interpretación geométrica no sea exactamente la misma. Además, cos² y contribución responden a preguntas diferentes.
 
 | Cantidad | Fórmula en PCA estandarizado | Pregunta |
 |---|---|---|
@@ -804,14 +930,40 @@ Estas medidas responden a preguntas diferentes.
 
 ### Cos² de las variables
 
-Para una variable estandarizada,
+Una variable estandarizada $X_j$ puede verse como el vector columna $x_j\in\mathbb R^n$. La componente $k$ es también un vector en el espacio de los individuos:
+
+$$
+z_k=Xa_k\in\mathbb R^n.
+$$
+
+Como ambos vectores están centrados, su correlación es el coseno del ángulo que forman:
+
+$$
+\cos(\theta_{jk})
+=\frac{x_j^\top z_k}{\|x_j\|\,\|z_k\|}
+=\operatorname{Cor}(X_j,PC_k).
+$$
+
+Por tanto,
 
 $$
 \cos^2_{jk}=\operatorname{Cor}(X_j,PC_k)^2
 =\lambda_k a_{jk}^2.
 $$
 
-Por eso no se obtiene elevando directamente `rotation` al cuadrado. La calidad en el plano PC1--PC2 es
+Geométricamente, esta cantidad es la proporción de la longitud cuadrática de la variable que queda en su proyección sobre la dirección del score:
+
+$$
+\cos^2_{jk}
+=
+\frac{
+\|\operatorname{proj}_{z_k}(x_j)\|^2
+}{
+\|x_j\|^2
+}.
+$$
+
+Por eso el cos² no se obtiene elevando directamente `rotation` al cuadrado. Como los scores son ortogonales, la calidad en el plano PC1--PC2 es la proporción representada por la proyección sobre todo el plano:
 
 $$
 \cos^2_j(PC1,PC2)
@@ -819,7 +971,16 @@ $$
 +\operatorname{Cor}(X_j,PC_2)^2.
 $$
 
-Un valor próximo a uno significa que casi toda la variabilidad de la variable es visible en el plano.
+Las coordenadas de la flecha de una variable en el círculo son precisamente estas dos correlaciones. Por eso su longitud cuadrada es
+
+$$
+\|\text{flecha}_j\|^2
+=\cos^2_j(PC1,PC2).
+$$
+
+Una flecha próxima al círculo indica que casi toda la variabilidad de la variable es visible en el plano. Una flecha corta no significa que la variable carezca de importancia: significa que una parte sustancial de su variabilidad está en componentes no mostradas.
+
+Al considerar todas las componentes con varianza positiva, las proyecciones ortogonales descomponen completamente la variable y sus cos² suman uno.
 
 ```{r}
 #| label: cos2-variables
@@ -907,22 +1068,54 @@ En `mtcars`, el extremo positivo de PC1 reúne mayor cilindrada, potencia y peso
 
 ### Cos² de los individuos
 
-Para el individuo $i$, con scores $z_{ik}$,
+El individuo $i$ está representado por su perfil estandarizado $x_i\in\mathbb R^p$, medido desde el centro de la nube. El autovector $a_k$ es un eje unitario del mismo espacio y el score es la proyección escalar del individuo sobre ese eje:
 
 $$
-d_i^2=\sum_{k=1}^p z_{ik}^2,
-\qquad
-\cos^2_{ik}=\frac{z_{ik}^2}{d_i^2}.
+z_{ik}=x_i^\top a_k.
 $$
 
-En PC1--PC2,
+Por tanto, el coseno del ángulo entre el perfil del individuo y la componente es
+
+$$
+\cos(\theta_{ik})
+=\frac{x_i^\top a_k}{\|x_i\|\,\|a_k\|}
+=\frac{z_{ik}}{\|x_i\|},
+$$
+
+porque $\|a_k\|=1$. Además, el cambio de base es ortogonal. Si $z_i$ reúne todos los scores del individuo,
+
+$$
+\|x_i\|^2
+=\|z_i\|^2
+=\sum_{k=1}^p z_{ik}^2
+=d_i^2.
+$$
+
+La cantidad $d_i$ es la distancia del individuo al centro en el espacio de las variables estandarizadas. Al elevar el coseno al cuadrado obtenemos
+
+$$
+\boxed{
+\cos^2_{ik}
+=\frac{z_{ik}^2}{d_i^2}
+}.
+$$
+
+Es decir, el cos² es la proporción de la distancia cuadrática al centro que queda representada sobre el eje $k$. En el plano PC1--PC2, la proyección ortogonal es $A_2A_2^\top x_i$ y, por Pitágoras,
 
 $$
 \cos^2_i(PC1,PC2)
 =\frac{z_{i1}^2+z_{i2}^2}{\sum_{k=1}^p z_{ik}^2}.
 $$
 
-Mide qué proporción de la distancia del individuo al centro queda visible en el plano.
+Para un individuo que no coincide con el centro, los cos² sobre todas las componentes suman uno.
+
+Por tanto:
+
+- un cos² próximo a uno indica que la dirección centro--individuo se ve casi completamente en el plano;
+- un cos² bajo indica que componentes omitidas contienen una parte importante de esa dirección;
+- estar lejos del origen en PC1--PC2 no garantiza por sí solo un cos² alto: hay que comparar esa distancia visible con la distancia completa;
+- un cos² alto no implica que el individuo sea influyente o atípico, solo que está bien representado;
+- si un individuo coincide exactamente con el centro, $d_i=0$ y el ángulo, por tanto, no está definido.
 
 ```{r}
 #| label: cos2-individuos
