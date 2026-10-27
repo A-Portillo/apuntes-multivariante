@@ -951,9 +951,9 @@ KMO_j=
 <h3 data-number="10.2.1" class="anchored" data-anchor-id="qué-significa-obtener-los-factores"><span class="header-section-number">10.2.1</span> Qué significa «obtener» los factores</h3>
 <p>En AFE no observamos una columna llamada <span class="math inline">\(F_1\)</span> que pueda calcularse exactamente a partir de los datos. Lo que se estima primero son los <strong>parámetros del modelo</strong>: las cargas <span class="math inline">\(\Lambda\)</span>, las unicidades <span class="math inline">\(\Psi\)</span> y, si la solución es oblicua, las correlaciones factoriales <span class="math inline">\(\Phi\)</span>. Para un número de factores <span class="math inline">\(m\)</span> fijado, buscamos matrices que reproduzcan bien la matriz de correlaciones:</p>
 <p><span class="math display">\[
-R\approx\widehat R=widehat\Lambda\widehat\Phi\widehat\Lambda^\mathsf T+\widehat\Psi.
+R\approx\widehat{R}=\widehat{\Lambda}\widehat{\Phi}\widehat{\Lambda}^{\mathsf T}+\widehat{\Psi}.
 \]</span></p>
-<p>Cada columna de <span class="math inline">\(\widehat\Lambda\)</span> describe el patrón de relaciones de un factor con las variables, pero no contiene los valores del factor para los individuos. Además, la misma parte común puede representarse con distintas orientaciones de los ejes. La rotación elegirá más adelante una orientación interpretable.</p>
+<p>Cada columna de <span class="math inline">\(\widehat{\Lambda}\)</span> describe el patrón de relaciones de un factor con las variables, pero no contiene los valores del factor para los individuos. Además, la misma parte común puede representarse con distintas orientaciones de los ejes. La rotación elegirá más adelante una orientación interpretable.</p>
 <p>Conviene distinguir desde el principio dos operaciones:</p>
 <ol type="1">
 <li><strong>Extraer factores</strong>: estimar <span class="math inline">\(\Lambda\)</span>, <span class="math inline">\(\Psi\)</span> y, cuando corresponda, <span class="math inline">\(\Phi\)</span> a partir de <span class="math inline">\(R\)</span>.</li>
@@ -966,9 +966,9 @@ R\approx\widehat R=widehat\Lambda\widehat\Phi\widehat\Lambda^\mathsf T+\widehat\
 <p>Hay varios métodos de extracción. Máxima verosimilitud añade supuestos distribucionales y permite ciertos contrastes; ejes principales trabaja iterativamente con comunalidades. En este curso usaremos sobre todo <strong>mínimos residuos</strong>, <code>fm = "minres"</code>, porque expresa de forma directa la pregunta central del AFE: ¿qué cargas reproducen mejor las correlaciones entre variables?</p>
 <p>Para entender el criterio, consideremos primero factores ortogonales, <span class="math inline">\(\Phi=I\)</span>. Fuera de la diagonal, la correlación reproducida entre <span class="math inline">\(X_j\)</span> y <span class="math inline">\(X_\ell\)</span> es</p>
 <p><span class="math display">\[
-\widehat r_{j\ell}=\sum_{k=1}^{m}\lambda_{jk}\lambda_{\ell k}.
+\widehat{r}_{j\ell}=\sum_{k=1}^{m}\lambda_{jk}\lambda_{\ell k}.
 \]</span></p>
-<p>El residuo de esa pareja es <span class="math inline">\(e_{j\ell}=r_{j\ell}-\widehat r_{j\ell}\)</span>. MINRES busca cargas que hagan pequeña la suma de residuos cuadrados fuera de la diagonal:</p>
+<p>El residuo de esa pareja es <span class="math inline">\(e_{j\ell}=r_{j\ell}-\widehat{r}_{j\ell}\)</span>. MINRES busca cargas que hagan pequeña la suma de residuos cuadrados fuera de la diagonal:</p>
 <p><span class="math display">\[
 Q(\Lambda)=\sum_{j&lt;\ell}
 \left(r_{j\ell}-\sum_{k=1}^{m}\lambda_{jk}\lambda_{\ell k}\right)^2.
@@ -990,9 +990,9 @@ C\approx V_mD_mV_m^\mathsf T
 <p>La dificultad es que <span class="math inline">\(\Psi\)</span> tampoco se conoce. El algoritmo debe alternar la obtención de cargas con la actualización de las unicidades hasta encontrar una combinación que reduzca los residuos.</p>
 <p>La diagonal se completa mediante las unicidades. Como las variables están estandarizadas,</p>
 <p><span class="math display">\[
-\widehat\psi_j=1-\widehat h_j^2,
+\widehat{\psi}_j=1-\widehat{h}_j^2,
 \qquad
-\widehat h_j^2=\sum_{k=1}^{m}\widehat\lambda_{jk}^2
+\widehat{h}_j^2=\sum_{k=1}^{m}\widehat{\lambda}_{jk}^2
 \]</span></p>
 <p>en una solución ortogonal. Así, el modelo separa qué proporción de la varianza de cada variable es común y cuál queda como específica.</p>
 <p>No existe en general una fórmula cerrada que entregue la solución MINRES definitiva en un único paso. Una forma útil de resumir el procedimiento iterativo es:</p>
@@ -1881,7 +1881,7 @@ x=\Lambda f+\epsilon.
 <p>Aunque conozcamos <span class="math inline">\(x\)</span> y hayamos estimado <span class="math inline">\(\Lambda\)</span>, tanto <span class="math inline">\(f\)</span> como <span class="math inline">\(\epsilon\)</span> siguen siendo desconocidos. No podemos despejar <span class="math inline">\(f\)</span> de forma exacta porque una parte de cada respuesta es específica. Incluso si <span class="math inline">\(\Lambda\)</span> fuese cuadrada, usar <span class="math inline">\(\Lambda^{-1}x\)</span> atribuiría erróneamente todo el residuo al factor común.</p>
 <p>El método de <strong>regresión</strong>, solicitado mediante <code>scores = "regression"</code>, elige la mejor predicción lineal de <span class="math inline">\(F\)</span> a partir de las variables estandarizadas. Para un individuo con vector <span class="math inline">\(x\)</span>, se escribe</p>
 <p><span class="math display">\[
-\widehat f=B^\mathsf T x,
+\widehat{f}=B^\mathsf T x,
 \qquad
 B=R^{-1}\Lambda\Phi.
 \]</span></p>
@@ -1891,7 +1891,7 @@ B=R^{-1}\Lambda.
 \]</span></p>
 <p>Para todos los individuos a la vez, si <span class="math inline">\(Z\)</span> es la matriz de datos estandarizados,</p>
 <p><span class="math display">\[
-\widehat F=ZB.
+\widehat{F}=ZB.
 \]</span></p>
 <p>La multiplicación por <span class="math inline">\(R^{-1}\)</span> evita contar repetidamente información redundante de variables correlacionadas. En población, la misma fórmula se escribe con <span class="math inline">\(\Sigma^{-1}\)</span>; <code>psych</code> sustituye esas cantidades por la matriz de correlaciones y los parámetros estimados. Bajo normalidad multivariante, la versión poblacional coincide con la esperanza condicional <span class="math inline">\(E(F\mid X=x)\)</span>; sin exigir normalidad, puede entenderse como el mejor predictor lineal en términos de error cuadrático medio.</p>
 <section id="ejemplo-numérico-con-dos-variables-y-dos-factores" class="level4" data-number="10.4.3.1">
@@ -1930,7 +1930,7 @@ B=R^{-1}\Lambda
 \]</span></p>
 <p>Para una persona con valores estandarizados <span class="math inline">\(x=(1,-0.5)^\mathsf T\)</span>,</p>
 <p><span class="math display">\[
-\widehat f=B^\mathsf T x
+\widehat{f}=B^\mathsf T x
 \approx
 \begin{pmatrix}
 0.851\\
@@ -3031,10 +3031,10 @@ B=R^{-1}\Lambda
 <span id="cb15-377"><a href="#cb15-377" aria-hidden="true" tabindex="-1"></a>En AFE no observamos una columna llamada $F_1$ que pueda calcularse exactamente a partir de los datos. Lo que se estima primero son los **parámetros del modelo**: las cargas $\Lambda$, las unicidades $\Psi$ y, si la solución es oblicua, las correlaciones factoriales $\Phi$. Para un número de factores $m$ fijado, buscamos matrices que reproduzcan bien la matriz de correlaciones:</span>
 <span id="cb15-378"><a href="#cb15-378" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb15-379"><a href="#cb15-379" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb15-380"><a href="#cb15-380" aria-hidden="true" tabindex="-1"></a>R\approx\widehat R=widehat\Lambda\widehat\Phi\widehat\Lambda^\mathsf T+\widehat\Psi.</span>
+<span id="cb15-380"><a href="#cb15-380" aria-hidden="true" tabindex="-1"></a>R\approx\widehat{R}=\widehat{\Lambda}\widehat{\Phi}\widehat{\Lambda}^{\mathsf T}+\widehat{\Psi}.</span>
 <span id="cb15-381"><a href="#cb15-381" aria-hidden="true" tabindex="-1"></a>$$</span>
 <span id="cb15-382"><a href="#cb15-382" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-383"><a href="#cb15-383" aria-hidden="true" tabindex="-1"></a>Cada columna de $\widehat\Lambda$ describe el patrón de relaciones de un factor con las variables, pero no contiene los valores del factor para los individuos. Además, la misma parte común puede representarse con distintas orientaciones de los ejes. La rotación elegirá más adelante una orientación interpretable.</span>
+<span id="cb15-383"><a href="#cb15-383" aria-hidden="true" tabindex="-1"></a>Cada columna de $\widehat{\Lambda}$ describe el patrón de relaciones de un factor con las variables, pero no contiene los valores del factor para los individuos. Además, la misma parte común puede representarse con distintas orientaciones de los ejes. La rotación elegirá más adelante una orientación interpretable.</span>
 <span id="cb15-384"><a href="#cb15-384" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb15-385"><a href="#cb15-385" aria-hidden="true" tabindex="-1"></a>Conviene distinguir desde el principio dos operaciones:</span>
 <span id="cb15-386"><a href="#cb15-386" aria-hidden="true" tabindex="-1"></a></span>
@@ -3050,10 +3050,10 @@ B=R^{-1}\Lambda
 <span id="cb15-396"><a href="#cb15-396" aria-hidden="true" tabindex="-1"></a>Para entender el criterio, consideremos primero factores ortogonales, $\Phi=I$. Fuera de la diagonal, la correlación reproducida entre $X_j$ y $X_\ell$ es</span>
 <span id="cb15-397"><a href="#cb15-397" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb15-398"><a href="#cb15-398" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb15-399"><a href="#cb15-399" aria-hidden="true" tabindex="-1"></a>\widehat r_{j\ell}=\sum_{k=1}^{m}\lambda_{jk}\lambda_{\ell k}.</span>
+<span id="cb15-399"><a href="#cb15-399" aria-hidden="true" tabindex="-1"></a>\widehat{r}_{j\ell}=\sum_{k=1}^{m}\lambda_{jk}\lambda_{\ell k}.</span>
 <span id="cb15-400"><a href="#cb15-400" aria-hidden="true" tabindex="-1"></a>$$</span>
 <span id="cb15-401"><a href="#cb15-401" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-402"><a href="#cb15-402" aria-hidden="true" tabindex="-1"></a>El residuo de esa pareja es $e_{j\ell}=r_{j\ell}-\widehat r_{j\ell}$. MINRES busca cargas que hagan pequeña la suma de residuos cuadrados fuera de la diagonal:</span>
+<span id="cb15-402"><a href="#cb15-402" aria-hidden="true" tabindex="-1"></a>El residuo de esa pareja es $e_{j\ell}=r_{j\ell}-\widehat{r}_{j\ell}$. MINRES busca cargas que hagan pequeña la suma de residuos cuadrados fuera de la diagonal:</span>
 <span id="cb15-403"><a href="#cb15-403" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb15-404"><a href="#cb15-404" aria-hidden="true" tabindex="-1"></a>$$</span>
 <span id="cb15-405"><a href="#cb15-405" aria-hidden="true" tabindex="-1"></a>Q(\Lambda)=\sum_{j&lt;\ell}</span>
@@ -3085,9 +3085,9 @@ B=R^{-1}\Lambda
 <span id="cb15-431"><a href="#cb15-431" aria-hidden="true" tabindex="-1"></a>La diagonal se completa mediante las unicidades. Como las variables están estandarizadas,</span>
 <span id="cb15-432"><a href="#cb15-432" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb15-433"><a href="#cb15-433" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb15-434"><a href="#cb15-434" aria-hidden="true" tabindex="-1"></a>\widehat\psi_j=1-\widehat h_j^2,</span>
+<span id="cb15-434"><a href="#cb15-434" aria-hidden="true" tabindex="-1"></a>\widehat{\psi}_j=1-\widehat{h}_j^2,</span>
 <span id="cb15-435"><a href="#cb15-435" aria-hidden="true" tabindex="-1"></a>\qquad</span>
-<span id="cb15-436"><a href="#cb15-436" aria-hidden="true" tabindex="-1"></a>\widehat h_j^2=\sum_{k=1}^{m}\widehat\lambda_{jk}^2</span>
+<span id="cb15-436"><a href="#cb15-436" aria-hidden="true" tabindex="-1"></a>\widehat{h}_j^2=\sum_{k=1}^{m}\widehat{\lambda}_{jk}^2</span>
 <span id="cb15-437"><a href="#cb15-437" aria-hidden="true" tabindex="-1"></a>$$</span>
 <span id="cb15-438"><a href="#cb15-438" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb15-439"><a href="#cb15-439" aria-hidden="true" tabindex="-1"></a>en una solución ortogonal. Así, el modelo separa qué proporción de la varianza de cada variable es común y cuál queda como específica.</span>
@@ -3302,7 +3302,7 @@ B=R^{-1}\Lambda
 <span id="cb15-668"><a href="#cb15-668" aria-hidden="true" tabindex="-1"></a>El método de **regresión**, solicitado mediante <span class="in">`scores = "regression"`</span>, elige la mejor predicción lineal de $F$ a partir de las variables estandarizadas. Para un individuo con vector $x$, se escribe</span>
 <span id="cb15-669"><a href="#cb15-669" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb15-670"><a href="#cb15-670" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb15-671"><a href="#cb15-671" aria-hidden="true" tabindex="-1"></a>\widehat f=B^\mathsf T x,</span>
+<span id="cb15-671"><a href="#cb15-671" aria-hidden="true" tabindex="-1"></a>\widehat{f}=B^\mathsf T x,</span>
 <span id="cb15-672"><a href="#cb15-672" aria-hidden="true" tabindex="-1"></a>\qquad</span>
 <span id="cb15-673"><a href="#cb15-673" aria-hidden="true" tabindex="-1"></a>B=R^{-1}\Lambda\Phi.</span>
 <span id="cb15-674"><a href="#cb15-674" aria-hidden="true" tabindex="-1"></a>$$</span>
@@ -3316,7 +3316,7 @@ B=R^{-1}\Lambda
 <span id="cb15-682"><a href="#cb15-682" aria-hidden="true" tabindex="-1"></a>Para todos los individuos a la vez, si $Z$ es la matriz de datos estandarizados,</span>
 <span id="cb15-683"><a href="#cb15-683" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb15-684"><a href="#cb15-684" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb15-685"><a href="#cb15-685" aria-hidden="true" tabindex="-1"></a>\widehat F=ZB.</span>
+<span id="cb15-685"><a href="#cb15-685" aria-hidden="true" tabindex="-1"></a>\widehat{F}=ZB.</span>
 <span id="cb15-686"><a href="#cb15-686" aria-hidden="true" tabindex="-1"></a>$$</span>
 <span id="cb15-687"><a href="#cb15-687" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb15-688"><a href="#cb15-688" aria-hidden="true" tabindex="-1"></a>La multiplicación por $R^{-1}$ evita contar repetidamente información redundante de variables correlacionadas. En población, la misma fórmula se escribe con $\Sigma^{-1}$; <span class="in">`psych`</span> sustituye esas cantidades por la matriz de correlaciones y los parámetros estimados. Bajo normalidad multivariante, la versión poblacional coincide con la esperanza condicional $E(F\mid X=x)$; sin exigir normalidad, puede entenderse como el mejor predictor lineal en términos de error cuadrático medio.</span>
@@ -3364,7 +3364,7 @@ B=R^{-1}\Lambda
 <span id="cb15-730"><a href="#cb15-730" aria-hidden="true" tabindex="-1"></a>Para una persona con valores estandarizados $x=(1,-0.5)^\mathsf T$,</span>
 <span id="cb15-731"><a href="#cb15-731" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb15-732"><a href="#cb15-732" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb15-733"><a href="#cb15-733" aria-hidden="true" tabindex="-1"></a>\widehat f=B^\mathsf T x</span>
+<span id="cb15-733"><a href="#cb15-733" aria-hidden="true" tabindex="-1"></a>\widehat{f}=B^\mathsf T x</span>
 <span id="cb15-734"><a href="#cb15-734" aria-hidden="true" tabindex="-1"></a>\approx</span>
 <span id="cb15-735"><a href="#cb15-735" aria-hidden="true" tabindex="-1"></a>\begin{pmatrix}</span>
 <span id="cb15-736"><a href="#cb15-736" aria-hidden="true" tabindex="-1"></a>0.851<span class="sc">\\</span></span>

@@ -367,10 +367,10 @@ No conviene reducir la decisión a un umbral: también debemos revisar la proced
 En AFE no observamos una columna llamada $F_1$ que pueda calcularse exactamente a partir de los datos. Lo que se estima primero son los **parámetros del modelo**: las cargas $\Lambda$, las unicidades $\Psi$ y, si la solución es oblicua, las correlaciones factoriales $\Phi$. Para un número de factores $m$ fijado, buscamos matrices que reproduzcan bien la matriz de correlaciones:
 
 $$
-R\approx\widehat R=widehat\Lambda\widehat\Phi\widehat\Lambda^\mathsf T+\widehat\Psi.
+R\approx\widehat{R}=\widehat{\Lambda}\widehat{\Phi}\widehat{\Lambda}^{\mathsf T}+\widehat{\Psi}.
 $$
 
-Cada columna de $\widehat\Lambda$ describe el patrón de relaciones de un factor con las variables, pero no contiene los valores del factor para los individuos. Además, la misma parte común puede representarse con distintas orientaciones de los ejes. La rotación elegirá más adelante una orientación interpretable.
+Cada columna de $\widehat{\Lambda}$ describe el patrón de relaciones de un factor con las variables, pero no contiene los valores del factor para los individuos. Además, la misma parte común puede representarse con distintas orientaciones de los ejes. La rotación elegirá más adelante una orientación interpretable.
 
 Conviene distinguir desde el principio dos operaciones:
 
@@ -386,10 +386,10 @@ Hay varios métodos de extracción. Máxima verosimilitud añade supuestos distr
 Para entender el criterio, consideremos primero factores ortogonales, $\Phi=I$. Fuera de la diagonal, la correlación reproducida entre $X_j$ y $X_\ell$ es
 
 $$
-\widehat r_{j\ell}=\sum_{k=1}^{m}\lambda_{jk}\lambda_{\ell k}.
+\widehat{r}_{j\ell}=\sum_{k=1}^{m}\lambda_{jk}\lambda_{\ell k}.
 $$
 
-El residuo de esa pareja es $e_{j\ell}=r_{j\ell}-\widehat r_{j\ell}$. MINRES busca cargas que hagan pequeña la suma de residuos cuadrados fuera de la diagonal:
+El residuo de esa pareja es $e_{j\ell}=r_{j\ell}-\widehat{r}_{j\ell}$. MINRES busca cargas que hagan pequeña la suma de residuos cuadrados fuera de la diagonal:
 
 $$
 Q(\Lambda)=\sum_{j<\ell}
@@ -421,9 +421,9 @@ La dificultad es que $\Psi$ tampoco se conoce. El algoritmo debe alternar la obt
 La diagonal se completa mediante las unicidades. Como las variables están estandarizadas,
 
 $$
-\widehat\psi_j=1-\widehat h_j^2,
+\widehat{\psi}_j=1-\widehat{h}_j^2,
 \qquad
-\widehat h_j^2=\sum_{k=1}^{m}\widehat\lambda_{jk}^2
+\widehat{h}_j^2=\sum_{k=1}^{m}\widehat{\lambda}_{jk}^2
 $$
 
 en una solución ortogonal. Así, el modelo separa qué proporción de la varianza de cada variable es común y cuál queda como específica.
@@ -638,7 +638,7 @@ Aunque conozcamos $x$ y hayamos estimado $\Lambda$, tanto $f$ como $\epsilon$ si
 El método de **regresión**, solicitado mediante `scores = "regression"`, elige la mejor predicción lineal de $F$ a partir de las variables estandarizadas. Para un individuo con vector $x$, se escribe
 
 $$
-\widehat f=B^\mathsf T x,
+\widehat{f}=B^\mathsf T x,
 \qquad
 B=R^{-1}\Lambda\Phi.
 $$
@@ -652,7 +652,7 @@ $$
 Para todos los individuos a la vez, si $Z$ es la matriz de datos estandarizados,
 
 $$
-\widehat F=ZB.
+\widehat{F}=ZB.
 $$
 
 La multiplicación por $R^{-1}$ evita contar repetidamente información redundante de variables correlacionadas. En población, la misma fórmula se escribe con $\Sigma^{-1}$; `psych` sustituye esas cantidades por la matriz de correlaciones y los parámetros estimados. Bajo normalidad multivariante, la versión poblacional coincide con la esperanza condicional $E(F\mid X=x)$; sin exigir normalidad, puede entenderse como el mejor predictor lineal en términos de error cuadrático medio.
@@ -700,7 +700,7 @@ $$
 Para una persona con valores estandarizados $x=(1,-0.5)^\mathsf T$,
 
 $$
-\widehat f=B^\mathsf T x
+\widehat{f}=B^\mathsf T x
 \approx
 \begin{pmatrix}
 0.851\\
