@@ -379,10 +379,12 @@ window.Quarto = {
   <li><a href="#dataset-de-trabajo" id="toc-dataset-de-trabajo" class="nav-link" data-scroll-target="#dataset-de-trabajo"><span class="header-section-number">10.1.6</span> Dataset de trabajo</a></li>
   <li><a href="#hay-estructura-común-suficiente" id="toc-hay-estructura-común-suficiente" class="nav-link" data-scroll-target="#hay-estructura-común-suficiente"><span class="header-section-number">10.1.7</span> ¿Hay estructura común suficiente?</a></li>
   </ul></li>
-  <li><a href="#elección-y-estimación-de-la-solución" id="toc-elección-y-estimación-de-la-solución" class="nav-link" data-scroll-target="#elección-y-estimación-de-la-solución"><span class="header-section-number">10.2</span> Elección y estimación de la solución</a>
+  <li><a href="#estimación-y-elección-de-la-solución" id="toc-estimación-y-elección-de-la-solución" class="nav-link" data-scroll-target="#estimación-y-elección-de-la-solución"><span class="header-section-number">10.2</span> Estimación y elección de la solución</a>
   <ul class="collapse">
-  <li><a href="#número-de-factores" id="toc-número-de-factores" class="nav-link" data-scroll-target="#número-de-factores"><span class="header-section-number">10.2.1</span> Número de factores</a></li>
-  <li><a href="#extracción-de-factores" id="toc-extracción-de-factores" class="nav-link" data-scroll-target="#extracción-de-factores"><span class="header-section-number">10.2.2</span> Extracción de factores</a></li>
+  <li><a href="#qué-significa-obtener-los-factores" id="toc-qué-significa-obtener-los-factores" class="nav-link" data-scroll-target="#qué-significa-obtener-los-factores"><span class="header-section-number">10.2.1</span> Qué significa «obtener» los factores</a></li>
+  <li><a href="#extracción-de-factores" id="toc-extracción-de-factores" class="nav-link" data-scroll-target="#extracción-de-factores"><span class="header-section-number">10.2.2</span> Extracción de factores mediante mínimos residuos</a></li>
+  <li><a href="#número-de-factores" id="toc-número-de-factores" class="nav-link" data-scroll-target="#número-de-factores"><span class="header-section-number">10.2.3</span> Número de factores</a></li>
+  <li><a href="#ajuste-de-una-solución-concreta" id="toc-ajuste-de-una-solución-concreta" class="nav-link" data-scroll-target="#ajuste-de-una-solución-concreta"><span class="header-section-number">10.2.4</span> Ajuste de una solución concreta</a></li>
   </ul></li>
   <li><a href="#rotación-de-la-solución" id="toc-rotación-de-la-solución" class="nav-link" data-scroll-target="#rotación-de-la-solución"><span class="header-section-number">10.3</span> Rotación de la solución</a>
   <ul class="collapse">
@@ -943,11 +945,83 @@ KMO_j=
 </section>
 </section>
 </section>
-<section id="elección-y-estimación-de-la-solución" class="level2" data-number="10.2">
-<h2 data-number="10.2" class="anchored" data-anchor-id="elección-y-estimación-de-la-solución"><span class="header-section-number">10.2</span> Elección y estimación de la solución</h2>
-<section id="número-de-factores" class="level3" data-number="10.2.1">
-<h3 data-number="10.2.1" class="anchored" data-anchor-id="número-de-factores"><span class="header-section-number">10.2.1</span> Número de factores</h3>
-<p>Elegir el número de factores es una de las decisiones más delicadas. Un primer diagnóstico es mirar autovalores de la matriz de correlaciones.</p>
+<section id="estimación-y-elección-de-la-solución" class="level2" data-number="10.2">
+<h2 data-number="10.2" class="anchored" data-anchor-id="estimación-y-elección-de-la-solución"><span class="header-section-number">10.2</span> Estimación y elección de la solución</h2>
+<section id="qué-significa-obtener-los-factores" class="level3" data-number="10.2.1">
+<h3 data-number="10.2.1" class="anchored" data-anchor-id="qué-significa-obtener-los-factores"><span class="header-section-number">10.2.1</span> Qué significa «obtener» los factores</h3>
+<p>En AFE no observamos una columna llamada <span class="math inline">\(F_1\)</span> que pueda calcularse exactamente a partir de los datos. Lo que se estima primero son los <strong>parámetros del modelo</strong>: las cargas <span class="math inline">\(\Lambda\)</span>, las unicidades <span class="math inline">\(\Psi\)</span> y, si la solución es oblicua, las correlaciones factoriales <span class="math inline">\(\Phi\)</span>. Para un número de factores <span class="math inline">\(m\)</span> fijado, buscamos matrices que reproduzcan bien la matriz de correlaciones:</p>
+<p><span class="math display">\[
+R\approx\widehat R=widehat\Lambda\widehat\Phi\widehat\Lambda^\mathsf T+\widehat\Psi.
+\]</span></p>
+<p>Cada columna de <span class="math inline">\(\widehat\Lambda\)</span> describe el patrón de relaciones de un factor con las variables, pero no contiene los valores del factor para los individuos. Además, la misma parte común puede representarse con distintas orientaciones de los ejes. La rotación elegirá más adelante una orientación interpretable.</p>
+<p>Conviene distinguir desde el principio dos operaciones:</p>
+<ol type="1">
+<li><strong>Extraer factores</strong>: estimar <span class="math inline">\(\Lambda\)</span>, <span class="math inline">\(\Psi\)</span> y, cuando corresponda, <span class="math inline">\(\Phi\)</span> a partir de <span class="math inline">\(R\)</span>.</li>
+<li><strong>Estimar scores factoriales</strong>: una vez fijado el modelo, predecir la posición de cada individuo en esos factores latentes.</li>
+</ol>
+<p>La primera operación estudia la estructura de las <strong>variables</strong>; la segunda produce estimaciones para los <strong>individuos</strong>.</p>
+</section>
+<section id="extracción-de-factores" class="level3" data-number="10.2.2">
+<h3 data-number="10.2.2" class="anchored" data-anchor-id="extracción-de-factores"><span class="header-section-number">10.2.2</span> Extracción de factores mediante mínimos residuos</h3>
+<p>Hay varios métodos de extracción. Máxima verosimilitud añade supuestos distribucionales y permite ciertos contrastes; ejes principales trabaja iterativamente con comunalidades. En este curso usaremos sobre todo <strong>mínimos residuos</strong>, <code>fm = "minres"</code>, porque expresa de forma directa la pregunta central del AFE: ¿qué cargas reproducen mejor las correlaciones entre variables?</p>
+<p>Para entender el criterio, consideremos primero factores ortogonales, <span class="math inline">\(\Phi=I\)</span>. Fuera de la diagonal, la correlación reproducida entre <span class="math inline">\(X_j\)</span> y <span class="math inline">\(X_\ell\)</span> es</p>
+<p><span class="math display">\[
+\widehat r_{j\ell}=\sum_{k=1}^{m}\lambda_{jk}\lambda_{\ell k}.
+\]</span></p>
+<p>El residuo de esa pareja es <span class="math inline">\(e_{j\ell}=r_{j\ell}-\widehat r_{j\ell}\)</span>. MINRES busca cargas que hagan pequeña la suma de residuos cuadrados fuera de la diagonal:</p>
+<p><span class="math display">\[
+Q(\Lambda)=\sum_{j&lt;\ell}
+\left(r_{j\ell}-\sum_{k=1}^{m}\lambda_{jk}\lambda_{\ell k}\right)^2.
+\]</span></p>
+<p>Una forma algebraica de entender de dónde salen unas cargas provisionales es fijar temporalmente las unicidades y formar la parte común</p>
+<p><span class="math display">\[
+C=R-\Psi.
+\]</span></p>
+<p>Si descomponemos esta matriz simétrica como <span class="math inline">\(C=VDV^\mathsf T\)</span> y conservamos sus <span class="math inline">\(m\)</span> mayores autovalores positivos y sus autovectores, una aproximación de rango <span class="math inline">\(m\)</span> es</p>
+<p><span class="math display">\[
+C\approx V_mD_mV_m^\mathsf T
+=\left(V_mD_m^{1/2}\right)
+\left(V_mD_m^{1/2}\right)^\mathsf T.
+\]</span></p>
+<p>Por ello podemos tomar provisionalmente</p>
+<p><span class="math display">\[
+\Lambda=V_mD_m^{1/2}.
+\]</span></p>
+<p>La dificultad es que <span class="math inline">\(\Psi\)</span> tampoco se conoce. El algoritmo debe alternar la obtención de cargas con la actualización de las unicidades hasta encontrar una combinación que reduzca los residuos.</p>
+<p>La diagonal se completa mediante las unicidades. Como las variables están estandarizadas,</p>
+<p><span class="math display">\[
+\widehat\psi_j=1-\widehat h_j^2,
+\qquad
+\widehat h_j^2=\sum_{k=1}^{m}\widehat\lambda_{jk}^2
+\]</span></p>
+<p>en una solución ortogonal. Así, el modelo separa qué proporción de la varianza de cada variable es común y cuál queda como específica.</p>
+<p>No existe en general una fórmula cerrada que entregue la solución MINRES definitiva en un único paso. Una forma útil de resumir el procedimiento iterativo es:</p>
+<ol type="1">
+<li>partir de valores provisionales para las comunalidades;</li>
+<li>obtener unas cargas iniciales a partir de la parte común de <span class="math inline">\(R\)</span>;</li>
+<li>reconstruir las correlaciones y calcular sus residuos;</li>
+<li>actualizar cargas y unicidades para reducir <span class="math inline">\(Q\)</span>;</li>
+<li>repetir hasta que la mejora sea despreciable.</li>
+</ol>
+<p>Por tanto, MINRES no consiste simplemente en calcular una vez los autovectores de <span class="math inline">\(R\)</span>, como en PCA. La descomposición se aplica a una parte común que cambia al actualizar <span class="math inline">\(\Psi\)</span>, dentro de un problema numérico de aproximación de las correlaciones. Si aparecen unicidades inadmisibles o la solución depende mucho de pequeños cambios, el modelo necesita revisarse.</p>
+<div class="callout callout-style-default callout-note callout-titled" title="Los factores estimados no son observaciones">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>Los factores estimados no son observaciones
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>La extracción identifica un modelo de covarianzas y unos ejes latentes. No recupera los valores verdaderos de <span class="math inline">\(F\)</span> para cada persona: en <span class="math inline">\(X=\Lambda F+\epsilon\)</span> desconocemos simultáneamente <span class="math inline">\(F\)</span> y la parte específica <span class="math inline">\(\epsilon\)</span>. Los scores se estimarán después y conservarán esa incertidumbre.</p>
+</div>
+</div>
+</section>
+<section id="número-de-factores" class="level3" data-number="10.2.3">
+<h3 data-number="10.2.3" class="anchored" data-anchor-id="número-de-factores"><span class="header-section-number">10.2.3</span> Número de factores</h3>
+<p>El criterio MINRES necesita que propongamos previamente un número <span class="math inline">\(m\)</span>. Elegirlo es una de las decisiones más delicadas: con pocos factores quedan correlaciones sin reproducir; con demasiados, el modelo puede capturar peculiaridades de la muestra y perder parsimonia.</p>
+<p>Un primer diagnóstico consiste en mirar los autovalores de la matriz de correlaciones.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Código</summary>
@@ -1138,28 +1212,14 @@ KMO_j=
 <li>interpretabilidad;</li>
 <li>comunalidades;</li>
 <li>cargas cruzadas;</li>
+<li>residuos del modelo;</li>
 <li>sentido aplicado del modelo.</li>
 </ul>
+<p>La teoría del método se explica antes que esta elección, pero en la práctica estimamos varias soluciones candidatas y comparamos sus resultados. Número de factores y ajuste forman, por tanto, un proceso iterativo de decisión.</p>
 </section>
-<section id="extracción-de-factores" class="level3" data-number="10.2.2">
-<h3 data-number="10.2.2" class="anchored" data-anchor-id="extracción-de-factores"><span class="header-section-number">10.2.2</span> Extracción de factores</h3>
-<p>Hay varios métodos de extracción. Algunos habituales son:</p>
-<ul>
-<li><strong>componentes principales factoriales</strong>: aproximación descriptiva inicial;</li>
-<li><strong>mínimos residuos</strong>: busca reproducir la matriz de correlaciones minimizando residuos;</li>
-<li><strong>máxima verosimilitud</strong>: añade supuestos distribucionales y permite contrastes;</li>
-<li><strong>ejes principales</strong>: trabaja iterativamente con comunalidades.</li>
-</ul>
-<p>No todos responden exactamente a la misma función objetivo. Por eso, cuando el resultado cambia mucho entre métodos, conviene ser prudente.</p>
-<p>En todos los casos buscamos parámetros que hagan</p>
-<p><span class="math display">\[
-R\approx\widehat R=\widehat\Lambda\widehat\Phi\widehat\Lambda^\mathsf T+\widehat\Psi.
-\]</span></p>
-<p>Por ejemplo, mínimos residuos intenta hacer pequeña, principalmente fuera de la diagonal, una cantidad del tipo</p>
-<p><span class="math display">\[
-\sum_{j&lt;\ell}\left(r_{j\ell}-\widehat r_{j\ell}\right)^2.
-\]</span></p>
-<p>Esto distingue el AFE de PCA: aquí el objetivo es reproducir relaciones entre variables, no maximizar la varianza de una combinación lineal.</p>
+<section id="ajuste-de-una-solución-concreta" class="level3" data-number="10.2.4">
+<h3 data-number="10.2.4" class="anchored" data-anchor-id="ajuste-de-una-solución-concreta"><span class="header-section-number">10.2.4</span> Ajuste de una solución concreta</h3>
+<p>Proponemos cinco factores y estimamos inicialmente una solución MINRES sin rotar. El argumento <code>scores = "regression"</code> solicita además puntuaciones factoriales por regresión; veremos después cómo se construyen.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Código</summary>
@@ -1434,7 +1494,7 @@ R\approx\widehat R=\widehat\Lambda\widehat\Phi\widehat\Lambda^\mathsf T+\widehat
 </div>
 </div>
 </div>
-<p>La solución sin rotar suele concentrar asociación general en los primeros factores. Todavía no conviene asignar nombres definitivos.</p>
+<p>La solución sin rotar suele concentrar asociación general en los primeros factores. Todavía no conviene asignar nombres definitivos: primero estudiaremos una rotación que facilite reconocer qué variables definen cada eje.</p>
 </section>
 </section>
 <section id="rotación-de-la-solución" class="level2" data-number="10.3">
@@ -1813,7 +1873,84 @@ R\approx\widehat R=\widehat\Lambda\widehat\Phi\widehat\Lambda^\mathsf T+\widehat
 </section>
 <section id="scores-factoriales" class="level3" data-number="10.4.3">
 <h3 data-number="10.4.3" class="anchored" data-anchor-id="scores-factoriales"><span class="header-section-number">10.4.3</span> Scores factoriales</h3>
-<p>Los scores estiman la posición de cada individuo en los factores. No son observaciones directas del factor latente, sino estimaciones dependientes del modelo.</p>
+<p>Los scores estiman la posición de cada individuo en los factores. No son observaciones directas del factor latente, sino predicciones dependientes de las cargas, las unicidades, la rotación y el método de puntuación.</p>
+<p>La razón puede verse en el modelo de un individuo:</p>
+<p><span class="math display">\[
+x=\Lambda f+\epsilon.
+\]</span></p>
+<p>Aunque conozcamos <span class="math inline">\(x\)</span> y hayamos estimado <span class="math inline">\(\Lambda\)</span>, tanto <span class="math inline">\(f\)</span> como <span class="math inline">\(\epsilon\)</span> siguen siendo desconocidos. No podemos despejar <span class="math inline">\(f\)</span> de forma exacta porque una parte de cada respuesta es específica. Incluso si <span class="math inline">\(\Lambda\)</span> fuese cuadrada, usar <span class="math inline">\(\Lambda^{-1}x\)</span> atribuiría erróneamente todo el residuo al factor común.</p>
+<p>El método de <strong>regresión</strong>, solicitado mediante <code>scores = "regression"</code>, elige la mejor predicción lineal de <span class="math inline">\(F\)</span> a partir de las variables estandarizadas. Para un individuo con vector <span class="math inline">\(x\)</span>, se escribe</p>
+<p><span class="math display">\[
+\widehat f=B^\mathsf T x,
+\qquad
+B=R^{-1}\Lambda\Phi.
+\]</span></p>
+<p>Aquí <span class="math inline">\(\Lambda\Phi\)</span> es la matriz de estructura, es decir, las correlaciones entre variables y factores. Si los factores son ortogonales, <span class="math inline">\(\Phi=I\)</span> y</p>
+<p><span class="math display">\[
+B=R^{-1}\Lambda.
+\]</span></p>
+<p>Para todos los individuos a la vez, si <span class="math inline">\(Z\)</span> es la matriz de datos estandarizados,</p>
+<p><span class="math display">\[
+\widehat F=ZB.
+\]</span></p>
+<p>La multiplicación por <span class="math inline">\(R^{-1}\)</span> evita contar repetidamente información redundante de variables correlacionadas. En población, la misma fórmula se escribe con <span class="math inline">\(\Sigma^{-1}\)</span>; <code>psych</code> sustituye esas cantidades por la matriz de correlaciones y los parámetros estimados. Bajo normalidad multivariante, la versión poblacional coincide con la esperanza condicional <span class="math inline">\(E(F\mid X=x)\)</span>; sin exigir normalidad, puede entenderse como el mejor predictor lineal en términos de error cuadrático medio.</p>
+<section id="ejemplo-numérico-con-dos-variables-y-dos-factores" class="level4" data-number="10.4.3.1">
+<h4 data-number="10.4.3.1" class="anchored" data-anchor-id="ejemplo-numérico-con-dos-variables-y-dos-factores"><span class="header-section-number">10.4.3.1</span> Ejemplo numérico con dos variables y dos factores</h4>
+<p>Supongamos, solo para ilustrar el cálculo, factores ortogonales y las matrices ya conocidas</p>
+<p><span class="math display">\[
+\Lambda=
+\begin{pmatrix}
+0.8&amp;0.2\\
+0.2&amp;0.8
+\end{pmatrix},
+\qquad
+\Psi=
+\begin{pmatrix}
+0.32&amp;0\\
+0&amp;0.32
+\end{pmatrix}.
+\]</span></p>
+<p>Cada variable tiene comunalidad <span class="math inline">\(0.8^2+0.2^2=0.68\)</span> y unicidad <span class="math inline">\(1-0.68=0.32\)</span>. La matriz de correlaciones reproducida es</p>
+<p><span class="math display">\[
+R=\Lambda\Lambda^\mathsf T+\Psi
+=
+\begin{pmatrix}
+1&amp;0.32\\
+0.32&amp;1
+\end{pmatrix}.
+\]</span></p>
+<p>Los pesos de regresión son</p>
+<p><span class="math display">\[
+B=R^{-1}\Lambda
+\approx
+\begin{pmatrix}
+0.820&amp;-0.062\\
+-0.062&amp;0.820
+\end{pmatrix}.
+\]</span></p>
+<p>Para una persona con valores estandarizados <span class="math inline">\(x=(1,-0.5)^\mathsf T\)</span>,</p>
+<p><span class="math display">\[
+\widehat f=B^\mathsf T x
+\approx
+\begin{pmatrix}
+0.851\\
+-0.472
+\end{pmatrix}.
+\]</span></p>
+<p>La persona queda alta en el primer factor y baja en el segundo. Los pequeños pesos negativos ajustan la información compartida entre las dos variables; no significan que la carga principal haya cambiado de signo.</p>
+<div class="callout callout-style-default callout-warning callout-titled" title="Ejemplo de cálculo, no modelo identificable">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Advertencia</span>Ejemplo de cálculo, no modelo identificable
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Con solo dos variables y dos factores no estimaríamos de forma única un AFE real: hay demasiados parámetros para tan poca información. Aquí suponemos <span class="math inline">\(\Lambda\)</span> y <span class="math inline">\(\Psi\)</span> conocidas únicamente para mostrar cómo se calculan los scores una vez fijado el modelo.</p>
+</div>
+</div>
 <div class="cell">
 <details class="code-fold">
 <summary>Código</summary>
@@ -1878,11 +2015,7 @@ R\approx\widehat R=\widehat\Lambda\widehat\Phi\widehat\Lambda^\mathsf T+\widehat
 </table>
 </div>
 </div>
-<p>Una forma esquemática de entender los scores por regresión es:</p>
-<p><span class="math display">\[
-\hat{F} = X B,
-\]</span></p>
-<p>donde <span class="math inline">\(B\)</span> es una matriz de pesos calculada a partir de cargas, unicidades y correlaciones. Los scores pueden servir para gráficos, clustering posterior o perfiles, pero no deben confundirse con medidas directas del factor.</p>
+<p>Los scores pueden servir para gráficos, clustering posterior o perfiles, pero no deben confundirse con medidas directas del factor.</p>
 <div class="cell">
 <div class="cell-output-display">
 <div>
@@ -1893,6 +2026,7 @@ R\approx\widehat R=\widehat\Lambda\widehat\Phi\widehat\Lambda^\mathsf T+\widehat
 </div>
 </div>
 <p>Las puntuaciones no son únicas: diferentes métodos pueden estimar valores distintos aun con las mismas cargas. Deben tratarse como estimaciones dependientes del modelo, no como observaciones directas de la variable latente.</p>
+</section>
 </section>
 </section>
 <section id="decisiones-y-limitaciones" class="level2" data-number="10.5">
@@ -1960,8 +2094,8 @@ R\approx\widehat R=\widehat\Lambda\widehat\Phi\widehat\Lambda^\mathsf T+\widehat
 <ol type="1">
 <li>Definir por qué sería razonable postular dimensiones comunes.</li>
 <li>Revisar correlaciones, KMO, Bartlett y calidad de los datos.</li>
+<li>Declarar el modelo y el método de extracción que se utilizarán.</li>
 <li>Comparar varios números de factores mediante análisis paralelo, scree, residuos y sentido sustantivo.</li>
-<li>Declarar el método de extracción.</li>
 <li>Elegir rotación ortogonal u oblicua según la pregunta.</li>
 <li>Interpretar conjuntamente cargas, comunalidades, cargas cruzadas y correlaciones factoriales.</li>
 <li>Revisar la matriz residual y la estabilidad en otras muestras.</li>
@@ -2890,300 +3024,445 @@ R\approx\widehat R=\widehat\Lambda\widehat\Phi\widehat\Lambda^\mathsf T+\widehat
 <span id="cb15-370"><a href="#cb15-370" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb15-371"><a href="#cb15-371" aria-hidden="true" tabindex="-1"></a>No conviene reducir la decisión a un umbral: también debemos revisar la procedencia de la muestra, el número de factores, los residuos y la estabilidad del resultado.</span>
 <span id="cb15-372"><a href="#cb15-372" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-373"><a href="#cb15-373" aria-hidden="true" tabindex="-1"></a><span class="fu">## Elección y estimación de la solución</span></span>
+<span id="cb15-373"><a href="#cb15-373" aria-hidden="true" tabindex="-1"></a><span class="fu">## Estimación y elección de la solución</span></span>
 <span id="cb15-374"><a href="#cb15-374" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-375"><a href="#cb15-375" aria-hidden="true" tabindex="-1"></a><span class="fu">### Número de factores</span></span>
+<span id="cb15-375"><a href="#cb15-375" aria-hidden="true" tabindex="-1"></a><span class="fu">### Qué significa «obtener» los factores</span></span>
 <span id="cb15-376"><a href="#cb15-376" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-377"><a href="#cb15-377" aria-hidden="true" tabindex="-1"></a>Elegir el número de factores es una de las decisiones más delicadas. Un primer diagnóstico es mirar autovalores de la matriz de correlaciones.</span>
+<span id="cb15-377"><a href="#cb15-377" aria-hidden="true" tabindex="-1"></a>En AFE no observamos una columna llamada $F_1$ que pueda calcularse exactamente a partir de los datos. Lo que se estima primero son los **parámetros del modelo**: las cargas $\Lambda$, las unicidades $\Psi$ y, si la solución es oblicua, las correlaciones factoriales $\Phi$. Para un número de factores $m$ fijado, buscamos matrices que reproduzcan bien la matriz de correlaciones:</span>
 <span id="cb15-378"><a href="#cb15-378" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-381"><a href="#cb15-381" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb15-382"><a href="#cb15-382" aria-hidden="true" tabindex="-1"></a>numero_factores <span class="ot">&lt;-</span> <span class="fu">visualizar_numero_factores</span>(datos_factorial)</span>
-<span id="cb15-383"><a href="#cb15-383" aria-hidden="true" tabindex="-1"></a>numero_factores<span class="sc">$</span>grafico</span>
-<span id="cb15-384"><a href="#cb15-384" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(numero_factores<span class="sc">$</span>tabla, <span class="at">digits =</span> <span class="dv">3</span>)</span>
-<span id="cb15-385"><a href="#cb15-385" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb15-379"><a href="#cb15-379" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb15-380"><a href="#cb15-380" aria-hidden="true" tabindex="-1"></a>R\approx\widehat R=widehat\Lambda\widehat\Phi\widehat\Lambda^\mathsf T+\widehat\Psi.</span>
+<span id="cb15-381"><a href="#cb15-381" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb15-382"><a href="#cb15-382" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-383"><a href="#cb15-383" aria-hidden="true" tabindex="-1"></a>Cada columna de $\widehat\Lambda$ describe el patrón de relaciones de un factor con las variables, pero no contiene los valores del factor para los individuos. Además, la misma parte común puede representarse con distintas orientaciones de los ejes. La rotación elegirá más adelante una orientación interpretable.</span>
+<span id="cb15-384"><a href="#cb15-384" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-385"><a href="#cb15-385" aria-hidden="true" tabindex="-1"></a>Conviene distinguir desde el principio dos operaciones:</span>
 <span id="cb15-386"><a href="#cb15-386" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-387"><a href="#cb15-387" aria-hidden="true" tabindex="-1"></a>La regla del autovalor mayor que uno es popular, pero débil. El análisis paralelo compara los autovalores observados con los que aparecerían al romper la estructura de correlación. Ninguno de los dos criterios sustituye la interpretación ni el diagnóstico del ajuste.</span>
-<span id="cb15-388"><a href="#cb15-388" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-389"><a href="#cb15-389" aria-hidden="true" tabindex="-1"></a>En la práctica se combinan varios criterios:</span>
-<span id="cb15-390"><a href="#cb15-390" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-391"><a href="#cb15-391" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>scree plot;</span>
-<span id="cb15-392"><a href="#cb15-392" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>análisis paralelo;</span>
-<span id="cb15-393"><a href="#cb15-393" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>interpretabilidad;</span>
-<span id="cb15-394"><a href="#cb15-394" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>comunalidades;</span>
-<span id="cb15-395"><a href="#cb15-395" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>cargas cruzadas;</span>
-<span id="cb15-396"><a href="#cb15-396" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>sentido aplicado del modelo.</span>
+<span id="cb15-387"><a href="#cb15-387" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>**Extraer factores**: estimar $\Lambda$, $\Psi$ y, cuando corresponda, $\Phi$ a partir de $R$.</span>
+<span id="cb15-388"><a href="#cb15-388" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>**Estimar scores factoriales**: una vez fijado el modelo, predecir la posición de cada individuo en esos factores latentes.</span>
+<span id="cb15-389"><a href="#cb15-389" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-390"><a href="#cb15-390" aria-hidden="true" tabindex="-1"></a>La primera operación estudia la estructura de las **variables**; la segunda produce estimaciones para los **individuos**.</span>
+<span id="cb15-391"><a href="#cb15-391" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-392"><a href="#cb15-392" aria-hidden="true" tabindex="-1"></a><span class="fu">### Extracción de factores mediante mínimos residuos {#extracción-de-factores}</span></span>
+<span id="cb15-393"><a href="#cb15-393" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-394"><a href="#cb15-394" aria-hidden="true" tabindex="-1"></a>Hay varios métodos de extracción. Máxima verosimilitud añade supuestos distribucionales y permite ciertos contrastes; ejes principales trabaja iterativamente con comunalidades. En este curso usaremos sobre todo **mínimos residuos**, <span class="in">`fm = "minres"`</span>, porque expresa de forma directa la pregunta central del AFE: ¿qué cargas reproducen mejor las correlaciones entre variables?</span>
+<span id="cb15-395"><a href="#cb15-395" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-396"><a href="#cb15-396" aria-hidden="true" tabindex="-1"></a>Para entender el criterio, consideremos primero factores ortogonales, $\Phi=I$. Fuera de la diagonal, la correlación reproducida entre $X_j$ y $X_\ell$ es</span>
 <span id="cb15-397"><a href="#cb15-397" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-398"><a href="#cb15-398" aria-hidden="true" tabindex="-1"></a><span class="fu">### Extracción de factores</span></span>
-<span id="cb15-399"><a href="#cb15-399" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-400"><a href="#cb15-400" aria-hidden="true" tabindex="-1"></a>Hay varios métodos de extracción. Algunos habituales son:</span>
+<span id="cb15-398"><a href="#cb15-398" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb15-399"><a href="#cb15-399" aria-hidden="true" tabindex="-1"></a>\widehat r_{j\ell}=\sum_{k=1}^{m}\lambda_{jk}\lambda_{\ell k}.</span>
+<span id="cb15-400"><a href="#cb15-400" aria-hidden="true" tabindex="-1"></a>$$</span>
 <span id="cb15-401"><a href="#cb15-401" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-402"><a href="#cb15-402" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**componentes principales factoriales**: aproximación descriptiva inicial;</span>
-<span id="cb15-403"><a href="#cb15-403" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**mínimos residuos**: busca reproducir la matriz de correlaciones minimizando residuos;</span>
-<span id="cb15-404"><a href="#cb15-404" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**máxima verosimilitud**: añade supuestos distribucionales y permite contrastes;</span>
-<span id="cb15-405"><a href="#cb15-405" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**ejes principales**: trabaja iterativamente con comunalidades.</span>
-<span id="cb15-406"><a href="#cb15-406" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-407"><a href="#cb15-407" aria-hidden="true" tabindex="-1"></a>No todos responden exactamente a la misma función objetivo. Por eso, cuando el resultado cambia mucho entre métodos, conviene ser prudente.</span>
+<span id="cb15-402"><a href="#cb15-402" aria-hidden="true" tabindex="-1"></a>El residuo de esa pareja es $e_{j\ell}=r_{j\ell}-\widehat r_{j\ell}$. MINRES busca cargas que hagan pequeña la suma de residuos cuadrados fuera de la diagonal:</span>
+<span id="cb15-403"><a href="#cb15-403" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-404"><a href="#cb15-404" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb15-405"><a href="#cb15-405" aria-hidden="true" tabindex="-1"></a>Q(\Lambda)=\sum_{j&lt;\ell}</span>
+<span id="cb15-406"><a href="#cb15-406" aria-hidden="true" tabindex="-1"></a>\left(r_{j\ell}-\sum_{k=1}^{m}\lambda_{jk}\lambda_{\ell k}\right)^2.</span>
+<span id="cb15-407"><a href="#cb15-407" aria-hidden="true" tabindex="-1"></a>$$</span>
 <span id="cb15-408"><a href="#cb15-408" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-409"><a href="#cb15-409" aria-hidden="true" tabindex="-1"></a>En todos los casos buscamos parámetros que hagan</span>
+<span id="cb15-409"><a href="#cb15-409" aria-hidden="true" tabindex="-1"></a>Una forma algebraica de entender de dónde salen unas cargas provisionales es fijar temporalmente las unicidades y formar la parte común</span>
 <span id="cb15-410"><a href="#cb15-410" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb15-411"><a href="#cb15-411" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb15-412"><a href="#cb15-412" aria-hidden="true" tabindex="-1"></a>R\approx\widehat R=\widehat\Lambda\widehat\Phi\widehat\Lambda^\mathsf T+\widehat\Psi.</span>
+<span id="cb15-412"><a href="#cb15-412" aria-hidden="true" tabindex="-1"></a>C=R-\Psi.</span>
 <span id="cb15-413"><a href="#cb15-413" aria-hidden="true" tabindex="-1"></a>$$</span>
 <span id="cb15-414"><a href="#cb15-414" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-415"><a href="#cb15-415" aria-hidden="true" tabindex="-1"></a>Por ejemplo, mínimos residuos intenta hacer pequeña, principalmente fuera de la diagonal, una cantidad del tipo</span>
+<span id="cb15-415"><a href="#cb15-415" aria-hidden="true" tabindex="-1"></a>Si descomponemos esta matriz simétrica como $C=VDV^\mathsf T$ y conservamos sus $m$ mayores autovalores positivos y sus autovectores, una aproximación de rango $m$ es</span>
 <span id="cb15-416"><a href="#cb15-416" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb15-417"><a href="#cb15-417" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb15-418"><a href="#cb15-418" aria-hidden="true" tabindex="-1"></a>\sum_{j&lt;\ell}\left(r_{j\ell}-\widehat r_{j\ell}\right)^2.</span>
-<span id="cb15-419"><a href="#cb15-419" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb15-420"><a href="#cb15-420" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-421"><a href="#cb15-421" aria-hidden="true" tabindex="-1"></a>Esto distingue el AFE de PCA: aquí el objetivo es reproducir relaciones entre variables, no maximizar la varianza de una combinación lineal.</span>
+<span id="cb15-418"><a href="#cb15-418" aria-hidden="true" tabindex="-1"></a>C\approx V_mD_mV_m^\mathsf T</span>
+<span id="cb15-419"><a href="#cb15-419" aria-hidden="true" tabindex="-1"></a>=\left(V_mD_m^{1/2}\right)</span>
+<span id="cb15-420"><a href="#cb15-420" aria-hidden="true" tabindex="-1"></a>\left(V_mD_m^{1/2}\right)^\mathsf T.</span>
+<span id="cb15-421"><a href="#cb15-421" aria-hidden="true" tabindex="-1"></a>$$</span>
 <span id="cb15-422"><a href="#cb15-422" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-425"><a href="#cb15-425" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb15-426"><a href="#cb15-426" aria-hidden="true" tabindex="-1"></a>fa_minres <span class="ot">&lt;-</span> psych<span class="sc">::</span><span class="fu">fa</span>(</span>
-<span id="cb15-427"><a href="#cb15-427" aria-hidden="true" tabindex="-1"></a>  datos_factorial,</span>
-<span id="cb15-428"><a href="#cb15-428" aria-hidden="true" tabindex="-1"></a>  <span class="at">nfactors =</span> <span class="dv">5</span>,</span>
-<span id="cb15-429"><a href="#cb15-429" aria-hidden="true" tabindex="-1"></a>  <span class="at">rotate =</span> <span class="st">"none"</span>,</span>
-<span id="cb15-430"><a href="#cb15-430" aria-hidden="true" tabindex="-1"></a>  <span class="at">fm =</span> <span class="st">"minres"</span>,</span>
-<span id="cb15-431"><a href="#cb15-431" aria-hidden="true" tabindex="-1"></a>  <span class="at">scores =</span> <span class="st">"regression"</span></span>
-<span id="cb15-432"><a href="#cb15-432" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb15-433"><a href="#cb15-433" aria-hidden="true" tabindex="-1"></a><span class="fu">resumir_factorial</span>(fa_minres)<span class="sc">$</span>variables <span class="sc">|&gt;</span></span>
-<span id="cb15-434"><a href="#cb15-434" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">digits =</span> <span class="dv">3</span>)</span>
-<span id="cb15-435"><a href="#cb15-435" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb15-436"><a href="#cb15-436" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-439"><a href="#cb15-439" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb15-440"><a href="#cb15-440" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
-<span id="cb15-441"><a href="#cb15-441" aria-hidden="true" tabindex="-1"></a><span class="fu">visualizar_matriz_cargas</span>(fa_minres, <span class="at">mostrar_desde =</span> <span class="fl">0.25</span>)</span>
-<span id="cb15-442"><a href="#cb15-442" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb15-443"><a href="#cb15-443" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-444"><a href="#cb15-444" aria-hidden="true" tabindex="-1"></a>La solución sin rotar suele concentrar asociación general en los primeros factores. Todavía no conviene asignar nombres definitivos.</span>
-<span id="cb15-445"><a href="#cb15-445" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-446"><a href="#cb15-446" aria-hidden="true" tabindex="-1"></a><span class="fu">## Rotación de la solución</span></span>
-<span id="cb15-447"><a href="#cb15-447" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-448"><a href="#cb15-448" aria-hidden="true" tabindex="-1"></a><span class="fu">### Rotaciones factoriales</span></span>
-<span id="cb15-449"><a href="#cb15-449" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-450"><a href="#cb15-450" aria-hidden="true" tabindex="-1"></a>Una solución factorial no rotada puede explicar bien la matriz de correlaciones, pero ser difícil de interpretar. La rotación busca una estructura simple: variables con cargas altas en pocos factores y bajas en los demás.</span>
-<span id="cb15-451"><a href="#cb15-451" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-452"><a href="#cb15-452" aria-hidden="true" tabindex="-1"></a>Matemáticamente, si $T$ es una matriz de rotación, podemos transformar las cargas:</span>
-<span id="cb15-453"><a href="#cb15-453" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-454"><a href="#cb15-454" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb15-455"><a href="#cb15-455" aria-hidden="true" tabindex="-1"></a>\Lambda^* = \Lambda T.</span>
-<span id="cb15-456"><a href="#cb15-456" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb15-457"><a href="#cb15-457" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-458"><a href="#cb15-458" aria-hidden="true" tabindex="-1"></a>La solución rotada intenta conservar la capacidad explicativa global, pero redistribuye las cargas para mejorar la interpretación.</span>
-<span id="cb15-459"><a href="#cb15-459" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-460"><a href="#cb15-460" aria-hidden="true" tabindex="-1"></a>En una rotación ortogonal, $T^\mathsf TT=I$. Entonces</span>
-<span id="cb15-461"><a href="#cb15-461" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-462"><a href="#cb15-462" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb15-463"><a href="#cb15-463" aria-hidden="true" tabindex="-1"></a>(\Lambda T)(\Lambda T)^\mathsf T</span>
-<span id="cb15-464"><a href="#cb15-464" aria-hidden="true" tabindex="-1"></a>=\Lambda TT^\mathsf T\Lambda^\mathsf T</span>
-<span id="cb15-465"><a href="#cb15-465" aria-hidden="true" tabindex="-1"></a>=\Lambda\Lambda^\mathsf T.</span>
-<span id="cb15-466"><a href="#cb15-466" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb15-467"><a href="#cb15-467" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-468"><a href="#cb15-468" aria-hidden="true" tabindex="-1"></a>La nube de variables no cambia: cambian los ejes con los que describimos sus coordenadas. Por eso una rotación ortogonal puede mejorar la interpretación sin mejorar el ajuste.</span>
-<span id="cb15-469"><a href="#cb15-469" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-472"><a href="#cb15-472" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb15-473"><a href="#cb15-473" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: geometria-rotacion</span></span>
-<span id="cb15-474"><a href="#cb15-474" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
-<span id="cb15-475"><a href="#cb15-475" aria-hidden="true" tabindex="-1"></a>puntos <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
-<span id="cb15-476"><a href="#cb15-476" aria-hidden="true" tabindex="-1"></a>  <span class="at">variable =</span> <span class="fu">paste0</span>(<span class="st">"V"</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">8</span>),</span>
-<span id="cb15-477"><a href="#cb15-477" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> <span class="fu">c</span>(.<span class="dv">82</span>, .<span class="dv">75</span>, .<span class="dv">68</span>, .<span class="dv">58</span>, .<span class="dv">18</span>, .<span class="dv">12</span>, <span class="sc">-</span>.<span class="dv">05</span>, .<span class="dv">10</span>),</span>
-<span id="cb15-478"><a href="#cb15-478" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> <span class="fu">c</span>(.<span class="dv">15</span>, .<span class="dv">25</span>, .<span class="dv">30</span>, .<span class="dv">38</span>, .<span class="dv">82</span>, .<span class="dv">74</span>, .<span class="dv">68</span>, .<span class="dv">58</span>)</span>
-<span id="cb15-479"><a href="#cb15-479" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb15-480"><a href="#cb15-480" aria-hidden="true" tabindex="-1"></a>angulo <span class="ot">&lt;-</span> <span class="dv">25</span> <span class="sc">*</span> pi <span class="sc">/</span> <span class="dv">180</span></span>
-<span id="cb15-481"><a href="#cb15-481" aria-hidden="true" tabindex="-1"></a>ejes <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
-<span id="cb15-482"><a href="#cb15-482" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> <span class="dv">0</span>, <span class="at">y =</span> <span class="dv">0</span>,</span>
-<span id="cb15-483"><a href="#cb15-483" aria-hidden="true" tabindex="-1"></a>  <span class="at">xend =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">0</span>, <span class="fu">cos</span>(angulo), <span class="sc">-</span><span class="fu">sin</span>(angulo)),</span>
-<span id="cb15-484"><a href="#cb15-484" aria-hidden="true" tabindex="-1"></a>  <span class="at">yend =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="fu">sin</span>(angulo), <span class="fu">cos</span>(angulo)),</span>
-<span id="cb15-485"><a href="#cb15-485" aria-hidden="true" tabindex="-1"></a>  <span class="at">sistema =</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">"Sin rotar"</span>, <span class="st">"Rotado"</span>), <span class="at">each =</span> <span class="dv">2</span>)</span>
-<span id="cb15-486"><a href="#cb15-486" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb15-487"><a href="#cb15-487" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(puntos, <span class="fu">aes</span>(x, y, <span class="at">label =</span> variable)) <span class="sc">+</span></span>
-<span id="cb15-488"><a href="#cb15-488" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_segment</span>(</span>
-<span id="cb15-489"><a href="#cb15-489" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> ejes, <span class="fu">aes</span>(x, y, <span class="at">xend =</span> xend, <span class="at">yend =</span> yend, <span class="at">color =</span> sistema),</span>
-<span id="cb15-490"><a href="#cb15-490" aria-hidden="true" tabindex="-1"></a>    <span class="at">inherit.aes =</span> <span class="cn">FALSE</span>, <span class="at">arrow =</span> grid<span class="sc">::</span><span class="fu">arrow</span>(<span class="at">length =</span> grid<span class="sc">::</span><span class="fu">unit</span>(.<span class="dv">12</span>, <span class="st">"cm"</span>)), <span class="at">linewidth =</span> <span class="dv">1</span></span>
-<span id="cb15-491"><a href="#cb15-491" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb15-492"><a href="#cb15-492" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="fl">2.5</span>) <span class="sc">+</span> <span class="fu">geom_text</span>(<span class="at">vjust =</span> <span class="sc">-</span><span class="fl">0.7</span>) <span class="sc">+</span></span>
-<span id="cb15-493"><a href="#cb15-493" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_equal</span>(<span class="at">xlim =</span> <span class="fu">c</span>(<span class="sc">-</span>.<span class="dv">5</span>, <span class="fl">1.05</span>), <span class="at">ylim =</span> <span class="fu">c</span>(<span class="sc">-</span>.<span class="dv">05</span>, <span class="fl">1.05</span>)) <span class="sc">+</span></span>
-<span id="cb15-494"><a href="#cb15-494" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Rotar cambia los ejes, no la nube de variables"</span>, <span class="at">x =</span> <span class="st">"Carga 1"</span>, <span class="at">y =</span> <span class="st">"Carga 2"</span>, <span class="at">color =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
-<span id="cb15-495"><a href="#cb15-495" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span>
-<span id="cb15-496"><a href="#cb15-496" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb15-497"><a href="#cb15-497" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-498"><a href="#cb15-498" aria-hidden="true" tabindex="-1"></a><span class="fu">### Varimax</span></span>
-<span id="cb15-499"><a href="#cb15-499" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-500"><a href="#cb15-500" aria-hidden="true" tabindex="-1"></a>Varimax es una rotación ortogonal. Mantiene factores no correlacionados. Su intuición es hacer que, dentro de cada factor, algunas cargas sean grandes y otras pequeñas.</span>
-<span id="cb15-501"><a href="#cb15-501" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-502"><a href="#cb15-502" aria-hidden="true" tabindex="-1"></a>Una forma de su criterio es maximizar</span>
-<span id="cb15-503"><a href="#cb15-503" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-504"><a href="#cb15-504" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb15-505"><a href="#cb15-505" aria-hidden="true" tabindex="-1"></a>\sum_{k=1}^{m}\left[</span>
-<span id="cb15-506"><a href="#cb15-506" aria-hidden="true" tabindex="-1"></a>\frac1p\sum_{j=1}^{p}\lambda_{jk}^4-</span>
-<span id="cb15-507"><a href="#cb15-507" aria-hidden="true" tabindex="-1"></a>\left(\frac1p\sum_{j=1}^{p}\lambda_{jk}^2\right)^2</span>
-<span id="cb15-508"><a href="#cb15-508" aria-hidden="true" tabindex="-1"></a>\right].</span>
-<span id="cb15-509"><a href="#cb15-509" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb15-510"><a href="#cb15-510" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-511"><a href="#cb15-511" aria-hidden="true" tabindex="-1"></a>Así favorece columnas cuyas cargas al cuadrado son muy desiguales: unas variables definen claramente el factor y las demás apenas cargan.</span>
-<span id="cb15-512"><a href="#cb15-512" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-515"><a href="#cb15-515" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb15-516"><a href="#cb15-516" aria-hidden="true" tabindex="-1"></a>fa_varimax <span class="ot">&lt;-</span> psych<span class="sc">::</span><span class="fu">fa</span>(datos_factorial, <span class="at">nfactors =</span> <span class="dv">5</span>, <span class="at">rotate =</span> <span class="st">"varimax"</span>, <span class="at">fm =</span> <span class="st">"minres"</span>, <span class="at">scores =</span> <span class="st">"regression"</span>)</span>
-<span id="cb15-517"><a href="#cb15-517" aria-hidden="true" tabindex="-1"></a><span class="fu">variables_por_factor</span>(fa_varimax, <span class="at">umbral =</span> <span class="fl">0.35</span>) <span class="sc">|&gt;</span></span>
-<span id="cb15-518"><a href="#cb15-518" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">digits =</span> <span class="dv">3</span>)</span>
-<span id="cb15-519"><a href="#cb15-519" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb15-520"><a href="#cb15-520" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-523"><a href="#cb15-523" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb15-524"><a href="#cb15-524" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
-<span id="cb15-525"><a href="#cb15-525" aria-hidden="true" tabindex="-1"></a><span class="fu">visualizar_matriz_cargas</span>(fa_varimax, <span class="at">mostrar_desde =</span> <span class="fl">0.25</span>)</span>
-<span id="cb15-526"><a href="#cb15-526" aria-hidden="true" tabindex="-1"></a><span class="fu">visualizar_cargas_factoriales</span>(fa_varimax, <span class="at">factores =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>))</span>
-<span id="cb15-527"><a href="#cb15-527" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb15-528"><a href="#cb15-528" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-529"><a href="#cb15-529" aria-hidden="true" tabindex="-1"></a><span class="fu">### Oblimin</span></span>
-<span id="cb15-530"><a href="#cb15-530" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-531"><a href="#cb15-531" aria-hidden="true" tabindex="-1"></a>Oblimin permite que los factores estén correlacionados. Esto puede ser más realista en ciencias sociales, salud o comportamiento: dos dimensiones latentes pueden estar relacionadas.</span>
-<span id="cb15-532"><a href="#cb15-532" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-535"><a href="#cb15-535" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb15-536"><a href="#cb15-536" aria-hidden="true" tabindex="-1"></a>fa_oblimin <span class="ot">&lt;-</span> psych<span class="sc">::</span><span class="fu">fa</span>(datos_factorial, <span class="at">nfactors =</span> <span class="dv">5</span>, <span class="at">rotate =</span> <span class="st">"oblimin"</span>, <span class="at">fm =</span> <span class="st">"minres"</span>, <span class="at">scores =</span> <span class="st">"regression"</span>)</span>
-<span id="cb15-537"><a href="#cb15-537" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(<span class="fu">round</span>(fa_oblimin<span class="sc">$</span>Phi, <span class="dv">3</span>))</span>
-<span id="cb15-538"><a href="#cb15-538" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb15-539"><a href="#cb15-539" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-540"><a href="#cb15-540" aria-hidden="true" tabindex="-1"></a>Si los factores oblicuos están muy correlacionados, quizá no son dimensiones tan separadas. Si no están correlacionados, una rotación ortogonal puede ser suficiente.</span>
-<span id="cb15-541"><a href="#cb15-541" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-542"><a href="#cb15-542" aria-hidden="true" tabindex="-1"></a>En una solución oblicua conviene distinguir la **matriz patrón** $\Lambda$, con coeficientes parciales, y la **matriz de estructura** $S=\Lambda\Phi$, con correlaciones simples variable--factor. Coinciden cuando $\Phi=I$, pero no cuando los factores se correlacionan.</span>
-<span id="cb15-543"><a href="#cb15-543" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-546"><a href="#cb15-546" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb15-547"><a href="#cb15-547" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
-<span id="cb15-548"><a href="#cb15-548" aria-hidden="true" tabindex="-1"></a><span class="fu">comparar_rotaciones_factoriales</span>(<span class="fu">list</span>(</span>
-<span id="cb15-549"><a href="#cb15-549" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">Sin rotar</span><span class="st">`</span> <span class="ot">=</span> fa_minres,</span>
-<span id="cb15-550"><a href="#cb15-550" aria-hidden="true" tabindex="-1"></a>  <span class="at">Varimax =</span> fa_varimax,</span>
-<span id="cb15-551"><a href="#cb15-551" aria-hidden="true" tabindex="-1"></a>  <span class="at">Oblimin =</span> fa_oblimin</span>
-<span id="cb15-552"><a href="#cb15-552" aria-hidden="true" tabindex="-1"></a>))</span>
-<span id="cb15-553"><a href="#cb15-553" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb15-554"><a href="#cb15-554" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-555"><a href="#cb15-555" aria-hidden="true" tabindex="-1"></a><span class="fu">## Interpretación de variables e individuos</span></span>
-<span id="cb15-556"><a href="#cb15-556" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-557"><a href="#cb15-557" aria-hidden="true" tabindex="-1"></a><span class="fu">### Cargas cruzadas</span></span>
-<span id="cb15-558"><a href="#cb15-558" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-559"><a href="#cb15-559" aria-hidden="true" tabindex="-1"></a>Una carga cruzada aparece cuando una variable carga de forma relevante en más de un factor. Por ejemplo, si una variable tiene carga 0.45 en el factor 1 y 0.42 en el factor 2, no representa limpiamente una sola dimensión.</span>
-<span id="cb15-560"><a href="#cb15-560" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-561"><a href="#cb15-561" aria-hidden="true" tabindex="-1"></a>Las cargas cruzadas pueden indicar:</span>
-<span id="cb15-562"><a href="#cb15-562" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-563"><a href="#cb15-563" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>una variable conceptualmente ambigua;</span>
-<span id="cb15-564"><a href="#cb15-564" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>demasiados pocos factores;</span>
-<span id="cb15-565"><a href="#cb15-565" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>demasiados factores;</span>
-<span id="cb15-566"><a href="#cb15-566" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>una muestra insuficiente;</span>
-<span id="cb15-567"><a href="#cb15-567" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>una estructura latente menos clara de lo esperado.</span>
-<span id="cb15-568"><a href="#cb15-568" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-569"><a href="#cb15-569" aria-hidden="true" tabindex="-1"></a>No conviene forzar nombres de factores si las cargas no sostienen una interpretación simple.</span>
-<span id="cb15-570"><a href="#cb15-570" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-571"><a href="#cb15-571" aria-hidden="true" tabindex="-1"></a><span class="fu">### Residuos del modelo</span></span>
-<span id="cb15-572"><a href="#cb15-572" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-573"><a href="#cb15-573" aria-hidden="true" tabindex="-1"></a>Una forma de diagnosticar el ajuste es comparar la matriz de correlaciones observada con la reproducida por el modelo factorial.</span>
+<span id="cb15-423"><a href="#cb15-423" aria-hidden="true" tabindex="-1"></a>Por ello podemos tomar provisionalmente</span>
+<span id="cb15-424"><a href="#cb15-424" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-425"><a href="#cb15-425" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb15-426"><a href="#cb15-426" aria-hidden="true" tabindex="-1"></a>\Lambda=V_mD_m^{1/2}.</span>
+<span id="cb15-427"><a href="#cb15-427" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb15-428"><a href="#cb15-428" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-429"><a href="#cb15-429" aria-hidden="true" tabindex="-1"></a>La dificultad es que $\Psi$ tampoco se conoce. El algoritmo debe alternar la obtención de cargas con la actualización de las unicidades hasta encontrar una combinación que reduzca los residuos.</span>
+<span id="cb15-430"><a href="#cb15-430" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-431"><a href="#cb15-431" aria-hidden="true" tabindex="-1"></a>La diagonal se completa mediante las unicidades. Como las variables están estandarizadas,</span>
+<span id="cb15-432"><a href="#cb15-432" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-433"><a href="#cb15-433" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb15-434"><a href="#cb15-434" aria-hidden="true" tabindex="-1"></a>\widehat\psi_j=1-\widehat h_j^2,</span>
+<span id="cb15-435"><a href="#cb15-435" aria-hidden="true" tabindex="-1"></a>\qquad</span>
+<span id="cb15-436"><a href="#cb15-436" aria-hidden="true" tabindex="-1"></a>\widehat h_j^2=\sum_{k=1}^{m}\widehat\lambda_{jk}^2</span>
+<span id="cb15-437"><a href="#cb15-437" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb15-438"><a href="#cb15-438" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-439"><a href="#cb15-439" aria-hidden="true" tabindex="-1"></a>en una solución ortogonal. Así, el modelo separa qué proporción de la varianza de cada variable es común y cuál queda como específica.</span>
+<span id="cb15-440"><a href="#cb15-440" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-441"><a href="#cb15-441" aria-hidden="true" tabindex="-1"></a>No existe en general una fórmula cerrada que entregue la solución MINRES definitiva en un único paso. Una forma útil de resumir el procedimiento iterativo es:</span>
+<span id="cb15-442"><a href="#cb15-442" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-443"><a href="#cb15-443" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>partir de valores provisionales para las comunalidades;</span>
+<span id="cb15-444"><a href="#cb15-444" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>obtener unas cargas iniciales a partir de la parte común de $R$;</span>
+<span id="cb15-445"><a href="#cb15-445" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>reconstruir las correlaciones y calcular sus residuos;</span>
+<span id="cb15-446"><a href="#cb15-446" aria-hidden="true" tabindex="-1"></a><span class="ss">4. </span>actualizar cargas y unicidades para reducir $Q$;</span>
+<span id="cb15-447"><a href="#cb15-447" aria-hidden="true" tabindex="-1"></a><span class="ss">5. </span>repetir hasta que la mejora sea despreciable.</span>
+<span id="cb15-448"><a href="#cb15-448" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-449"><a href="#cb15-449" aria-hidden="true" tabindex="-1"></a>Por tanto, MINRES no consiste simplemente en calcular una vez los autovectores de $R$, como en PCA. La descomposición se aplica a una parte común que cambia al actualizar $\Psi$, dentro de un problema numérico de aproximación de las correlaciones. Si aparecen unicidades inadmisibles o la solución depende mucho de pequeños cambios, el modelo necesita revisarse.</span>
+<span id="cb15-450"><a href="#cb15-450" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-451"><a href="#cb15-451" aria-hidden="true" tabindex="-1"></a>::: {.callout-note title="Los factores estimados no son observaciones"}</span>
+<span id="cb15-452"><a href="#cb15-452" aria-hidden="true" tabindex="-1"></a>La extracción identifica un modelo de covarianzas y unos ejes latentes. No recupera los valores verdaderos de $F$ para cada persona: en $X=\Lambda F+\epsilon$ desconocemos simultáneamente $F$ y la parte específica $\epsilon$. Los scores se estimarán después y conservarán esa incertidumbre.</span>
+<span id="cb15-453"><a href="#cb15-453" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb15-454"><a href="#cb15-454" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-455"><a href="#cb15-455" aria-hidden="true" tabindex="-1"></a><span class="fu">### Número de factores</span></span>
+<span id="cb15-456"><a href="#cb15-456" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-457"><a href="#cb15-457" aria-hidden="true" tabindex="-1"></a>El criterio MINRES necesita que propongamos previamente un número $m$. Elegirlo es una de las decisiones más delicadas: con pocos factores quedan correlaciones sin reproducir; con demasiados, el modelo puede capturar peculiaridades de la muestra y perder parsimonia.</span>
+<span id="cb15-458"><a href="#cb15-458" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-459"><a href="#cb15-459" aria-hidden="true" tabindex="-1"></a>Un primer diagnóstico consiste en mirar los autovalores de la matriz de correlaciones.</span>
+<span id="cb15-460"><a href="#cb15-460" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-463"><a href="#cb15-463" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb15-464"><a href="#cb15-464" aria-hidden="true" tabindex="-1"></a>numero_factores <span class="ot">&lt;-</span> <span class="fu">visualizar_numero_factores</span>(datos_factorial)</span>
+<span id="cb15-465"><a href="#cb15-465" aria-hidden="true" tabindex="-1"></a>numero_factores<span class="sc">$</span>grafico</span>
+<span id="cb15-466"><a href="#cb15-466" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(numero_factores<span class="sc">$</span>tabla, <span class="at">digits =</span> <span class="dv">3</span>)</span>
+<span id="cb15-467"><a href="#cb15-467" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb15-468"><a href="#cb15-468" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-469"><a href="#cb15-469" aria-hidden="true" tabindex="-1"></a>La regla del autovalor mayor que uno es popular, pero débil. El análisis paralelo compara los autovalores observados con los que aparecerían al romper la estructura de correlación. Ninguno de los dos criterios sustituye la interpretación ni el diagnóstico del ajuste.</span>
+<span id="cb15-470"><a href="#cb15-470" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-471"><a href="#cb15-471" aria-hidden="true" tabindex="-1"></a>En la práctica se combinan varios criterios:</span>
+<span id="cb15-472"><a href="#cb15-472" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-473"><a href="#cb15-473" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>scree plot;</span>
+<span id="cb15-474"><a href="#cb15-474" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>análisis paralelo;</span>
+<span id="cb15-475"><a href="#cb15-475" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>interpretabilidad;</span>
+<span id="cb15-476"><a href="#cb15-476" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>comunalidades;</span>
+<span id="cb15-477"><a href="#cb15-477" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>cargas cruzadas;</span>
+<span id="cb15-478"><a href="#cb15-478" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>residuos del modelo;</span>
+<span id="cb15-479"><a href="#cb15-479" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>sentido aplicado del modelo.</span>
+<span id="cb15-480"><a href="#cb15-480" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-481"><a href="#cb15-481" aria-hidden="true" tabindex="-1"></a>La teoría del método se explica antes que esta elección, pero en la práctica estimamos varias soluciones candidatas y comparamos sus resultados. Número de factores y ajuste forman, por tanto, un proceso iterativo de decisión.</span>
+<span id="cb15-482"><a href="#cb15-482" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-483"><a href="#cb15-483" aria-hidden="true" tabindex="-1"></a><span class="fu">### Ajuste de una solución concreta</span></span>
+<span id="cb15-484"><a href="#cb15-484" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-485"><a href="#cb15-485" aria-hidden="true" tabindex="-1"></a>Proponemos cinco factores y estimamos inicialmente una solución MINRES sin rotar. El argumento <span class="in">`scores = "regression"`</span> solicita además puntuaciones factoriales por regresión; veremos después cómo se construyen.</span>
+<span id="cb15-486"><a href="#cb15-486" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-489"><a href="#cb15-489" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb15-490"><a href="#cb15-490" aria-hidden="true" tabindex="-1"></a>fa_minres <span class="ot">&lt;-</span> psych<span class="sc">::</span><span class="fu">fa</span>(</span>
+<span id="cb15-491"><a href="#cb15-491" aria-hidden="true" tabindex="-1"></a>  datos_factorial,</span>
+<span id="cb15-492"><a href="#cb15-492" aria-hidden="true" tabindex="-1"></a>  <span class="at">nfactors =</span> <span class="dv">5</span>,</span>
+<span id="cb15-493"><a href="#cb15-493" aria-hidden="true" tabindex="-1"></a>  <span class="at">rotate =</span> <span class="st">"none"</span>,</span>
+<span id="cb15-494"><a href="#cb15-494" aria-hidden="true" tabindex="-1"></a>  <span class="at">fm =</span> <span class="st">"minres"</span>,</span>
+<span id="cb15-495"><a href="#cb15-495" aria-hidden="true" tabindex="-1"></a>  <span class="at">scores =</span> <span class="st">"regression"</span></span>
+<span id="cb15-496"><a href="#cb15-496" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb15-497"><a href="#cb15-497" aria-hidden="true" tabindex="-1"></a><span class="fu">resumir_factorial</span>(fa_minres)<span class="sc">$</span>variables <span class="sc">|&gt;</span></span>
+<span id="cb15-498"><a href="#cb15-498" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">digits =</span> <span class="dv">3</span>)</span>
+<span id="cb15-499"><a href="#cb15-499" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb15-500"><a href="#cb15-500" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-503"><a href="#cb15-503" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb15-504"><a href="#cb15-504" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb15-505"><a href="#cb15-505" aria-hidden="true" tabindex="-1"></a><span class="fu">visualizar_matriz_cargas</span>(fa_minres, <span class="at">mostrar_desde =</span> <span class="fl">0.25</span>)</span>
+<span id="cb15-506"><a href="#cb15-506" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb15-507"><a href="#cb15-507" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-508"><a href="#cb15-508" aria-hidden="true" tabindex="-1"></a>La solución sin rotar suele concentrar asociación general en los primeros factores. Todavía no conviene asignar nombres definitivos: primero estudiaremos una rotación que facilite reconocer qué variables definen cada eje.</span>
+<span id="cb15-509"><a href="#cb15-509" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-510"><a href="#cb15-510" aria-hidden="true" tabindex="-1"></a><span class="fu">## Rotación de la solución</span></span>
+<span id="cb15-511"><a href="#cb15-511" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-512"><a href="#cb15-512" aria-hidden="true" tabindex="-1"></a><span class="fu">### Rotaciones factoriales</span></span>
+<span id="cb15-513"><a href="#cb15-513" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-514"><a href="#cb15-514" aria-hidden="true" tabindex="-1"></a>Una solución factorial no rotada puede explicar bien la matriz de correlaciones, pero ser difícil de interpretar. La rotación busca una estructura simple: variables con cargas altas en pocos factores y bajas en los demás.</span>
+<span id="cb15-515"><a href="#cb15-515" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-516"><a href="#cb15-516" aria-hidden="true" tabindex="-1"></a>Matemáticamente, si $T$ es una matriz de rotación, podemos transformar las cargas:</span>
+<span id="cb15-517"><a href="#cb15-517" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-518"><a href="#cb15-518" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb15-519"><a href="#cb15-519" aria-hidden="true" tabindex="-1"></a>\Lambda^* = \Lambda T.</span>
+<span id="cb15-520"><a href="#cb15-520" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb15-521"><a href="#cb15-521" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-522"><a href="#cb15-522" aria-hidden="true" tabindex="-1"></a>La solución rotada intenta conservar la capacidad explicativa global, pero redistribuye las cargas para mejorar la interpretación.</span>
+<span id="cb15-523"><a href="#cb15-523" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-524"><a href="#cb15-524" aria-hidden="true" tabindex="-1"></a>En una rotación ortogonal, $T^\mathsf TT=I$. Entonces</span>
+<span id="cb15-525"><a href="#cb15-525" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-526"><a href="#cb15-526" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb15-527"><a href="#cb15-527" aria-hidden="true" tabindex="-1"></a>(\Lambda T)(\Lambda T)^\mathsf T</span>
+<span id="cb15-528"><a href="#cb15-528" aria-hidden="true" tabindex="-1"></a>=\Lambda TT^\mathsf T\Lambda^\mathsf T</span>
+<span id="cb15-529"><a href="#cb15-529" aria-hidden="true" tabindex="-1"></a>=\Lambda\Lambda^\mathsf T.</span>
+<span id="cb15-530"><a href="#cb15-530" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb15-531"><a href="#cb15-531" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-532"><a href="#cb15-532" aria-hidden="true" tabindex="-1"></a>La nube de variables no cambia: cambian los ejes con los que describimos sus coordenadas. Por eso una rotación ortogonal puede mejorar la interpretación sin mejorar el ajuste.</span>
+<span id="cb15-533"><a href="#cb15-533" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-536"><a href="#cb15-536" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb15-537"><a href="#cb15-537" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: geometria-rotacion</span></span>
+<span id="cb15-538"><a href="#cb15-538" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb15-539"><a href="#cb15-539" aria-hidden="true" tabindex="-1"></a>puntos <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb15-540"><a href="#cb15-540" aria-hidden="true" tabindex="-1"></a>  <span class="at">variable =</span> <span class="fu">paste0</span>(<span class="st">"V"</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">8</span>),</span>
+<span id="cb15-541"><a href="#cb15-541" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> <span class="fu">c</span>(.<span class="dv">82</span>, .<span class="dv">75</span>, .<span class="dv">68</span>, .<span class="dv">58</span>, .<span class="dv">18</span>, .<span class="dv">12</span>, <span class="sc">-</span>.<span class="dv">05</span>, .<span class="dv">10</span>),</span>
+<span id="cb15-542"><a href="#cb15-542" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> <span class="fu">c</span>(.<span class="dv">15</span>, .<span class="dv">25</span>, .<span class="dv">30</span>, .<span class="dv">38</span>, .<span class="dv">82</span>, .<span class="dv">74</span>, .<span class="dv">68</span>, .<span class="dv">58</span>)</span>
+<span id="cb15-543"><a href="#cb15-543" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb15-544"><a href="#cb15-544" aria-hidden="true" tabindex="-1"></a>angulo <span class="ot">&lt;-</span> <span class="dv">25</span> <span class="sc">*</span> pi <span class="sc">/</span> <span class="dv">180</span></span>
+<span id="cb15-545"><a href="#cb15-545" aria-hidden="true" tabindex="-1"></a>ejes <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb15-546"><a href="#cb15-546" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> <span class="dv">0</span>, <span class="at">y =</span> <span class="dv">0</span>,</span>
+<span id="cb15-547"><a href="#cb15-547" aria-hidden="true" tabindex="-1"></a>  <span class="at">xend =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">0</span>, <span class="fu">cos</span>(angulo), <span class="sc">-</span><span class="fu">sin</span>(angulo)),</span>
+<span id="cb15-548"><a href="#cb15-548" aria-hidden="true" tabindex="-1"></a>  <span class="at">yend =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="fu">sin</span>(angulo), <span class="fu">cos</span>(angulo)),</span>
+<span id="cb15-549"><a href="#cb15-549" aria-hidden="true" tabindex="-1"></a>  <span class="at">sistema =</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">"Sin rotar"</span>, <span class="st">"Rotado"</span>), <span class="at">each =</span> <span class="dv">2</span>)</span>
+<span id="cb15-550"><a href="#cb15-550" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb15-551"><a href="#cb15-551" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(puntos, <span class="fu">aes</span>(x, y, <span class="at">label =</span> variable)) <span class="sc">+</span></span>
+<span id="cb15-552"><a href="#cb15-552" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_segment</span>(</span>
+<span id="cb15-553"><a href="#cb15-553" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> ejes, <span class="fu">aes</span>(x, y, <span class="at">xend =</span> xend, <span class="at">yend =</span> yend, <span class="at">color =</span> sistema),</span>
+<span id="cb15-554"><a href="#cb15-554" aria-hidden="true" tabindex="-1"></a>    <span class="at">inherit.aes =</span> <span class="cn">FALSE</span>, <span class="at">arrow =</span> grid<span class="sc">::</span><span class="fu">arrow</span>(<span class="at">length =</span> grid<span class="sc">::</span><span class="fu">unit</span>(.<span class="dv">12</span>, <span class="st">"cm"</span>)), <span class="at">linewidth =</span> <span class="dv">1</span></span>
+<span id="cb15-555"><a href="#cb15-555" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb15-556"><a href="#cb15-556" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="fl">2.5</span>) <span class="sc">+</span> <span class="fu">geom_text</span>(<span class="at">vjust =</span> <span class="sc">-</span><span class="fl">0.7</span>) <span class="sc">+</span></span>
+<span id="cb15-557"><a href="#cb15-557" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_equal</span>(<span class="at">xlim =</span> <span class="fu">c</span>(<span class="sc">-</span>.<span class="dv">5</span>, <span class="fl">1.05</span>), <span class="at">ylim =</span> <span class="fu">c</span>(<span class="sc">-</span>.<span class="dv">05</span>, <span class="fl">1.05</span>)) <span class="sc">+</span></span>
+<span id="cb15-558"><a href="#cb15-558" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Rotar cambia los ejes, no la nube de variables"</span>, <span class="at">x =</span> <span class="st">"Carga 1"</span>, <span class="at">y =</span> <span class="st">"Carga 2"</span>, <span class="at">color =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
+<span id="cb15-559"><a href="#cb15-559" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span>
+<span id="cb15-560"><a href="#cb15-560" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb15-561"><a href="#cb15-561" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-562"><a href="#cb15-562" aria-hidden="true" tabindex="-1"></a><span class="fu">### Varimax</span></span>
+<span id="cb15-563"><a href="#cb15-563" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-564"><a href="#cb15-564" aria-hidden="true" tabindex="-1"></a>Varimax es una rotación ortogonal. Mantiene factores no correlacionados. Su intuición es hacer que, dentro de cada factor, algunas cargas sean grandes y otras pequeñas.</span>
+<span id="cb15-565"><a href="#cb15-565" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-566"><a href="#cb15-566" aria-hidden="true" tabindex="-1"></a>Una forma de su criterio es maximizar</span>
+<span id="cb15-567"><a href="#cb15-567" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-568"><a href="#cb15-568" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb15-569"><a href="#cb15-569" aria-hidden="true" tabindex="-1"></a>\sum_{k=1}^{m}\left[</span>
+<span id="cb15-570"><a href="#cb15-570" aria-hidden="true" tabindex="-1"></a>\frac1p\sum_{j=1}^{p}\lambda_{jk}^4-</span>
+<span id="cb15-571"><a href="#cb15-571" aria-hidden="true" tabindex="-1"></a>\left(\frac1p\sum_{j=1}^{p}\lambda_{jk}^2\right)^2</span>
+<span id="cb15-572"><a href="#cb15-572" aria-hidden="true" tabindex="-1"></a>\right].</span>
+<span id="cb15-573"><a href="#cb15-573" aria-hidden="true" tabindex="-1"></a>$$</span>
 <span id="cb15-574"><a href="#cb15-574" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-577"><a href="#cb15-577" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb15-578"><a href="#cb15-578" aria-hidden="true" tabindex="-1"></a>diagnostico_ajuste <span class="ot">&lt;-</span> <span class="fu">comparar_correlaciones_factorial</span>(datos_factorial, fa_varimax)</span>
-<span id="cb15-579"><a href="#cb15-579" aria-hidden="true" tabindex="-1"></a>diagnostico_ajuste<span class="sc">$</span>grafico</span>
-<span id="cb15-580"><a href="#cb15-580" aria-hidden="true" tabindex="-1"></a>diagnostico_ajuste<span class="sc">$</span>rmsr</span>
-<span id="cb15-581"><a href="#cb15-581" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb15-582"><a href="#cb15-582" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-583"><a href="#cb15-583" aria-hidden="true" tabindex="-1"></a>Residuos grandes sugieren que la solución factorial no reproduce bien algunas asociaciones. Un patrón dentro de un bloque puede indicar un factor omitido, ítems casi duplicados o errores específicos correlacionados. Aumentar el número de factores reducirá normalmente los residuos, pero puede empeorar la parsimonia y la estabilidad.</span>
+<span id="cb15-575"><a href="#cb15-575" aria-hidden="true" tabindex="-1"></a>Así favorece columnas cuyas cargas al cuadrado son muy desiguales: unas variables definen claramente el factor y las demás apenas cargan.</span>
+<span id="cb15-576"><a href="#cb15-576" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-579"><a href="#cb15-579" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb15-580"><a href="#cb15-580" aria-hidden="true" tabindex="-1"></a>fa_varimax <span class="ot">&lt;-</span> psych<span class="sc">::</span><span class="fu">fa</span>(datos_factorial, <span class="at">nfactors =</span> <span class="dv">5</span>, <span class="at">rotate =</span> <span class="st">"varimax"</span>, <span class="at">fm =</span> <span class="st">"minres"</span>, <span class="at">scores =</span> <span class="st">"regression"</span>)</span>
+<span id="cb15-581"><a href="#cb15-581" aria-hidden="true" tabindex="-1"></a><span class="fu">variables_por_factor</span>(fa_varimax, <span class="at">umbral =</span> <span class="fl">0.35</span>) <span class="sc">|&gt;</span></span>
+<span id="cb15-582"><a href="#cb15-582" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">digits =</span> <span class="dv">3</span>)</span>
+<span id="cb15-583"><a href="#cb15-583" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb15-584"><a href="#cb15-584" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb15-587"><a href="#cb15-587" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
 <span id="cb15-588"><a href="#cb15-588" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
-<span id="cb15-589"><a href="#cb15-589" aria-hidden="true" tabindex="-1"></a><span class="fu">visualizar_varianza_factorial</span>(fa_varimax)</span>
-<span id="cb15-590"><a href="#cb15-590" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb15-591"><a href="#cb15-591" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-592"><a href="#cb15-592" aria-hidden="true" tabindex="-1"></a><span class="fu">### Scores factoriales</span></span>
-<span id="cb15-593"><a href="#cb15-593" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-594"><a href="#cb15-594" aria-hidden="true" tabindex="-1"></a>Los scores estiman la posición de cada individuo en los factores. No son observaciones directas del factor latente, sino estimaciones dependientes del modelo.</span>
-<span id="cb15-595"><a href="#cb15-595" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-598"><a href="#cb15-598" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb15-599"><a href="#cb15-599" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(<span class="fu">round</span>(fa_varimax<span class="sc">$</span>scores, <span class="dv">2</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb15-600"><a href="#cb15-600" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>()</span>
-<span id="cb15-601"><a href="#cb15-601" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb15-602"><a href="#cb15-602" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-603"><a href="#cb15-603" aria-hidden="true" tabindex="-1"></a>Una forma esquemática de entender los scores por regresión es:</span>
-<span id="cb15-604"><a href="#cb15-604" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-605"><a href="#cb15-605" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb15-606"><a href="#cb15-606" aria-hidden="true" tabindex="-1"></a>\hat{F} = X B,</span>
-<span id="cb15-607"><a href="#cb15-607" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb15-608"><a href="#cb15-608" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-609"><a href="#cb15-609" aria-hidden="true" tabindex="-1"></a>donde $B$ es una matriz de pesos calculada a partir de cargas, unicidades y correlaciones. Los scores pueden servir para gráficos, clustering posterior o perfiles, pero no deben confundirse con medidas directas del factor.</span>
-<span id="cb15-610"><a href="#cb15-610" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-613"><a href="#cb15-613" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb15-614"><a href="#cb15-614" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
-<span id="cb15-615"><a href="#cb15-615" aria-hidden="true" tabindex="-1"></a><span class="fu">visualizar_puntuaciones_factoriales</span>(</span>
-<span id="cb15-616"><a href="#cb15-616" aria-hidden="true" tabindex="-1"></a>  fa_varimax,</span>
-<span id="cb15-617"><a href="#cb15-617" aria-hidden="true" tabindex="-1"></a>  <span class="at">id =</span> <span class="fu">seq_len</span>(<span class="fu">nrow</span>(datos_factorial)),</span>
-<span id="cb15-618"><a href="#cb15-618" aria-hidden="true" tabindex="-1"></a>  <span class="at">factores =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>)</span>
-<span id="cb15-619"><a href="#cb15-619" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb15-620"><a href="#cb15-620" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb15-621"><a href="#cb15-621" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-622"><a href="#cb15-622" aria-hidden="true" tabindex="-1"></a>Las puntuaciones no son únicas: diferentes métodos pueden estimar valores distintos aun con las mismas cargas. Deben tratarse como estimaciones dependientes del modelo, no como observaciones directas de la variable latente.</span>
-<span id="cb15-623"><a href="#cb15-623" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-624"><a href="#cb15-624" aria-hidden="true" tabindex="-1"></a><span class="fu">## Decisiones y limitaciones</span></span>
-<span id="cb15-625"><a href="#cb15-625" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-626"><a href="#cb15-626" aria-hidden="true" tabindex="-1"></a><span class="fu">### Síntesis de las diferencias con PCA</span></span>
-<span id="cb15-627"><a href="#cb15-627" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-628"><a href="#cb15-628" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Aspecto <span class="pp">|</span> PCA <span class="pp">|</span> Análisis factorial <span class="pp">|</span></span>
-<span id="cb15-629"><a href="#cb15-629" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|---|</span></span>
-<span id="cb15-630"><a href="#cb15-630" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Objetivo <span class="pp">|</span> Resumir varianza total <span class="pp">|</span> Explicar covarianza común <span class="pp">|</span></span>
-<span id="cb15-631"><a href="#cb15-631" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Variables nuevas <span class="pp">|</span> Componentes observables como combinaciones lineales <span class="pp">|</span> Factores latentes estimados <span class="pp">|</span></span>
-<span id="cb15-632"><a href="#cb15-632" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Varianza específica <span class="pp">|</span> Forma parte de la varianza resumida <span class="pp">|</span> Se separa en unicidad/error <span class="pp">|</span></span>
-<span id="cb15-633"><a href="#cb15-633" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Modelo estadístico <span class="pp">|</span> Descriptivo geométrico <span class="pp">|</span> Modelo de covarianzas <span class="pp">|</span></span>
-<span id="cb15-634"><a href="#cb15-634" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Interpretación <span class="pp">|</span> Ejes de máxima varianza <span class="pp">|</span> Dimensiones latentes hipotéticas <span class="pp">|</span></span>
-<span id="cb15-635"><a href="#cb15-635" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-636"><a href="#cb15-636" aria-hidden="true" tabindex="-1"></a>PCA puede ser suficiente si queremos una representación compacta. FA tiene más sentido si sostenemos que existen dimensiones latentes que generan las correlaciones observadas.</span>
-<span id="cb15-637"><a href="#cb15-637" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-638"><a href="#cb15-638" aria-hidden="true" tabindex="-1"></a><span class="fu">### Diagnóstico y limitaciones</span></span>
-<span id="cb15-639"><a href="#cb15-639" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-640"><a href="#cb15-640" aria-hidden="true" tabindex="-1"></a>El análisis factorial necesita correlaciones suficientes, tamaño muestral razonable y una solución interpretable. En datasets pequeños como <span class="in">`mtcars`</span>, los resultados sirven para aprender el procedimiento, no para sostener una teoría fuerte.</span>
-<span id="cb15-641"><a href="#cb15-641" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-642"><a href="#cb15-642" aria-hidden="true" tabindex="-1"></a>Limitaciones importantes:</span>
-<span id="cb15-643"><a href="#cb15-643" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-644"><a href="#cb15-644" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>el número de factores no es obvio;</span>
-<span id="cb15-645"><a href="#cb15-645" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>la rotación cambia la interpretación;</span>
-<span id="cb15-646"><a href="#cb15-646" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>los factores no son únicos en sentido absoluto;</span>
-<span id="cb15-647"><a href="#cb15-647" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>las cargas pueden depender mucho de la muestra;</span>
-<span id="cb15-648"><a href="#cb15-648" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>variables mal medidas producen factores poco fiables;</span>
-<span id="cb15-649"><a href="#cb15-649" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>un factor con nombre atractivo no garantiza una variable latente real.</span>
-<span id="cb15-650"><a href="#cb15-650" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-651"><a href="#cb15-651" aria-hidden="true" tabindex="-1"></a><span class="fu">### Protocolo de decisión</span></span>
-<span id="cb15-652"><a href="#cb15-652" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-653"><a href="#cb15-653" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>Definir por qué sería razonable postular dimensiones comunes.</span>
-<span id="cb15-654"><a href="#cb15-654" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>Revisar correlaciones, KMO, Bartlett y calidad de los datos.</span>
-<span id="cb15-655"><a href="#cb15-655" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>Comparar varios números de factores mediante análisis paralelo, scree, residuos y sentido sustantivo.</span>
-<span id="cb15-656"><a href="#cb15-656" aria-hidden="true" tabindex="-1"></a><span class="ss">4. </span>Declarar el método de extracción.</span>
-<span id="cb15-657"><a href="#cb15-657" aria-hidden="true" tabindex="-1"></a><span class="ss">5. </span>Elegir rotación ortogonal u oblicua según la pregunta.</span>
-<span id="cb15-658"><a href="#cb15-658" aria-hidden="true" tabindex="-1"></a><span class="ss">6. </span>Interpretar conjuntamente cargas, comunalidades, cargas cruzadas y correlaciones factoriales.</span>
-<span id="cb15-659"><a href="#cb15-659" aria-hidden="true" tabindex="-1"></a><span class="ss">7. </span>Revisar la matriz residual y la estabilidad en otras muestras.</span>
-<span id="cb15-660"><a href="#cb15-660" aria-hidden="true" tabindex="-1"></a><span class="ss">8. </span>Tratar las puntuaciones como estimaciones.</span>
+<span id="cb15-589"><a href="#cb15-589" aria-hidden="true" tabindex="-1"></a><span class="fu">visualizar_matriz_cargas</span>(fa_varimax, <span class="at">mostrar_desde =</span> <span class="fl">0.25</span>)</span>
+<span id="cb15-590"><a href="#cb15-590" aria-hidden="true" tabindex="-1"></a><span class="fu">visualizar_cargas_factoriales</span>(fa_varimax, <span class="at">factores =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>))</span>
+<span id="cb15-591"><a href="#cb15-591" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb15-592"><a href="#cb15-592" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-593"><a href="#cb15-593" aria-hidden="true" tabindex="-1"></a><span class="fu">### Oblimin</span></span>
+<span id="cb15-594"><a href="#cb15-594" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-595"><a href="#cb15-595" aria-hidden="true" tabindex="-1"></a>Oblimin permite que los factores estén correlacionados. Esto puede ser más realista en ciencias sociales, salud o comportamiento: dos dimensiones latentes pueden estar relacionadas.</span>
+<span id="cb15-596"><a href="#cb15-596" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-599"><a href="#cb15-599" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb15-600"><a href="#cb15-600" aria-hidden="true" tabindex="-1"></a>fa_oblimin <span class="ot">&lt;-</span> psych<span class="sc">::</span><span class="fu">fa</span>(datos_factorial, <span class="at">nfactors =</span> <span class="dv">5</span>, <span class="at">rotate =</span> <span class="st">"oblimin"</span>, <span class="at">fm =</span> <span class="st">"minres"</span>, <span class="at">scores =</span> <span class="st">"regression"</span>)</span>
+<span id="cb15-601"><a href="#cb15-601" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(<span class="fu">round</span>(fa_oblimin<span class="sc">$</span>Phi, <span class="dv">3</span>))</span>
+<span id="cb15-602"><a href="#cb15-602" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb15-603"><a href="#cb15-603" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-604"><a href="#cb15-604" aria-hidden="true" tabindex="-1"></a>Si los factores oblicuos están muy correlacionados, quizá no son dimensiones tan separadas. Si no están correlacionados, una rotación ortogonal puede ser suficiente.</span>
+<span id="cb15-605"><a href="#cb15-605" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-606"><a href="#cb15-606" aria-hidden="true" tabindex="-1"></a>En una solución oblicua conviene distinguir la **matriz patrón** $\Lambda$, con coeficientes parciales, y la **matriz de estructura** $S=\Lambda\Phi$, con correlaciones simples variable--factor. Coinciden cuando $\Phi=I$, pero no cuando los factores se correlacionan.</span>
+<span id="cb15-607"><a href="#cb15-607" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-610"><a href="#cb15-610" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb15-611"><a href="#cb15-611" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb15-612"><a href="#cb15-612" aria-hidden="true" tabindex="-1"></a><span class="fu">comparar_rotaciones_factoriales</span>(<span class="fu">list</span>(</span>
+<span id="cb15-613"><a href="#cb15-613" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">Sin rotar</span><span class="st">`</span> <span class="ot">=</span> fa_minres,</span>
+<span id="cb15-614"><a href="#cb15-614" aria-hidden="true" tabindex="-1"></a>  <span class="at">Varimax =</span> fa_varimax,</span>
+<span id="cb15-615"><a href="#cb15-615" aria-hidden="true" tabindex="-1"></a>  <span class="at">Oblimin =</span> fa_oblimin</span>
+<span id="cb15-616"><a href="#cb15-616" aria-hidden="true" tabindex="-1"></a>))</span>
+<span id="cb15-617"><a href="#cb15-617" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb15-618"><a href="#cb15-618" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-619"><a href="#cb15-619" aria-hidden="true" tabindex="-1"></a><span class="fu">## Interpretación de variables e individuos</span></span>
+<span id="cb15-620"><a href="#cb15-620" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-621"><a href="#cb15-621" aria-hidden="true" tabindex="-1"></a><span class="fu">### Cargas cruzadas</span></span>
+<span id="cb15-622"><a href="#cb15-622" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-623"><a href="#cb15-623" aria-hidden="true" tabindex="-1"></a>Una carga cruzada aparece cuando una variable carga de forma relevante en más de un factor. Por ejemplo, si una variable tiene carga 0.45 en el factor 1 y 0.42 en el factor 2, no representa limpiamente una sola dimensión.</span>
+<span id="cb15-624"><a href="#cb15-624" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-625"><a href="#cb15-625" aria-hidden="true" tabindex="-1"></a>Las cargas cruzadas pueden indicar:</span>
+<span id="cb15-626"><a href="#cb15-626" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-627"><a href="#cb15-627" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>una variable conceptualmente ambigua;</span>
+<span id="cb15-628"><a href="#cb15-628" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>demasiados pocos factores;</span>
+<span id="cb15-629"><a href="#cb15-629" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>demasiados factores;</span>
+<span id="cb15-630"><a href="#cb15-630" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>una muestra insuficiente;</span>
+<span id="cb15-631"><a href="#cb15-631" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>una estructura latente menos clara de lo esperado.</span>
+<span id="cb15-632"><a href="#cb15-632" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-633"><a href="#cb15-633" aria-hidden="true" tabindex="-1"></a>No conviene forzar nombres de factores si las cargas no sostienen una interpretación simple.</span>
+<span id="cb15-634"><a href="#cb15-634" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-635"><a href="#cb15-635" aria-hidden="true" tabindex="-1"></a><span class="fu">### Residuos del modelo</span></span>
+<span id="cb15-636"><a href="#cb15-636" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-637"><a href="#cb15-637" aria-hidden="true" tabindex="-1"></a>Una forma de diagnosticar el ajuste es comparar la matriz de correlaciones observada con la reproducida por el modelo factorial.</span>
+<span id="cb15-638"><a href="#cb15-638" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-641"><a href="#cb15-641" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb15-642"><a href="#cb15-642" aria-hidden="true" tabindex="-1"></a>diagnostico_ajuste <span class="ot">&lt;-</span> <span class="fu">comparar_correlaciones_factorial</span>(datos_factorial, fa_varimax)</span>
+<span id="cb15-643"><a href="#cb15-643" aria-hidden="true" tabindex="-1"></a>diagnostico_ajuste<span class="sc">$</span>grafico</span>
+<span id="cb15-644"><a href="#cb15-644" aria-hidden="true" tabindex="-1"></a>diagnostico_ajuste<span class="sc">$</span>rmsr</span>
+<span id="cb15-645"><a href="#cb15-645" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb15-646"><a href="#cb15-646" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-647"><a href="#cb15-647" aria-hidden="true" tabindex="-1"></a>Residuos grandes sugieren que la solución factorial no reproduce bien algunas asociaciones. Un patrón dentro de un bloque puede indicar un factor omitido, ítems casi duplicados o errores específicos correlacionados. Aumentar el número de factores reducirá normalmente los residuos, pero puede empeorar la parsimonia y la estabilidad.</span>
+<span id="cb15-648"><a href="#cb15-648" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-651"><a href="#cb15-651" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb15-652"><a href="#cb15-652" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb15-653"><a href="#cb15-653" aria-hidden="true" tabindex="-1"></a><span class="fu">visualizar_varianza_factorial</span>(fa_varimax)</span>
+<span id="cb15-654"><a href="#cb15-654" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb15-655"><a href="#cb15-655" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-656"><a href="#cb15-656" aria-hidden="true" tabindex="-1"></a><span class="fu">### Scores factoriales</span></span>
+<span id="cb15-657"><a href="#cb15-657" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-658"><a href="#cb15-658" aria-hidden="true" tabindex="-1"></a>Los scores estiman la posición de cada individuo en los factores. No son observaciones directas del factor latente, sino predicciones dependientes de las cargas, las unicidades, la rotación y el método de puntuación.</span>
+<span id="cb15-659"><a href="#cb15-659" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-660"><a href="#cb15-660" aria-hidden="true" tabindex="-1"></a>La razón puede verse en el modelo de un individuo:</span>
 <span id="cb15-661"><a href="#cb15-661" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-662"><a href="#cb15-662" aria-hidden="true" tabindex="-1"></a><span class="fu">### Errores frecuentes</span></span>
-<span id="cb15-663"><a href="#cb15-663" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-664"><a href="#cb15-664" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Llamar factores latentes a componentes principales sin justificarlo.</span>
-<span id="cb15-665"><a href="#cb15-665" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Retener factores solo porque el autovalor supera 1.</span>
-<span id="cb15-666"><a href="#cb15-666" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Ignorar cargas cruzadas.</span>
-<span id="cb15-667"><a href="#cb15-667" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Interpretar factores con nombres atractivos pero poco respaldados.</span>
-<span id="cb15-668"><a href="#cb15-668" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Presentar scores factoriales como si fueran observaciones directas.</span>
-<span id="cb15-669"><a href="#cb15-669" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Usar análisis factorial con variables casi no correlacionadas.</span>
-<span id="cb15-670"><a href="#cb15-670" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>No informar método de extracción y rotación.</span>
-<span id="cb15-671"><a href="#cb15-671" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-672"><a href="#cb15-672" aria-hidden="true" tabindex="-1"></a><span class="fu">### Resumen del capítulo</span></span>
-<span id="cb15-673"><a href="#cb15-673" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-674"><a href="#cb15-674" aria-hidden="true" tabindex="-1"></a>El análisis factorial exploratorio busca factores latentes que expliquen covarianza común. Su modelo separa cargas, comunalidades, unicidades y errores específicos. La interpretación depende del número de factores, método de extracción, rotación, residuos, cargas cruzadas y sentido aplicado de las variables.</span>
+<span id="cb15-662"><a href="#cb15-662" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb15-663"><a href="#cb15-663" aria-hidden="true" tabindex="-1"></a>x=\Lambda f+\epsilon.</span>
+<span id="cb15-664"><a href="#cb15-664" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb15-665"><a href="#cb15-665" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-666"><a href="#cb15-666" aria-hidden="true" tabindex="-1"></a>Aunque conozcamos $x$ y hayamos estimado $\Lambda$, tanto $f$ como $\epsilon$ siguen siendo desconocidos. No podemos despejar $f$ de forma exacta porque una parte de cada respuesta es específica. Incluso si $\Lambda$ fuese cuadrada, usar $\Lambda^{-1}x$ atribuiría erróneamente todo el residuo al factor común.</span>
+<span id="cb15-667"><a href="#cb15-667" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-668"><a href="#cb15-668" aria-hidden="true" tabindex="-1"></a>El método de **regresión**, solicitado mediante <span class="in">`scores = "regression"`</span>, elige la mejor predicción lineal de $F$ a partir de las variables estandarizadas. Para un individuo con vector $x$, se escribe</span>
+<span id="cb15-669"><a href="#cb15-669" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-670"><a href="#cb15-670" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb15-671"><a href="#cb15-671" aria-hidden="true" tabindex="-1"></a>\widehat f=B^\mathsf T x,</span>
+<span id="cb15-672"><a href="#cb15-672" aria-hidden="true" tabindex="-1"></a>\qquad</span>
+<span id="cb15-673"><a href="#cb15-673" aria-hidden="true" tabindex="-1"></a>B=R^{-1}\Lambda\Phi.</span>
+<span id="cb15-674"><a href="#cb15-674" aria-hidden="true" tabindex="-1"></a>$$</span>
 <span id="cb15-675"><a href="#cb15-675" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-676"><a href="#cb15-676" aria-hidden="true" tabindex="-1"></a><span class="fu">## Funciones utilizadas</span></span>
+<span id="cb15-676"><a href="#cb15-676" aria-hidden="true" tabindex="-1"></a>Aquí $\Lambda\Phi$ es la matriz de estructura, es decir, las correlaciones entre variables y factores. Si los factores son ortogonales, $\Phi=I$ y</span>
 <span id="cb15-677"><a href="#cb15-677" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-678"><a href="#cb15-678" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Función <span class="pp">|</span> Para qué se usa <span class="pp">|</span> Uso básico <span class="pp">|</span></span>
-<span id="cb15-679"><a href="#cb15-679" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|---|</span></span>
-<span id="cb15-680"><a href="#cb15-680" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`psych::fa()`</span> <span class="pp">|</span> Ajustar el modelo declarando número, extracción y rotación. <span class="pp">|</span> <span class="in">`psych::fa(datos, nfactors = 5, fm = "minres", rotate = "varimax")`</span> <span class="pp">|</span></span>
-<span id="cb15-681"><a href="#cb15-681" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`comprobar_adecuacion_factorial()`</span> <span class="pp">|</span> Obtener KMO, Bartlett y correlaciones. <span class="pp">|</span> <span class="in">`adecuacion &lt;- comprobar_adecuacion_factorial(datos)`</span> <span class="pp">|</span></span>
-<span id="cb15-682"><a href="#cb15-682" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`visualizar_numero_factores()`</span> <span class="pp">|</span> Comparar autovalores con una referencia aleatoria. <span class="pp">|</span> <span class="in">`numero &lt;- visualizar_numero_factores(datos)`</span> <span class="pp">|</span></span>
-<span id="cb15-683"><a href="#cb15-683" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`resumir_factorial()`</span> <span class="pp">|</span> Reunir cargas, comunalidades, unicidades y cargas cruzadas. <span class="pp">|</span> <span class="in">`resumen &lt;- resumir_factorial(ajuste)`</span> <span class="pp">|</span></span>
-<span id="cb15-684"><a href="#cb15-684" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`variables_por_factor()`</span> <span class="pp">|</span> Ordenar las variables relevantes de cada factor. <span class="pp">|</span> <span class="in">`variables_por_factor(ajuste, 0.35)`</span> <span class="pp">|</span></span>
-<span id="cb15-685"><a href="#cb15-685" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`visualizar_varianza_factorial()`</span> <span class="pp">|</span> Comparar comunalidad y unicidad. <span class="pp">|</span> <span class="in">`visualizar_varianza_factorial(ajuste)`</span> <span class="pp">|</span></span>
-<span id="cb15-686"><a href="#cb15-686" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`visualizar_matriz_cargas()`</span> <span class="pp">|</span> Mostrar las cargas como mapa de calor. <span class="pp">|</span> <span class="in">`visualizar_matriz_cargas(ajuste)`</span> <span class="pp">|</span></span>
-<span id="cb15-687"><a href="#cb15-687" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`visualizar_cargas_factoriales()`</span> <span class="pp">|</span> Representar variables sobre dos factores. <span class="pp">|</span> <span class="in">`visualizar_cargas_factoriales(ajuste, c(1, 2))`</span> <span class="pp">|</span></span>
-<span id="cb15-688"><a href="#cb15-688" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`comparar_rotaciones_factoriales()`</span> <span class="pp">|</span> Comparar varias orientaciones de los factores. <span class="pp">|</span> <span class="in">`comparar_rotaciones_factoriales(ajustes)`</span> <span class="pp">|</span></span>
-<span id="cb15-689"><a href="#cb15-689" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`comparar_correlaciones_factorial()`</span> <span class="pp">|</span> Obtener matrices observada, reproducida y residual. <span class="pp">|</span> <span class="in">`comparar_correlaciones_factorial(datos, ajuste)`</span> <span class="pp">|</span></span>
-<span id="cb15-690"><a href="#cb15-690" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`visualizar_puntuaciones_factoriales()`</span> <span class="pp">|</span> Representar puntuaciones estimadas. <span class="pp">|</span> <span class="in">`visualizar_puntuaciones_factoriales(ajuste)`</span> <span class="pp">|</span></span>
+<span id="cb15-678"><a href="#cb15-678" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb15-679"><a href="#cb15-679" aria-hidden="true" tabindex="-1"></a>B=R^{-1}\Lambda.</span>
+<span id="cb15-680"><a href="#cb15-680" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb15-681"><a href="#cb15-681" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-682"><a href="#cb15-682" aria-hidden="true" tabindex="-1"></a>Para todos los individuos a la vez, si $Z$ es la matriz de datos estandarizados,</span>
+<span id="cb15-683"><a href="#cb15-683" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-684"><a href="#cb15-684" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb15-685"><a href="#cb15-685" aria-hidden="true" tabindex="-1"></a>\widehat F=ZB.</span>
+<span id="cb15-686"><a href="#cb15-686" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb15-687"><a href="#cb15-687" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-688"><a href="#cb15-688" aria-hidden="true" tabindex="-1"></a>La multiplicación por $R^{-1}$ evita contar repetidamente información redundante de variables correlacionadas. En población, la misma fórmula se escribe con $\Sigma^{-1}$; <span class="in">`psych`</span> sustituye esas cantidades por la matriz de correlaciones y los parámetros estimados. Bajo normalidad multivariante, la versión poblacional coincide con la esperanza condicional $E(F\mid X=x)$; sin exigir normalidad, puede entenderse como el mejor predictor lineal en términos de error cuadrático medio.</span>
+<span id="cb15-689"><a href="#cb15-689" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-690"><a href="#cb15-690" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Ejemplo numérico con dos variables y dos factores</span></span>
+<span id="cb15-691"><a href="#cb15-691" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-692"><a href="#cb15-692" aria-hidden="true" tabindex="-1"></a>Supongamos, solo para ilustrar el cálculo, factores ortogonales y las matrices ya conocidas</span>
+<span id="cb15-693"><a href="#cb15-693" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-694"><a href="#cb15-694" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb15-695"><a href="#cb15-695" aria-hidden="true" tabindex="-1"></a>\Lambda=</span>
+<span id="cb15-696"><a href="#cb15-696" aria-hidden="true" tabindex="-1"></a>\begin{pmatrix}</span>
+<span id="cb15-697"><a href="#cb15-697" aria-hidden="true" tabindex="-1"></a>0.8&amp;0.2<span class="sc">\\</span></span>
+<span id="cb15-698"><a href="#cb15-698" aria-hidden="true" tabindex="-1"></a>0.2&amp;0.8</span>
+<span id="cb15-699"><a href="#cb15-699" aria-hidden="true" tabindex="-1"></a>\end{pmatrix},</span>
+<span id="cb15-700"><a href="#cb15-700" aria-hidden="true" tabindex="-1"></a>\qquad</span>
+<span id="cb15-701"><a href="#cb15-701" aria-hidden="true" tabindex="-1"></a>\Psi=</span>
+<span id="cb15-702"><a href="#cb15-702" aria-hidden="true" tabindex="-1"></a>\begin{pmatrix}</span>
+<span id="cb15-703"><a href="#cb15-703" aria-hidden="true" tabindex="-1"></a>0.32&amp;0<span class="sc">\\</span></span>
+<span id="cb15-704"><a href="#cb15-704" aria-hidden="true" tabindex="-1"></a>0&amp;0.32</span>
+<span id="cb15-705"><a href="#cb15-705" aria-hidden="true" tabindex="-1"></a>\end{pmatrix}.</span>
+<span id="cb15-706"><a href="#cb15-706" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb15-707"><a href="#cb15-707" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-708"><a href="#cb15-708" aria-hidden="true" tabindex="-1"></a>Cada variable tiene comunalidad $0.8^2+0.2^2=0.68$ y unicidad $1-0.68=0.32$. La matriz de correlaciones reproducida es</span>
+<span id="cb15-709"><a href="#cb15-709" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-710"><a href="#cb15-710" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb15-711"><a href="#cb15-711" aria-hidden="true" tabindex="-1"></a>R=\Lambda\Lambda^\mathsf T+\Psi</span>
+<span id="cb15-712"><a href="#cb15-712" aria-hidden="true" tabindex="-1"></a>=</span>
+<span id="cb15-713"><a href="#cb15-713" aria-hidden="true" tabindex="-1"></a>\begin{pmatrix}</span>
+<span id="cb15-714"><a href="#cb15-714" aria-hidden="true" tabindex="-1"></a>1&amp;0.32<span class="sc">\\</span></span>
+<span id="cb15-715"><a href="#cb15-715" aria-hidden="true" tabindex="-1"></a>0.32&amp;1</span>
+<span id="cb15-716"><a href="#cb15-716" aria-hidden="true" tabindex="-1"></a>\end{pmatrix}.</span>
+<span id="cb15-717"><a href="#cb15-717" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb15-718"><a href="#cb15-718" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-719"><a href="#cb15-719" aria-hidden="true" tabindex="-1"></a>Los pesos de regresión son</span>
+<span id="cb15-720"><a href="#cb15-720" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-721"><a href="#cb15-721" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb15-722"><a href="#cb15-722" aria-hidden="true" tabindex="-1"></a>B=R^{-1}\Lambda</span>
+<span id="cb15-723"><a href="#cb15-723" aria-hidden="true" tabindex="-1"></a>\approx</span>
+<span id="cb15-724"><a href="#cb15-724" aria-hidden="true" tabindex="-1"></a>\begin{pmatrix}</span>
+<span id="cb15-725"><a href="#cb15-725" aria-hidden="true" tabindex="-1"></a>0.820&amp;-0.062<span class="sc">\\</span></span>
+<span id="cb15-726"><a href="#cb15-726" aria-hidden="true" tabindex="-1"></a>-0.062&amp;0.820</span>
+<span id="cb15-727"><a href="#cb15-727" aria-hidden="true" tabindex="-1"></a>\end{pmatrix}.</span>
+<span id="cb15-728"><a href="#cb15-728" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb15-729"><a href="#cb15-729" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-730"><a href="#cb15-730" aria-hidden="true" tabindex="-1"></a>Para una persona con valores estandarizados $x=(1,-0.5)^\mathsf T$,</span>
+<span id="cb15-731"><a href="#cb15-731" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-732"><a href="#cb15-732" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb15-733"><a href="#cb15-733" aria-hidden="true" tabindex="-1"></a>\widehat f=B^\mathsf T x</span>
+<span id="cb15-734"><a href="#cb15-734" aria-hidden="true" tabindex="-1"></a>\approx</span>
+<span id="cb15-735"><a href="#cb15-735" aria-hidden="true" tabindex="-1"></a>\begin{pmatrix}</span>
+<span id="cb15-736"><a href="#cb15-736" aria-hidden="true" tabindex="-1"></a>0.851<span class="sc">\\</span></span>
+<span id="cb15-737"><a href="#cb15-737" aria-hidden="true" tabindex="-1"></a>-0.472</span>
+<span id="cb15-738"><a href="#cb15-738" aria-hidden="true" tabindex="-1"></a>\end{pmatrix}.</span>
+<span id="cb15-739"><a href="#cb15-739" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb15-740"><a href="#cb15-740" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-741"><a href="#cb15-741" aria-hidden="true" tabindex="-1"></a>La persona queda alta en el primer factor y baja en el segundo. Los pequeños pesos negativos ajustan la información compartida entre las dos variables; no significan que la carga principal haya cambiado de signo.</span>
+<span id="cb15-742"><a href="#cb15-742" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-743"><a href="#cb15-743" aria-hidden="true" tabindex="-1"></a>::: {.callout-warning title="Ejemplo de cálculo, no modelo identificable"}</span>
+<span id="cb15-744"><a href="#cb15-744" aria-hidden="true" tabindex="-1"></a>Con solo dos variables y dos factores no estimaríamos de forma única un AFE real: hay demasiados parámetros para tan poca información. Aquí suponemos $\Lambda$ y $\Psi$ conocidas únicamente para mostrar cómo se calculan los scores una vez fijado el modelo.</span>
+<span id="cb15-745"><a href="#cb15-745" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb15-746"><a href="#cb15-746" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-749"><a href="#cb15-749" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb15-750"><a href="#cb15-750" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(<span class="fu">round</span>(fa_varimax<span class="sc">$</span>scores, <span class="dv">2</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb15-751"><a href="#cb15-751" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>()</span>
+<span id="cb15-752"><a href="#cb15-752" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb15-753"><a href="#cb15-753" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-754"><a href="#cb15-754" aria-hidden="true" tabindex="-1"></a>Los scores pueden servir para gráficos, clustering posterior o perfiles, pero no deben confundirse con medidas directas del factor.</span>
+<span id="cb15-755"><a href="#cb15-755" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-758"><a href="#cb15-758" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb15-759"><a href="#cb15-759" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb15-760"><a href="#cb15-760" aria-hidden="true" tabindex="-1"></a><span class="fu">visualizar_puntuaciones_factoriales</span>(</span>
+<span id="cb15-761"><a href="#cb15-761" aria-hidden="true" tabindex="-1"></a>  fa_varimax,</span>
+<span id="cb15-762"><a href="#cb15-762" aria-hidden="true" tabindex="-1"></a>  <span class="at">id =</span> <span class="fu">seq_len</span>(<span class="fu">nrow</span>(datos_factorial)),</span>
+<span id="cb15-763"><a href="#cb15-763" aria-hidden="true" tabindex="-1"></a>  <span class="at">factores =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>)</span>
+<span id="cb15-764"><a href="#cb15-764" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb15-765"><a href="#cb15-765" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb15-766"><a href="#cb15-766" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-767"><a href="#cb15-767" aria-hidden="true" tabindex="-1"></a>Las puntuaciones no son únicas: diferentes métodos pueden estimar valores distintos aun con las mismas cargas. Deben tratarse como estimaciones dependientes del modelo, no como observaciones directas de la variable latente.</span>
+<span id="cb15-768"><a href="#cb15-768" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-769"><a href="#cb15-769" aria-hidden="true" tabindex="-1"></a><span class="fu">## Decisiones y limitaciones</span></span>
+<span id="cb15-770"><a href="#cb15-770" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-771"><a href="#cb15-771" aria-hidden="true" tabindex="-1"></a><span class="fu">### Síntesis de las diferencias con PCA</span></span>
+<span id="cb15-772"><a href="#cb15-772" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-773"><a href="#cb15-773" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Aspecto <span class="pp">|</span> PCA <span class="pp">|</span> Análisis factorial <span class="pp">|</span></span>
+<span id="cb15-774"><a href="#cb15-774" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|---|</span></span>
+<span id="cb15-775"><a href="#cb15-775" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Objetivo <span class="pp">|</span> Resumir varianza total <span class="pp">|</span> Explicar covarianza común <span class="pp">|</span></span>
+<span id="cb15-776"><a href="#cb15-776" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Variables nuevas <span class="pp">|</span> Componentes observables como combinaciones lineales <span class="pp">|</span> Factores latentes estimados <span class="pp">|</span></span>
+<span id="cb15-777"><a href="#cb15-777" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Varianza específica <span class="pp">|</span> Forma parte de la varianza resumida <span class="pp">|</span> Se separa en unicidad/error <span class="pp">|</span></span>
+<span id="cb15-778"><a href="#cb15-778" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Modelo estadístico <span class="pp">|</span> Descriptivo geométrico <span class="pp">|</span> Modelo de covarianzas <span class="pp">|</span></span>
+<span id="cb15-779"><a href="#cb15-779" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Interpretación <span class="pp">|</span> Ejes de máxima varianza <span class="pp">|</span> Dimensiones latentes hipotéticas <span class="pp">|</span></span>
+<span id="cb15-780"><a href="#cb15-780" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-781"><a href="#cb15-781" aria-hidden="true" tabindex="-1"></a>PCA puede ser suficiente si queremos una representación compacta. FA tiene más sentido si sostenemos que existen dimensiones latentes que generan las correlaciones observadas.</span>
+<span id="cb15-782"><a href="#cb15-782" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-783"><a href="#cb15-783" aria-hidden="true" tabindex="-1"></a><span class="fu">### Diagnóstico y limitaciones</span></span>
+<span id="cb15-784"><a href="#cb15-784" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-785"><a href="#cb15-785" aria-hidden="true" tabindex="-1"></a>El análisis factorial necesita correlaciones suficientes, tamaño muestral razonable y una solución interpretable. En datasets pequeños como <span class="in">`mtcars`</span>, los resultados sirven para aprender el procedimiento, no para sostener una teoría fuerte.</span>
+<span id="cb15-786"><a href="#cb15-786" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-787"><a href="#cb15-787" aria-hidden="true" tabindex="-1"></a>Limitaciones importantes:</span>
+<span id="cb15-788"><a href="#cb15-788" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-789"><a href="#cb15-789" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>el número de factores no es obvio;</span>
+<span id="cb15-790"><a href="#cb15-790" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>la rotación cambia la interpretación;</span>
+<span id="cb15-791"><a href="#cb15-791" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>los factores no son únicos en sentido absoluto;</span>
+<span id="cb15-792"><a href="#cb15-792" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>las cargas pueden depender mucho de la muestra;</span>
+<span id="cb15-793"><a href="#cb15-793" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>variables mal medidas producen factores poco fiables;</span>
+<span id="cb15-794"><a href="#cb15-794" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>un factor con nombre atractivo no garantiza una variable latente real.</span>
+<span id="cb15-795"><a href="#cb15-795" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-796"><a href="#cb15-796" aria-hidden="true" tabindex="-1"></a><span class="fu">### Protocolo de decisión</span></span>
+<span id="cb15-797"><a href="#cb15-797" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-798"><a href="#cb15-798" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>Definir por qué sería razonable postular dimensiones comunes.</span>
+<span id="cb15-799"><a href="#cb15-799" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>Revisar correlaciones, KMO, Bartlett y calidad de los datos.</span>
+<span id="cb15-800"><a href="#cb15-800" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>Declarar el modelo y el método de extracción que se utilizarán.</span>
+<span id="cb15-801"><a href="#cb15-801" aria-hidden="true" tabindex="-1"></a><span class="ss">4. </span>Comparar varios números de factores mediante análisis paralelo, scree, residuos y sentido sustantivo.</span>
+<span id="cb15-802"><a href="#cb15-802" aria-hidden="true" tabindex="-1"></a><span class="ss">5. </span>Elegir rotación ortogonal u oblicua según la pregunta.</span>
+<span id="cb15-803"><a href="#cb15-803" aria-hidden="true" tabindex="-1"></a><span class="ss">6. </span>Interpretar conjuntamente cargas, comunalidades, cargas cruzadas y correlaciones factoriales.</span>
+<span id="cb15-804"><a href="#cb15-804" aria-hidden="true" tabindex="-1"></a><span class="ss">7. </span>Revisar la matriz residual y la estabilidad en otras muestras.</span>
+<span id="cb15-805"><a href="#cb15-805" aria-hidden="true" tabindex="-1"></a><span class="ss">8. </span>Tratar las puntuaciones como estimaciones.</span>
+<span id="cb15-806"><a href="#cb15-806" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-807"><a href="#cb15-807" aria-hidden="true" tabindex="-1"></a><span class="fu">### Errores frecuentes</span></span>
+<span id="cb15-808"><a href="#cb15-808" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-809"><a href="#cb15-809" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Llamar factores latentes a componentes principales sin justificarlo.</span>
+<span id="cb15-810"><a href="#cb15-810" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Retener factores solo porque el autovalor supera 1.</span>
+<span id="cb15-811"><a href="#cb15-811" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Ignorar cargas cruzadas.</span>
+<span id="cb15-812"><a href="#cb15-812" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Interpretar factores con nombres atractivos pero poco respaldados.</span>
+<span id="cb15-813"><a href="#cb15-813" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Presentar scores factoriales como si fueran observaciones directas.</span>
+<span id="cb15-814"><a href="#cb15-814" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Usar análisis factorial con variables casi no correlacionadas.</span>
+<span id="cb15-815"><a href="#cb15-815" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>No informar método de extracción y rotación.</span>
+<span id="cb15-816"><a href="#cb15-816" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-817"><a href="#cb15-817" aria-hidden="true" tabindex="-1"></a><span class="fu">### Resumen del capítulo</span></span>
+<span id="cb15-818"><a href="#cb15-818" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-819"><a href="#cb15-819" aria-hidden="true" tabindex="-1"></a>El análisis factorial exploratorio busca factores latentes que expliquen covarianza común. Su modelo separa cargas, comunalidades, unicidades y errores específicos. La interpretación depende del número de factores, método de extracción, rotación, residuos, cargas cruzadas y sentido aplicado de las variables.</span>
+<span id="cb15-820"><a href="#cb15-820" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-821"><a href="#cb15-821" aria-hidden="true" tabindex="-1"></a><span class="fu">## Funciones utilizadas</span></span>
+<span id="cb15-822"><a href="#cb15-822" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-823"><a href="#cb15-823" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Función <span class="pp">|</span> Para qué se usa <span class="pp">|</span> Uso básico <span class="pp">|</span></span>
+<span id="cb15-824"><a href="#cb15-824" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|---|</span></span>
+<span id="cb15-825"><a href="#cb15-825" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`psych::fa()`</span> <span class="pp">|</span> Ajustar el modelo declarando número, extracción y rotación. <span class="pp">|</span> <span class="in">`psych::fa(datos, nfactors = 5, fm = "minres", rotate = "varimax")`</span> <span class="pp">|</span></span>
+<span id="cb15-826"><a href="#cb15-826" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`comprobar_adecuacion_factorial()`</span> <span class="pp">|</span> Obtener KMO, Bartlett y correlaciones. <span class="pp">|</span> <span class="in">`adecuacion &lt;- comprobar_adecuacion_factorial(datos)`</span> <span class="pp">|</span></span>
+<span id="cb15-827"><a href="#cb15-827" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`visualizar_numero_factores()`</span> <span class="pp">|</span> Comparar autovalores con una referencia aleatoria. <span class="pp">|</span> <span class="in">`numero &lt;- visualizar_numero_factores(datos)`</span> <span class="pp">|</span></span>
+<span id="cb15-828"><a href="#cb15-828" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`resumir_factorial()`</span> <span class="pp">|</span> Reunir cargas, comunalidades, unicidades y cargas cruzadas. <span class="pp">|</span> <span class="in">`resumen &lt;- resumir_factorial(ajuste)`</span> <span class="pp">|</span></span>
+<span id="cb15-829"><a href="#cb15-829" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`variables_por_factor()`</span> <span class="pp">|</span> Ordenar las variables relevantes de cada factor. <span class="pp">|</span> <span class="in">`variables_por_factor(ajuste, 0.35)`</span> <span class="pp">|</span></span>
+<span id="cb15-830"><a href="#cb15-830" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`visualizar_varianza_factorial()`</span> <span class="pp">|</span> Comparar comunalidad y unicidad. <span class="pp">|</span> <span class="in">`visualizar_varianza_factorial(ajuste)`</span> <span class="pp">|</span></span>
+<span id="cb15-831"><a href="#cb15-831" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`visualizar_matriz_cargas()`</span> <span class="pp">|</span> Mostrar las cargas como mapa de calor. <span class="pp">|</span> <span class="in">`visualizar_matriz_cargas(ajuste)`</span> <span class="pp">|</span></span>
+<span id="cb15-832"><a href="#cb15-832" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`visualizar_cargas_factoriales()`</span> <span class="pp">|</span> Representar variables sobre dos factores. <span class="pp">|</span> <span class="in">`visualizar_cargas_factoriales(ajuste, c(1, 2))`</span> <span class="pp">|</span></span>
+<span id="cb15-833"><a href="#cb15-833" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`comparar_rotaciones_factoriales()`</span> <span class="pp">|</span> Comparar varias orientaciones de los factores. <span class="pp">|</span> <span class="in">`comparar_rotaciones_factoriales(ajustes)`</span> <span class="pp">|</span></span>
+<span id="cb15-834"><a href="#cb15-834" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`comparar_correlaciones_factorial()`</span> <span class="pp">|</span> Obtener matrices observada, reproducida y residual. <span class="pp">|</span> <span class="in">`comparar_correlaciones_factorial(datos, ajuste)`</span> <span class="pp">|</span></span>
+<span id="cb15-835"><a href="#cb15-835" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`visualizar_puntuaciones_factoriales()`</span> <span class="pp">|</span> Representar puntuaciones estimadas. <span class="pp">|</span> <span class="in">`visualizar_puntuaciones_factoriales(ajuste)`</span> <span class="pp">|</span></span>
 </code></pre></div><button title="Copiar al portapapeles" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
