@@ -5,31 +5,46 @@
 #| message: false
 library(tidyverse)
 library(knitr)
+source("FuncionesFactorial.R")
 ```
 
-## Motivación aplicada
-
-A veces no queremos solo resumir variables, sino proponer factores latentes que expliquen patrones de covariación. Por ejemplo, varias medidas de rendimiento de un coche podrían reflejar dimensiones no observadas como potencia, eficiencia o comportamiento dinámico.
-
-En psicometría ocurre algo parecido: varias preguntas de un cuestionario pueden estar asociadas porque todas reflejan una dimensión no observada, como ansiedad, extraversión o satisfacción. No observamos directamente el factor; observamos variables que se mueven juntas.
-
-::: {.callout-note}
-En PCA buscamos componentes que resuman variabilidad; en análisis factorial buscamos factores latentes que expliquen patrones de covariación entre variables observadas.
+::: {.callout-note title="Requisitos de las funciones auxiliares"}
+Las filas deben ser individuos y las columnas, variables numéricas sin valores perdidos ni varianza nula. Se necesitan `psych` y `GPArotation`. El modelo se ajusta explícitamente con `psych::fa()` o `factanal()`; las funciones auxiliares ordenan diagnósticos, tablas y gráficos.
 :::
 
-## PCA no siempre basta
+## Pregunta y modelo factorial
 
-PCA transforma variables observadas en componentes que maximizan varianza total. Es una técnica descriptiva de reducción de dimensión.
+### Dos preguntas distintas sobre los mismos datos
 
-El análisis factorial exploratorio, en cambio, parte de una idea más fuerte: las correlaciones entre variables observadas pueden explicarse mediante un número pequeño de factores comunes. Lo que interesa no es resumir toda la varianza, sino separar:
+Supongamos que un cuestionario contiene preguntas sobre preocupación, tensión, dificultad para relajarse y problemas de sueño. Las respuestas forman una tabla ordinaria de individuos por variables, pero podemos plantear dos preguntas muy diferentes.
+
+**PCA pregunta:** ¿qué combinaciones lineales permiten representar las respuestas perdiendo la menor variabilidad posible? Una componente es un resumen calculado a partir de las variables. No es necesario afirmar que exista una entidad oculta que haya producido las respuestas.
+
+**El análisis factorial pregunta:** ¿podría una dimensión no observada, por ejemplo ansiedad, explicar que preocupación, tensión y dificultad para relajarse estén correlacionadas? Los problemas de sueño podrían compartir parte de ese factor y conservar además mucha variación específica.
+
+| | PCA | Análisis factorial exploratorio |
+|---|---|---|
+| Pregunta central | ¿Cómo comprimir la nube de datos? | ¿Qué dimensiones comunes podrían explicar las correlaciones? |
+| Varianza utilizada | Toda la varianza observada | Principalmente la covariación compartida |
+| Resultado | Componentes construidas | Factores latentes propuestos |
+| Variación propia de un ítem | También participa en la representación | Se separa como unicidad |
+
+Un ejemplo extremo ayuda a ver la diferencia. Si añadimos al cuestionario una variable con enorme variabilidad pero casi independiente de las demás, PCA puede necesitar una componente para representarla bien. En AFE esa variable tendrá poca comunalidad y gran unicidad: no ayuda a definir el factor común, aunque pueda ser importante por sí misma.
+
+::: {.callout-important}
+PCA resume **cómo varían los datos observados**. AFE propone **por qué covarían las variables** mediante factores comunes. El AFE formula una hipótesis latente más fuerte, pero no demuestra por sí solo que el factor sea una causa real.
+:::
+
+### Motivación aplicada
+
+En psicometría, varias preguntas pueden estar asociadas porque reflejan ansiedad, extraversión o satisfacción. En otros ámbitos, varias mediciones podrían compartir dimensiones de eficiencia, capacidad o comportamiento. No observamos directamente el factor: observamos variables que se mueven juntas.
+
+El objetivo es separar:
 
 - varianza común compartida con otras variables;
-- varianza específica de cada variable;
-- error o ruido de medición.
+- varianza específica de cada variable y error de medición.
 
-Esto hace que el análisis factorial tenga una interpretación latente más ambiciosa, pero también exige más cautela.
-
-## Variables observadas y factores latentes
+### Variables observadas y factores latentes
 
 Supongamos que observamos $p$ variables estandarizadas $X_1,\ldots,X_p$. El modelo factorial común con $m$ factores se escribe como:
 
@@ -51,7 +66,39 @@ $$
 
 donde $\Lambda$ es la matriz de cargas factoriales.
 
-## Modelo de covarianzas
+Las dimensiones de los objetos ayudan a leer el modelo: $X$ y $\epsilon$ son vectores $p\times1$, $F$ es $m\times1$ y $\Lambda$ es $p\times m$. Una carga grande en valor absoluto indica una relación intensa con el factor. Su signo da la dirección, aunque el signo completo de un factor puede invertirse sin cambiar el modelo.
+
+```{r}
+#| label: esquema-factorial
+#| echo: false
+nodos <- tibble(
+  nombre = c("F1", "F2", "X1", "X2", "X3", "X4", "e1", "e2", "e3", "e4"),
+  x = c(1.6, 3.4, 1, 2, 3, 4, 1, 2, 3, 4),
+  y = c(3, 3, 1.5, 1.5, 1.5, 1.5, 0.3, 0.3, 0.3, 0.3),
+  tipo = rep(c("Factor", "Variable", "Específica"), c(2, 4, 4))
+)
+flechas <- tribble(
+  ~x, ~y, ~xend, ~yend,
+  1.6, 2.85, 1, 1.7, 1.6, 2.85, 2, 1.7,
+  3.4, 2.85, 3, 1.7, 3.4, 2.85, 4, 1.7,
+  1, 0.5, 1, 1.3, 2, 0.5, 2, 1.3,
+  3, 0.5, 3, 1.3, 4, 0.5, 4, 1.3
+)
+ggplot() +
+  geom_segment(
+    data = flechas, aes(x, y, xend = xend, yend = yend),
+    arrow = grid::arrow(length = grid::unit(0.12, "cm")), color = "gray45"
+  ) +
+  geom_label(data = nodos, aes(x, y, label = nombre, fill = tipo), size = 4) +
+  scale_fill_manual(values = c(Factor = "#9ecae1", Variable = "#f7f7f7", Específica = "#fdd0a2")) +
+  coord_equal(xlim = c(0.5, 4.5), ylim = c(0, 3.5)) +
+  labs(title = "Dos factores comunes y cuatro partes específicas", fill = NULL) +
+  theme_void() + theme(legend.position = "bottom")
+```
+
+El diagrama hace explícita la hipótesis: las asociaciones entre variables se atribuyen a factores comunes, mientras que las partes específicas no producen correlaciones con otras variables.
+
+### Modelo de covarianzas
 
 La idea central no está solo en predecir cada variable, sino en explicar la matriz de covarianzas o correlaciones. Para ver de dónde sale la forma matricial, partimos del modelo:
 
@@ -71,7 +118,7 @@ $$
 \end{pmatrix}.
 $$
 
-El modelo factorial clásico asume que los errores específicos tienen media cero y varianza propia:
+El modelo factorial clásico asume que variables, factores y errores están centrados. Para máxima verosimilitud suele añadirse normalidad, pero la descomposición de covarianzas no requiere por sí sola ese supuesto. Cada error específico tiene varianza propia:
 
 $$
 \epsilon_j \sim \mathcal{N}(0,\psi_j).
@@ -147,7 +194,15 @@ $$
 R \approx \Lambda \Lambda^\top + \Psi.
 $$
 
-## Cargas, comunalidad y unicidad
+Para dos variables distintas $j\ne \ell$, la diagonal $\Psi$ no interviene y
+
+$$
+r_{j\ell}\approx\sum_{k=1}^{m}\lambda_{jk}\lambda_{\ell k}.
+$$
+
+Dos variables se correlacionan cuando tienen patrones de cargas parecidos. Esta igualdad muestra qué intenta reproducir el modelo y por qué los residuos entre correlaciones observadas y reproducidas son un diagnóstico central.
+
+### Cargas, comunalidad y unicidad
 
 La carga $\lambda_{jk}$ mide la relación entre la variable observada $X_j$ y el factor $F_k$. Si las variables y factores están estandarizados y los factores son ortogonales, la carga puede interpretarse de forma parecida a una correlación.
 
@@ -165,88 +220,159 @@ $$
 
 Una variable con comunalidad alta está bien representada por la solución factorial. Una variable con unicidad alta contiene mucha información específica o ruido que los factores no explican.
 
-## Dataset de trabajo
-
-Usamos variables numéricas de `mtcars`. El ejemplo es pequeño, así que debe interpretarse como introducción metodológica, no como una teoría definitiva sobre automóviles.
+El AFE no puede separar, sin información adicional, la varianza verdaderamente específica del error de medida. Además, una comunalidad baja no convierte automáticamente una variable en irrelevante: indica que el espacio común elegido la representa mal.
 
 ```{r}
-vars <- mtcars[, c("mpg", "disp", "hp", "drat", "wt", "qsec")]
-R <- cor(vars)
-kable(round(R, 2))
+#| label: intuicion-comunalidad
+#| echo: false
+tibble(
+  variable = factor(c("X1", "X2", "X3"), levels = c("X3", "X2", "X1")),
+  comunalidad = c(.80, .55, .25),
+  unicidad = 1 - comunalidad
+) |>
+  pivot_longer(-variable, names_to = "tipo", values_to = "proporcion") |>
+  ggplot(aes(variable, proporcion, fill = tipo)) +
+  geom_col() + coord_flip() +
+  scale_fill_manual(values = c(comunalidad = "#2c7fb8", unicidad = "#d9d9d9")) +
+  labs(title = "Varianza común y varianza única", x = NULL, y = "Proporción", fill = NULL) +
+  theme_minimal()
 ```
 
-El análisis factorial necesita correlaciones suficientes. Si las variables están casi no correlacionadas, no hay covarianza común que explicar.
+### Dataset de trabajo
 
-## Una simulación para entender factores
-
-Simulamos seis variables generadas por dos factores latentes. Las tres primeras dependen sobre todo del primer factor y las tres últimas del segundo.
+Usamos 25 ítems de personalidad de `psych::bfi`. Las letras identifican cinco familias diseñadas para medir amabilidad, responsabilidad, extraversión, neuroticismo y apertura. Algunos ítems están formulados en dirección inversa; por eso pueden aparecer cargas negativas.
 
 ```{r}
-set.seed(123)
-n <- 250
-F1 <- rnorm(n)
-F2 <- rnorm(n)
-sim <- data.frame(
-  x1 = 0.85 * F1 + rnorm(n, sd = 0.35),
-  x2 = 0.75 * F1 + rnorm(n, sd = 0.45),
-  x3 = 0.70 * F1 + rnorm(n, sd = 0.50),
-  x4 = 0.80 * F2 + rnorm(n, sd = 0.40),
-  x5 = 0.75 * F2 + rnorm(n, sd = 0.45),
-  x6 = 0.65 * F2 + rnorm(n, sd = 0.55)
-)
-kable(round(cor(sim), 2))
+datos_factorial <- psych::bfi[, 1:25] |>
+  drop_na() |>
+  slice_head(n = 800)
+
+dim(datos_factorial)
 ```
 
-En esta matriz aparecen dos bloques de correlaciones. El análisis factorial intenta recuperar esa estructura latente.
+### ¿Hay estructura común suficiente?
+
+Antes de extraer factores conviene comprobar si las variables comparten correlaciones que puedan resumirse. Dos diagnósticos habituales son la prueba de esfericidad de Bartlett y el índice KMO. Responden a preguntas distintas.
+
+#### Prueba de esfericidad de Bartlett
+
+Bartlett parte de la matriz de correlaciones muestral $R$. Si las $p$ variables no están correlacionadas en la población, su matriz de correlaciones es la identidad:
+
+$$
+H_0:R=I,
+$$
+
+porque la identidad tiene unos en la diagonal y ceros fuera de ella. Por tanto, la hipótesis nula afirma simultáneamente que las $p(p-1)/2$ correlaciones diferentes son cero. Por ejemplo, con cinco variables se contrastan las diez correlaciones situadas bajo la diagonal.
+
+Para medir cuánto se aparta $R$ de la identidad se utiliza su determinante. Una matriz identidad tiene determinante $|I|=1$. Cuando existen correlaciones y algunas variables contienen información redundante, el determinante de $R$ disminuye; si una variable fuese combinación lineal exacta de otras, sería cero.
+
+El estadístico de Bartlett es, aproximadamente,
+
+$$
+\chi_B^2=-\left[n-1-\frac{2p+5}{6}\right]\log|R|,
+$$
+
+y bajo $H_0$ se compara con una distribución $\chi^2$ con
+
+$$
+\frac{p(p-1)}{2}
+$$
+
+grados de libertad. No es el estadístico de una tabla de contingencia, aunque usa la misma familia de distribuciones de referencia. La razón es que $\chi_B^2$ es una cantidad no negativa que, bajo $H_0$ y en muestras suficientemente grandes, tiene aproximadamente esa distribución:
+
+- si $R$ está cerca de $I$, entonces $|R|$ está cerca de uno, $\log|R|$ está cerca de cero y el estadístico es pequeño;
+- si $R$ se aleja de $I$, el determinante disminuye y el estadístico crece;
+- el p-valor es el área de la cola derecha: la probabilidad, bajo $H_0$, de obtener un estadístico al menos tan grande como el observado.
+
+Un p-valor pequeño permite rechazar que **todas** las correlaciones sean cero. Indica que hay alguna covariación que intentar explicar, pero no identifica qué variables se relacionan ni cuántos factores podrían ser necesarios.
+
+Sin embargo, rechazar $H_0$ no demuestra que haya pocos factores, que el modelo ajuste bien ni que los factores sean interpretables. Además, la prueba depende del tamaño muestral: con muchos individuos puede detectar correlaciones muy pequeñas y poco relevantes. Su aproximación $\chi^2$ habitual supone observaciones independientes y resulta más fiable cuando la distribución no se aparta gravemente de la normalidad multivariante.
+
+#### Índice KMO
+
+El KMO no realiza un contraste de hipótesis. Es un índice entre cero y uno que pregunta si el patrón de relaciones parece adecuado para resumirse mediante factores comunes.
+
+Para entenderlo hay que distinguir dos asociaciones entre $X_j$ y $X_\ell$:
+
+- La **correlación simple** $r_{j\ell}$ es la correlación habitual calculada directamente entre ambas variables. Incluye tanto su relación propia como la asociación que comparten con las demás variables.
+- La **correlación parcial** $a_{j\ell}$ mide la relación que queda entre ellas después de controlar linealmente todas las demás. Puede imaginarse así: predecimos $X_j$ usando el resto de variables, conservamos sus residuos; hacemos lo mismo con $X_\ell$; finalmente correlacionamos ambos residuos.
+
+Si varias variables se relacionan porque comparten uno o pocos factores, gran parte de su asociación debería desaparecer al tener en cuenta las demás. Esperamos entonces correlaciones simples apreciables y correlaciones parciales pequeñas. Si las parciales continúan siendo grandes, quedan muchas relaciones particulares entre parejas que un modelo de factores comunes difícilmente resumirá.
+
+El KMO global agrega todas las parejas:
+
+$$
+KMO=
+\frac{\sum_{j<\ell}r_{j\ell}^2}
+{\sum_{j<\ell}r_{j\ell}^2+\sum_{j<\ell}a_{j\ell}^2}.
+$$
+
+El numerador contiene asociación observable compartible; el segundo término del denominador penaliza las relaciones parciales que el resto de variables no logra explicar. Los cuadrados evitan que correlaciones positivas y negativas se cancelen.
+
+| Pareja ilustrativa | Correlación simple | Correlación parcial | Cociente $r^2/(r^2+a^2)$ |
+|---|---:|---:|---:|
+| A--B | 0.70 | 0.10 | 0.98 |
+| C--D | 0.40 | 0.35 | 0.57 |
+
+En la primera pareja casi toda la asociación es compartida con la estructura del resto de variables. En la segunda queda una relación parcial casi tan grande como la simple. El KMO real no promedia estos cocientes: suma primero los cuadrados de todas las parejas y calcula después el cociente global.
+
+::: {.callout-note title="Un KMO alto es relativo"}
+Un KMO alto significa que las correlaciones parciales son pequeñas **en comparación con** las simples. No garantiza que las correlaciones simples sean grandes en términos absolutos. Por eso también hay que inspeccionar $R$ y no solo el índice.
+:::
+
+#### KMO global y KMO por variable
+
+El KMO global utiliza todas las parejas de variables y resume la adecuación conjunta del sistema. Para una variable concreta $X_j$ se calcula una medida análoga usando solo las parejas en las que participa:
+
+$$
+KMO_j=
+\frac{\sum_{\ell\ne j}r_{j\ell}^2}
+{\sum_{\ell\ne j}r_{j\ell}^2+\sum_{\ell\ne j}a_{j\ell}^2}.
+$$
+
+Este KMO individual, llamado también medida de adecuación muestral de la variable, responde a «¿está $X_j$ integrada en la estructura común del conjunto?». Las diferencias son importantes:
+
+- un KMO global alto puede ocultar una variable con KMO individual bajo;
+- el global no es la media aritmética de los KMO individuales, porque se forma agregando sumas de cuadrados de parejas;
+- eliminar una variable cambia las correlaciones parciales del sistema completo, de modo que hay que recalcular todos los KMO;
+- un KMO individual bajo es una señal para investigar la variable, no una orden automática de eliminarla.
+
+Por ejemplo, un cuestionario puede tener KMO global 0.82 porque la mayoría de los ítems forman bloques coherentes, pero un ítem con KMO 0.38 puede estar midiendo otro contenido, estar redactado de forma confusa o ser deliberadamente específico. La decisión depende de la finalidad del instrumento, no solo de mejorar el índice.
+
+Como orientación, valores inferiores a 0.50 suelen considerarse problemáticos; entre 0.60 y 0.70, modestos; entre 0.70 y 0.80, buenos; y superiores a 0.80, muy buenos. Son convenciones descriptivas, no fronteras universales.
+
+::: {.callout-tip title="Cómo leerlos conjuntamente"}
+Bartlett pregunta si hay alguna correlación; KMO pregunta si el patrón de correlaciones parece resumible mediante factores comunes. Un Bartlett significativo con KMO bajo permite afirmar que las variables se relacionan, pero no que formen una buena estructura factorial.
+:::
 
 ```{r}
-fa_sim <- factanal(sim, factors = 2, rotation = "varimax")
-print(fa_sim$loadings, cutoff = 0.25)
+adecuacion <- comprobar_adecuacion_factorial(datos_factorial)
+kable(adecuacion$resumen, digits = 3)
+kable(adecuacion$kmo_variables, digits = 3)
 ```
 
-El ejemplo muestra el patrón ideal: variables con cargas altas en un factor y bajas en el otro. Los datos reales rara vez son tan limpios.
+La tabla `adecuacion$resumen` muestra KMO global, estadístico de Bartlett, grados de libertad y p-valor. La tabla `adecuacion$kmo_variables` muestra el índice de cada ítem, ordenado de menor a mayor para localizar posibles problemas. Una lectura razonable sigue este orden:
 
-## Número de factores
+1. comprobar que Bartlett detecta alguna asociación;
+2. valorar con el KMO global si predomina una estructura compartida;
+3. revisar KMO individuales para localizar excepciones;
+4. volver a las correlaciones y al contenido de las variables antes de excluir nada.
+
+No conviene reducir la decisión a un umbral: también debemos revisar la procedencia de la muestra, el número de factores, los residuos y la estabilidad del resultado.
+
+## Elección y estimación de la solución
+
+### Número de factores
 
 Elegir el número de factores es una de las decisiones más delicadas. Un primer diagnóstico es mirar autovalores de la matriz de correlaciones.
 
 ```{r}
-ev <- eigen(R)$values
-tibble(indice = seq_along(ev), autovalor = ev) |>
-  ggplot(aes(indice, autovalor)) +
-  geom_line() +
-  geom_point(size = 2) +
-  geom_hline(yintercept = 1, linetype = "dashed", color = "gray50") +
-  labs(title = "Scree plot exploratorio", x = "Componente/factor", y = "Autovalor") +
-  theme_minimal()
-tibble(indice = seq_along(ev), autovalor = round(ev, 2)) |>
-  kable()
+numero_factores <- visualizar_numero_factores(datos_factorial)
+numero_factores$grafico
+kable(numero_factores$tabla, digits = 3)
 ```
 
-La regla del autovalor mayor que 1 es popular, pero débil. Debe usarse como pista, no como decisión automática.
-
-El análisis paralelo compara los autovalores observados con los que aparecerían en datos aleatorios de igual tamaño. Si `psych` está disponible, se puede calcular directamente.
-
-```{r}
-set.seed(123)
-ev_obs <- eigen(cor(vars))$values
-ev_aleatorios <- replicate(100, {
-  datos_aleatorios <- apply(vars, 2, sample)
-  eigen(cor(datos_aleatorios))$values
-})
-paralelo <- tibble(
-  indice = seq_along(ev_obs),
-  observado = ev_obs,
-  aleatorio_p95 = apply(ev_aleatorios, 1, quantile, probs = 0.95)
-) |>
-  pivot_longer(-indice, names_to = "serie", values_to = "autovalor")
-
-ggplot(paralelo, aes(indice, autovalor, color = serie)) +
-  geom_line() +
-  geom_point(size = 2) +
-  labs(title = "Análisis paralelo", x = "Factor", y = "Autovalor", color = "") +
-  theme_minimal()
-```
+La regla del autovalor mayor que uno es popular, pero débil. El análisis paralelo compara los autovalores observados con los que aparecerían al romper la estructura de correlación. Ninguno de los dos criterios sustituye la interpretación ni el diagnóstico del ajuste.
 
 En la práctica se combinan varios criterios:
 
@@ -257,7 +383,7 @@ En la práctica se combinan varios criterios:
 - cargas cruzadas;
 - sentido aplicado del modelo.
 
-## Extracción de factores
+### Extracción de factores
 
 Hay varios métodos de extracción. Algunos habituales son:
 
@@ -268,12 +394,42 @@ Hay varios métodos de extracción. Algunos habituales son:
 
 No todos responden exactamente a la misma función objetivo. Por eso, cuando el resultado cambia mucho entre métodos, conviene ser prudente.
 
+En todos los casos buscamos parámetros que hagan
+
+$$
+R\approx\widehat R=\widehat\Lambda\widehat\Phi\widehat\Lambda^\mathsf T+\widehat\Psi.
+$$
+
+Por ejemplo, mínimos residuos intenta hacer pequeña, principalmente fuera de la diagonal, una cantidad del tipo
+
+$$
+\sum_{j<\ell}\left(r_{j\ell}-\widehat r_{j\ell}\right)^2.
+$$
+
+Esto distingue el AFE de PCA: aquí el objetivo es reproducir relaciones entre variables, no maximizar la varianza de una combinación lineal.
+
 ```{r}
-fa_minres <- psych::fa(vars, nfactors = 2, rotate = "none", fm = "minres")
-print(fa_minres$loadings, cutoff = 0.25)
+fa_minres <- psych::fa(
+  datos_factorial,
+  nfactors = 5,
+  rotate = "none",
+  fm = "minres",
+  scores = "regression"
+)
+resumir_factorial(fa_minres)$variables |>
+  kable(digits = 3)
 ```
 
-## Rotaciones factoriales
+```{r}
+#| echo: false
+visualizar_matriz_cargas(fa_minres, mostrar_desde = 0.25)
+```
+
+La solución sin rotar suele concentrar asociación general en los primeros factores. Todavía no conviene asignar nombres definitivos.
+
+## Rotación de la solución
+
+### Rotaciones factoriales
 
 Una solución factorial no rotada puede explicar bien la matriz de correlaciones, pero ser difícil de interpretar. La rotación busca una estructura simple: variables con cargas altas en pocos factores y bajas en los demás.
 
@@ -285,13 +441,67 @@ $$
 
 La solución rotada intenta conservar la capacidad explicativa global, pero redistribuye las cargas para mejorar la interpretación.
 
+En una rotación ortogonal, $T^\mathsf TT=I$. Entonces
+
+$$
+(\Lambda T)(\Lambda T)^\mathsf T
+=\Lambda TT^\mathsf T\Lambda^\mathsf T
+=\Lambda\Lambda^\mathsf T.
+$$
+
+La nube de variables no cambia: cambian los ejes con los que describimos sus coordenadas. Por eso una rotación ortogonal puede mejorar la interpretación sin mejorar el ajuste.
+
+```{r}
+#| label: geometria-rotacion
+#| echo: false
+puntos <- tibble(
+  variable = paste0("V", 1:8),
+  x = c(.82, .75, .68, .58, .18, .12, -.05, .10),
+  y = c(.15, .25, .30, .38, .82, .74, .68, .58)
+)
+angulo <- 25 * pi / 180
+ejes <- tibble(
+  x = 0, y = 0,
+  xend = c(1, 0, cos(angulo), -sin(angulo)),
+  yend = c(0, 1, sin(angulo), cos(angulo)),
+  sistema = rep(c("Sin rotar", "Rotado"), each = 2)
+)
+ggplot(puntos, aes(x, y, label = variable)) +
+  geom_segment(
+    data = ejes, aes(x, y, xend = xend, yend = yend, color = sistema),
+    inherit.aes = FALSE, arrow = grid::arrow(length = grid::unit(.12, "cm")), linewidth = 1
+  ) +
+  geom_point(size = 2.5) + geom_text(vjust = -0.7) +
+  coord_equal(xlim = c(-.5, 1.05), ylim = c(-.05, 1.05)) +
+  labs(title = "Rotar cambia los ejes, no la nube de variables", x = "Carga 1", y = "Carga 2", color = NULL) +
+  theme_minimal()
+```
+
 ### Varimax
 
 Varimax es una rotación ortogonal. Mantiene factores no correlacionados. Su intuición es hacer que, dentro de cada factor, algunas cargas sean grandes y otras pequeñas.
 
+Una forma de su criterio es maximizar
+
+$$
+\sum_{k=1}^{m}\left[
+\frac1p\sum_{j=1}^{p}\lambda_{jk}^4-
+\left(\frac1p\sum_{j=1}^{p}\lambda_{jk}^2\right)^2
+\right].
+$$
+
+Así favorece columnas cuyas cargas al cuadrado son muy desiguales: unas variables definen claramente el factor y las demás apenas cargan.
+
 ```{r}
-fa_varimax <- psych::fa(vars, nfactors = 2, rotate = "varimax", fm = "minres")
-print(fa_varimax$loadings, cutoff = 0.25)
+fa_varimax <- psych::fa(datos_factorial, nfactors = 5, rotate = "varimax", fm = "minres", scores = "regression")
+variables_por_factor(fa_varimax, umbral = 0.35) |>
+  kable(digits = 3)
+```
+
+```{r}
+#| echo: false
+visualizar_matriz_cargas(fa_varimax, mostrar_desde = 0.25)
+visualizar_cargas_factoriales(fa_varimax, factores = c(1, 2))
 ```
 
 ### Oblimin
@@ -299,14 +509,26 @@ print(fa_varimax$loadings, cutoff = 0.25)
 Oblimin permite que los factores estén correlacionados. Esto puede ser más realista en ciencias sociales, salud o comportamiento: dos dimensiones latentes pueden estar relacionadas.
 
 ```{r}
-fa_oblimin <- psych::fa(vars, nfactors = 2, rotate = "oblimin", fm = "minres")
-print(fa_oblimin$loadings, cutoff = 0.25)
+fa_oblimin <- psych::fa(datos_factorial, nfactors = 5, rotate = "oblimin", fm = "minres", scores = "regression")
 kable(round(fa_oblimin$Phi, 3))
 ```
 
 Si los factores oblicuos están muy correlacionados, quizá no son dimensiones tan separadas. Si no están correlacionados, una rotación ortogonal puede ser suficiente.
 
-## Cargas cruzadas
+En una solución oblicua conviene distinguir la **matriz patrón** $\Lambda$, con coeficientes parciales, y la **matriz de estructura** $S=\Lambda\Phi$, con correlaciones simples variable--factor. Coinciden cuando $\Phi=I$, pero no cuando los factores se correlacionan.
+
+```{r}
+#| echo: false
+comparar_rotaciones_factoriales(list(
+  `Sin rotar` = fa_minres,
+  Varimax = fa_varimax,
+  Oblimin = fa_oblimin
+))
+```
+
+## Interpretación de variables e individuos
+
+### Cargas cruzadas
 
 Una carga cruzada aparece cuando una variable carga de forma relevante en más de un factor. Por ejemplo, si una variable tiene carga 0.45 en el factor 1 y 0.42 en el factor 2, no representa limpiamente una sola dimensión.
 
@@ -320,28 +542,29 @@ Las cargas cruzadas pueden indicar:
 
 No conviene forzar nombres de factores si las cargas no sostienen una interpretación simple.
 
-## Residuos del modelo
+### Residuos del modelo
 
 Una forma de diagnosticar el ajuste es comparar la matriz de correlaciones observada con la reproducida por el modelo factorial.
 
 ```{r}
-fa_base <- factanal(vars, factors = 2, rotation = "varimax")
-L <- as.matrix(fa_base$loadings)
-Psi <- diag(fa_base$uniquenesses)
-R_reproducida <- L %*% t(L) + Psi
-residuos <- R - R_reproducida
-kable(round(residuos, 3))
+diagnostico_ajuste <- comparar_correlaciones_factorial(datos_factorial, fa_varimax)
+diagnostico_ajuste$grafico
+diagnostico_ajuste$rmsr
 ```
 
-Residuos grandes sugieren que la solución factorial no reproduce bien algunas asociaciones entre variables.
+Residuos grandes sugieren que la solución factorial no reproduce bien algunas asociaciones. Un patrón dentro de un bloque puede indicar un factor omitido, ítems casi duplicados o errores específicos correlacionados. Aumentar el número de factores reducirá normalmente los residuos, pero puede empeorar la parsimonia y la estabilidad.
 
-## Scores factoriales
+```{r}
+#| echo: false
+visualizar_varianza_factorial(fa_varimax)
+```
+
+### Scores factoriales
 
 Los scores estiman la posición de cada individuo en los factores. No son observaciones directas del factor latente, sino estimaciones dependientes del modelo.
 
 ```{r}
-fa_scores <- factanal(vars, factors = 2, scores = "regression", rotation = "varimax")
-head(round(fa_scores$scores, 2)) |>
+head(round(fa_varimax$scores, 2)) |>
   kable()
 ```
 
@@ -354,17 +577,19 @@ $$
 donde $B$ es una matriz de pesos calculada a partir de cargas, unicidades y correlaciones. Los scores pueden servir para gráficos, clustering posterior o perfiles, pero no deben confundirse con medidas directas del factor.
 
 ```{r}
-as_tibble(fa_scores$scores, rownames = "modelo") |>
-  ggplot(aes(Factor1, Factor2, label = modelo)) +
-  geom_hline(yintercept = 0, linetype = "dashed", color = "gray60") +
-  geom_vline(xintercept = 0, linetype = "dashed", color = "gray60") +
-  geom_point(size = 2, alpha = 0.8) +
-  geom_text(nudge_y = 0.08, size = 3) +
-  labs(title = "Scores factoriales en mtcars", x = "Factor 1", y = "Factor 2") +
-  theme_minimal()
+#| echo: false
+visualizar_puntuaciones_factoriales(
+  fa_varimax,
+  id = seq_len(nrow(datos_factorial)),
+  factores = c(1, 2)
+)
 ```
 
-## Diferencias entre PCA y análisis factorial
+Las puntuaciones no son únicas: diferentes métodos pueden estimar valores distintos aun con las mismas cargas. Deben tratarse como estimaciones dependientes del modelo, no como observaciones directas de la variable latente.
+
+## Decisiones y limitaciones
+
+### Síntesis de las diferencias con PCA
 
 | Aspecto | PCA | Análisis factorial |
 |---|---|---|
@@ -376,7 +601,7 @@ as_tibble(fa_scores$scores, rownames = "modelo") |>
 
 PCA puede ser suficiente si queremos una representación compacta. FA tiene más sentido si sostenemos que existen dimensiones latentes que generan las correlaciones observadas.
 
-## Diagnóstico y limitaciones
+### Diagnóstico y limitaciones
 
 El análisis factorial necesita correlaciones suficientes, tamaño muestral razonable y una solución interpretable. En datasets pequeños como `mtcars`, los resultados sirven para aprender el procedimiento, no para sostener una teoría fuerte.
 
@@ -389,7 +614,18 @@ Limitaciones importantes:
 - variables mal medidas producen factores poco fiables;
 - un factor con nombre atractivo no garantiza una variable latente real.
 
-## Errores frecuentes
+### Protocolo de decisión
+
+1. Definir por qué sería razonable postular dimensiones comunes.
+2. Revisar correlaciones, KMO, Bartlett y calidad de los datos.
+3. Comparar varios números de factores mediante análisis paralelo, scree, residuos y sentido sustantivo.
+4. Declarar el método de extracción.
+5. Elegir rotación ortogonal u oblicua según la pregunta.
+6. Interpretar conjuntamente cargas, comunalidades, cargas cruzadas y correlaciones factoriales.
+7. Revisar la matriz residual y la estabilidad en otras muestras.
+8. Tratar las puntuaciones como estimaciones.
+
+### Errores frecuentes
 
 - Llamar factores latentes a componentes principales sin justificarlo.
 - Retener factores solo porque el autovalor supera 1.
@@ -399,15 +635,30 @@ Limitaciones importantes:
 - Usar análisis factorial con variables casi no correlacionadas.
 - No informar método de extracción y rotación.
 
-## Resumen del capítulo
+### Resumen del capítulo
 
 El análisis factorial exploratorio busca factores latentes que expliquen covarianza común. Su modelo separa cargas, comunalidades, unicidades y errores específicos. La interpretación depende del número de factores, método de extracción, rotación, residuos, cargas cruzadas y sentido aplicado de las variables.
 
-## Ejercicios propuestos
+## Recursos para practicar
 
-1. Compara una solución de 1 y 2 factores en `mtcars`.
-2. Explica qué variables cargan más en cada factor.
-3. Calcula comunalidades y unicidades de una solución factorial.
-4. Compara una rotación varimax con una oblimin si tienes `psych` instalado.
-5. Describe una situación aplicada donde PCA sería suficiente y otra donde FA tendría más sentido.
-6. Simula seis variables generadas por dos factores y comprueba si el análisis factorial recupera la estructura.
+### Ejercicios propuestos
+
+- [Fundamentos del análisis factorial](ejercicios/ejercicios_factorial_clase_15.pdf) ([solución](ejercicios/solucion_factorial_clase_15.html)).
+- [Número de factores y estimación](ejercicios/ejercicios_factorial_clase_16.pdf) ([solución](ejercicios/solucion_factorial_clase_16.html)).
+- [Rotaciones factoriales](ejercicios/ejercicios_factorial_clase_17.pdf) ([solución](ejercicios/solucion_factorial_clase_17.html)).
+
+### Funciones utilizadas
+
+| Función | Para qué se usa | Uso básico |
+|---|---|---|
+| `psych::fa()` | Ajustar el modelo declarando número, extracción y rotación. | `psych::fa(datos, nfactors = 5, fm = "minres", rotate = "varimax")` |
+| `comprobar_adecuacion_factorial()` | Obtener KMO, Bartlett y correlaciones. | `adecuacion <- comprobar_adecuacion_factorial(datos)` |
+| `visualizar_numero_factores()` | Comparar autovalores con una referencia aleatoria. | `numero <- visualizar_numero_factores(datos)` |
+| `resumir_factorial()` | Reunir cargas, comunalidades, unicidades y cargas cruzadas. | `resumen <- resumir_factorial(ajuste)` |
+| `variables_por_factor()` | Ordenar las variables relevantes de cada factor. | `variables_por_factor(ajuste, 0.35)` |
+| `visualizar_varianza_factorial()` | Comparar comunalidad y unicidad. | `visualizar_varianza_factorial(ajuste)` |
+| `visualizar_matriz_cargas()` | Mostrar las cargas como mapa de calor. | `visualizar_matriz_cargas(ajuste)` |
+| `visualizar_cargas_factoriales()` | Representar variables sobre dos factores. | `visualizar_cargas_factoriales(ajuste, c(1, 2))` |
+| `comparar_rotaciones_factoriales()` | Comparar varias orientaciones de los factores. | `comparar_rotaciones_factoriales(ajustes)` |
+| `comparar_correlaciones_factorial()` | Obtener matrices observada, reproducida y residual. | `comparar_correlaciones_factorial(datos, ajuste)` |
+| `visualizar_puntuaciones_factoriales()` | Representar puntuaciones estimadas. | `visualizar_puntuaciones_factoriales(ajuste)` |
