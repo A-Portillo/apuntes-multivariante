@@ -381,14 +381,7 @@ Categorías con masa baja pueden aparecer muy alejadas y dominar visualmente el 
 
 CA convierte una tabla de contingencia en un mapa de perfiles. Parte de la independencia, mide desviaciones mediante la distancia $\chi^2$ y descompone la inercia en dimensiones factoriales. Su interpretación se basa en perfiles, masas, inercia, contribuciones, cos² y cautela ante categorías raras.
 
-## Recursos para practicar
-
-### Ejercicios propuestos
-
-- [Tablas de contingencia, distancia $\chi^2$ e inercia](ejercicios/ejercicios_correspondencias_clase_18.pdf) ([solución](ejercicios/solucion_correspondencias_clase_18.html)).
-- [Análisis de correspondencias simple](ejercicios/ejercicios_correspondencias_clase_19.pdf) ([solución](ejercicios/solucion_correspondencias_clase_19.html)).
-
-### Funciones utilizadas
+## Funciones utilizadas
 
 | Función | Para qué se usa | Uso básico |
 |---|---|---|

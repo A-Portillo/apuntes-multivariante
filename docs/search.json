@@ -3341,5 +3341,27 @@
       "Bloque 3. Análisis de correspondencias y datos mixtos",
       "<span class='chapter-number'>11</span>  <span class='chapter-title'>Análisis de correspondencias simple</span>"
     ]
+  },
+  {
+    "objectID": "08-analisis-factorial.html#funciones-utilizadas",
+    "href": "08-analisis-factorial.html#funciones-utilizadas",
+    "title": "10  Análisis factorial exploratorio",
+    "section": "10.6 Funciones utilizadas",
+    "text": "10.6 Funciones utilizadas\n\n\n\n\n\n\n\n\nFunción\nPara qué se usa\nUso básico\n\n\n\n\npsych::fa()\nAjustar el modelo declarando número, extracción y rotación.\npsych::fa(datos, nfactors = 5, fm = \"minres\", rotate = \"varimax\")\n\n\ncomprobar_adecuacion_factorial()\nObtener KMO, Bartlett y correlaciones.\nadecuacion &lt;- comprobar_adecuacion_factorial(datos)\n\n\nvisualizar_numero_factores()\nComparar autovalores con una referencia aleatoria.\nnumero &lt;- visualizar_numero_factores(datos)\n\n\nresumir_factorial()\nReunir cargas, comunalidades, unicidades y cargas cruzadas.\nresumen &lt;- resumir_factorial(ajuste)\n\n\nvariables_por_factor()\nOrdenar las variables relevantes de cada factor.\nvariables_por_factor(ajuste, 0.35)\n\n\nvisualizar_varianza_factorial()\nComparar comunalidad y unicidad.\nvisualizar_varianza_factorial(ajuste)\n\n\nvisualizar_matriz_cargas()\nMostrar las cargas como mapa de calor.\nvisualizar_matriz_cargas(ajuste)\n\n\nvisualizar_cargas_factoriales()\nRepresentar variables sobre dos factores.\nvisualizar_cargas_factoriales(ajuste, c(1, 2))\n\n\ncomparar_rotaciones_factoriales()\nComparar varias orientaciones de los factores.\ncomparar_rotaciones_factoriales(ajustes)\n\n\ncomparar_correlaciones_factorial()\nObtener matrices observada, reproducida y residual.\ncomparar_correlaciones_factorial(datos, ajuste)\n\n\nvisualizar_puntuaciones_factoriales()\nRepresentar puntuaciones estimadas.\nvisualizar_puntuaciones_factoriales(ajuste)",
+    "crumbs": [
+      "Bloque 2. Reducción de dimensión",
+      "<span class='chapter-number'>10</span>  <span class='chapter-title'>Análisis factorial exploratorio</span>"
+    ]
+  },
+  {
+    "objectID": "09-correspondencias.html#funciones-utilizadas",
+    "href": "09-correspondencias.html#funciones-utilizadas",
+    "title": "11  Análisis de correspondencias simple",
+    "section": "11.5 Funciones utilizadas",
+    "text": "11.5 Funciones utilizadas\n\n\n\n\n\n\n\n\nFunción\nPara qué se usa\nUso básico\n\n\n\n\nxtabs()\nConstruir una tabla de contingencia desde datos largos.\nxtabs(Freq ~ fila + columna, datos)\n\n\nFactoMineR::CA()\nAjustar el análisis de correspondencias.\nFactoMineR::CA(tabla, graph = FALSE)\n\n\nresumir_tabla_contingencia()\nObtener proporciones, perfiles, masas, esperadas, residuos, contraste e inercia.\nresumen &lt;- resumir_tabla_contingencia(tabla)\n\n\ndistancias_chi2()\nCalcular distancias \\(\\chi^2\\) entre perfiles fila o columna.\ndistancias_chi2(tabla, \"filas\")\n\n\nvisualizar_distancias_chi2()\nMostrar esas distancias como mapa de calor.\nvisualizar_distancias_chi2(tabla, \"filas\")\n\n\nvisualizar_residuos_correspondencias()\nLocalizar desviaciones respecto a independencia.\nvisualizar_residuos_correspondencias(tabla)\n\n\nresumir_correspondencias()\nReunir inercia, coordenadas, contribuciones y cos².\nresumen &lt;- resumir_correspondencias(ajuste)\n\n\nvisualizar_inercia_correspondencias()\nRepresentar el porcentaje de inercia por dimensión.\nvisualizar_inercia_correspondencias(ajuste)\n\n\nvisualizar_correspondencias()\nDibujar filas, columnas o el mapa conjunto.\nvisualizar_correspondencias(ajuste, \"ambos\")\n\n\ncontribuciones_correspondencias()\nIdentificar categorías que construyen una dimensión.\ncontribuciones_correspondencias(ajuste, \"filas\", 1)\n\n\ncalidad_correspondencias()\nEvaluar el cos² acumulado en los ejes elegidos.\ncalidad_correspondencias(ajuste, \"columnas\", c(1, 2))",
+    "crumbs": [
+      "Bloque 3. Análisis de correspondencias y datos mixtos",
+      "<span class='chapter-number'>11</span>  <span class='chapter-title'>Análisis de correspondencias simple</span>"
+    ]
   }
 ]

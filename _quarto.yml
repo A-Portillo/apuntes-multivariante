@@ -1,9 +1,6 @@
 project:
   type: book
   output-dir: docs
-  resources:
-    - ejercicios/*.pdf
-    - ejercicios/*.html
 
 book:
   title: "Técnicas Multivariantes Aplicadas con R"

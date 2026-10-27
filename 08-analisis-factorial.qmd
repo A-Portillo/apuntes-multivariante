@@ -639,15 +639,7 @@ Limitaciones importantes:
 
 El análisis factorial exploratorio busca factores latentes que expliquen covarianza común. Su modelo separa cargas, comunalidades, unicidades y errores específicos. La interpretación depende del número de factores, método de extracción, rotación, residuos, cargas cruzadas y sentido aplicado de las variables.
 
-## Recursos para practicar
-
-### Ejercicios propuestos
-
-- [Fundamentos del análisis factorial](ejercicios/ejercicios_factorial_clase_15.pdf) ([solución](ejercicios/solucion_factorial_clase_15.html)).
-- [Número de factores y estimación](ejercicios/ejercicios_factorial_clase_16.pdf) ([solución](ejercicios/solucion_factorial_clase_16.html)).
-- [Rotaciones factoriales](ejercicios/ejercicios_factorial_clase_17.pdf) ([solución](ejercicios/solucion_factorial_clase_17.html)).
-
-### Funciones utilizadas
+## Funciones utilizadas
 
 | Función | Para qué se usa | Uso básico |
 |---|---|---|
