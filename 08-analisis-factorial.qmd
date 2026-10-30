@@ -379,6 +379,102 @@ Conviene distinguir desde el principio dos operaciones:
 
 La primera operación estudia la estructura de las **variables**; la segunda produce estimaciones para los **individuos**.
 
+#### Ejemplo a mano: tres variables y un factor
+
+Consideremos la matriz de correlaciones
+
+$$
+R=
+\begin{pmatrix}
+1&0.6&0.5\\
+0.6&1&0.4\\
+0.5&0.4&1
+\end{pmatrix}
+$$
+
+y un modelo con un solo factor $F$, de varianza uno, incorrelado con los errores específicos:
+
+$$
+X_j=\lambda_jF+\epsilon_j,
+\qquad \operatorname{Var}(F)=1.
+$$
+
+Como los errores específicos son incorrelados entre sí, para dos variables distintas se cumple
+
+$$
+r_{j\ell}=\operatorname{Cov}(X_j,X_\ell)=\lambda_j\lambda_\ell.
+$$
+
+Por tanto, las tres correlaciones proporcionan las ecuaciones
+
+$$
+\lambda_1\lambda_2=0.6,
+\qquad
+\lambda_1\lambda_3=0.5,
+\qquad
+\lambda_2\lambda_3=0.4.
+$$
+
+Podemos aislar el cuadrado de cada carga combinando las ecuaciones. Por ejemplo,
+
+$$
+\lambda_1^2=
+\frac{(\lambda_1\lambda_2)(\lambda_1\lambda_3)}
+{\lambda_2\lambda_3}
+=\frac{0.6\cdot0.5}{0.4}=0.75.
+$$
+
+Análogamente,
+
+$$
+\lambda_2^2=\frac{0.6\cdot0.4}{0.5}=0.48,
+\qquad
+\lambda_3^2=\frac{0.5\cdot0.4}{0.6}=\frac13.
+$$
+
+Eligiendo el signo positivo para el factor,
+
+$$
+\widehat{\Lambda}=
+\begin{pmatrix}
+\sqrt{0.75}\\
+\sqrt{0.48}\\
+\sqrt{1/3}
+\end{pmatrix}
+\approx
+\begin{pmatrix}
+0.866\\
+0.693\\
+0.577
+\end{pmatrix}.
+$$
+
+Como las variables están estandarizadas, las comunalidades son los cuadrados de las cargas y las unicidades completan la varianza hasta uno:
+
+$$
+\widehat{h}^2=(0.75,\ 0.48,\ 0.333),
+\qquad
+\widehat{\psi}=(0.25,\ 0.52,\ 0.667).
+$$
+
+Así,
+
+$$
+\widehat{\Lambda}\widehat{\Lambda}^{\mathsf T}
+=
+\begin{pmatrix}
+0.75&0.60&0.50\\
+0.60&0.48&0.40\\
+0.50&0.40&0.333
+\end{pmatrix},
+$$
+
+y al añadir $\widehat{\Psi}=\operatorname{diag}(0.25,0.52,0.667)$ recuperamos exactamente $R$. Cambiar simultáneamente el signo de todas las cargas produce el mismo modelo: el signo del factor es arbitrario.
+
+::: {.callout-note title="Por qué este cálculo a mano es excepcional"}
+Con tres variables y un factor hay exactamente tres correlaciones fuera de la diagonal para determinar tres cargas. El modelo queda **justamente identificado** y, si la solución es admisible, reproduce esas correlaciones sin residuo. Con más variables habrá más correlaciones que cargas y normalmente no podrán satisfacerse todas las ecuaciones a la vez; MINRES buscará entonces la mejor aproximación.
+:::
+
 ### Extracción de factores mediante mínimos residuos {#extracción-de-factores}
 
 Hay varios métodos de extracción. Máxima verosimilitud añade supuestos distribucionales y permite ciertos contrastes; ejes principales trabaja iterativamente con comunalidades. En este curso usaremos sobre todo **mínimos residuos**, `fm = "minres"`, porque expresa de forma directa la pregunta central del AFE: ¿qué cargas reproducen mejor las correlaciones entre variables?
@@ -442,6 +538,128 @@ Por tanto, MINRES no consiste simplemente en calcular una vez los autovectores d
 La extracción identifica un modelo de covarianzas y unos ejes latentes. No recupera los valores verdaderos de $F$ para cada persona: en $X=\Lambda F+\epsilon$ desconocemos simultáneamente $F$ y la parte específica $\epsilon$. Los scores se estimarán después y conservarán esa incertidumbre.
 :::
 
+### Scores factoriales {#scores-factoriales}
+
+Una vez estimadas las cargas, podemos querer situar a cada individuo en los factores. Esos scores no son observaciones directas, sino **predicciones** dependientes de las cargas, las unicidades, la rotación y el método de puntuación.
+
+La razón puede verse en el modelo de un individuo:
+
+$$
+x=\Lambda f+\epsilon.
+$$
+
+Aunque conozcamos $x$ y hayamos estimado $\Lambda$, tanto $f$ como $\epsilon$ siguen siendo desconocidos. No podemos despejar $f$ exactamente: una parte de cada respuesta es específica. Incluso si $\Lambda$ fuese cuadrada, usar $\Lambda^{-1}x$ atribuiría erróneamente todo el residuo al factor común.
+
+#### De dónde sale la matriz de pesos $B$
+
+El método de **regresión**, solicitado mediante `scores = "regression"`, busca una predicción lineal
+
+$$
+\widehat{f}=B^\mathsf T x
+$$
+
+que tenga el menor error cuadrático medio posible. La condición que caracteriza esta proyección es que el error de predicción sea incorrelado con todas las variables utilizadas para predecir:
+
+$$
+\operatorname{Cov}\!\left(X,F-B^\mathsf T X\right)=0.
+$$
+
+Desarrollando la covarianza,
+
+$$
+\operatorname{Cov}(X,F)-\operatorname{Cov}(X,X)B=0.
+$$
+
+Del modelo factorial se obtiene
+
+$$
+\operatorname{Cov}(X,F)=\operatorname{Cov}(\Lambda F+\epsilon,F)
+=\Lambda\Phi,
+$$
+
+porque $\operatorname{Cov}(\epsilon,F)=0$. Además, para variables estandarizadas, $\operatorname{Cov}(X,X)=R$. Por tanto,
+
+$$
+\Lambda\Phi-RB=0
+\quad\Longrightarrow\quad
+B=R^{-1}\Lambda\Phi.
+$$
+
+La matriz de pesos no es arbitraria: es la solución que combina las variables observadas sin dejar en el error ninguna relación lineal aprovechable con ellas. La multiplicación por $R^{-1}$ corrige la información redundante. Si dos variables están muy correlacionadas, no deben contar como dos evidencias independientes del mismo factor.
+
+Si los factores son ortogonales, $\Phi=I$ y
+
+$$
+B=R^{-1}\Lambda.
+$$
+
+Para todos los individuos a la vez, si $Z$ es la matriz de datos estandarizados,
+
+$$
+\widehat{F}=ZB.
+$$
+
+En población, la fórmula utiliza $\Sigma^{-1}$; `psych` sustituye las cantidades desconocidas por la matriz de correlaciones y los parámetros estimados. Bajo normalidad multivariante, la versión poblacional coincide con la esperanza condicional $E(F\mid X=x)$. Sin exigir normalidad, sigue siendo el mejor predictor **lineal** en términos de error cuadrático medio.
+
+#### Ejemplo numérico con dos variables y dos factores
+
+Supongamos, solo para ilustrar el cálculo, factores ortogonales y las matrices ya conocidas
+
+$$
+\Lambda=
+\begin{pmatrix}
+0.8&0.2\\
+0.2&0.8
+\end{pmatrix},
+\qquad
+\Psi=
+\begin{pmatrix}
+0.32&0\\
+0&0.32
+\end{pmatrix}.
+$$
+
+Cada variable tiene comunalidad $0.8^2+0.2^2=0.68$ y unicidad $1-0.68=0.32$. La matriz de correlaciones reproducida es
+
+$$
+R=\Lambda\Lambda^\mathsf T+\Psi
+=
+\begin{pmatrix}
+1&0.32\\
+0.32&1
+\end{pmatrix}.
+$$
+
+Los pesos de regresión son
+
+$$
+B=R^{-1}\Lambda
+\approx
+\begin{pmatrix}
+0.820&-0.062\\
+-0.062&0.820
+\end{pmatrix}.
+$$
+
+Para una persona con valores estandarizados $x=(1,-0.5)^\mathsf T$,
+
+$$
+\widehat{f}=B^\mathsf T x
+\approx
+\begin{pmatrix}
+0.851\\
+-0.472
+\end{pmatrix}.
+$$
+
+La persona queda alta en el primer factor y baja en el segundo. Los pequeños pesos negativos ajustan la información compartida entre las dos variables; no significan que la carga principal haya cambiado de signo.
+
+::: {.callout-warning title="Ejemplo de cálculo, no modelo identificable"}
+Con solo dos variables y dos factores no estimaríamos de forma única un AFE real: hay demasiados parámetros para tan poca información. Aquí suponemos $\Lambda$ y $\Psi$ conocidas únicamente para mostrar cómo se calculan los scores una vez fijado el modelo.
+:::
+
+Las puntuaciones no son únicas: otros métodos de estimación pueden producir valores distintos aun con las mismas cargas. Deben tratarse como predicciones del modelo, no como observaciones de la variable latente.
+
 ### Número de factores
 
 El criterio MINRES necesita que propongamos previamente un número $m$. Elegirlo es una de las decisiones más delicadas: con pocos factores quedan correlaciones sin reproducir; con demasiados, el modelo puede capturar peculiaridades de la muestra y perder parsimonia.
@@ -470,7 +688,7 @@ La teoría del método se explica antes que esta elección, pero en la práctica
 
 ### Ajuste de una solución concreta
 
-Proponemos cinco factores y estimamos inicialmente una solución MINRES sin rotar. El argumento `scores = "regression"` solicita además puntuaciones factoriales por regresión; veremos después cómo se construyen.
+Proponemos cinco factores y estimamos inicialmente una solución MINRES sin rotar. El argumento `scores = "regression"` solicita además las puntuaciones factoriales por regresión descritas anteriormente.
 
 ```{r}
 fa_minres <- psych::fa(
@@ -616,110 +834,49 @@ diagnostico_ajuste$grafico
 diagnostico_ajuste$rmsr
 ```
 
-Residuos grandes sugieren que la solución factorial no reproduce bien algunas asociaciones. Un patrón dentro de un bloque puede indicar un factor omitido, ítems casi duplicados o errores específicos correlacionados. Aumentar el número de factores reducirá normalmente los residuos, pero puede empeorar la parsimonia y la estabilidad.
+El **RMSR** (*root mean square residual*) resume el tamaño de los residuos fuera de la diagonal. Si
+
+$$
+e_{j\ell}=r_{j\ell}-\widehat{r}_{j\ell},
+$$
+
+entonces, para $p$ variables,
+
+$$
+RMSR=
+\sqrt{
+\frac{2}{p(p-1)}
+\sum_{j<\ell}e_{j\ell}^2
+}.
+$$
+
+La fórmula promedia las $p(p-1)/2$ correlaciones distintas situadas bajo la diagonal y toma después la raíz cuadrada. No se usa la diagonal porque las varianzas se completan mediante las unicidades, y tampoco se cuentan las dos mitades de la matriz porque son simétricas.
+
+El RMSR está en la misma escala que una correlación:
+
+- $RMSR=0$ indicaría que todas las correlaciones se reproducen exactamente;
+- $RMSR=0.05$ significa, aproximadamente, que el error cuadrático típico de una correlación es de cinco centésimas;
+- cuanto menor sea, mejor reproduce globalmente el modelo las correlaciones observadas.
+
+No hay un umbral universal que convierta automáticamente una solución en buena. El RMSR suele disminuir al añadir factores, incluso cuando esos factores apenas son interpretables. Además, un promedio pequeño puede ocultar unos pocos residuos grandes. Por eso conviene usarlo para comparar soluciones candidatas y leerlo junto con el mapa de residuos, las comunalidades, la parsimonia y el sentido sustantivo.
+
+Residuos localmente grandes sugieren que la solución factorial no reproduce bien algunas asociaciones. Un patrón dentro de un bloque puede indicar un factor omitido, ítems casi duplicados o errores específicos correlacionados. Aumentar el número de factores reducirá normalmente los residuos, pero puede empeorar la parsimonia y la estabilidad.
 
 ```{r}
 #| echo: false
 visualizar_varianza_factorial(fa_varimax)
 ```
 
-### Scores factoriales
+### Representación de los individuos
 
-Los scores estiman la posición de cada individuo en los factores. No son observaciones directas del factor latente, sino predicciones dependientes de las cargas, las unicidades, la rotación y el método de puntuación.
-
-La razón puede verse en el modelo de un individuo:
-
-$$
-x=\Lambda f+\epsilon.
-$$
-
-Aunque conozcamos $x$ y hayamos estimado $\Lambda$, tanto $f$ como $\epsilon$ siguen siendo desconocidos. No podemos despejar $f$ de forma exacta porque una parte de cada respuesta es específica. Incluso si $\Lambda$ fuese cuadrada, usar $\Lambda^{-1}x$ atribuiría erróneamente todo el residuo al factor común.
-
-El método de **regresión**, solicitado mediante `scores = "regression"`, elige la mejor predicción lineal de $F$ a partir de las variables estandarizadas. Para un individuo con vector $x$, se escribe
-
-$$
-\widehat{f}=B^\mathsf T x,
-\qquad
-B=R^{-1}\Lambda\Phi.
-$$
-
-Aquí $\Lambda\Phi$ es la matriz de estructura, es decir, las correlaciones entre variables y factores. Si los factores son ortogonales, $\Phi=I$ y
-
-$$
-B=R^{-1}\Lambda.
-$$
-
-Para todos los individuos a la vez, si $Z$ es la matriz de datos estandarizados,
-
-$$
-\widehat{F}=ZB.
-$$
-
-La multiplicación por $R^{-1}$ evita contar repetidamente información redundante de variables correlacionadas. En población, la misma fórmula se escribe con $\Sigma^{-1}$; `psych` sustituye esas cantidades por la matriz de correlaciones y los parámetros estimados. Bajo normalidad multivariante, la versión poblacional coincide con la esperanza condicional $E(F\mid X=x)$; sin exigir normalidad, puede entenderse como el mejor predictor lineal en términos de error cuadrático medio.
-
-#### Ejemplo numérico con dos variables y dos factores
-
-Supongamos, solo para ilustrar el cálculo, factores ortogonales y las matrices ya conocidas
-
-$$
-\Lambda=
-\begin{pmatrix}
-0.8&0.2\\
-0.2&0.8
-\end{pmatrix},
-\qquad
-\Psi=
-\begin{pmatrix}
-0.32&0\\
-0&0.32
-\end{pmatrix}.
-$$
-
-Cada variable tiene comunalidad $0.8^2+0.2^2=0.68$ y unicidad $1-0.68=0.32$. La matriz de correlaciones reproducida es
-
-$$
-R=\Lambda\Lambda^\mathsf T+\Psi
-=
-\begin{pmatrix}
-1&0.32\\
-0.32&1
-\end{pmatrix}.
-$$
-
-Los pesos de regresión son
-
-$$
-B=R^{-1}\Lambda
-\approx
-\begin{pmatrix}
-0.820&-0.062\\
--0.062&0.820
-\end{pmatrix}.
-$$
-
-Para una persona con valores estandarizados $x=(1,-0.5)^\mathsf T$,
-
-$$
-\widehat{f}=B^\mathsf T x
-\approx
-\begin{pmatrix}
-0.851\\
--0.472
-\end{pmatrix}.
-$$
-
-La persona queda alta en el primer factor y baja en el segundo. Los pequeños pesos negativos ajustan la información compartida entre las dos variables; no significan que la carga principal haya cambiado de signo.
-
-::: {.callout-warning title="Ejemplo de cálculo, no modelo identificable"}
-Con solo dos variables y dos factores no estimaríamos de forma única un AFE real: hay demasiados parámetros para tan poca información. Aquí suponemos $\Lambda$ y $\Psi$ conocidas únicamente para mostrar cómo se calculan los scores una vez fijado el modelo.
-:::
+Una vez ajustada y rotada la solución, `psych::fa()` aplica los pesos de regresión explicados anteriormente a las respuestas estandarizadas de cada individuo. Las primeras estimaciones son:
 
 ```{r}
 head(round(fa_varimax$scores, 2)) |>
   kable()
 ```
 
-Los scores pueden servir para gráficos, clustering posterior o perfiles, pero no deben confundirse con medidas directas del factor.
+Los scores pueden servir para gráficos, clustering posterior o perfiles. Por ejemplo, podemos representar conjuntamente las puntuaciones estimadas en los dos primeros factores:
 
 ```{r}
 #| echo: false
@@ -730,7 +887,7 @@ visualizar_puntuaciones_factoriales(
 )
 ```
 
-Las puntuaciones no son únicas: diferentes métodos pueden estimar valores distintos aun con las mismas cargas. Deben tratarse como estimaciones dependientes del modelo, no como observaciones directas de la variable latente.
+La posición de un individuo debe leerse respecto al resto de la muestra y a la interpretación de los factores. No es una medición directa ni independiente del modelo que la produjo.
 
 ## Decisiones y limitaciones
 
