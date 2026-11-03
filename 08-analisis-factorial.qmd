@@ -799,6 +799,52 @@ Si los factores oblicuos están muy correlacionados, quizá no son dimensiones t
 
 En una solución oblicua conviene distinguir la **matriz patrón** $\Lambda$, con coeficientes parciales, y la **matriz de estructura** $S=\Lambda\Phi$, con correlaciones simples variable--factor. Coinciden cuando $\Phi=I$, pero no cuando los factores se correlacionan.
 
+#### Cuándo mirar la matriz patrón
+
+La matriz patrón responde a «¿qué relación propia mantiene esta variable con cada factor, una vez considerada la correlación entre factores?». Es la referencia principal para:
+
+- asignar variables a factores;
+- nombrar e interpretar el contenido específico de cada factor;
+- localizar cargas cruzadas;
+- comprobar si una variable aporta información propia a más de una dimensión.
+
+Sus entradas se parecen a coeficientes de regresión: no son necesariamente las correlaciones simples entre variable y factor. Nuestras funciones usan el patrón de forma predeterminada y la detección de cargas cruzadas se realiza sobre esta matriz.
+
+#### Cuándo mirar la matriz de estructura
+
+La matriz de estructura responde a «¿cuánto se correlaciona esta variable con cada factor, incluyendo las relaciones que ese factor mantiene con los demás?». Resulta útil para:
+
+- describir la asociación total entre variables y factores;
+- entender por qué una variable puede correlacionarse con un factor aunque su carga patrón sea pequeña;
+- comunicar el resultado cuando interesa una lectura puramente correlacional;
+- estudiar cuánto cambia la interpretación debido a las correlaciones contenidas en $\Phi$.
+
+No conviene declarar una carga cruzada usando únicamente la estructura: si dos factores están correlacionados, una variable que pertenece claramente a uno puede mostrar también una correlación apreciable con el otro.
+
+::: {.callout-note title="Cómo se reconstruyen las correlaciones"}
+La parte común se reconstruye mediante
+
+$$
+\Lambda\Phi\Lambda^\mathsf T=S\Lambda^\mathsf T.
+$$
+
+No debe usarse $SS^\mathsf T$, porque incorporaría dos veces la correlación entre factores. Si $\Phi=I$, patrón y estructura coinciden y desaparece esta distinción.
+:::
+
+```{r}
+#| echo: false
+visualizar_matriz_cargas(
+  fa_oblimin,
+  mostrar_desde = 0.25,
+  tipo = "patron"
+)
+visualizar_matriz_cargas(
+  fa_oblimin,
+  mostrar_desde = 0.25,
+  tipo = "estructura"
+)
+```
+
 ```{r}
 #| echo: false
 comparar_rotaciones_factoriales(list(
@@ -829,7 +875,11 @@ No conviene forzar nombres de factores si las cargas no sostienen una interpreta
 Una forma de diagnosticar el ajuste es comparar la matriz de correlaciones observada con la reproducida por el modelo factorial.
 
 ```{r}
-diagnostico_ajuste <- comparar_correlaciones_factorial(datos_factorial, fa_varimax)
+diagnostico_ajuste <- comparar_correlaciones_factorial(
+  datos_factorial,
+  fa_varimax,
+  mostrar_numeros = FALSE
+)
 diagnostico_ajuste$grafico
 diagnostico_ajuste$rmsr
 ```
@@ -850,7 +900,7 @@ RMSR=
 }.
 $$
 
-La fórmula promedia las $p(p-1)/2$ correlaciones distintas situadas bajo la diagonal y toma después la raíz cuadrada. No se usa la diagonal porque las varianzas se completan mediante las unicidades, y tampoco se cuentan las dos mitades de la matriz porque son simétricas.
+La fórmula promedia las $p(p-1)/2$ correlaciones distintas situadas bajo la diagonal y toma después la raíz cuadrada. No se usa la diagonal porque las varianzas se completan mediante las unicidades, y tampoco se cuentan las dos mitades de la matriz porque son simétricas. En el mapa la diagonal aparece de arriba-izquierda a abajo-derecha; `mostrar_numeros = FALSE` evita que las etiquetas oculten el patrón cuando hay muchas variables.
 
 El RMSR está en la misma escala que una correlación:
 
@@ -948,11 +998,11 @@ El análisis factorial exploratorio busca factores latentes que expliquen covari
 | `psych::fa()` | Ajustar el modelo declarando número, extracción y rotación. | `psych::fa(datos, nfactors = 5, fm = "minres", rotate = "varimax")` |
 | `comprobar_adecuacion_factorial()` | Obtener KMO, Bartlett y correlaciones. | `adecuacion <- comprobar_adecuacion_factorial(datos)` |
 | `visualizar_numero_factores()` | Comparar autovalores con una referencia aleatoria. | `numero <- visualizar_numero_factores(datos)` |
-| `resumir_factorial()` | Reunir cargas, comunalidades, unicidades y cargas cruzadas. | `resumen <- resumir_factorial(ajuste)` |
-| `variables_por_factor()` | Ordenar las variables relevantes de cada factor. | `variables_por_factor(ajuste, 0.35)` |
+| `resumir_factorial()` | Reunir patrón, estructura, comunalidades, unicidades y cargas cruzadas. | `resumen <- resumir_factorial(ajuste)` |
+| `variables_por_factor()` | Ordenar variables según el patrón o la estructura. | `variables_por_factor(ajuste, 0.35, "patron")` |
 | `visualizar_varianza_factorial()` | Comparar comunalidad y unicidad. | `visualizar_varianza_factorial(ajuste)` |
-| `visualizar_matriz_cargas()` | Mostrar las cargas como mapa de calor. | `visualizar_matriz_cargas(ajuste)` |
-| `visualizar_cargas_factoriales()` | Representar variables sobre dos factores. | `visualizar_cargas_factoriales(ajuste, c(1, 2))` |
-| `comparar_rotaciones_factoriales()` | Comparar varias orientaciones de los factores. | `comparar_rotaciones_factoriales(ajustes)` |
-| `comparar_correlaciones_factorial()` | Obtener matrices observada, reproducida y residual. | `comparar_correlaciones_factorial(datos, ajuste)` |
+| `visualizar_matriz_cargas()` | Mostrar el patrón o la estructura como mapa de calor. | `visualizar_matriz_cargas(ajuste, tipo = "estructura")` |
+| `visualizar_cargas_factoriales()` | Representar variables según patrón o estructura. | `visualizar_cargas_factoriales(ajuste, c(1, 2), "patron")` |
+| `comparar_rotaciones_factoriales()` | Comparar orientaciones usando patrón o estructura. | `comparar_rotaciones_factoriales(ajustes, tipo = "patron")` |
+| `comparar_correlaciones_factorial()` | Obtener correlaciones observadas, reproducidas y residuos. | `comparar_correlaciones_factorial(datos, ajuste, mostrar_numeros = FALSE)` |
 | `visualizar_puntuaciones_factoriales()` | Representar puntuaciones estimadas. | `visualizar_puntuaciones_factoriales(ajuste)` |

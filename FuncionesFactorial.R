@@ -7,12 +7,14 @@
 # - ajustar los modelos con psych::fa() o stats::factanal();
 # - instalar psych y GPArotation para los diagnosticos y las rotaciones;
 # - pedir puntuaciones al ajustar el modelo si se quieren representar individuos.
+# En soluciones oblicuas, las funciones interpretativas muestran por defecto
+# la matriz patron; usar tipo = "estructura" para mostrar correlaciones simples.
 #
 # Las funciones hacen pocos chequeos de forma intencionada. La eleccion de las
 # variables, del numero de factores, del metodo de extraccion y de la rotacion
 # sigue siendo responsabilidad de quien realiza el analisis.
 
-.cargas_factorial <- function(ajuste) {
+.matriz_patron_factorial <- function(ajuste) {
   cargas <- unclass(ajuste$loadings)
   matrix(
     as.numeric(cargas),
@@ -22,8 +24,37 @@
 }
 
 .phi_factorial <- function(ajuste) {
-  cargas <- .cargas_factorial(ajuste)
+  cargas <- .matriz_patron_factorial(ajuste)
   if (is.null(ajuste$Phi)) diag(ncol(cargas)) else as.matrix(ajuste$Phi)
+}
+
+.matriz_estructura_factorial <- function(ajuste) {
+  patron <- .matriz_patron_factorial(ajuste)
+  estructura <- patron %*% .phi_factorial(ajuste)
+  dimnames(estructura) <- dimnames(patron)
+  estructura
+}
+
+.matriz_factorial <- function(ajuste, tipo = c("patron", "estructura")) {
+  tipo <- match.arg(tipo)
+  if (tipo == "patron") {
+    .matriz_patron_factorial(ajuste)
+  } else {
+    .matriz_estructura_factorial(ajuste)
+  }
+}
+
+.tabla_cargas_factorial <- function(ajuste, tipo = c("patron", "estructura")) {
+  tipo <- match.arg(tipo)
+  cargas <- .matriz_factorial(ajuste, tipo)
+  tibble::as_tibble(cargas, rownames = "variable") |>
+    tidyr::pivot_longer(-variable, names_to = "factor", values_to = "carga") |>
+    dplyr::mutate(carga_absoluta = abs(carga))
+}
+
+# Alias conservado para no romper codigo anterior: siempre devuelve el patron.
+.cargas_factorial <- function(ajuste) {
+  .matriz_patron_factorial(ajuste)
 }
 
 comprobar_adecuacion_factorial <- function(datos) {
@@ -99,16 +130,15 @@ visualizar_numero_factores <- function(
 }
 
 resumir_factorial <- function(ajuste, umbral = 0.30) {
-  cargas <- .cargas_factorial(ajuste)
+  patron <- .matriz_patron_factorial(ajuste)
+  estructura <- .matriz_estructura_factorial(ajuste)
   unicidades <- as.numeric(ajuste$uniquenesses)
-  nombres <- rownames(cargas)
-  factores <- colnames(cargas)
+  nombres <- rownames(patron)
 
-  cargas_largas <- tibble::as_tibble(cargas, rownames = "variable") |>
-    tidyr::pivot_longer(-variable, names_to = "factor", values_to = "carga") |>
-    dplyr::mutate(carga_absoluta = abs(carga))
+  cargas_patron <- .tabla_cargas_factorial(ajuste, "patron")
+  cargas_estructura <- .tabla_cargas_factorial(ajuste, "estructura")
 
-  variables <- cargas_largas |>
+  variables <- cargas_patron |>
     dplyr::group_by(variable) |>
     dplyr::summarise(
       factor_principal = factor[which.max(carga_absoluta)],
@@ -123,15 +153,24 @@ resumir_factorial <- function(ajuste, umbral = 0.30) {
     )
 
   list(
-    cargas = cargas_largas,
+    cargas = cargas_patron,
+    cargas_patron = cargas_patron,
+    cargas_estructura = cargas_estructura,
     variables = variables,
-    matriz_cargas = cargas,
+    matriz_cargas = patron,
+    matriz_patron = patron,
+    matriz_estructura = estructura,
     correlacion_factores = .phi_factorial(ajuste)
   )
 }
 
-variables_por_factor <- function(ajuste, umbral = 0.30) {
-  resumir_factorial(ajuste, umbral)$cargas |>
+variables_por_factor <- function(
+  ajuste,
+  umbral = 0.30,
+  tipo = c("patron", "estructura")
+) {
+  tipo <- match.arg(tipo)
+  .tabla_cargas_factorial(ajuste, tipo) |>
     dplyr::filter(carga_absoluta >= umbral) |>
     dplyr::arrange(factor, dplyr::desc(carga_absoluta))
 }
@@ -158,13 +197,19 @@ visualizar_varianza_factorial <- function(ajuste) {
     ggplot2::theme_minimal()
 }
 
-visualizar_matriz_cargas <- function(ajuste, mostrar_desde = 0) {
-  datos <- resumir_factorial(ajuste)$cargas |>
+visualizar_matriz_cargas <- function(
+  ajuste,
+  mostrar_desde = 0,
+  tipo = c("patron", "estructura")
+) {
+  tipo <- match.arg(tipo)
+  datos <- .tabla_cargas_factorial(ajuste, tipo) |>
     dplyr::mutate(etiqueta = dplyr::if_else(
       carga_absoluta >= mostrar_desde,
       sprintf("%.2f", carga),
       ""
     ))
+  titulo <- if (tipo == "patron") "Matriz patron" else "Matriz de estructura"
 
   ggplot2::ggplot(datos, ggplot2::aes(factor, variable, fill = carga)) +
     ggplot2::geom_tile(color = "white") +
@@ -173,14 +218,24 @@ visualizar_matriz_cargas <- function(ajuste, mostrar_desde = 0) {
       low = "#b2182b", mid = "white", high = "#2166ac",
       midpoint = 0, limits = c(-1, 1)
     ) +
-    ggplot2::labs(title = "Matriz de cargas factoriales", x = NULL, y = NULL, fill = "Carga") +
+    ggplot2::labs(title = titulo, x = NULL, y = NULL, fill = "Carga") +
     ggplot2::theme_minimal()
 }
 
-visualizar_cargas_factoriales <- function(ajuste, factores = c(1, 2)) {
-  cargas <- .cargas_factorial(ajuste)[, factores, drop = FALSE]
+visualizar_cargas_factoriales <- function(
+  ajuste,
+  factores = c(1, 2),
+  tipo = c("patron", "estructura")
+) {
+  tipo <- match.arg(tipo)
+  cargas <- .matriz_factorial(ajuste, tipo)[, factores, drop = FALSE]
   datos <- tibble::as_tibble(cargas, rownames = "variable")
   nombres <- colnames(cargas)
+  titulo <- if (tipo == "patron") {
+    "Variables segun la matriz patron"
+  } else {
+    "Variables segun la matriz de estructura"
+  }
 
   ggplot2::ggplot(
     datos,
@@ -194,17 +249,27 @@ visualizar_cargas_factoriales <- function(ajuste, factores = c(1, 2)) {
     ) +
     ggplot2::geom_text(vjust = -0.6, check_overlap = TRUE) +
     ggplot2::coord_equal() +
-    ggplot2::labs(title = "Variables en el espacio factorial", x = nombres[1], y = nombres[2]) +
+    ggplot2::labs(title = titulo, x = nombres[1], y = nombres[2]) +
     ggplot2::theme_minimal()
 }
 
-comparar_rotaciones_factoriales <- function(ajustes, factores = c(1, 2)) {
+comparar_rotaciones_factoriales <- function(
+  ajustes,
+  factores = c(1, 2),
+  tipo = c("patron", "estructura")
+) {
+  tipo <- match.arg(tipo)
   datos <- dplyr::bind_rows(lapply(names(ajustes), function(nombre) {
-    cargas <- .cargas_factorial(ajustes[[nombre]])[, factores, drop = FALSE]
+    cargas <- .matriz_factorial(ajustes[[nombre]], tipo)[, factores, drop = FALSE]
     tibble::as_tibble(cargas, rownames = "variable") |>
       dplyr::mutate(solucion = nombre)
   }))
-  nombres <- colnames(.cargas_factorial(ajustes[[1]])[, factores, drop = FALSE])
+  nombres <- colnames(.matriz_factorial(ajustes[[1]], tipo)[, factores, drop = FALSE])
+  titulo <- if (tipo == "patron") {
+    "Efecto de la rotacion sobre el patron"
+  } else {
+    "Efecto de la rotacion sobre la estructura"
+  }
 
   ggplot2::ggplot(
     datos,
@@ -219,27 +284,39 @@ comparar_rotaciones_factoriales <- function(ajustes, factores = c(1, 2)) {
     ggplot2::geom_text(vjust = -0.5, check_overlap = TRUE, size = 3) +
     ggplot2::facet_wrap(ggplot2::vars(solucion)) +
     ggplot2::coord_equal() +
-    ggplot2::labs(title = "Efecto de la rotacion sobre las cargas", x = nombres[1], y = nombres[2]) +
+    ggplot2::labs(title = titulo, x = nombres[1], y = nombres[2]) +
     ggplot2::theme_minimal()
 }
 
-comparar_correlaciones_factorial <- function(datos, ajuste) {
+comparar_correlaciones_factorial <- function(
+  datos,
+  ajuste,
+  mostrar_numeros = TRUE
+) {
   observada <- stats::cor(as.data.frame(datos), use = "complete.obs")
-  cargas <- .cargas_factorial(ajuste)
-  comun <- cargas %*% .phi_factorial(ajuste) %*% t(cargas)
+  patron <- .matriz_patron_factorial(ajuste)
+  comun <- patron %*% .phi_factorial(ajuste) %*% t(patron)
   reproducida <- comun + diag(as.numeric(ajuste$uniquenesses))
   dimnames(reproducida) <- dimnames(observada)
   residuos <- observada - reproducida
 
   datos_grafico <- tibble::as_tibble(residuos, rownames = "variable_1") |>
-    tidyr::pivot_longer(-variable_1, names_to = "variable_2", values_to = "residuo")
+    tidyr::pivot_longer(-variable_1, names_to = "variable_2", values_to = "residuo") |>
+    dplyr::mutate(
+      variable_1 = factor(variable_1, levels = rev(rownames(residuos))),
+      variable_2 = factor(variable_2, levels = colnames(residuos))
+    )
   limite <- max(abs(datos_grafico$residuo))
   grafico <- ggplot2::ggplot(
     datos_grafico,
-    ggplot2::aes(variable_1, variable_2, fill = residuo)
+    ggplot2::aes(variable_2, variable_1, fill = residuo)
   ) +
-    ggplot2::geom_tile(color = "white") +
-    ggplot2::geom_text(ggplot2::aes(label = sprintf("%.2f", residuo)), size = 3) +
+    ggplot2::geom_tile(color = "white")
+  if (mostrar_numeros) {
+    grafico <- grafico +
+      ggplot2::geom_text(ggplot2::aes(label = sprintf("%.2f", residuo)), size = 3)
+  }
+  grafico <- grafico +
     ggplot2::scale_fill_gradient2(
       low = "#b2182b", mid = "white", high = "#2166ac",
       midpoint = 0, limits = c(-limite, limite)
