@@ -6,118 +6,523 @@
 library(tidyverse)
 library(knitr)
 library(MASS)
+source("FuncionesDiscriminante.R")
 ```
 
-## Motivación aplicada
-
-En `iris`, la especie es conocida. La pregunta ya no es si existen grupos, sino si podemos clasificar nuevas flores a partir de sus medidas.
-
-::: {.callout-warning}
-En clasificación supervisada no basta con separar visualmente los grupos: hay que estimar error de predicción y pensar qué consecuencias tienen los errores.
+::: {.callout-note title="Requisitos de las funciones auxiliares"}
+Los datos deben contener individuos en filas, predictores numéricos en columnas y la clase conocida en una columna factor. Entrenamiento y test deben separarse antes de ajustar o transformar los datos. Los modelos centrales se ajustan explícitamente con `MASS::lda()` y `MASS::qda()`.
 :::
 
-## Clasificación supervisada
+## De describir grupos a predecir clases
 
-La clasificación supervisada usa una variable respuesta categórica conocida. A diferencia del clustering, las clases existen antes del modelo.
+En clustering desconocíamos los grupos y buscábamos una partición. En análisis discriminante la clase es conocida en los datos de entrenamiento. El objetivo es aprender una regla que clasifique nuevos individuos y cuantificar su error fuera de muestra.
 
-## Train/test split
+En `iris`, por ejemplo, conocemos la especie de cada flor y observamos cuatro medidas. Queremos responder:
 
-Separamos entrenamiento y test para estimar rendimiento fuera de muestra.
+- ¿qué combinaciones de medidas separan las especies?
+- ¿con qué probabilidad asignamos una nueva flor a cada clase?
+- ¿qué tipos de error comete el modelo?
+- ¿son adecuadas fronteras lineales o necesitamos mayor flexibilidad?
+- ¿cómo cambian las decisiones si las clases o los errores tienen distinta importancia?
+
+::: {.callout-warning}
+Separar visualmente los grupos en los datos de entrenamiento no demuestra capacidad predictiva. La evaluación debe utilizar observaciones que no participaron en el ajuste.
+:::
+
+## Clasificación mediante la regla de Bayes
+
+Sea $Y\in\{1,\ldots,G\}$ la clase y $X\in\mathbb{R}^p$ el vector de predictores. Para cada clase necesitamos:
+
+- una probabilidad previa o *prior* $\pi_g=P(Y=g)$;
+- una densidad condicional $f_g(x)=f(X=x\mid Y=g)$.
+
+El teorema de Bayes proporciona la probabilidad posterior:
+
+$$
+P(Y=g\mid X=x)
+=\frac{\pi_g f_g(x)}
+{\sum_{h=1}^{G}\pi_h f_h(x)}.
+$$
+
+Si todos los errores tienen el mismo coste, la regla óptima asigna:
+
+$$
+\widehat y(x)=\arg\max_g P(Y=g\mid X=x).
+$$
+
+Esta regla minimiza la probabilidad teórica de error cuando priors y densidades son correctos. LDA y QDA se diferencian por cómo modelan $f_g(x)$.
+
+### Priors y evidencia de los predictores
+
+Los priors representan la prevalencia de las clases antes de observar $x$. La densidad condicional indica cuánto se parece el nuevo individuo a cada grupo. La posterior combina ambos elementos.
+
+Una clase rara puede necesitar evidencia predictiva fuerte para superar a una clase frecuente. Por eso modificar priors no es un detalle técnico: cambia las fronteras de decisión.
+
+## Modelo normal multivariante
+
+LDA y QDA suponen que, dentro de cada clase,
+
+$$
+X\mid Y=g\sim\mathcal N_p(\mu_g,\Sigma_g).
+$$
+
+La densidad es:
+
+$$
+f_g(x)=
+\frac{1}{(2\pi)^{p/2}|\Sigma_g|^{1/2}}
+\exp\left\{-\frac12
+(x-\mu_g)^\top\Sigma_g^{-1}(x-\mu_g)
+\right\}.
+$$
+
+El término cuadrático es la distancia de Mahalanobis a la media de la clase. Una diferencia en una dirección de poca variabilidad pesa más que la misma diferencia en una dirección muy variable, y las correlaciones modifican la forma de las regiones de igual densidad.
+
+Tomando logaritmos y eliminando la constante común $-p\log(2\pi)/2$, obtenemos:
+
+$$
+\delta_g(x)=
+-\frac12\log|\Sigma_g|
+-\frac12(x-\mu_g)^\top\Sigma_g^{-1}(x-\mu_g)
++\log\pi_g.
+$$
+
+Clasificar por la mayor posterior equivale a elegir la clase con mayor $\delta_g(x)$.
+
+## Separación entre entrenamiento y test
+
+Usaremos una división estratificada para conservar aproximadamente la proporción de cada especie.
 
 ```{r}
-set.seed(123)
-n <- nrow(iris)
-idx <- sample(seq_len(n), size = round(0.7 * n))
-train <- iris[idx, ]
-test <- iris[-idx, ]
-kable(table(train$Species), col.names = c("Especie", "Entrenamiento"))
+particion <- particionar_clasificacion(
+  iris,
+  respuesta = "Species",
+  proporcion = 0.70,
+  semilla = 123
+)
+entrenamiento <- particion$entrenamiento
+test <- particion$test
+
+kable(table(entrenamiento$Species), col.names = c("Especie", "Entrenamiento"))
 kable(table(test$Species), col.names = c("Especie", "Test"))
 ```
 
-## LDA
+El conjunto de entrenamiento sirve para estimar parámetros y comparar alternativas mediante validación cruzada. El test debe reservarse para una evaluación final.
 
-LDA busca combinaciones lineales que separen clases suponiendo matrices de covarianza iguales. Esto genera fronteras lineales y probabilidades posteriores.
+Son fugas de información:
+
+- estandarizar usando conjuntamente entrenamiento y test;
+- seleccionar variables mirando el rendimiento del test;
+- elegir LDA o QDA por su resultado en test y presentar ese mismo resultado como evaluación final;
+- ajustar PCA u otra reducción con todos los individuos antes de separar.
+
+## Análisis discriminante lineal
+
+### Supuesto de covarianza común
+
+LDA supone:
+
+$$
+\Sigma_1=\cdots=\Sigma_G=\Sigma.
+$$
+
+Al expandir la forma cuadrática,
+
+$$
+(x-\mu_g)^\top\Sigma^{-1}(x-\mu_g)
+=x^\top\Sigma^{-1}x
+-2x^\top\Sigma^{-1}\mu_g
++\mu_g^\top\Sigma^{-1}\mu_g,
+$$
+
+el término $x^\top\Sigma^{-1}x$ es común a todas las clases y se cancela. También se cancela $\log|\Sigma|$. La función discriminante queda:
+
+$$
+\delta_g^{LDA}(x)=
+x^\top\Sigma^{-1}\mu_g
+-\frac12\mu_g^\top\Sigma^{-1}\mu_g
++\log\pi_g.
+$$
+
+Es una función lineal de $x$. La frontera entre las clases $g$ y $h$ satisface:
+
+$$
+\delta_g^{LDA}(x)=\delta_h^{LDA}(x),
+$$
+
+y por tanto es un hiperplano.
+
+### Estimación
+
+Las medias se estiman dentro de cada clase. La covarianza común se estima agrupando la variabilidad interna:
+
+$$
+\widehat\Sigma=
+\frac{1}{n-G}
+\sum_{g=1}^{G}
+\sum_{i:Y_i=g}
+(x_i-\bar x_g)(x_i-\bar x_g)^\top.
+$$
+
+El denominador $n-G$ refleja que se han estimado $G$ medias. Los priors predeterminados de `MASS::lda()` son las proporciones observadas en entrenamiento.
 
 ```{r}
-lda_fit <- lda(Species ~ Sepal.Length + Sepal.Width + Petal.Length + Petal.Width, data = train)
-lda_fit
-pred_lda <- predict(lda_fit, newdata = test)
-tab_lda <- table(predicho = pred_lda$class, observado = test$Species)
-kable(tab_lda)
-tibble(accuracy = mean(pred_lda$class == test$Species)) |>
+formula_modelo <- Species ~ Sepal.Length + Sepal.Width + Petal.Length + Petal.Width
+
+ajuste_lda <- MASS::lda(
+  formula_modelo,
+  data = entrenamiento
+)
+
+resumen_lda <- resumir_lda(ajuste_lda)
+kable(resumen_lda$priors, digits = 3)
+kable(resumen_lda$medias, digits = 3)
+```
+
+### Revisar el supuesto de covarianzas
+
+No debemos decidir únicamente con una prueba formal. Conviene comparar dispersión, correlaciones, tamaño de las clases y estabilidad esperada.
+
+```{r}
+#| echo: false
+visualizar_covarianzas_grupos(
+  entrenamiento,
+  respuesta = "Species",
+  variables = names(iris)[1:4]
+)
+```
+
+Las matrices se muestran después de una estandarización global para que las escalas sean comparables. Diferencias moderadas no invalidan automáticamente LDA: su covarianza común reduce varianza de estimación y puede predecir mejor que un modelo más flexible.
+
+## Análisis discriminante cuadrático
+
+QDA permite una matriz diferente en cada clase. Mantiene la función general:
+
+$$
+\delta_g^{QDA}(x)=
+-\frac12\log|\Sigma_g|
+-\frac12(x-\mu_g)^\top\Sigma_g^{-1}(x-\mu_g)
++\log\pi_g.
+$$
+
+Ahora el término $x^\top\Sigma_g^{-1}x$ depende de la clase y no se cancela. La igualdad entre dos funciones discriminantes genera una frontera cuadrática.
+
+```{r}
+ajuste_qda <- MASS::qda(
+  formula_modelo,
+  data = entrenamiento
+)
+```
+
+QDA estima $G$ matrices con $p(p+1)/2$ parámetros cada una. LDA estima una sola. QDA puede adaptarse a formas distintas, pero necesita muchas más observaciones por clase y es más sensible a covarianzas casi singulares.
+
+### Fronteras lineales y cuadráticas
+
+Para ver las fronteras utilizamos solo longitud y anchura del pétalo. Estos modelos bidimensionales son ilustrativos y no sustituyen a los modelos de cuatro predictores.
+
+```{r}
+lda_2d <- MASS::lda(
+  Species ~ Petal.Length + Petal.Width,
+  data = entrenamiento
+)
+qda_2d <- MASS::qda(
+  Species ~ Petal.Length + Petal.Width,
+  data = entrenamiento
+)
+```
+
+```{r}
+#| echo: false
+visualizar_fronteras_discriminantes(
+  lda_2d,
+  entrenamiento,
+  "Species",
+  c("Petal.Length", "Petal.Width")
+) + ggtitle("Fronteras LDA")
+
+visualizar_fronteras_discriminantes(
+  qda_2d,
+  entrenamiento,
+  "Species",
+  c("Petal.Length", "Petal.Width")
+) + ggtitle("Fronteras QDA")
+```
+
+La mayor flexibilidad de QDA no garantiza menor error fuera de muestra. Existe un compromiso entre sesgo y varianza: LDA impone más estructura y estima menos parámetros; QDA se adapta más, pero sus fronteras son menos estables.
+
+## Selección mediante validación cruzada
+
+Podemos comparar métodos dentro del entrenamiento mediante validación cruzada estratificada. Cada observación se predice con un modelo que no la utilizó para estimar parámetros.
+
+```{r}
+cv_lda <- validacion_cruzada_discriminante(
+  entrenamiento,
+  "Species",
+  metodo = "lda",
+  k = 5,
+  semilla = 123
+)
+cv_qda <- validacion_cruzada_discriminante(
+  entrenamiento,
+  "Species",
+  metodo = "qda",
+  k = 5,
+  semilla = 123
+)
+
+bind_rows(
+  cv_lda$evaluacion$global |> mutate(modelo = "LDA", .before = 1),
+  cv_qda$evaluacion$global |> mutate(modelo = "QDA", .before = 1)
+) |>
   kable(digits = 3)
 ```
+
+Una única partición de validación cruzada también tiene variabilidad. En un análisis real podríamos repetirla o usar validación cruzada anidada si además seleccionamos variables o hiperparámetros.
+
+## Evaluación final en test
+
+```{r}
+comparacion <- comparar_modelos_discriminantes(
+  modelos = list(LDA = ajuste_lda, QDA = ajuste_qda),
+  datos_test = test,
+  respuesta = "Species"
+)
+
+kable(comparacion$metricas, digits = 3)
+```
+
+El test se utiliza ahora una sola vez. Si ambos métodos tienen resultados similares, suele ser razonable preferir el más estable y sencillo salvo que el coste de errores concretos indique otra cosa.
 
 ## Matriz de confusión y métricas
 
-La accuracy es la proporción de aciertos. En problemas binarios también importan sensibilidad y especificidad.
+En nuestras matrices, las filas son clases observadas y las columnas clases predichas. La diagonal principal contiene los aciertos.
 
 ```{r}
-accuracy <- sum(diag(tab_lda)) / sum(tab_lda)
-tibble(accuracy = accuracy) |>
+evaluacion_lda <- comparacion$resultados$LDA$evaluacion
+kable(evaluacion_lda$matriz)
+kable(evaluacion_lda$global, digits = 3)
+kable(evaluacion_lda$por_clase, digits = 3)
+```
+
+```{r}
+#| echo: false
+visualizar_matriz_confusion(
+  evaluacion_lda,
+  mostrar = "porcentaje_fila"
+)
+```
+
+Para una clase $g$, tratándola frente al resto:
+
+$$
+Sensibilidad_g=\frac{TP_g}{TP_g+FN_g},
+$$
+
+$$
+Especificidad_g=\frac{TN_g}{TN_g+FP_g},
+$$
+
+$$
+\operatorname{Precision}_g=\frac{TP_g}{TP_g+FP_g},
+$$
+
+$$
+F1_g=2\frac{\operatorname{Precision}_g\,Sensibilidad_g}
+{\operatorname{Precision}_g+Sensibilidad_g}.
+$$
+
+La accuracy puede ocultar malos resultados en clases pequeñas. En multiclase, `balanced_accuracy` en nuestras funciones es la media de sensibilidades y `macro_f1` concede el mismo peso a cada clase.
+
+La métrica relevante depende de la decisión. Si no detectar una clase es especialmente grave, su sensibilidad importa más que la accuracy global.
+
+## Probabilidades posteriores e incertidumbre
+
+La clase predicha oculta cuánta duda tenía el modelo. `predict()` devuelve probabilidades posteriores para todas las clases.
+
+```{r}
+prediccion_lda <- comparacion$resultados$LDA$prediccion
+
+resumir_predicciones_discriminantes(
+  prediccion_lda,
+  observado = test$Species,
+  id = rownames(test)
+) |>
+  head(10) |>
   kable(digits = 3)
 ```
 
-Para varias clases, se pueden calcular sensibilidades por clase:
+La probabilidad máxima mide confianza absoluta. El margen entre las dos mayores posteriores mide ambigüedad entre las mejores alternativas. Los casos con margen pequeño merecen revisión, aunque las probabilidades solo deben interpretarse literalmente si están razonablemente calibradas.
+
+## Priors y costes de error
+
+### Cambiar los priors
+
+Podemos proporcionar priors poblacionales:
 
 ```{r}
-sensibilidad_clase <- diag(tab_lda) / colSums(tab_lda)
-tibble(clase = names(sensibilidad_clase), sensibilidad = round(sensibilidad_clase, 3)) |>
-  kable()
+ajuste_lda_priors_iguales <- MASS::lda(
+  formula_modelo,
+  data = entrenamiento,
+  prior = rep(1 / 3, 3)
+)
 ```
 
-## QDA
+Esto es apropiado si la muestra de entrenamiento fue equilibrada artificialmente o si conocemos prevalencias poblacionales distintas. Los priors no deben elegirse para mejorar retrospectivamente el test.
 
-QDA permite matrices de covarianza distintas por clase. Sus fronteras pueden ser cuadráticas, pero el modelo estima más parámetros y puede sobreajustar con muestras pequeñas.
+### Costes asimétricos
+
+Si $C(g,d)$ es el coste de decidir $d$ cuando la clase real es $g$, la decisión óptima minimiza el coste posterior esperado:
+
+$$
+R(d\mid x)=\sum_g C(g,d)P(Y=g\mid X=x).
+$$
 
 ```{r}
-qda_fit <- qda(Species ~ Sepal.Length + Sepal.Width + Petal.Length + Petal.Width, data = train)
-pred_qda <- predict(qda_fit, newdata = test)
-tab_qda <- table(predicho = pred_qda$class, observado = test$Species)
-kable(tab_qda)
-tibble(accuracy = mean(pred_qda$class == test$Species)) |>
-  kable(digits = 3)
+clases <- levels(iris$Species)
+costes <- matrix(
+  1,
+  nrow = 3,
+  ncol = 3,
+  dimnames = list(real = clases, decision = clases)
+)
+diag(costes) <- 0
+costes["virginica", "versicolor"] <- 3
+
+prediccion_costes <- clasificar_con_costes(
+  prediccion_lda$posterior,
+  costes
+)
+kable(table(prediccion_estandar = prediccion_lda$class, prediccion_costes))
 ```
 
-## Análisis canónico discriminante
+Al penalizar más confundir `virginica` con `versicolor`, la regla puede exigir mayor evidencia antes de decidir `versicolor`. Cambiar costes modifica la decisión, no el modelo de densidades.
 
-LDA también produce ejes discriminantes. A diferencia de PCA, estos ejes usan la etiqueta de clase y buscan separación, no máxima varianza total.
+## Ejes canónicos discriminantes
+
+LDA también ofrece una representación supervisada. Sea:
+
+$$
+W=\sum_{g=1}^{G}\sum_{i:Y_i=g}
+(x_i-\bar x_g)(x_i-\bar x_g)^\top
+$$
+
+la dispersión dentro de clases, y
+
+$$
+B=\sum_{g=1}^{G}n_g
+(\bar x_g-\bar x)(\bar x_g-\bar x)^\top
+$$
+
+la dispersión entre clases. La primera dirección discriminante maximiza:
+
+$$
+J(a)=\frac{a^\top Ba}{a^\top Wa}.
+$$
+
+El problema conduce a los autovectores generalizados:
+
+$$
+Ba=\lambda Wa.
+$$
+
+Las direcciones posteriores maximizan separación adicional bajo ortogonalidad en la métrica de $W$. Solo pueden existir:
+
+$$
+\min(p,G-1)
+$$
+
+ejes discriminantes, porque las $G$ medias de clase generan como máximo $G-1$ direcciones independientes.
 
 ```{r}
-lda_scores <- predict(lda_fit)$x
-as_tibble(lda_scores) |>
-  mutate(Species = train$Species) |>
-  ggplot(aes(LD1, LD2, color = Species)) +
-  geom_point(size = 2, alpha = 0.85) +
-  labs(title = "Ejes discriminantes en entrenamiento", color = "Especie") +
-  theme_minimal()
+kable(resumen_lda$ejes, digits = 3)
+kable(resumen_lda$coeficientes, digits = 3)
 ```
 
-## Comparación LDA/QDA
+```{r}
+#| echo: false
+visualizar_ejes_discriminantes(
+  ajuste_lda,
+  entrenamiento,
+  respuesta = "Species"
+)
+```
 
-LDA es más estable cuando el supuesto de covarianzas similares es razonable. QDA es más flexible, pero necesita más datos por clase. La comparación debe hacerse con test o validación cruzada, no solo con error aparente.
+La primera dirección recoge casi toda la separación entre especies. Los coeficientes describen combinaciones lineales, pero dependen de las escalas y de las correlaciones entre predictores; no son una medida aislada de importancia causal.
 
-## Relación con PCA
+### Diferencia con PCA
 
-PCA ignora la clase y puede servir como preprocesamiento. LDA usa la clase para encontrar direcciones de separación. Por eso un componente con mucha varianza no necesariamente discrimina bien.
+PCA maximiza varianza total sin conocer las clases:
 
-## Limitaciones
+$$
+\max_a a^\top Sa.
+$$
 
-LDA y QDA dependen de supuestos sobre distribución y covarianzas. También son sensibles a variables irrelevantes, outliers y desequilibrio de clases. En aplicaciones reales, la consecuencia de cada tipo de error puede ser más importante que la accuracy global.
+LDA maximiza variación entre clases en relación con la variación interna:
+
+$$
+\max_a\frac{a^\top Ba}{a^\top Wa}.
+$$
+
+Una dirección con mucha variabilidad puede ser inútil para clasificar si esa variabilidad ocurre dentro de todas las clases. A la inversa, una dirección de varianza total pequeña puede separar muy bien sus medias.
+
+## Supuestos, estabilidad y alternativas
+
+LDA y QDA son modelos generativos. Sus principales riesgos son:
+
+- distribuciones condicionales muy alejadas de la normalidad;
+- outliers que distorsionan medias y covarianzas;
+- predictores redundantes o covarianzas singulares;
+- pocas observaciones por clase en relación con $p$;
+- priors de entrenamiento distintos de los poblacionales;
+- clases desequilibradas y costes asimétricos ignorados.
+
+LDA suele tolerar mejor muestras moderadas porque agrupa covarianzas. QDA necesita estimar e invertir una matriz por clase. Si $p$ es grande respecto a $n_g$, pueden ser necesarios selección de variables, reducción de dimensión realizada dentro de cada pliegue o análisis discriminante regularizado.
+
+La normalidad exacta no es imprescindible para que LDA clasifique razonablemente, pero sí afecta a la interpretación probabilística de las posteriores.
+
+## Protocolo de decisión
+
+1. Definir la población, las clases y el coste de los errores.
+2. Reservar test antes de cualquier decisión guiada por los datos.
+3. Revisar tamaños de clase, outliers, redundancia y covarianzas.
+4. Establecer priors coherentes con la población objetivo.
+5. Comparar LDA y QDA mediante validación dentro del entrenamiento.
+6. Elegir métricas acordes con desequilibrio y costes.
+7. Ajustar el modelo elegido con todo el entrenamiento.
+8. Evaluar una vez en test mediante matriz de confusión y métricas por clase.
+9. Revisar probabilidades y casos ambiguos.
+10. Documentar cambios de prevalencia, costes o población que exigirían recalibrar el sistema.
 
 ## Errores frecuentes
 
-- Evaluar el modelo con los mismos datos usados para entrenar.
-- Confundir clustering con clasificación supervisada.
-- Elegir el modelo con mayor accuracy sin mirar matriz de confusión.
-- Ignorar sensibilidad y especificidad en problemas donde los errores no cuestan lo mismo.
+- Evaluar con los mismos datos usados para ajustar.
+- Utilizar el test para elegir variables o modelo.
+- Confundir clasificación supervisada con clustering.
+- Elegir por accuracy sin revisar clases concretas.
+- Suponer que QDA es mejor porque es más flexible.
+- Interpretar las probabilidades posteriores como certezas.
+- Ignorar priors y costes de error.
+- Aplicar una reducción de dimensión antes de separar entrenamiento y test.
+- Interpretar coeficientes discriminantes sin considerar escalas y correlaciones.
 
 ## Resumen del capítulo
 
-El análisis discriminante construye reglas de clasificación para clases conocidas. Su evaluación requiere separación entrenamiento/test, matriz de confusión y reflexión sobre el coste de los errores.
+LDA y QDA modelan las distribuciones de los predictores dentro de clases y aplican Bayes para clasificar. LDA comparte una covarianza y produce fronteras lineales; QDA estima una por clase y produce fronteras cuadráticas. La elección depende del compromiso entre estructura y flexibilidad. Una evaluación válida requiere separación de datos, métricas por clase, probabilidades, priors y costes coherentes con la decisión.
 
-## Ejercicios propuestos
+## Funciones utilizadas
 
-1. Repite el split con otra semilla y compara resultados.
-2. Ajusta LDA usando solo dos variables de `iris`.
-3. Explica cuándo preferirías LDA frente a QDA.
+| Función | Para qué se usa | Uso básico |
+|---|---|---|
+| `particionar_clasificacion()` | Crear una división estratificada de entrenamiento y test. | `particionar_clasificacion(datos, "clase")` |
+| `MASS::lda()` | Ajustar análisis discriminante lineal. | `MASS::lda(clase ~ ., entrenamiento)` |
+| `MASS::qda()` | Ajustar análisis discriminante cuadrático. | `MASS::qda(clase ~ ., entrenamiento)` |
+| `validacion_cruzada_discriminante()` | Obtener predicciones fuera de pliegue dentro del entrenamiento. | `validacion_cruzada_discriminante(datos, "clase", "lda")` |
+| `comparar_modelos_discriminantes()` | Comparar varios modelos sobre el mismo test. | `comparar_modelos_discriminantes(modelos, test, "clase")` |
+| `evaluar_clasificacion()` | Calcular matriz y métricas globales y por clase. | `evaluar_clasificacion(real, predicho)` |
+| `visualizar_matriz_confusion()` | Mostrar conteos o porcentajes con diagonal convencional. | `visualizar_matriz_confusion(evaluacion, "porcentaje_fila")` |
+| `resumir_predicciones_discriminantes()` | Identificar predicciones inciertas mediante posteriores y márgenes. | `resumir_predicciones_discriminantes(prediccion, real)` |
+| `resumir_lda()` | Extraer priors, medias, coeficientes y separación canónica. | `resumir_lda(ajuste)` |
+| `visualizar_ejes_discriminantes()` | Representar los ejes canónicos de LDA. | `visualizar_ejes_discriminantes(ajuste, datos, "clase")` |
+| `visualizar_fronteras_discriminantes()` | Dibujar regiones de decisión cuando hay dos predictores. | `visualizar_fronteras_discriminantes(ajuste, datos, "clase", variables)` |
+| `visualizar_covarianzas_grupos()` | Comparar covarianzas internas de las clases. | `visualizar_covarianzas_grupos(datos, "clase", variables)` |
+| `clasificar_con_costes()` | Elegir clases minimizando coste posterior esperado. | `clasificar_con_costes(posteriores, costes)` |

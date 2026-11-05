@@ -2116,7 +2116,7 @@
     "href": "11-famd.html",
     "title": "13  FAMD para datos mixtos",
     "section": "",
-    "text": "13.1 Motivación aplicada\nDespués de estudiar PCA y MCA ya tenemos dos geometrías claras:\nEl problema práctico aparece cuando una misma tabla tiene ambos tipos de variables. En mtcars, consumo, potencia y peso son numéricos, mientras que cilindros, tipo de motor, transmisión o número de marchas pueden tratarse como categorías.\nSi queremos representar coches en un único mapa factorial, no basta con aplicar PCA a todo ni con aplicar MCA solo a las variables categóricas. FAMD combina las dos lógicas en una geometría común.",
+    "text": "13.1 Objetivo de FAMD\nPCA representa individuos descritos por variables numéricas. MCA representa individuos descritos por variables categóricas. El análisis factorial de datos mixtos, FAMD, construye un único espacio para individuos descritos simultáneamente por ambos tipos de variables.\nPor ejemplo, para comparar automóviles podemos disponer de consumo, potencia y peso, pero también de tipo de motor, transmisión o número de marchas. Convertir las categorías en números arbitrarios y aplicar PCA alteraría sus distancias. Ignorar las variables numéricas para aplicar MCA también perdería información.\nFAMD busca responder:",
     "crumbs": [
       "Bloque 3. Análisis de correspondencias y datos mixtos",
       "<span class='chapter-number'>13</span>  <span class='chapter-title'>FAMD para datos mixtos</span>"
@@ -2346,8 +2346,8 @@
     "objectID": "11-famd.html#resumen-del-capítulo",
     "href": "11-famd.html#resumen-del-capítulo",
     "title": "13  FAMD para datos mixtos",
-    "section": "13.21 Resumen del capítulo",
-    "text": "13.21 Resumen del capítulo\nFAMD ofrece una representación factorial para datos mixtos. Estandariza variables numéricas, transforma variables categóricas siguiendo la lógica de MCA y construye ejes comunes de inercia. Su utilidad depende de equilibrar bloques, distinguir variables activas y suplementarias, revisar frecuencias de categorías e interpretar coordenadas con contribuciones y cos².",
+    "section": "13.14 Resumen del capítulo",
+    "text": "13.14 Resumen del capítulo\nFAMD aplica una descomposición factorial a una matriz formada por variables numéricas estandarizadas e indicadores categóricos centrados y ponderados por sus frecuencias. La distancia resultante combina diferencias numéricas estandarizadas y desacuerdos categóricos ponderados. Los ejes se interpretan mediante inercia, contribuciones, \\(r^2\\), \\(\\eta^2\\), correlaciones, modalidades y cos².",
     "crumbs": [
       "Bloque 3. Análisis de correspondencias y datos mixtos",
       "<span class='chapter-number'>13</span>  <span class='chapter-title'>FAMD para datos mixtos</span>"
@@ -2369,7 +2369,7 @@
     "href": "12-discriminante.html",
     "title": "14  Análisis discriminante",
     "section": "",
-    "text": "14.1 Motivación aplicada\nEn iris, la especie es conocida. La pregunta ya no es si existen grupos, sino si podemos clasificar nuevas flores a partir de sus medidas.",
+    "text": "14.1 De describir grupos a predecir clases\nEn clustering desconocíamos los grupos y buscábamos una partición. En análisis discriminante la clase es conocida en los datos de entrenamiento. El objetivo es aprender una regla que clasifique nuevos individuos y cuantificar su error fuera de muestra.\nEn iris, por ejemplo, conocemos la especie de cada flor y observamos cuatro medidas. Queremos responder:",
     "crumbs": [
       "Bloque 4. Análisis discriminante",
       "<span class='chapter-number'>14</span>  <span class='chapter-title'>Análisis discriminante</span>"
@@ -2423,8 +2423,8 @@
     "objectID": "12-discriminante.html#matriz-de-confusión-y-métricas",
     "href": "12-discriminante.html#matriz-de-confusión-y-métricas",
     "title": "14  Análisis discriminante",
-    "section": "14.5 Matriz de confusión y métricas",
-    "text": "14.5 Matriz de confusión y métricas\nLa accuracy es la proporción de aciertos. En problemas binarios también importan sensibilidad y especificidad.\n\n\nCódigo\naccuracy &lt;- sum(diag(tab_lda)) / sum(tab_lda)\ntibble(accuracy = accuracy) |&gt;\n  kable(digits = 3)\n\n\n\n\n\naccuracy\n\n\n\n\n0.978\n\n\n\n\n\nPara varias clases, se pueden calcular sensibilidades por clase:\n\n\nCódigo\nsensibilidad_clase &lt;- diag(tab_lda) / colSums(tab_lda)\ntibble(clase = names(sensibilidad_clase), sensibilidad = round(sensibilidad_clase, 3)) |&gt;\n  kable()\n\n\n\n\n\nclase\nsensibilidad\n\n\n\n\nsetosa\n1.000\n\n\nversicolor\n0.944\n\n\nvirginica\n1.000",
+    "section": "14.9 Matriz de confusión y métricas",
+    "text": "14.9 Matriz de confusión y métricas\nEn nuestras matrices, las filas son clases observadas y las columnas clases predichas. La diagonal principal contiene los aciertos.\n\n\nCódigo\nevaluacion_lda &lt;- comparacion$resultados$LDA$evaluacion\nkable(evaluacion_lda$matriz)\n\n\n\n\n\n\nsetosa\nversicolor\nvirginica\n\n\n\n\nsetosa\n15\n0\n0\n\n\nversicolor\n0\n15\n0\n\n\nvirginica\n0\n1\n14\n\n\n\n\n\nCódigo\nkable(evaluacion_lda$global, digits = 3)\n\n\n\n\n\naccuracy\nbalanced_accuracy\nmacro_f1\n\n\n\n\n0.978\n0.978\n0.978\n\n\n\n\n\nCódigo\nkable(evaluacion_lda$por_clase, digits = 3)\n\n\n\n\n\nclase\nsoporte\nsensibilidad\nespecificidad\nprecision\nf1\n\n\n\n\nsetosa\n15\n1.000\n1.000\n1.000\n1.000\n\n\nversicolor\n15\n1.000\n0.967\n0.938\n0.968\n\n\nvirginica\n15\n0.933\n1.000\n1.000\n0.966\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nPara una clase \\(g\\), tratándola frente al resto:\n\\[\nSensibilidad_g=\\frac{TP_g}{TP_g+FN_g},\n\\]\n\\[\nEspecificidad_g=\\frac{TN_g}{TN_g+FP_g},\n\\]\n\\[\n\\operatorname{Precision}_g=\\frac{TP_g}{TP_g+FP_g},\n\\]\n\\[\nF1_g=2\\frac{\\operatorname{Precision}_g\\,Sensibilidad_g}\n{\\operatorname{Precision}_g+Sensibilidad_g}.\n\\]\nLa accuracy puede ocultar malos resultados en clases pequeñas. En multiclase, balanced_accuracy en nuestras funciones es la media de sensibilidades y macro_f1 concede el mismo peso a cada clase.\nLa métrica relevante depende de la decisión. Si no detectar una clase es especialmente grave, su sensibilidad importa más que la accuracy global.",
     "crumbs": [
       "Bloque 4. Análisis discriminante",
       "<span class='chapter-number'>14</span>  <span class='chapter-title'>Análisis discriminante</span>"
@@ -2489,8 +2489,8 @@
     "objectID": "12-discriminante.html#errores-frecuentes",
     "href": "12-discriminante.html#errores-frecuentes",
     "title": "14  Análisis discriminante",
-    "section": "14.11 Errores frecuentes",
-    "text": "14.11 Errores frecuentes\n\nEvaluar el modelo con los mismos datos usados para entrenar.\nConfundir clustering con clasificación supervisada.\nElegir el modelo con mayor accuracy sin mirar matriz de confusión.\nIgnorar sensibilidad y especificidad en problemas donde los errores no cuestan lo mismo.",
+    "section": "14.15 Errores frecuentes",
+    "text": "14.15 Errores frecuentes\n\nEvaluar con los mismos datos usados para ajustar.\nUtilizar el test para elegir variables o modelo.\nConfundir clasificación supervisada con clustering.\nElegir por accuracy sin revisar clases concretas.\nSuponer que QDA es mejor porque es más flexible.\nInterpretar las probabilidades posteriores como certezas.\nIgnorar priors y costes de error.\nAplicar una reducción de dimensión antes de separar entrenamiento y test.\nInterpretar coeficientes discriminantes sin considerar escalas y correlaciones.",
     "crumbs": [
       "Bloque 4. Análisis discriminante",
       "<span class='chapter-number'>14</span>  <span class='chapter-title'>Análisis discriminante</span>"
@@ -2500,8 +2500,8 @@
     "objectID": "12-discriminante.html#resumen-del-capítulo",
     "href": "12-discriminante.html#resumen-del-capítulo",
     "title": "14  Análisis discriminante",
-    "section": "14.12 Resumen del capítulo",
-    "text": "14.12 Resumen del capítulo\nEl análisis discriminante construye reglas de clasificación para clases conocidas. Su evaluación requiere separación entrenamiento/test, matriz de confusión y reflexión sobre el coste de los errores.",
+    "section": "14.16 Resumen del capítulo",
+    "text": "14.16 Resumen del capítulo\nLDA y QDA modelan las distribuciones de los predictores dentro de clases y aplican Bayes para clasificar. LDA comparte una covarianza y produce fronteras lineales; QDA estima una por clase y produce fronteras cuadráticas. La elección depende del compromiso entre estructura y flexibilidad. Una evaluación válida requiere separación de datos, métricas por clase, probabilidades, priors y costes coherentes con la decisión.",
     "crumbs": [
       "Bloque 4. Análisis discriminante",
       "<span class='chapter-number'>14</span>  <span class='chapter-title'>Análisis discriminante</span>"
@@ -3494,6 +3494,314 @@
     "crumbs": [
       "Bloque 3. Análisis de correspondencias y datos mixtos",
       "<span class='chapter-number'>12</span>  <span class='chapter-title'>Análisis de correspondencias múltiples</span>"
+    ]
+  },
+  {
+    "objectID": "11-famd.html#objetivo-de-famd",
+    "href": "11-famd.html#objetivo-de-famd",
+    "title": "13  FAMD para datos mixtos",
+    "section": "",
+    "text": "¿qué individuos tienen perfiles mixtos parecidos?\n¿qué dimensiones resumen conjuntamente medidas y categorías?\n¿qué variables numéricas y cualitativas construyen cada eje?\n¿qué modalidades caracterizan las regiones del mapa?\n¿podemos utilizar las coordenadas para un análisis posterior?\n\n\n13.1.1 FAMD, PCA, MCA y Gower\n\n\n\n\n\n\n\n\n\nMétodo\nEntrada\nResultado principal\nUso característico\n\n\n\n\nPCA\nVariables numéricas\nEjes de máxima varianza\nReducción e interpretación de variables numéricas\n\n\nMCA\nVariables categóricas\nEjes de inercia \\(\\chi^2\\)\nPerfiles de modalidades\n\n\nFAMD\nVariables numéricas y categóricas\nEjes factoriales comunes\nInterpretación conjunta de datos mixtos\n\n\nGower\nVariables mixtas\nMatriz de disimilitudes\nClustering o búsqueda de vecinos\n\n\n\nFAMD y Gower no son intercambiables. Gower se concentra en distancias entre individuos; FAMD construye dimensiones que permiten estudiar también la relación de cada variable con los ejes.",
+    "crumbs": [
+      "Bloque 3. Análisis de correspondencias y datos mixtos",
+      "<span class='chapter-number'>13</span>  <span class='chapter-title'>FAMD para datos mixtos</span>"
+    ]
+  },
+  {
+    "objectID": "11-famd.html#datos-y-decisiones-previas",
+    "href": "11-famd.html#datos-y-decisiones-previas",
+    "title": "13  FAMD para datos mixtos",
+    "section": "13.2 Datos y decisiones previas",
+    "text": "13.2 Datos y decisiones previas\nConstruiremos una versión mixta de mtcars. La transmisión será suplementaria: coloreará e interpretará el mapa sin construir sus ejes.\n\n\nCódigo\ndatos_famd &lt;- mtcars |&gt;\n  transmute(\n    mpg,\n    disp,\n    hp,\n    drat,\n    wt,\n    qsec,\n    cyl = factor(cyl),\n    vs = factor(vs, labels = c(\"V\", \"Recto\")),\n    am = factor(am, labels = c(\"Automático\", \"Manual\")),\n    gear = factor(gear),\n    carb = factor(carb)\n  )\n\ntibble(\n  variable = names(datos_famd),\n  tipo = vapply(datos_famd, function(x) class(x)[1], character(1)),\n  valores_distintos = vapply(datos_famd, dplyr::n_distinct, integer(1))\n) |&gt;\n  kable()\n\n\n\n\n\nvariable\ntipo\nvalores_distintos\n\n\n\n\nmpg\nnumeric\n25\n\n\ndisp\nnumeric\n27\n\n\nhp\nnumeric\n22\n\n\ndrat\nnumeric\n22\n\n\nwt\nnumeric\n29\n\n\nqsec\nnumeric\n30\n\n\ncyl\nfactor\n3\n\n\nvs\nfactor\n2\n\n\nam\nfactor\n2\n\n\ngear\nfactor\n3\n\n\ncarb\nfactor\n6\n\n\n\n\n\nLa codificación forma parte del modelo. cyl, gear y carb podrían tratarse como números discretos u ordinales en otra pregunta. Al convertirlas en factores afirmamos que importan sus categorías y no una distancia numérica lineal entre ellas.\nAntes de ajustar FAMD debemos decidir:\n\nqué variables representan el fenómeno de interés;\nel papel numérico, ordinal o nominal de cada una;\ncuáles serán activas o suplementarias;\nsi las variables numéricas necesitan transformaciones;\ncómo tratar categorías raras y valores ausentes.",
+    "crumbs": [
+      "Bloque 3. Análisis de correspondencias y datos mixtos",
+      "<span class='chapter-number'>13</span>  <span class='chapter-title'>FAMD para datos mixtos</span>"
+    ]
+  },
+  {
+    "objectID": "11-famd.html#construcción-de-la-geometría-mixta",
+    "href": "11-famd.html#construcción-de-la-geometría-mixta",
+    "title": "13  FAMD para datos mixtos",
+    "section": "13.3 Construcción de la geometría mixta",
+    "text": "13.3 Construcción de la geometría mixta\nSupongamos que hay \\(p\\) variables numéricas y \\(Q\\) variables categóricas activas. Las variables categóricas contienen en total \\(K\\) modalidades.\n\n13.3.1 Bloque numérico\nPara una variable numérica \\(X_j\\), FAMD utiliza:\n\\[\nz_{ij}=\\frac{x_{ij}-\\bar x_j}{s_j},\n\\]\ndonde, con pesos uniformes,\n\\[\ns_j^2=\\frac{1}{n}\\sum_i(x_{ij}-\\bar x_j)^2.\n\\]\nLa división por \\(n\\) corresponde a la geometría ponderada del análisis, no al estimador insesgado de la varianza poblacional. Cada variable numérica transformada tiene media 0, varianza 1 y aporta una unidad de inercia total.\n\n\n13.3.2 Bloque categórico\nPara una modalidad \\(\\ell\\) construimos su indicador \\(g_{i\\ell}\\) y su proporción:\n\\[\np_\\ell=\\frac{1}{n}\\sum_i g_{i\\ell}.\n\\]\nLa columna transformada es:\n\\[\n\\widetilde g_{i\\ell}\n=\\frac{g_{i\\ell}-p_\\ell}{\\sqrt{p_\\ell}}.\n\\]\nLa división por \\(\\sqrt{p_\\ell}\\) introduce la geometría \\(\\chi^2\\): una diferencia en una modalidad rara pesa más que una diferencia en una modalidad frecuente.\nLa varianza de esa columna es:\n\\[\n\\operatorname{Var}(\\widetilde g_\\ell)\n=\\frac{p_\\ell(1-p_\\ell)}{p_\\ell}=1-p_\\ell.\n\\]\nSi una variable categórica tiene \\(L_j\\) modalidades, la inercia de su bloque es:\n\\[\n\\sum_{\\ell=1}^{L_j}(1-p_\\ell)=L_j-1.\n\\]\nEsta identidad es importante: FAMD no divide artificialmente el bloque por el número de modalidades. Las variables cualitativas con muchas modalidades generan más inercia estructural, aunque su relación con cada dimensión se resume mediante una medida acotada, \\(\\eta^2\\).\n\n\n13.3.3 Matriz transformada\nLa matriz analizada concatena ambos bloques:\n\\[\nX^*=\\left[Z_{num}\\mid Z_{cat}\\right].\n\\]\n\n\nCódigo\ndatos_activos &lt;- datos_famd[, names(datos_famd) != \"am\"]\nX_estrella &lt;- transformar_datos_famd(datos_activos)\n\ntibble(\n  individuos = nrow(X_estrella),\n  columnas_transformadas = ncol(X_estrella),\n  inercia_total = mean(rowSums(X_estrella^2))\n) |&gt;\n  kable(digits = 3)\n\n\n\n\n\nindividuos\ncolumnas_transformadas\ninercia_total\n\n\n\n\n32\n20\n16\n\n\n\n\n\nLa inercia total teórica es:\n\\[\nI_{total}=p+\\sum_{j=1}^{Q}(L_j-1).\n\\]\nEn el ejemplo hay seis variables numéricas y cuatro categóricas activas. Sus números de modalidades son 3, 2, 3 y 6, por lo que:\n\\[\nI_{total}=6+(3-1)+(2-1)+(3-1)+(6-1)=16.\n\\]\n\n\n13.3.4 Qué significa equilibrar los tipos de variables\nUna variable numérica se relaciona con un eje mediante una correlación \\(r\\), mientras que una variable categórica se relaciona mediante \\(\\eta^2\\). En ambos casos la asociación está acotada entre 0 y 1 cuando se usa \\(r^2\\) para la variable numérica.\nPor tanto, «equilibrar» no significa que todos los bloques tengan exactamente la misma inercia total. Significa que las variables numéricas estandarizadas y las variables cualitativas con ponderación \\(\\chi^2\\) pueden competir en la construcción de cada dimensión mediante medidas comparables.\n\n\n\n\n\n\nAdvertencia\n\n\n\nLas categorías raras y las variables con muchas modalidades siguen necesitando revisión. La ponderación correcta evita tratarlas como indicadores ordinarios, pero no elimina automáticamente su posible inestabilidad.",
+    "crumbs": [
+      "Bloque 3. Análisis de correspondencias y datos mixtos",
+      "<span class='chapter-number'>13</span>  <span class='chapter-title'>FAMD para datos mixtos</span>"
+    ]
+  },
+  {
+    "objectID": "11-famd.html#distancia-inducida-entre-individuos",
+    "href": "11-famd.html#distancia-inducida-entre-individuos",
+    "title": "13  FAMD para datos mixtos",
+    "section": "13.4 Distancia inducida entre individuos",
+    "text": "13.4 Distancia inducida entre individuos\nFAMD aplica una geometría euclídea a \\(X^*\\). Para dos individuos \\(i\\) e \\(i'\\), la parte numérica es:\n\\[\nd^2_{num}(i,i')=\n\\sum_{j=1}^{p}\n\\left(\\frac{x_{ij}-x_{i'j}}{s_j}\\right)^2.\n\\]\nPara una variable categórica, si ambos individuos comparten modalidad, su contribución a la distancia es cero. Si presentan modalidades distintas \\(a\\) y \\(b\\), la contribución es:\n\\[\nd^2_j(i,i')=\\frac{1}{p_a}+\\frac{1}{p_b}.\n\\]\nEsto se obtiene porque las dos filas difieren en \\(1/\\sqrt{p_a}\\) sobre la columna de \\(a\\) y en \\(1/\\sqrt{p_b}\\) sobre la de \\(b\\).\nLa distancia completa es:\n\\[\nd^2(i,i')=d^2_{num}(i,i')+d^2_{cat}(i,i').\n\\]\nDos individuos son próximos si combinan valores numéricos semejantes y modalidades semejantes. El concepto de semejanza depende de las desviaciones típicas numéricas y de las frecuencias categóricas.",
+    "crumbs": [
+      "Bloque 3. Análisis de correspondencias y datos mixtos",
+      "<span class='chapter-number'>13</span>  <span class='chapter-title'>FAMD para datos mixtos</span>"
+    ]
+  },
+  {
+    "objectID": "11-famd.html#descomposición-factorial",
+    "href": "11-famd.html#descomposición-factorial",
+    "title": "13  FAMD para datos mixtos",
+    "section": "13.5 Descomposición factorial",
+    "text": "13.5 Descomposición factorial\nFAMD realiza una PCA ponderada de \\(X^*\\) sin volver a escalar sus columnas. Si:\n\\[\nX^*=UDV^\\top,\n\\]\nlos autovalores son \\(\\lambda_m=d_m^2/n\\) bajo pesos uniformes y las coordenadas de los individuos son las proyecciones sobre los vectores singulares.\nEl rango máximo no trivial es:\n\\[\n\\min\\left(n-1,\\ p+K-Q\\right).\n\\]\nLas \\(Q\\) restricciones proceden de que las modalidades de cada variable categórica suman 1.",
+    "crumbs": [
+      "Bloque 3. Análisis de correspondencias y datos mixtos",
+      "<span class='chapter-number'>13</span>  <span class='chapter-title'>FAMD para datos mixtos</span>"
+    ]
+  },
+  {
+    "objectID": "11-famd.html#ajuste-del-modelo",
+    "href": "11-famd.html#ajuste-del-modelo",
+    "title": "13  FAMD para datos mixtos",
+    "section": "13.6 Ajuste del modelo",
+    "text": "13.6 Ajuste del modelo\nEl ajuste central permanece visible. Declaramos am suplementaria mediante su posición.\n\n\nCódigo\najuste_famd &lt;- FactoMineR::FAMD(\n  datos_famd,\n  ncp = 10,\n  sup.var = which(names(datos_famd) == \"am\"),\n  graph = FALSE\n)\n\nresumen_famd &lt;- resumir_famd(ajuste_famd)\nkable(resumen_famd$autovalores, digits = 3)\n\n\n\n\n\ndimension\nautovalor\nporcentaje\nacumulado\n\n\n\n\n1\n6.793\n42.453\n42.453\n\n\n2\n2.406\n15.037\n57.491\n\n\n3\n1.621\n10.130\n67.620\n\n\n4\n1.251\n7.821\n75.441\n\n\n5\n1.099\n6.870\n82.312\n\n\n6\n0.865\n5.406\n87.717\n\n\n7\n0.642\n4.010\n91.728\n\n\n8\n0.472\n2.948\n94.676\n\n\n9\n0.322\n2.011\n96.686\n\n\n10\n0.156\n0.977\n97.663\n\n\n\n\n\nncp controla cuántas dimensiones se conservan en el resultado. Debemos guardar más dimensiones que las dos dibujadas si queremos decidir después cuántas interpretar o utilizar en un clustering.\n\n\n\n\n\n\n\n\n\nLa selección de dimensiones combina caída de autovalores, inercia acumulada, interpretabilidad, cos² y finalidad del análisis. No existe un porcentaje universal adecuado para todos los problemas mixtos.",
+    "crumbs": [
+      "Bloque 3. Análisis de correspondencias y datos mixtos",
+      "<span class='chapter-number'>13</span>  <span class='chapter-title'>FAMD para datos mixtos</span>"
+    ]
+  },
+  {
+    "objectID": "11-famd.html#interpretación-de-individuos",
+    "href": "11-famd.html#interpretación-de-individuos",
+    "title": "13  FAMD para datos mixtos",
+    "section": "13.7 Interpretación de individuos",
+    "text": "13.7 Interpretación de individuos\n\n\n\n\n\n\n\n\n\nDos coches cercanos tienen perfiles parecidos considerando conjuntamente medidas y categorías activas. El color muestra la transmisión, pero am no ha construido los ejes.\nComo siempre, el mapa es una proyección. El cos² acumulado indica qué proporción de la distancia de cada individuo al centro queda representada en el plano.\n\n\nCódigo\ncalidad_famd &lt;- calidad_individuos_famd(ajuste_famd, ejes = c(1, 2), n = 10)\nkable(calidad_famd$tabla, digits = 3)\n\n\n\n\n\nindividuo\ncos2_plano\n\n\n\n\nMazda RX4 Wag\n0.065\n\n\nMazda RX4\n0.089\n\n\nMerc 280\n0.102\n\n\nMerc 280C\n0.106\n\n\nHornet 4 Drive\n0.286\n\n\nValiant\n0.336\n\n\nFerrari Dino\n0.384\n\n\nMerc 450SL\n0.422\n\n\nAMC Javelin\n0.443\n\n\nMerc 450SLC\n0.456\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nUn individuo con cos² bajo no debe interpretarse detalladamente en ese plano, aunque sus coordenadas aparezcan dibujadas.",
+    "crumbs": [
+      "Bloque 3. Análisis de correspondencias y datos mixtos",
+      "<span class='chapter-number'>13</span>  <span class='chapter-title'>FAMD para datos mixtos</span>"
+    ]
+  },
+  {
+    "objectID": "11-famd.html#interpretación-conjunta-de-variables",
+    "href": "11-famd.html#interpretación-conjunta-de-variables",
+    "title": "13  FAMD para datos mixtos",
+    "section": "13.8 Interpretación conjunta de variables",
+    "text": "13.8 Interpretación conjunta de variables\n\n13.8.1 Una medida común por variable\nPara una variable numérica \\(X_j\\), FAMD() representa su asociación con la dimensión mediante:\n\\[\nr^2(X_j,F_m).\n\\]\nPara una variable categórica \\(Y_j\\), utiliza:\n\\[\n\\eta^2(Y_j,F_m)=\n\\frac{\\sum_\\ell n_\\ell(\\bar f_{\\ell m}-\\bar f_m)^2}\n{\\sum_i(f_{im}-\\bar f_m)^2}.\n\\]\nAmbas cantidades están entre 0 y 1. Son adecuadas para comparar qué variables, con independencia de su tipo, están más relacionadas con una dimensión.\n\n\n\n\n\n\n\n\n\nLa primera dimensión está relacionada principalmente con cilindros, desplazamiento, consumo, potencia, peso y forma del motor. La segunda está dominada por marchas y carburadores, acompañados por qsec.\n\n\n13.8.2 Contribución y asociación no son lo mismo\nLa asociación mide qué bien resume una dimensión a una variable. La contribución mide cuánto ha participado esa variable en la construcción del eje. Conviene mirar ambas.\n\n\nCódigo\ndimension_1 &lt;- resumir_dimension_famd(ajuste_famd, dimension = 1)\nkable(dimension_1$variables, digits = 3)\n\n\n\n\n\nvariable\nasociacion\ncontribucion\ncos2\ntipo\n\n\n\n\ncyl\n0.931\n13.711\n0.434\nCategórica\n\n\ndisp\n0.872\n12.836\n0.760\nNumérica\n\n\nmpg\n0.830\n12.221\n0.689\nNumérica\n\n\nhp\n0.787\n11.581\n0.619\nNumérica\n\n\nwt\n0.714\n10.515\n0.510\nNumérica\n\n\nvs\n0.701\n10.319\n0.491\nCategórica\n\n\ngear\n0.591\n8.695\n0.174\nCategórica\n\n\ndrat\n0.505\n7.437\n0.255\nNumérica\n\n\ncarb\n0.495\n7.291\n0.049\nCategórica\n\n\nqsec\n0.366\n5.395\n0.134\nNumérica\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nUna variable puede estar muy asociada a un eje y no ser la única que lo construye. El nombre de la dimensión debe resumir el patrón conjunto.",
+    "crumbs": [
+      "Bloque 3. Análisis de correspondencias y datos mixtos",
+      "<span class='chapter-number'>13</span>  <span class='chapter-title'>FAMD para datos mixtos</span>"
+    ]
+  },
+  {
+    "objectID": "11-famd.html#variables-numéricas",
+    "href": "11-famd.html#variables-numéricas",
+    "title": "13  FAMD para datos mixtos",
+    "section": "13.9 Variables numéricas",
+    "text": "13.9 Variables numéricas\nLas correlaciones conservan signo y permiten leer la dirección de las variables numéricas.\n\n\n\n\n\n\n\n\n\nEn el primer eje, disp, hp y wt apuntan en una dirección, mientras que mpg y drat lo hacen en la opuesta. El signo global del eje podría invertirse sin cambiar ninguna conclusión; lo importante es la oposición relativa.\nEl mapa de asociación anterior utilizaba \\(r^2\\) y no mostraba signo. El círculo de correlaciones completa esa información.",
+    "crumbs": [
+      "Bloque 3. Análisis de correspondencias y datos mixtos",
+      "<span class='chapter-number'>13</span>  <span class='chapter-title'>FAMD para datos mixtos</span>"
+    ]
+  },
+  {
+    "objectID": "11-famd.html#variables-categóricas-y-modalidades",
+    "href": "11-famd.html#variables-categóricas-y-modalidades",
+    "title": "13  FAMD para datos mixtos",
+    "section": "13.10 Variables categóricas y modalidades",
+    "text": "13.10 Variables categóricas y modalidades\n\n\n\n\n\n\n\n\n\nLas modalidades representan centros de los individuos que las poseen. Modalidades alejadas del origen describen perfiles más específicos, pero pueden ser raras.\nPara una modalidad conviene examinar:\n\nsu coordenada y signo;\nsu contribución;\nsu cos²;\nsu frecuencia;\nel estadístico v.test.\n\nEl v.test estandariza la diferencia entre la media de los individuos de una modalidad y la media global sobre el eje. Su signo indica el lado de la dimensión. Un valor absoluto grande señala una asociación clara, pero no debe convertirse mecánicamente en una colección de contrastes independientes.\n\n\nCódigo\ndimension_1$modalidades |&gt;\n  select(etiqueta, coordenada, contribucion, cos2, v_test) |&gt;\n  kable(digits = 3)\n\n\n\n\n\netiqueta\ncoordenada\ncontribucion\ncos2\nv_test\n\n\n\n\ncyl: 4\n-3.038\n6.876\n0.940\n-4.697\n\n\ncyl: 8\n2.657\n6.696\n0.960\n5.007\n\n\nvs: Recto\n-2.474\n5.804\n0.942\n-4.661\n\n\ngear: 4\n-2.484\n5.017\n0.895\n-4.111\n\n\nvs: V\n1.924\n4.514\n0.942\n4.661\n\n\ngear: 3\n1.896\n3.652\n0.774\n3.805\n\n\ncarb: 1\n-2.583\n3.163\n0.689\n-2.920\n\n\ncarb: 4\n1.625\n1.789\n0.523\n2.341\n\n\ncarb: 3\n2.334\n1.107\n0.361\n1.604\n\n\ncarb: 8\n3.223\n0.703\n0.204\n1.236\n\n\n\n\n\nEn la primera dimensión se oponen, entre otros, cuatro cilindros, motor recto y cuatro marchas frente a ocho cilindros, motor en V y tres marchas. Las modalidades concretan la interpretación sugerida por las variables completas.",
+    "crumbs": [
+      "Bloque 3. Análisis de correspondencias y datos mixtos",
+      "<span class='chapter-number'>13</span>  <span class='chapter-title'>FAMD para datos mixtos</span>"
+    ]
+  },
+  {
+    "objectID": "11-famd.html#variables-suplementarias",
+    "href": "11-famd.html#variables-suplementarias",
+    "title": "13  FAMD para datos mixtos",
+    "section": "13.11 Variables suplementarias",
+    "text": "13.11 Variables suplementarias\nUna variable suplementaria se relaciona con las dimensiones después de construirlas. No tiene contribución porque no intervino en la optimización.\n\n\nCódigo\nresumen_famd$variables_suplementarias |&gt;\n  filter(dimension %in% c(\"Dim.1\", \"Dim.2\")) |&gt;\n  select(variable, dimension, coordenada, tipo) |&gt;\n  kable(digits = 3)\n\n\n\n\n\nvariable\ndimension\ncoordenada\ntipo\n\n\n\n\nam\nDim.1\n0.265\nCategórica suplementaria\n\n\nam\nDim.2\n0.452\nCategórica suplementaria\n\n\n\n\n\nComo am es categórica, su coordenada de variable es un \\(\\eta^2\\). La transmisión se relaciona más con la segunda dimensión que con la primera, pero esa asociación no demuestra causalidad.\nLas variables suplementarias son útiles para resultados externos, información demográfica o variables que deseamos interpretar sin permitir que definan el mapa.",
+    "crumbs": [
+      "Bloque 3. Análisis de correspondencias y datos mixtos",
+      "<span class='chapter-number'>13</span>  <span class='chapter-title'>FAMD para datos mixtos</span>"
+    ]
+  },
+  {
+    "objectID": "11-famd.html#famd-y-clustering",
+    "href": "11-famd.html#famd-y-clustering",
+    "title": "13  FAMD para datos mixtos",
+    "section": "13.12 FAMD y clustering",
+    "text": "13.12 FAMD y clustering\nLas coordenadas FAMD pueden alimentar un clustering porque convierten la información mixta en variables numéricas ortogonales. No debemos usar automáticamente solo las dos dimensiones visibles: el número de ejes debe elegirse según estructura y estabilidad.\nDespués de formar los grupos hay que regresar a las variables originales. Para ello pueden reutilizarse resumir_particion() con variables numéricas y tabla_composicion_clusters() con variables categóricas.\nFAMD y Gower ofrecen dos rutas diferentes:\n\nFAMD reduce dimensión y permite interpretar ejes antes del clustering;\nGower conserva una disimilitud construida directamente sobre las variables mixtas.\n\nLa elección depende de si queremos una representación factorial interpretable o trabajar directamente con proximidades.",
+    "crumbs": [
+      "Bloque 3. Análisis de correspondencias y datos mixtos",
+      "<span class='chapter-number'>13</span>  <span class='chapter-title'>FAMD para datos mixtos</span>"
+    ]
+  },
+  {
+    "objectID": "11-famd.html#decisiones-y-limitaciones",
+    "href": "11-famd.html#decisiones-y-limitaciones",
+    "title": "13  FAMD para datos mixtos",
+    "section": "13.13 Decisiones y limitaciones",
+    "text": "13.13 Decisiones y limitaciones\n\n13.13.1 Protocolo de decisión\n\nDefinir qué significa semejanza entre los individuos del problema.\nAsignar correctamente el tipo de cada variable.\nElegir variables activas y suplementarias antes de observar el mapa.\nRevisar escalas, asimetrías, valores ausentes y categorías raras.\nComprobar la inercia total inducida por cada tipo de variable.\nElegir dimensiones combinando inercia, cos² e interpretación.\nConstruir cada eje mediante contribuciones de variables.\nRecuperar dirección con correlaciones numéricas y modalidades categóricas.\nInterpretar individuos solo si están bien representados.\nVolver a las variables originales para validar cualquier conclusión o clustering.\n\n\n\n13.13.2 Valores ausentes y transformaciones\nLa imputación debe respetar el carácter mixto de los datos. Sustituir medias y modas por separado puede debilitar asociaciones. Para problemas reales puede utilizarse una imputación específica para FAMD, como missMDA::imputeFAMD(), estimando el número de dimensiones únicamente con los datos de entrenamiento si existe una tarea predictiva posterior.\nLas variables numéricas muy asimétricas o con outliers pueden necesitar transformación. Estandarizar no elimina la influencia de observaciones extremas.\n\n\n13.13.3 Errores frecuentes\n\nCodificar factores como enteros y aplicar PCA.\nAplicar una ponderación inventada por número de modalidades.\nCreer que todas las variables aportan exactamente la misma inercia total.\nIgnorar frecuencias de las modalidades.\nConfundir \\(r^2\\) o \\(\\eta^2\\) con contribución.\nInterpretar modalidades lejanas con cos² bajo.\nHacer activa una variable resultado y utilizarla después como validación externa.\nFormar clusters usando solo las dos dimensiones del gráfico.",
+    "crumbs": [
+      "Bloque 3. Análisis de correspondencias y datos mixtos",
+      "<span class='chapter-number'>13</span>  <span class='chapter-title'>FAMD para datos mixtos</span>"
+    ]
+  },
+  {
+    "objectID": "11-famd.html#funciones-utilizadas",
+    "href": "11-famd.html#funciones-utilizadas",
+    "title": "13  FAMD para datos mixtos",
+    "section": "13.15 Funciones utilizadas",
+    "text": "13.15 Funciones utilizadas\n\n\n\n\n\n\n\n\nFunción\nPara qué se usa\nUso básico\n\n\n\n\nFactoMineR::FAMD()\nAjustar FAMD y declarar variables suplementarias.\nFactoMineR::FAMD(datos, sup.var = indices, graph = FALSE)\n\n\ntransformar_datos_famd()\nConstruir la matriz numérica transformada que explica la geometría.\nX &lt;- transformar_datos_famd(datos_activos)\n\n\nresumir_famd()\nReunir inercia, variables, modalidades e individuos.\nresumen &lt;- resumir_famd(ajuste)\n\n\nvisualizar_inercia_famd()\nRepresentar la inercia explicada.\nvisualizar_inercia_famd(ajuste)\n\n\nvisualizar_individuos_famd()\nDibujar individuos y un grupo suplementario opcional.\nvisualizar_individuos_famd(ajuste, grupo = grupo)\n\n\ncalidad_individuos_famd()\nIdentificar individuos mal representados en un plano.\ncalidad_individuos_famd(ajuste)\n\n\nvisualizar_asociacion_variables_famd()\nComparar \\(r^2\\) y \\(\\eta^2\\) por dimensión.\nvisualizar_asociacion_variables_famd(ajuste)\n\n\nresumir_dimension_famd()\nOrdenar variables y modalidades importantes en un eje.\nresumir_dimension_famd(ajuste, 1)\n\n\nvisualizar_contribuciones_famd()\nMostrar variables que construyen una dimensión.\nvisualizar_contribuciones_famd(ajuste, 1)\n\n\nvisualizar_numericas_famd()\nDibujar el círculo de correlaciones numéricas.\nvisualizar_numericas_famd(ajuste)\n\n\nvisualizar_modalidades_famd()\nRepresentar las modalidades categóricas.\nvisualizar_modalidades_famd(ajuste)",
+    "crumbs": [
+      "Bloque 3. Análisis de correspondencias y datos mixtos",
+      "<span class='chapter-number'>13</span>  <span class='chapter-title'>FAMD para datos mixtos</span>"
+    ]
+  },
+  {
+    "objectID": "12-discriminante.html#de-describir-grupos-a-predecir-clases",
+    "href": "12-discriminante.html#de-describir-grupos-a-predecir-clases",
+    "title": "14  Análisis discriminante",
+    "section": "",
+    "text": "¿qué combinaciones de medidas separan las especies?\n¿con qué probabilidad asignamos una nueva flor a cada clase?\n¿qué tipos de error comete el modelo?\n¿son adecuadas fronteras lineales o necesitamos mayor flexibilidad?\n¿cómo cambian las decisiones si las clases o los errores tienen distinta importancia?\n\n\n\n\n\n\n\nAdvertencia\n\n\n\nSeparar visualmente los grupos en los datos de entrenamiento no demuestra capacidad predictiva. La evaluación debe utilizar observaciones que no participaron en el ajuste.",
+    "crumbs": [
+      "Bloque 4. Análisis discriminante",
+      "<span class='chapter-number'>14</span>  <span class='chapter-title'>Análisis discriminante</span>"
+    ]
+  },
+  {
+    "objectID": "12-discriminante.html#clasificación-mediante-la-regla-de-bayes",
+    "href": "12-discriminante.html#clasificación-mediante-la-regla-de-bayes",
+    "title": "14  Análisis discriminante",
+    "section": "14.2 Clasificación mediante la regla de Bayes",
+    "text": "14.2 Clasificación mediante la regla de Bayes\nSea \\(Y\\in\\{1,\\ldots,G\\}\\) la clase y \\(X\\in\\mathbb{R}^p\\) el vector de predictores. Para cada clase necesitamos:\n\nuna probabilidad previa o prior \\(\\pi_g=P(Y=g)\\);\nuna densidad condicional \\(f_g(x)=f(X=x\\mid Y=g)\\).\n\nEl teorema de Bayes proporciona la probabilidad posterior:\n\\[\nP(Y=g\\mid X=x)\n=\\frac{\\pi_g f_g(x)}\n{\\sum_{h=1}^{G}\\pi_h f_h(x)}.\n\\]\nSi todos los errores tienen el mismo coste, la regla óptima asigna:\n\\[\n\\widehat y(x)=\\arg\\max_g P(Y=g\\mid X=x).\n\\]\nEsta regla minimiza la probabilidad teórica de error cuando priors y densidades son correctos. LDA y QDA se diferencian por cómo modelan \\(f_g(x)\\).\n\n14.2.1 Priors y evidencia de los predictores\nLos priors representan la prevalencia de las clases antes de observar \\(x\\). La densidad condicional indica cuánto se parece el nuevo individuo a cada grupo. La posterior combina ambos elementos.\nUna clase rara puede necesitar evidencia predictiva fuerte para superar a una clase frecuente. Por eso modificar priors no es un detalle técnico: cambia las fronteras de decisión.",
+    "crumbs": [
+      "Bloque 4. Análisis discriminante",
+      "<span class='chapter-number'>14</span>  <span class='chapter-title'>Análisis discriminante</span>"
+    ]
+  },
+  {
+    "objectID": "12-discriminante.html#modelo-normal-multivariante",
+    "href": "12-discriminante.html#modelo-normal-multivariante",
+    "title": "14  Análisis discriminante",
+    "section": "14.3 Modelo normal multivariante",
+    "text": "14.3 Modelo normal multivariante\nLDA y QDA suponen que, dentro de cada clase,\n\\[\nX\\mid Y=g\\sim\\mathcal N_p(\\mu_g,\\Sigma_g).\n\\]\nLa densidad es:\n\\[\nf_g(x)=\n\\frac{1}{(2\\pi)^{p/2}|\\Sigma_g|^{1/2}}\n\\exp\\left\\{-\\frac12\n(x-\\mu_g)^\\top\\Sigma_g^{-1}(x-\\mu_g)\n\\right\\}.\n\\]\nEl término cuadrático es la distancia de Mahalanobis a la media de la clase. Una diferencia en una dirección de poca variabilidad pesa más que la misma diferencia en una dirección muy variable, y las correlaciones modifican la forma de las regiones de igual densidad.\nTomando logaritmos y eliminando la constante común \\(-p\\log(2\\pi)/2\\), obtenemos:\n\\[\n\\delta_g(x)=\n-\\frac12\\log|\\Sigma_g|\n-\\frac12(x-\\mu_g)^\\top\\Sigma_g^{-1}(x-\\mu_g)\n+\\log\\pi_g.\n\\]\nClasificar por la mayor posterior equivale a elegir la clase con mayor \\(\\delta_g(x)\\).",
+    "crumbs": [
+      "Bloque 4. Análisis discriminante",
+      "<span class='chapter-number'>14</span>  <span class='chapter-title'>Análisis discriminante</span>"
+    ]
+  },
+  {
+    "objectID": "12-discriminante.html#separación-entre-entrenamiento-y-test",
+    "href": "12-discriminante.html#separación-entre-entrenamiento-y-test",
+    "title": "14  Análisis discriminante",
+    "section": "14.4 Separación entre entrenamiento y test",
+    "text": "14.4 Separación entre entrenamiento y test\nUsaremos una división estratificada para conservar aproximadamente la proporción de cada especie.\n\n\nCódigo\nparticion &lt;- particionar_clasificacion(\n  iris,\n  respuesta = \"Species\",\n  proporcion = 0.70,\n  semilla = 123\n)\nentrenamiento &lt;- particion$entrenamiento\ntest &lt;- particion$test\n\nkable(table(entrenamiento$Species), col.names = c(\"Especie\", \"Entrenamiento\"))\n\n\n\n\n\nEspecie\nEntrenamiento\n\n\n\n\nsetosa\n35\n\n\nversicolor\n35\n\n\nvirginica\n35\n\n\n\n\n\nCódigo\nkable(table(test$Species), col.names = c(\"Especie\", \"Test\"))\n\n\n\n\n\nEspecie\nTest\n\n\n\n\nsetosa\n15\n\n\nversicolor\n15\n\n\nvirginica\n15\n\n\n\n\n\nEl conjunto de entrenamiento sirve para estimar parámetros y comparar alternativas mediante validación cruzada. El test debe reservarse para una evaluación final.\nSon fugas de información:\n\nestandarizar usando conjuntamente entrenamiento y test;\nseleccionar variables mirando el rendimiento del test;\nelegir LDA o QDA por su resultado en test y presentar ese mismo resultado como evaluación final;\najustar PCA u otra reducción con todos los individuos antes de separar.",
+    "crumbs": [
+      "Bloque 4. Análisis discriminante",
+      "<span class='chapter-number'>14</span>  <span class='chapter-title'>Análisis discriminante</span>"
+    ]
+  },
+  {
+    "objectID": "12-discriminante.html#análisis-discriminante-lineal",
+    "href": "12-discriminante.html#análisis-discriminante-lineal",
+    "title": "14  Análisis discriminante",
+    "section": "14.5 Análisis discriminante lineal",
+    "text": "14.5 Análisis discriminante lineal\n\n14.5.1 Supuesto de covarianza común\nLDA supone:\n\\[\n\\Sigma_1=\\cdots=\\Sigma_G=\\Sigma.\n\\]\nAl expandir la forma cuadrática,\n\\[\n(x-\\mu_g)^\\top\\Sigma^{-1}(x-\\mu_g)\n=x^\\top\\Sigma^{-1}x\n-2x^\\top\\Sigma^{-1}\\mu_g\n+\\mu_g^\\top\\Sigma^{-1}\\mu_g,\n\\]\nel término \\(x^\\top\\Sigma^{-1}x\\) es común a todas las clases y se cancela. También se cancela \\(\\log|\\Sigma|\\). La función discriminante queda:\n\\[\n\\delta_g^{LDA}(x)=\nx^\\top\\Sigma^{-1}\\mu_g\n-\\frac12\\mu_g^\\top\\Sigma^{-1}\\mu_g\n+\\log\\pi_g.\n\\]\nEs una función lineal de \\(x\\). La frontera entre las clases \\(g\\) y \\(h\\) satisface:\n\\[\n\\delta_g^{LDA}(x)=\\delta_h^{LDA}(x),\n\\]\ny por tanto es un hiperplano.\n\n\n14.5.2 Estimación\nLas medias se estiman dentro de cada clase. La covarianza común se estima agrupando la variabilidad interna:\n\\[\n\\widehat\\Sigma=\n\\frac{1}{n-G}\n\\sum_{g=1}^{G}\n\\sum_{i:Y_i=g}\n(x_i-\\bar x_g)(x_i-\\bar x_g)^\\top.\n\\]\nEl denominador \\(n-G\\) refleja que se han estimado \\(G\\) medias. Los priors predeterminados de MASS::lda() son las proporciones observadas en entrenamiento.\n\n\nCódigo\nformula_modelo &lt;- Species ~ Sepal.Length + Sepal.Width + Petal.Length + Petal.Width\n\najuste_lda &lt;- MASS::lda(\n  formula_modelo,\n  data = entrenamiento\n)\n\nresumen_lda &lt;- resumir_lda(ajuste_lda)\nkable(resumen_lda$priors, digits = 3)\n\n\n\n\n\nclase\nprior\n\n\n\n\nsetosa\n0.333\n\n\nversicolor\n0.333\n\n\nvirginica\n0.333\n\n\n\n\n\nCódigo\nkable(resumen_lda$medias, digits = 3)\n\n\n\n\n\nclase\nSepal.Length\nSepal.Width\nPetal.Length\nPetal.Width\n\n\n\n\nsetosa\n4.991\n3.366\n1.471\n0.231\n\n\nversicolor\n5.943\n2.777\n4.263\n1.329\n\n\nvirginica\n6.631\n2.983\n5.591\n2.034\n\n\n\n\n\n\n\n14.5.3 Revisar el supuesto de covarianzas\nNo debemos decidir únicamente con una prueba formal. Conviene comparar dispersión, correlaciones, tamaño de las clases y estabilidad esperada.\n\n\n\n\n\n\n\n\n\nLas matrices se muestran después de una estandarización global para que las escalas sean comparables. Diferencias moderadas no invalidan automáticamente LDA: su covarianza común reduce varianza de estimación y puede predecir mejor que un modelo más flexible.",
+    "crumbs": [
+      "Bloque 4. Análisis discriminante",
+      "<span class='chapter-number'>14</span>  <span class='chapter-title'>Análisis discriminante</span>"
+    ]
+  },
+  {
+    "objectID": "12-discriminante.html#análisis-discriminante-cuadrático",
+    "href": "12-discriminante.html#análisis-discriminante-cuadrático",
+    "title": "14  Análisis discriminante",
+    "section": "14.6 Análisis discriminante cuadrático",
+    "text": "14.6 Análisis discriminante cuadrático\nQDA permite una matriz diferente en cada clase. Mantiene la función general:\n\\[\n\\delta_g^{QDA}(x)=\n-\\frac12\\log|\\Sigma_g|\n-\\frac12(x-\\mu_g)^\\top\\Sigma_g^{-1}(x-\\mu_g)\n+\\log\\pi_g.\n\\]\nAhora el término \\(x^\\top\\Sigma_g^{-1}x\\) depende de la clase y no se cancela. La igualdad entre dos funciones discriminantes genera una frontera cuadrática.\n\n\nCódigo\najuste_qda &lt;- MASS::qda(\n  formula_modelo,\n  data = entrenamiento\n)\n\n\nQDA estima \\(G\\) matrices con \\(p(p+1)/2\\) parámetros cada una. LDA estima una sola. QDA puede adaptarse a formas distintas, pero necesita muchas más observaciones por clase y es más sensible a covarianzas casi singulares.\n\n14.6.1 Fronteras lineales y cuadráticas\nPara ver las fronteras utilizamos solo longitud y anchura del pétalo. Estos modelos bidimensionales son ilustrativos y no sustituyen a los modelos de cuatro predictores.\n\n\nCódigo\nlda_2d &lt;- MASS::lda(\n  Species ~ Petal.Length + Petal.Width,\n  data = entrenamiento\n)\nqda_2d &lt;- MASS::qda(\n  Species ~ Petal.Length + Petal.Width,\n  data = entrenamiento\n)\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nLa mayor flexibilidad de QDA no garantiza menor error fuera de muestra. Existe un compromiso entre sesgo y varianza: LDA impone más estructura y estima menos parámetros; QDA se adapta más, pero sus fronteras son menos estables.",
+    "crumbs": [
+      "Bloque 4. Análisis discriminante",
+      "<span class='chapter-number'>14</span>  <span class='chapter-title'>Análisis discriminante</span>"
+    ]
+  },
+  {
+    "objectID": "12-discriminante.html#selección-mediante-validación-cruzada",
+    "href": "12-discriminante.html#selección-mediante-validación-cruzada",
+    "title": "14  Análisis discriminante",
+    "section": "14.7 Selección mediante validación cruzada",
+    "text": "14.7 Selección mediante validación cruzada\nPodemos comparar métodos dentro del entrenamiento mediante validación cruzada estratificada. Cada observación se predice con un modelo que no la utilizó para estimar parámetros.\n\n\nCódigo\ncv_lda &lt;- validacion_cruzada_discriminante(\n  entrenamiento,\n  \"Species\",\n  metodo = \"lda\",\n  k = 5,\n  semilla = 123\n)\ncv_qda &lt;- validacion_cruzada_discriminante(\n  entrenamiento,\n  \"Species\",\n  metodo = \"qda\",\n  k = 5,\n  semilla = 123\n)\n\nbind_rows(\n  cv_lda$evaluacion$global |&gt; mutate(modelo = \"LDA\", .before = 1),\n  cv_qda$evaluacion$global |&gt; mutate(modelo = \"QDA\", .before = 1)\n) |&gt;\n  kable(digits = 3)\n\n\n\n\n\nmodelo\naccuracy\nbalanced_accuracy\nmacro_f1\n\n\n\n\nLDA\n0.971\n0.971\n0.971\n\n\nQDA\n0.990\n0.990\n0.990\n\n\n\n\n\nUna única partición de validación cruzada también tiene variabilidad. En un análisis real podríamos repetirla o usar validación cruzada anidada si además seleccionamos variables o hiperparámetros.",
+    "crumbs": [
+      "Bloque 4. Análisis discriminante",
+      "<span class='chapter-number'>14</span>  <span class='chapter-title'>Análisis discriminante</span>"
+    ]
+  },
+  {
+    "objectID": "12-discriminante.html#evaluación-final-en-test",
+    "href": "12-discriminante.html#evaluación-final-en-test",
+    "title": "14  Análisis discriminante",
+    "section": "14.8 Evaluación final en test",
+    "text": "14.8 Evaluación final en test\n\n\nCódigo\ncomparacion &lt;- comparar_modelos_discriminantes(\n  modelos = list(LDA = ajuste_lda, QDA = ajuste_qda),\n  datos_test = test,\n  respuesta = \"Species\"\n)\n\nkable(comparacion$metricas, digits = 3)\n\n\n\n\n\nmodelo\naccuracy\nbalanced_accuracy\nmacro_f1\n\n\n\n\nLDA\n0.978\n0.978\n0.978\n\n\nQDA\n0.978\n0.978\n0.978\n\n\n\n\n\nEl test se utiliza ahora una sola vez. Si ambos métodos tienen resultados similares, suele ser razonable preferir el más estable y sencillo salvo que el coste de errores concretos indique otra cosa.",
+    "crumbs": [
+      "Bloque 4. Análisis discriminante",
+      "<span class='chapter-number'>14</span>  <span class='chapter-title'>Análisis discriminante</span>"
+    ]
+  },
+  {
+    "objectID": "12-discriminante.html#probabilidades-posteriores-e-incertidumbre",
+    "href": "12-discriminante.html#probabilidades-posteriores-e-incertidumbre",
+    "title": "14  Análisis discriminante",
+    "section": "14.10 Probabilidades posteriores e incertidumbre",
+    "text": "14.10 Probabilidades posteriores e incertidumbre\nLa clase predicha oculta cuánta duda tenía el modelo. predict() devuelve probabilidades posteriores para todas las clases.\n\n\nCódigo\nprediccion_lda &lt;- comparacion$resultados$LDA$prediccion\n\nresumir_predicciones_discriminantes(\n  prediccion_lda,\n  observado = test$Species,\n  id = rownames(test)\n) |&gt;\n  head(10) |&gt;\n  kable(digits = 3)\n\n\n\n\n\nid\npredicho\nprobabilidad_maxima\nmargen\nobservado\nacierto\n\n\n\n\n120\nvirginica\n0.700\n0.399\nvirginica\nTRUE\n\n\n78\nversicolor\n0.717\n0.434\nversicolor\nTRUE\n\n\n134\nversicolor\n0.761\n0.521\nvirginica\nFALSE\n\n\n127\nvirginica\n0.787\n0.575\nvirginica\nTRUE\n\n\n124\nvirginica\n0.890\n0.780\nvirginica\nTRUE\n\n\n85\nversicolor\n0.973\n0.947\nversicolor\nTRUE\n\n\n150\nvirginica\n0.987\n0.974\nvirginica\nTRUE\n\n\n111\nvirginica\n0.991\n0.982\nvirginica\nTRUE\n\n\n117\nvirginica\n0.996\n0.992\nvirginica\nTRUE\n\n\n64\nversicolor\n0.997\n0.993\nversicolor\nTRUE\n\n\n\n\n\nLa probabilidad máxima mide confianza absoluta. El margen entre las dos mayores posteriores mide ambigüedad entre las mejores alternativas. Los casos con margen pequeño merecen revisión, aunque las probabilidades solo deben interpretarse literalmente si están razonablemente calibradas.",
+    "crumbs": [
+      "Bloque 4. Análisis discriminante",
+      "<span class='chapter-number'>14</span>  <span class='chapter-title'>Análisis discriminante</span>"
+    ]
+  },
+  {
+    "objectID": "12-discriminante.html#priors-y-costes-de-error",
+    "href": "12-discriminante.html#priors-y-costes-de-error",
+    "title": "14  Análisis discriminante",
+    "section": "14.11 Priors y costes de error",
+    "text": "14.11 Priors y costes de error\n\n14.11.1 Cambiar los priors\nPodemos proporcionar priors poblacionales:\n\n\nCódigo\najuste_lda_priors_iguales &lt;- MASS::lda(\n  formula_modelo,\n  data = entrenamiento,\n  prior = rep(1 / 3, 3)\n)\n\n\nEsto es apropiado si la muestra de entrenamiento fue equilibrada artificialmente o si conocemos prevalencias poblacionales distintas. Los priors no deben elegirse para mejorar retrospectivamente el test.\n\n\n14.11.2 Costes asimétricos\nSi \\(C(g,d)\\) es el coste de decidir \\(d\\) cuando la clase real es \\(g\\), la decisión óptima minimiza el coste posterior esperado:\n\\[\nR(d\\mid x)=\\sum_g C(g,d)P(Y=g\\mid X=x).\n\\]\n\n\nCódigo\nclases &lt;- levels(iris$Species)\ncostes &lt;- matrix(\n  1,\n  nrow = 3,\n  ncol = 3,\n  dimnames = list(real = clases, decision = clases)\n)\ndiag(costes) &lt;- 0\ncostes[\"virginica\", \"versicolor\"] &lt;- 3\n\nprediccion_costes &lt;- clasificar_con_costes(\n  prediccion_lda$posterior,\n  costes\n)\nkable(table(prediccion_estandar = prediccion_lda$class, prediccion_costes))\n\n\n\n\n\n\nsetosa\nversicolor\nvirginica\n\n\n\n\nsetosa\n15\n0\n0\n\n\nversicolor\n0\n15\n1\n\n\nvirginica\n0\n0\n14\n\n\n\n\n\nAl penalizar más confundir virginica con versicolor, la regla puede exigir mayor evidencia antes de decidir versicolor. Cambiar costes modifica la decisión, no el modelo de densidades.",
+    "crumbs": [
+      "Bloque 4. Análisis discriminante",
+      "<span class='chapter-number'>14</span>  <span class='chapter-title'>Análisis discriminante</span>"
+    ]
+  },
+  {
+    "objectID": "12-discriminante.html#ejes-canónicos-discriminantes",
+    "href": "12-discriminante.html#ejes-canónicos-discriminantes",
+    "title": "14  Análisis discriminante",
+    "section": "14.12 Ejes canónicos discriminantes",
+    "text": "14.12 Ejes canónicos discriminantes\nLDA también ofrece una representación supervisada. Sea:\n\\[\nW=\\sum_{g=1}^{G}\\sum_{i:Y_i=g}\n(x_i-\\bar x_g)(x_i-\\bar x_g)^\\top\n\\]\nla dispersión dentro de clases, y\n\\[\nB=\\sum_{g=1}^{G}n_g\n(\\bar x_g-\\bar x)(\\bar x_g-\\bar x)^\\top\n\\]\nla dispersión entre clases. La primera dirección discriminante maximiza:\n\\[\nJ(a)=\\frac{a^\\top Ba}{a^\\top Wa}.\n\\]\nEl problema conduce a los autovectores generalizados:\n\\[\nBa=\\lambda Wa.\n\\]\nLas direcciones posteriores maximizan separación adicional bajo ortogonalidad en la métrica de \\(W\\). Solo pueden existir:\n\\[\n\\min(p,G-1)\n\\]\nejes discriminantes, porque las \\(G\\) medias de clase generan como máximo \\(G-1\\) direcciones independientes.\n\n\nCódigo\nkable(resumen_lda$ejes, digits = 3)\n\n\n\n\n\neje\nautovalor\nproporcion_separacion\nacumulado\n\n\n\n\nLD1\n1734.669\n0.992\n0.992\n\n\nLD2\n14.049\n0.008\n1.000\n\n\n\n\n\nCódigo\nkable(resumen_lda$coeficientes, digits = 3)\n\n\n\n\n\nvariable\nLD1\nLD2\n\n\n\n\nSepal.Length\n0.860\n-0.025\n\n\nSepal.Width\n1.388\n-2.375\n\n\nPetal.Length\n-2.273\n0.898\n\n\nPetal.Width\n-2.914\n-2.687\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nLa primera dirección recoge casi toda la separación entre especies. Los coeficientes describen combinaciones lineales, pero dependen de las escalas y de las correlaciones entre predictores; no son una medida aislada de importancia causal.\n\n14.12.1 Diferencia con PCA\nPCA maximiza varianza total sin conocer las clases:\n\\[\n\\max_a a^\\top Sa.\n\\]\nLDA maximiza variación entre clases en relación con la variación interna:\n\\[\n\\max_a\\frac{a^\\top Ba}{a^\\top Wa}.\n\\]\nUna dirección con mucha variabilidad puede ser inútil para clasificar si esa variabilidad ocurre dentro de todas las clases. A la inversa, una dirección de varianza total pequeña puede separar muy bien sus medias.",
+    "crumbs": [
+      "Bloque 4. Análisis discriminante",
+      "<span class='chapter-number'>14</span>  <span class='chapter-title'>Análisis discriminante</span>"
+    ]
+  },
+  {
+    "objectID": "12-discriminante.html#supuestos-estabilidad-y-alternativas",
+    "href": "12-discriminante.html#supuestos-estabilidad-y-alternativas",
+    "title": "14  Análisis discriminante",
+    "section": "14.13 Supuestos, estabilidad y alternativas",
+    "text": "14.13 Supuestos, estabilidad y alternativas\nLDA y QDA son modelos generativos. Sus principales riesgos son:\n\ndistribuciones condicionales muy alejadas de la normalidad;\noutliers que distorsionan medias y covarianzas;\npredictores redundantes o covarianzas singulares;\npocas observaciones por clase en relación con \\(p\\);\npriors de entrenamiento distintos de los poblacionales;\nclases desequilibradas y costes asimétricos ignorados.\n\nLDA suele tolerar mejor muestras moderadas porque agrupa covarianzas. QDA necesita estimar e invertir una matriz por clase. Si \\(p\\) es grande respecto a \\(n_g\\), pueden ser necesarios selección de variables, reducción de dimensión realizada dentro de cada pliegue o análisis discriminante regularizado.\nLa normalidad exacta no es imprescindible para que LDA clasifique razonablemente, pero sí afecta a la interpretación probabilística de las posteriores.",
+    "crumbs": [
+      "Bloque 4. Análisis discriminante",
+      "<span class='chapter-number'>14</span>  <span class='chapter-title'>Análisis discriminante</span>"
+    ]
+  },
+  {
+    "objectID": "12-discriminante.html#protocolo-de-decisión",
+    "href": "12-discriminante.html#protocolo-de-decisión",
+    "title": "14  Análisis discriminante",
+    "section": "14.14 Protocolo de decisión",
+    "text": "14.14 Protocolo de decisión\n\nDefinir la población, las clases y el coste de los errores.\nReservar test antes de cualquier decisión guiada por los datos.\nRevisar tamaños de clase, outliers, redundancia y covarianzas.\nEstablecer priors coherentes con la población objetivo.\nComparar LDA y QDA mediante validación dentro del entrenamiento.\nElegir métricas acordes con desequilibrio y costes.\nAjustar el modelo elegido con todo el entrenamiento.\nEvaluar una vez en test mediante matriz de confusión y métricas por clase.\nRevisar probabilidades y casos ambiguos.\nDocumentar cambios de prevalencia, costes o población que exigirían recalibrar el sistema.",
+    "crumbs": [
+      "Bloque 4. Análisis discriminante",
+      "<span class='chapter-number'>14</span>  <span class='chapter-title'>Análisis discriminante</span>"
+    ]
+  },
+  {
+    "objectID": "12-discriminante.html#funciones-utilizadas",
+    "href": "12-discriminante.html#funciones-utilizadas",
+    "title": "14  Análisis discriminante",
+    "section": "14.17 Funciones utilizadas",
+    "text": "14.17 Funciones utilizadas\n\n\n\n\n\n\n\n\nFunción\nPara qué se usa\nUso básico\n\n\n\n\nparticionar_clasificacion()\nCrear una división estratificada de entrenamiento y test.\nparticionar_clasificacion(datos, \"clase\")\n\n\nMASS::lda()\nAjustar análisis discriminante lineal.\nMASS::lda(clase ~ ., entrenamiento)\n\n\nMASS::qda()\nAjustar análisis discriminante cuadrático.\nMASS::qda(clase ~ ., entrenamiento)\n\n\nvalidacion_cruzada_discriminante()\nObtener predicciones fuera de pliegue dentro del entrenamiento.\nvalidacion_cruzada_discriminante(datos, \"clase\", \"lda\")\n\n\ncomparar_modelos_discriminantes()\nComparar varios modelos sobre el mismo test.\ncomparar_modelos_discriminantes(modelos, test, \"clase\")\n\n\nevaluar_clasificacion()\nCalcular matriz y métricas globales y por clase.\nevaluar_clasificacion(real, predicho)\n\n\nvisualizar_matriz_confusion()\nMostrar conteos o porcentajes con diagonal convencional.\nvisualizar_matriz_confusion(evaluacion, \"porcentaje_fila\")\n\n\nresumir_predicciones_discriminantes()\nIdentificar predicciones inciertas mediante posteriores y márgenes.\nresumir_predicciones_discriminantes(prediccion, real)\n\n\nresumir_lda()\nExtraer priors, medias, coeficientes y separación canónica.\nresumir_lda(ajuste)\n\n\nvisualizar_ejes_discriminantes()\nRepresentar los ejes canónicos de LDA.\nvisualizar_ejes_discriminantes(ajuste, datos, \"clase\")\n\n\nvisualizar_fronteras_discriminantes()\nDibujar regiones de decisión cuando hay dos predictores.\nvisualizar_fronteras_discriminantes(ajuste, datos, \"clase\", variables)\n\n\nvisualizar_covarianzas_grupos()\nComparar covarianzas internas de las clases.\nvisualizar_covarianzas_grupos(datos, \"clase\", variables)\n\n\nclasificar_con_costes()\nElegir clases minimizando coste posterior esperado.\nclasificar_con_costes(posteriores, costes)",
+    "crumbs": [
+      "Bloque 4. Análisis discriminante",
+      "<span class='chapter-number'>14</span>  <span class='chapter-title'>Análisis discriminante</span>"
     ]
   }
 ]
