@@ -22,14 +22,23 @@ resumir_tabla_contingencia <- function(tabla) {
     nrow = nrow(tabla),
     dimnames = dimnames(tabla)
   )
-  residuos <- matrix(
+  residuos_pearson <- matrix(
     as.numeric(prueba$residuals),
+    nrow = nrow(tabla),
+    dimnames = dimnames(tabla)
+  )
+  residuos_ajustados <- matrix(
+    as.numeric(prueba$stdres),
     nrow = nrow(tabla),
     dimnames = dimnames(tabla)
   )
 
   masas_fila <- rowSums(tabla) / n
   masas_columna <- colSums(tabla) / n
+  v_cramer <- sqrt(
+    as.numeric(prueba$statistic) /
+      (n * min(nrow(tabla) - 1, ncol(tabla) - 1))
+  )
 
   list(
     frecuencias = tabla,
@@ -39,12 +48,17 @@ resumir_tabla_contingencia <- function(tabla) {
     masas_fila = tibble::tibble(categoria = rownames(tabla), masa = as.numeric(masas_fila)),
     masas_columna = tibble::tibble(categoria = colnames(tabla), masa = as.numeric(masas_columna)),
     esperadas = esperadas,
-    residuos = residuos,
+    residuos = residuos_pearson,
+    residuos_pearson = residuos_pearson,
+    residuos_ajustados = residuos_ajustados,
     prueba_chi2 = tibble::tibble(
       chi2 = as.numeric(prueba$statistic),
       gl = as.numeric(prueba$parameter),
       p_valor = prueba$p.value,
-      inercia = as.numeric(prueba$statistic) / n
+      v_cramer = v_cramer,
+      inercia = as.numeric(prueba$statistic) / n,
+      esperada_minima = min(prueba$expected),
+      porcentaje_esperadas_menor_5 = 100 * mean(prueba$expected < 5)
     )
   )
 }
@@ -72,7 +86,11 @@ visualizar_distancias_chi2 <- function(tabla, margen = c("filas", "columnas")) {
   margen <- match.arg(margen)
   matriz <- as.matrix(distancias_chi2(tabla, margen))
   datos <- tibble::as_tibble(matriz, rownames = "categoria_1") |>
-    tidyr::pivot_longer(-categoria_1, names_to = "categoria_2", values_to = "distancia")
+    tidyr::pivot_longer(-categoria_1, names_to = "categoria_2", values_to = "distancia") |>
+    dplyr::mutate(
+      categoria_1 = factor(categoria_1, levels = rownames(matriz)),
+      categoria_2 = factor(categoria_2, levels = rev(colnames(matriz)))
+    )
 
   ggplot2::ggplot(datos, ggplot2::aes(categoria_1, categoria_2, fill = distancia)) +
     ggplot2::geom_tile(color = "white") +
@@ -87,24 +105,42 @@ visualizar_distancias_chi2 <- function(tabla, margen = c("filas", "columnas")) {
     ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 45, hjust = 1))
 }
 
-visualizar_residuos_correspondencias <- function(tabla) {
-  residuos <- resumir_tabla_contingencia(tabla)$residuos
+visualizar_residuos_correspondencias <- function(
+  tabla,
+  tipo = c("pearson", "ajustados"),
+  mostrar_numeros = TRUE
+) {
+  tipo <- match.arg(tipo)
+  resumen <- resumir_tabla_contingencia(tabla)
+  residuos <- if (tipo == "pearson") {
+    resumen$residuos_pearson
+  } else {
+    resumen$residuos_ajustados
+  }
   datos <- tibble::as_tibble(residuos, rownames = "fila") |>
     tidyr::pivot_longer(-fila, names_to = "columna", values_to = "residuo")
   limite <- max(abs(datos$residuo))
 
-  ggplot2::ggplot(datos, ggplot2::aes(columna, fila, fill = residuo)) +
+  grafico <- ggplot2::ggplot(datos, ggplot2::aes(columna, fila, fill = residuo)) +
     ggplot2::geom_tile(color = "white") +
-    ggplot2::geom_text(ggplot2::aes(label = sprintf("%.2f", residuo))) +
     ggplot2::scale_fill_gradient2(
       low = "#b2182b", mid = "white", high = "#2166ac",
       midpoint = 0, limits = c(-limite, limite)
     ) +
     ggplot2::labs(
-      title = "Residuos respecto a la independencia",
+      title = paste(
+        "Residuos",
+        if (tipo == "pearson") "de Pearson" else "ajustados"
+      ),
       x = NULL, y = NULL, fill = "Residuo"
     ) +
     ggplot2::theme_minimal()
+
+  if (mostrar_numeros) {
+    grafico <- grafico +
+      ggplot2::geom_text(ggplot2::aes(label = sprintf("%.2f", residuo)))
+  }
+  grafico
 }
 
 resumir_correspondencias <- function(ajuste) {
@@ -155,14 +191,24 @@ visualizar_correspondencias <- function(
   ajuste,
   tipo = c("ambos", "filas", "columnas"),
   ejes = c(1, 2),
-  etiquetas = TRUE
+  etiquetas = TRUE,
+  escalado = c("simetrico", "filas", "columnas")
 ) {
   tipo <- match.arg(tipo)
-  resumen <- resumir_correspondencias(ajuste)
+  escalado <- match.arg(escalado)
   nombres_dim <- colnames(ajuste$row$coord)[ejes]
+  valores_singulares <- sqrt(ajuste$eig[ejes, 1])
 
   preparar <- function(elemento, etiqueta_tipo) {
-    tibble::as_tibble(elemento$coord[, ejes, drop = FALSE], rownames = "categoria") |>
+    coordenadas <- elemento$coord[, ejes, drop = FALSE]
+    usar_estandar <-
+      (escalado == "filas" && etiqueta_tipo == "Columnas") ||
+      (escalado == "columnas" && etiqueta_tipo == "Filas")
+    if (usar_estandar) {
+      coordenadas <- sweep(coordenadas, 2, valores_singulares, "/")
+    }
+
+    tibble::as_tibble(coordenadas, rownames = "categoria") |>
       dplyr::mutate(tipo = etiqueta_tipo)
   }
   datos <- dplyr::bind_rows(
@@ -180,13 +226,21 @@ visualizar_correspondencias <- function(
     ggplot2::geom_hline(yintercept = 0, linetype = "dashed", color = "gray70") +
     ggplot2::geom_vline(xintercept = 0, linetype = "dashed", color = "gray70") +
     ggplot2::geom_point(size = 3) +
+    ggplot2::scale_x_continuous(expand = ggplot2::expansion(mult = 0.15)) +
+    ggplot2::scale_y_continuous(expand = ggplot2::expansion(mult = 0.15)) +
     ggplot2::coord_equal() +
     ggplot2::labs(
-      title = "Mapa de correspondencias",
+      title = paste("Mapa de correspondencias:", escalado),
       x = nombres_dim[1], y = nombres_dim[2], color = NULL, shape = NULL
     ) +
     ggplot2::theme_minimal()
-  if (etiquetas) grafico <- grafico + ggplot2::geom_text(vjust = -0.7, check_overlap = TRUE)
+  if (etiquetas) {
+    grafico <- grafico + ggplot2::geom_text(
+      vjust = -0.7,
+      check_overlap = TRUE,
+      show.legend = FALSE
+    )
+  }
   grafico
 }
 

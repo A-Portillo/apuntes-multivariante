@@ -375,16 +375,18 @@ window.Quarto = {
   <li><a href="#de-una-tabla-a-una-pregunta-geométrica" id="toc-de-una-tabla-a-una-pregunta-geométrica" class="nav-link" data-scroll-target="#de-una-tabla-a-una-pregunta-geométrica"><span class="header-section-number">11.1.2</span> De una tabla a una pregunta geométrica</a></li>
   <li><a href="#tabla-de-contingencia" id="toc-tabla-de-contingencia" class="nav-link" data-scroll-target="#tabla-de-contingencia"><span class="header-section-number">11.1.3</span> Tabla de contingencia</a></li>
   <li><a href="#independencia" id="toc-independencia" class="nav-link" data-scroll-target="#independencia"><span class="header-section-number">11.1.4</span> Independencia</a></li>
-  <li><a href="#residuos-chi2" id="toc-residuos-chi2" class="nav-link" data-scroll-target="#residuos-chi2"><span class="header-section-number">11.1.5</span> Residuos <span class="math inline">\(\chi^2\)</span></a></li>
-  <li><a href="#perfiles-fila-y-columna" id="toc-perfiles-fila-y-columna" class="nav-link" data-scroll-target="#perfiles-fila-y-columna"><span class="header-section-number">11.1.6</span> Perfiles fila y columna</a></li>
-  <li><a href="#distancia-chi2-entre-perfiles" id="toc-distancia-chi2-entre-perfiles" class="nav-link" data-scroll-target="#distancia-chi2-entre-perfiles"><span class="header-section-number">11.1.7</span> Distancia <span class="math inline">\(\chi^2\)</span> entre perfiles</a></li>
-  <li><a href="#inercia-total" id="toc-inercia-total" class="nav-link" data-scroll-target="#inercia-total"><span class="header-section-number">11.1.8</span> Inercia total</a></li>
+  <li><a href="#contraste-chi2-de-pearson" id="toc-contraste-chi2-de-pearson" class="nav-link" data-scroll-target="#contraste-chi2-de-pearson"><span class="header-section-number">11.1.5</span> Contraste <span class="math inline">\(\chi^2\)</span> de Pearson</a></li>
+  <li><a href="#residuos-de-pearson-y-residuos-ajustados" id="toc-residuos-de-pearson-y-residuos-ajustados" class="nav-link" data-scroll-target="#residuos-de-pearson-y-residuos-ajustados"><span class="header-section-number">11.1.6</span> Residuos de Pearson y residuos ajustados</a></li>
+  <li><a href="#perfiles-fila-y-columna" id="toc-perfiles-fila-y-columna" class="nav-link" data-scroll-target="#perfiles-fila-y-columna"><span class="header-section-number">11.1.7</span> Perfiles fila y columna</a></li>
+  <li><a href="#distancia-chi2-entre-perfiles" id="toc-distancia-chi2-entre-perfiles" class="nav-link" data-scroll-target="#distancia-chi2-entre-perfiles"><span class="header-section-number">11.1.8</span> Distancia <span class="math inline">\(\chi^2\)</span> entre perfiles</a></li>
+  <li><a href="#inercia-total" id="toc-inercia-total" class="nav-link" data-scroll-target="#inercia-total"><span class="header-section-number">11.1.9</span> Inercia total</a></li>
   </ul></li>
   <li><a href="#construcción-algebraica-del-mapa" id="toc-construcción-algebraica-del-mapa" class="nav-link" data-scroll-target="#construcción-algebraica-del-mapa"><span class="header-section-number">11.2</span> Construcción algebraica del mapa</a>
   <ul class="collapse">
   <li><a href="#matriz-de-residuos-estandarizados" id="toc-matriz-de-residuos-estandarizados" class="nav-link" data-scroll-target="#matriz-de-residuos-estandarizados"><span class="header-section-number">11.2.1</span> Matriz de residuos estandarizados</a></li>
   <li><a href="#coordenadas-principales" id="toc-coordenadas-principales" class="nav-link" data-scroll-target="#coordenadas-principales"><span class="header-section-number">11.2.2</span> Coordenadas principales</a></li>
-  <li><a href="#ejemplo-con-dos-dimensiones" id="toc-ejemplo-con-dos-dimensiones" class="nav-link" data-scroll-target="#ejemplo-con-dos-dimensiones"><span class="header-section-number">11.2.3</span> Ejemplo con dos dimensiones</a></li>
+  <li><a href="#propiedad-baricéntrica" id="toc-propiedad-baricéntrica" class="nav-link" data-scroll-target="#propiedad-baricéntrica"><span class="header-section-number">11.2.3</span> Propiedad baricéntrica</a></li>
+  <li><a href="#ejemplo-con-dos-dimensiones" id="toc-ejemplo-con-dos-dimensiones" class="nav-link" data-scroll-target="#ejemplo-con-dos-dimensiones"><span class="header-section-number">11.2.4</span> Ejemplo con dos dimensiones</a></li>
   </ul></li>
   <li><a href="#interpretación-del-mapa" id="toc-interpretación-del-mapa" class="nav-link" data-scroll-target="#interpretación-del-mapa"><span class="header-section-number">11.3</span> Interpretación del mapa</a>
   <ul class="collapse">
@@ -393,6 +395,7 @@ window.Quarto = {
   <li><a href="#el-mapa-es-una-aproximación-de-las-distancias" id="toc-el-mapa-es-una-aproximación-de-las-distancias" class="nav-link" data-scroll-target="#el-mapa-es-una-aproximación-de-las-distancias"><span class="header-section-number">11.3.3</span> El mapa es una aproximación de las distancias</a></li>
   <li><a href="#interpretación-correcta-de-proximidades" id="toc-interpretación-correcta-de-proximidades" class="nav-link" data-scroll-target="#interpretación-correcta-de-proximidades"><span class="header-section-number">11.3.4</span> Interpretación correcta de proximidades</a></li>
   <li><a href="#categorías-raras-y-puntos-extremos" id="toc-categorías-raras-y-puntos-extremos" class="nav-link" data-scroll-target="#categorías-raras-y-puntos-extremos"><span class="header-section-number">11.3.5</span> Categorías raras y puntos extremos</a></li>
+  <li><a href="#filas-y-columnas-suplementarias" id="toc-filas-y-columnas-suplementarias" class="nav-link" data-scroll-target="#filas-y-columnas-suplementarias"><span class="header-section-number">11.3.6</span> Filas y columnas suplementarias</a></li>
   </ul></li>
   <li><a href="#decisiones-y-limitaciones" id="toc-decisiones-y-limitaciones" class="nav-link" data-scroll-target="#decisiones-y-limitaciones"><span class="header-section-number">11.4</span> Decisiones y limitaciones</a>
   <ul class="collapse">
@@ -453,6 +456,12 @@ window.Quarto = {
 <h3 data-number="11.1.1" class="anchored" data-anchor-id="motivación-aplicada"><span class="header-section-number">11.1.1</span> Motivación aplicada</h3>
 <p>Cuando tenemos dos variables categóricas, una tabla de contingencia muestra cuántos individuos aparecen en cada combinación. Por ejemplo, en <code>Titanic</code> podemos cruzar clase del pasajero y supervivencia.</p>
 <p>Una tabla puede leerse directamente, pero cuando hay muchas filas o columnas cuesta ver qué categorías se asocian. El análisis de correspondencias simple, CA, transforma la tabla en un mapa factorial donde filas y columnas se representan como puntos.</p>
+<p>CA resulta especialmente útil en tablas como marcas por atributos, regiones por preferencias, documentos por términos, lugares por especies o grupos sociales por respuestas. No sustituye a la tabla original: la reorganiza para responder tres preguntas relacionadas:</p>
+<ol type="1">
+<li>¿Existe asociación entre las dos variables?</li>
+<li>¿Qué combinaciones se apartan más de la independencia?</li>
+<li>¿Podemos resumir esas desviaciones mediante unas pocas dimensiones interpretables?</li>
+</ol>
 <div class="callout callout-style-default callout-warning callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -581,35 +590,11 @@ p_{ij}=r_i c_j.
 <p><span class="math display">\[
 e_{ij}=\frac{n_{i+}n_{+j}}{n}.
 \]</span></p>
-<p>En CA, lo importante no son solo las frecuencias observadas, sino cuánto se apartan de lo que esperaríamos bajo independencia.</p>
+<p>Esta expresión no supone que conozcamos las probabilidades marginales. Las estimamos con las proporciones observadas <span class="math inline">\(n_{i+}/n\)</span> y <span class="math inline">\(n_{+j}/n\)</span>. En CA, lo importante no son solo las frecuencias observadas, sino cuánto se apartan de lo que esperaríamos bajo independencia.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Código</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(resumen_tabla<span class="sc">$</span>prueba_chi2, <span class="at">digits =</span> <span class="dv">4</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
-<div class="cell-output-display">
-<table class="caption-top table table-sm table-striped small">
-<thead>
-<tr class="header">
-<th style="text-align: right;">chi2</th>
-<th style="text-align: right;">gl</th>
-<th style="text-align: right;">p_valor</th>
-<th style="text-align: right;">inercia</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: right;">190.4011</td>
-<td style="text-align: right;">3</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0.0865</td>
-</tr>
-</tbody>
-</table>
-</div>
-<details class="code-fold">
-<summary>Código</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(<span class="fu">round</span>(resumen_tabla<span class="sc">$</span>esperadas, <span class="dv">1</span>))</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(<span class="fu">round</span>(resumen_tabla<span class="sc">$</span>esperadas, <span class="dv">1</span>))</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <table class="caption-top table table-sm table-striped small">
@@ -646,26 +631,134 @@ e_{ij}=\frac{n_{i+}n_{+j}}{n}.
 </div>
 </div>
 </section>
-<section id="residuos-chi2" class="level3" data-number="11.1.5">
-<h3 data-number="11.1.5" class="anchored" data-anchor-id="residuos-chi2"><span class="header-section-number">11.1.5</span> Residuos <span class="math inline">\(\chi^2\)</span></h3>
-<p>Los residuos estandarizados comparan observado y esperado:</p>
+<section id="contraste-chi2-de-pearson" class="level3" data-number="11.1.5">
+<h3 data-number="11.1.5" class="anchored" data-anchor-id="contraste-chi2-de-pearson"><span class="header-section-number">11.1.5</span> Contraste <span class="math inline">\(\chi^2\)</span> de Pearson</h3>
+<p>El estadístico de Pearson acumula las diferencias entre frecuencias observadas y esperadas, expresadas en relación con el tamaño esperado de cada celda:</p>
 <p><span class="math display">\[
-res_{ij}=\frac{n_{ij}-e_{ij}}{\sqrt{e_{ij}}}.
+X^2=
+\sum_{i=1}^{I}\sum_{j=1}^{J}
+\frac{(n_{ij}-e_{ij})^2}{e_{ij}}.
 \]</span></p>
-<p>Residuos positivos indican más casos de los esperados bajo independencia; residuos negativos indican menos.</p>
+<p>Si las variables fueran independientes, las diferencias no serían exactamente cero por el azar del muestreo. El contraste pregunta si son demasiado grandes para atribuirlas razonablemente a ese azar.</p>
+<section id="por-qué-aparece-una-distribución-chi2" class="level4" data-number="11.1.5.1">
+<h4 data-number="11.1.5.1" class="anchored" data-anchor-id="por-qué-aparece-una-distribución-chi2"><span class="header-section-number">11.1.5.1</span> Por qué aparece una distribución <span class="math inline">\(\chi^2\)</span></h4>
+<p>El resultado es asintótico: no afirmamos que <span class="math inline">\(X^2\)</span> tenga exactamente una distribución <span class="math inline">\(\chi^2\)</span> en cualquier muestra. La idea de la demostración es la siguiente:</p>
+<ol type="1">
+<li>Los recuentos de las <span class="math inline">\(IJ\)</span> celdas tienen conjuntamente una distribución multinomial.</li>
+<li>Bajo independencia y para una muestra grande, el teorema central del límite hace que sus desviaciones estandarizadas sean aproximadamente normales.</li>
+<li>No todas esas desviaciones pueden variar libremente. El total suma <span class="math inline">\(n\)</span> y, además, estimamos los marginales de filas y columnas.</li>
+<li>Después de eliminar esas restricciones quedan <span class="math inline">\((I-1)(J-1)\)</span> direcciones independientes.</li>
+<li><span class="math inline">\(X^2\)</span> es, asintóticamente, la longitud al cuadrado de una normal estándar proyectada sobre ese subespacio.</li>
+</ol>
+<p>Como la suma de cuadrados de <span class="math inline">\(d\)</span> normales estándar independientes sigue una distribución <span class="math inline">\(\chi^2_d\)</span>, bajo <span class="math inline">\(H_0\)</span>:</p>
+<p><span class="math display">\[
+X^2 \xrightarrow{d} \chi^2_{(I-1)(J-1)}.
+\]</span></p>
+<p>Los grados de libertad también pueden obtenerse contando parámetros. Una distribución conjunta sobre <span class="math inline">\(IJ\)</span> celdas tiene <span class="math inline">\(IJ-1\)</span> parámetros libres. Bajo independencia necesitamos solo <span class="math inline">\((I-1)\)</span> probabilidades de fila y <span class="math inline">\((J-1)\)</span> probabilidades de columna. La diferencia es:</p>
+<p><span class="math display">\[
+(IJ-1)-[(I-1)+(J-1)]=(I-1)(J-1).
+\]</span></p>
+<p>Por ejemplo, en una tabla <span class="math inline">\(2\times3\)</span> hay <span class="math inline">\((2-1)(3-1)=2\)</span> grados de libertad. Si fijamos los marginales y elegimos dos celdas de la primera fila, las restantes quedan determinadas.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(resumen_tabla<span class="sc">$</span>prueba_chi2, <span class="at">digits =</span> <span class="dv">4</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 10%">
+<col style="width: 3%">
+<col style="width: 9%">
+<col style="width: 10%">
+<col style="width: 9%">
+<col style="width: 19%">
+<col style="width: 35%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: right;">chi2</th>
+<th style="text-align: right;">gl</th>
+<th style="text-align: right;">p_valor</th>
+<th style="text-align: right;">v_cramer</th>
+<th style="text-align: right;">inercia</th>
+<th style="text-align: right;">esperada_minima</th>
+<th style="text-align: right;">porcentaje_esperadas_menor_5</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">190.4011</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.2941</td>
+<td style="text-align: right;">0.0865</td>
+<td style="text-align: right;">92.065</td>
+<td style="text-align: right;">0</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>Un p-valor pequeño aporta evidencia contra la independencia, pero no mide la intensidad de la asociación. El coeficiente <span class="math inline">\(V\)</span> de Cramér normaliza el estadístico:</p>
+<p><span class="math display">\[
+V=\sqrt{\frac{X^2}{n\min(I-1,J-1)}}.
+\]</span></p>
+<p>Toma valores entre 0 y 1. Debe interpretarse en el contexto de la tabla, no mediante umbrales universales.</p>
+<div class="callout callout-style-default callout-warning callout-titled" title="Cuándo es fiable la aproximación">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Advertencia</span>Cuándo es fiable la aproximación
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>La aproximación <span class="math inline">\(\chi^2\)</span> necesita suficiente información en las celdas. Conviene revisar la frecuencia esperada mínima y el porcentaje de esperadas menores que 5. Si hay muchas celdas pequeñas, puede ser preferible reagrupar categorías con justificación sustantiva o utilizar una prueba exacta o simulada. Un cero estructural, una combinación imposible por definición, tampoco debe tratarse como un cero de muestreo ordinario.</p>
+</div>
+</div>
+</section>
+</section>
+<section id="residuos-de-pearson-y-residuos-ajustados" class="level3" data-number="11.1.6">
+<h3 data-number="11.1.6" class="anchored" data-anchor-id="residuos-de-pearson-y-residuos-ajustados"><span class="header-section-number">11.1.6</span> Residuos de Pearson y residuos ajustados</h3>
+<p>Los residuos de Pearson comparan observado y esperado:</p>
+<p><span class="math display">\[
+r_{ij}=\frac{n_{ij}-e_{ij}}{\sqrt{e_{ij}}}.
+\]</span></p>
+<p>Residuos positivos indican más casos de los esperados bajo independencia; residuos negativos indican menos. Además, cada <span class="math inline">\(r_{ij}^2\)</span> es la contribución de la celda al estadístico y, por tanto,</p>
+<p><span class="math display">\[
+X^2=\sum_{i,j}r_{ij}^2.
+\]</span></p>
 <div class="cell">
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="09-correspondencias_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="09-correspondencias_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 </div>
-<p>Estos residuos son una primera lectura local de la asociación. CA construye una representación global de esas desviaciones.</p>
+<p>Los residuos de Pearson son los más conectados con la descomposición global de <span class="math inline">\(X^2\)</span>. Para examinar una celda concreta también son útiles los residuos ajustados:</p>
+<p><span class="math display">\[
+r^{aj}_{ij}=
+\frac{n_{ij}-e_{ij}}
+{\sqrt{e_{ij}(1-r_i)(1-c_j)}}.
+\]</span></p>
+<p>La corrección tiene en cuenta las masas marginales y hace que, bajo independencia, estos residuos se comporten aproximadamente como puntuaciones normales estándar. Valores absolutos grandes señalan celdas especialmente incompatibles con la independencia, aunque una búsqueda entre muchas celdas introduce un problema de comparaciones múltiples.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="09-correspondencias_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Los residuos ofrecen una lectura local de la asociación. CA construye una representación global de esas mismas desviaciones.</p>
 </section>
-<section id="perfiles-fila-y-columna" class="level3" data-number="11.1.6">
-<h3 data-number="11.1.6" class="anchored" data-anchor-id="perfiles-fila-y-columna"><span class="header-section-number">11.1.6</span> Perfiles fila y columna</h3>
+<section id="perfiles-fila-y-columna" class="level3" data-number="11.1.7">
+<h3 data-number="11.1.7" class="anchored" data-anchor-id="perfiles-fila-y-columna"><span class="header-section-number">11.1.7</span> Perfiles fila y columna</h3>
 <p>El perfil fila de la fila <span class="math inline">\(i\)</span> es la distribución condicional sobre columnas:</p>
 <p><span class="math display">\[
 f_{ij}=\frac{p_{ij}}{r_i}.
@@ -812,8 +905,8 @@ g_{ij}=\frac{p_{ij}}{c_j}.
 </div>
 <p>Las filas se comparan por sus perfiles, no por sus frecuencias absolutas. Dos filas son parecidas si distribuyen sus frecuencias entre columnas de forma parecida.</p>
 </section>
-<section id="distancia-chi2-entre-perfiles" class="level3" data-number="11.1.7">
-<h3 data-number="11.1.7" class="anchored" data-anchor-id="distancia-chi2-entre-perfiles"><span class="header-section-number">11.1.7</span> Distancia <span class="math inline">\(\chi^2\)</span> entre perfiles</h3>
+<section id="distancia-chi2-entre-perfiles" class="level3" data-number="11.1.8">
+<h3 data-number="11.1.8" class="anchored" data-anchor-id="distancia-chi2-entre-perfiles"><span class="header-section-number">11.1.8</span> Distancia <span class="math inline">\(\chi^2\)</span> entre perfiles</h3>
 <p>La distancia <span class="math inline">\(\chi^2\)</span> entre dos perfiles fila <span class="math inline">\(i\)</span> e <span class="math inline">\(i'\)</span> es:</p>
 <p><span class="math display">\[
 d^2(i,i')=
@@ -888,15 +981,15 @@ d^2(j,j')=
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="09-correspondencias_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="09-correspondencias_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 </div>
 <p>La distancia entre clases no compara cuántos pasajeros había en cada clase, sino cómo se distribuyó la supervivencia dentro de cada clase.</p>
 </section>
-<section id="inercia-total" class="level3" data-number="11.1.8">
-<h3 data-number="11.1.8" class="anchored" data-anchor-id="inercia-total"><span class="header-section-number">11.1.8</span> Inercia total</h3>
+<section id="inercia-total" class="level3" data-number="11.1.9">
+<h3 data-number="11.1.9" class="anchored" data-anchor-id="inercia-total"><span class="header-section-number">11.1.9</span> Inercia total</h3>
 <p>La inercia total de CA mide desviación global respecto a independencia. Está relacionada con el estadístico <span class="math inline">\(\chi^2\)</span>:</p>
 <p><span class="math display">\[
 Inercia = \sum_{i=1}^{I}\sum_{j=1}^{J}
@@ -912,8 +1005,13 @@ Inercia = \sum_{i=1}^{I}\sum_{j=1}^{J}
 <pre><code>[1] 0.08650663</code></pre>
 </div>
 </div>
-<p>Si la tabla está muy cerca de independencia, la inercia será pequeña y el mapa tendrá poca estructura que representar.</p>
-<p>El contraste y la inercia responden a preguntas diferentes. Con una muestra muy grande, una asociación pequeña puede ser estadísticamente significativa; la inercia describe el tamaño geométrico de la desviación. Debemos mirar ambos resultados y no equiparar automáticamente significación con importancia.</p>
+<p>Si la tabla está muy cerca de independencia, la inercia será pequeña y el mapa tendrá poca estructura que representar. La conexión completa que desarrollaremos a continuación es:</p>
+<p><span class="math display">\[
+\frac{X^2}{n}=\operatorname{Inercia}=\lVert S\rVert_F^2
+=\sum_m\lambda_m.
+\]</span></p>
+<p>Por tanto, CA no analiza una propiedad diferente del contraste: reparte la desviación total respecto a la independencia entre dimensiones ortogonales.</p>
+<p>El contraste y la inercia ofrecen lecturas complementarias. Con una muestra muy grande, una asociación pequeña puede ser estadísticamente significativa; la inercia y <span class="math inline">\(V\)</span> de Cramér describen su magnitud. Debemos mirar ambos resultados y no equiparar automáticamente significación con importancia.</p>
 </section>
 </section>
 <section id="construcción-algebraica-del-mapa" class="level2" data-number="11.2">
@@ -968,6 +1066,16 @@ S = UDV^\top
 \lambda_m = d_m^2.
 \]</span></p>
 <p>La SVD busca ejes ortogonales que recojan sucesivamente la mayor parte posible de la inercia. Es la misma idea geométrica de una proyección de baja dimensión, pero aplicada a desviaciones respecto a independencia y con la métrica <span class="math inline">\(\chi^2\)</span>, no a variables numéricas estandarizadas ordinarias.</p>
+<p>La matriz está centrada respecto a los marginales. En particular,</p>
+<p><span class="math display">\[
+S\sqrt{c}=0,
+\qquad
+S^\top\sqrt{r}=0.
+\]</span></p>
+<p>Por ello siempre existe al menos una dirección trivial y el número máximo de dimensiones con inercia positiva es:</p>
+<p><span class="math display">\[
+\min(I-1,J-1).
+\]</span></p>
 </section>
 <section id="coordenadas-principales" class="level3" data-number="11.2.2">
 <h3 data-number="11.2.2" class="anchored" data-anchor-id="coordenadas-principales"><span class="header-section-number">11.2.2</span> Coordenadas principales</h3>
@@ -1074,8 +1182,34 @@ G = D_c^{-1/2}VD.
 </div>
 <p>Con dos columnas solo hay una dimensión no trivial, porque el rango máximo es <span class="math inline">\(\min(I-1,J-1)\)</span>.</p>
 </section>
-<section id="ejemplo-con-dos-dimensiones" class="level3" data-number="11.2.3">
-<h3 data-number="11.2.3" class="anchored" data-anchor-id="ejemplo-con-dos-dimensiones"><span class="header-section-number">11.2.3</span> Ejemplo con dos dimensiones</h3>
+<section id="propiedad-baricéntrica" class="level3" data-number="11.2.3">
+<h3 data-number="11.2.3" class="anchored" data-anchor-id="propiedad-baricéntrica"><span class="header-section-number">11.2.3</span> Propiedad baricéntrica</h3>
+<p>Definamos las coordenadas estándar de filas y columnas:</p>
+<p><span class="math display">\[
+\Phi=D_r^{-1/2}U,
+\qquad
+\Gamma=D_c^{-1/2}V.
+\]</span></p>
+<p>Las coordenadas principales son entonces <span class="math inline">\(F=\Phi D\)</span> y <span class="math inline">\(G=\Gamma D\)</span>. A partir de la SVD se obtienen las relaciones de transición:</p>
+<p><span class="math display">\[
+F=D_r^{-1}P\Gamma,
+\qquad
+G=D_c^{-1}P^\top\Phi.
+\]</span></p>
+<p>La primera igualdad dice que cada punto fila, en coordenadas principales, es el baricentro de las coordenadas estándar de las columnas, ponderadas por su perfil fila:</p>
+<p><span class="math display">\[
+f_i=\sum_j\frac{p_{ij}}{r_i}\,\gamma_j.
+\]</span></p>
+<p>Por eso una fila se desplaza hacia las columnas que están relativamente más presentes en su perfil. De forma dual, una columna es el baricentro de las filas ponderadas por su perfil columna. Esta relación proporciona una interpretación más precisa que afirmar simplemente que dos puntos de distinto tipo están «cerca».</p>
+<p>Hay varios escalados posibles:</p>
+<ul>
+<li>en el mapa <strong>simétrico</strong>, filas y columnas usan coordenadas principales; resulta equilibrado, pero una distancia fila–columna no es una distancia métrica;</li>
+<li>en el mapa <strong>de filas</strong>, las filas usan coordenadas principales y las columnas coordenadas estándar; conserva la interpretación baricéntrica de las filas;</li>
+<li>en el mapa <strong>de columnas</strong> se intercambian ambos papeles.</li>
+</ul>
+</section>
+<section id="ejemplo-con-dos-dimensiones" class="level3" data-number="11.2.4">
+<h3 data-number="11.2.4" class="anchored" data-anchor-id="ejemplo-con-dos-dimensiones"><span class="header-section-number">11.2.4</span> Ejemplo con dos dimensiones</h3>
 <p>Para visualizar dos dimensiones, usamos una tabla más rica: clase por combinación de sexo y supervivencia.</p>
 <div class="cell">
 <details class="code-fold">
@@ -1171,19 +1305,26 @@ G = D_c^{-1/2}VD.
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="09-correspondencias_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="09-correspondencias_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="09-correspondencias_files/figure-html/unnamed-chunk-12-2.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="09-correspondencias_files/figure-html/unnamed-chunk-14-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="09-correspondencias_files/figure-html/unnamed-chunk-14-3.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 </div>
-<p>El mapa debe leerse como representación de asociaciones. Una clase cercana a una categoría columna sugiere asociación relativa, no necesariamente frecuencia absoluta alta.</p>
+<p>El primer mapa ofrece una representación simétrica. El segundo conserva la geometría de las filas y muestra las columnas en coordenadas estándar: cada clase puede leerse como un baricentro de las categorías columna. En ambos casos hablamos de asociaciones relativas respecto a los marginales, no necesariamente de frecuencias absolutas altas.</p>
 </section>
 </section>
 <section id="interpretación-del-mapa" class="level2" data-number="11.3">
@@ -1272,14 +1413,14 @@ ctr_{jm}=\frac{c_j g_{jm}^2}{\lambda_m}.
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="09-correspondencias_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="09-correspondencias_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="09-correspondencias_files/figure-html/unnamed-chunk-14-2.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="09-correspondencias_files/figure-html/unnamed-chunk-16-2.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -1375,9 +1516,10 @@ cos^2_{im}=\frac{f_{im}^2}{\sum_{h} f_{ih}^2}.
 <h3 data-number="11.3.4" class="anchored" data-anchor-id="interpretación-correcta-de-proximidades"><span class="header-section-number">11.3.4</span> Interpretación correcta de proximidades</h3>
 <p>Al interpretar un mapa CA:</p>
 <ul>
-<li>proximidad entre una fila y una columna sugiere asociación relativa;</li>
 <li>proximidad entre filas significa perfiles columna parecidos;</li>
 <li>proximidad entre columnas significa perfiles fila parecidos;</li>
+<li>en un mapa asimétrico, una fila orientada hacia una columna tiene esa categoría relativamente sobrerrepresentada;</li>
+<li>en un mapa simétrico, la dirección y la oposición respecto al origen son más fiables que la distancia directa fila–columna;</li>
 <li>el origen representa comportamiento medio;</li>
 <li>puntos alejados del origen se apartan más de la independencia;</li>
 <li>masas, contribuciones y cos² deben acompañar siempre la lectura visual.</li>
@@ -1394,6 +1536,11 @@ cos^2_{im}=\frac{f_{im}^2}{\sum_{h} f_{ih}^2}.
 <li>si responde a una estructura estable o a un recuento pequeño.</li>
 </ul>
 </section>
+<section id="filas-y-columnas-suplementarias" class="level3" data-number="11.3.6">
+<h3 data-number="11.3.6" class="anchored" data-anchor-id="filas-y-columnas-suplementarias"><span class="header-section-number">11.3.6</span> Filas y columnas suplementarias</h3>
+<p>En ocasiones interesa representar una categoría sin permitir que determine los ejes. Una fila o columna suplementaria se proyecta sobre el espacio construido por las categorías activas, pero no contribuye a su orientación ni a sus autovalores.</p>
+<p>Esto resulta útil para grupos de comparación, categorías con un papel distinto o información recogida después. La decisión de hacer una categoría suplementaria debe responder al objetivo del análisis, no utilizarse únicamente para ocultar un resultado incómodo.</p>
+</section>
 </section>
 <section id="decisiones-y-limitaciones" class="level2" data-number="11.4">
 <h2 data-number="11.4" class="anchored" data-anchor-id="decisiones-y-limitaciones"><span class="header-section-number">11.4</span> Decisiones y limitaciones</h2>
@@ -1401,13 +1548,14 @@ cos^2_{im}=\frac{f_{im}^2}{\sum_{h} f_{ih}^2}.
 <h3 data-number="11.4.1" class="anchored" data-anchor-id="protocolo-de-decisión"><span class="header-section-number">11.4.1</span> Protocolo de decisión</h3>
 <ol type="1">
 <li>Definir qué representan las filas, las columnas y la población contada.</li>
-<li>Revisar frecuencias, ceros, categorías raras y valores esperados.</li>
-<li>Interpretar primero perfiles y residuos respecto a independencia.</li>
-<li>Comprobar la magnitud de la inercia, no solo el p-valor del contraste.</li>
+<li>Revisar frecuencias, ceros estructurales, categorías raras y valores esperados.</li>
+<li>Examinar conjuntamente <span class="math inline">\(X^2\)</span>, p-valor y <span class="math inline">\(V\)</span> de Cramér.</li>
+<li>Localizar las desviaciones mediante perfiles, residuos de Pearson y residuos ajustados.</li>
+<li>Comprobar la magnitud de la inercia y relacionarla con <span class="math inline">\(X^2/n\)</span>.</li>
 <li>Elegir el número de dimensiones según inercia retenida y objetivo de la representación.</li>
 <li>Construir cada eje con las categorías de mayor contribución.</li>
 <li>Interpretar solo puntos con cos² suficiente en el plano mostrado.</li>
-<li>Leer rigurosamente distancias entre puntos del mismo tipo y ser prudente con proximidades fila–columna.</li>
+<li>Leer rigurosamente distancias entre puntos del mismo tipo y usar la propiedad baricéntrica para relacionar filas y columnas.</li>
 <li>Comprobar que las conclusiones no dependan de categorías con muy poca masa.</li>
 </ol>
 </section>
@@ -1415,16 +1563,18 @@ cos^2_{im}=\frac{f_{im}^2}{\sum_{h} f_{ih}^2}.
 <h3 data-number="11.4.2" class="anchored" data-anchor-id="errores-frecuentes"><span class="header-section-number">11.4.2</span> Errores frecuentes</h3>
 <ul>
 <li>Interpretar el mapa como si mostrara frecuencias absolutas.</li>
+<li>Considerar que un p-valor pequeño implica una asociación importante.</li>
 <li>Confundir asociación con causalidad.</li>
 <li>Ignorar masas, contribuciones y cos².</li>
 <li>Dar importancia a categorías raras sin comprobar su peso.</li>
 <li>Leer distancias entre puntos mal representados.</li>
+<li>Interpretar la distancia directa fila–columna como una distancia ordinaria.</li>
 <li>Olvidar que CA representa desviaciones respecto a independencia.</li>
 </ul>
 </section>
 <section id="resumen-del-capítulo" class="level3" data-number="11.4.3">
 <h3 data-number="11.4.3" class="anchored" data-anchor-id="resumen-del-capítulo"><span class="header-section-number">11.4.3</span> Resumen del capítulo</h3>
-<p>CA convierte una tabla de contingencia en un mapa de perfiles. Parte de la independencia, mide desviaciones mediante la distancia <span class="math inline">\(\chi^2\)</span> y descompone la inercia en dimensiones factoriales. Su interpretación se basa en perfiles, masas, inercia, contribuciones, cos² y cautela ante categorías raras.</p>
+<p>CA convierte una tabla de contingencia en un mapa de perfiles. El contraste <span class="math inline">\(\chi^2\)</span> detecta asociación, sus residuos localizan desviaciones y CA descompone <span class="math inline">\(X^2/n\)</span> en dimensiones factoriales. Su interpretación se basa en perfiles, masas, propiedad baricéntrica, contribuciones, cos² y cautela ante categorías raras.</p>
 </section>
 </section>
 <section id="funciones-utilizadas" class="level2" data-number="11.5">
@@ -1455,7 +1605,7 @@ cos^2_{im}=\frac{f_{im}^2}{\sum_{h} f_{ih}^2}.
 </tr>
 <tr class="odd">
 <td><code>resumir_tabla_contingencia()</code></td>
-<td>Obtener proporciones, perfiles, masas, esperadas, residuos, contraste e inercia.</td>
+<td>Obtener perfiles, masas, esperadas, residuos, contraste, <span class="math inline">\(V\)</span> de Cramér e inercia.</td>
 <td><code>resumen &lt;- resumir_tabla_contingencia(tabla)</code></td>
 </tr>
 <tr class="even">
@@ -1470,8 +1620,8 @@ cos^2_{im}=\frac{f_{im}^2}{\sum_{h} f_{ih}^2}.
 </tr>
 <tr class="even">
 <td><code>visualizar_residuos_correspondencias()</code></td>
-<td>Localizar desviaciones respecto a independencia.</td>
-<td><code>visualizar_residuos_correspondencias(tabla)</code></td>
+<td>Mostrar residuos de Pearson o ajustados, con números opcionales.</td>
+<td><code>visualizar_residuos_correspondencias(tabla, "ajustados", FALSE)</code></td>
 </tr>
 <tr class="odd">
 <td><code>resumir_correspondencias()</code></td>
@@ -1485,8 +1635,8 @@ cos^2_{im}=\frac{f_{im}^2}{\sum_{h} f_{ih}^2}.
 </tr>
 <tr class="odd">
 <td><code>visualizar_correspondencias()</code></td>
-<td>Dibujar filas, columnas o el mapa conjunto.</td>
-<td><code>visualizar_correspondencias(ajuste, "ambos")</code></td>
+<td>Dibujar mapas simétricos o asimétricos de filas y columnas.</td>
+<td><code>visualizar_correspondencias(ajuste, escalado = "filas")</code></td>
 </tr>
 <tr class="even">
 <td><code>contribuciones_correspondencias()</code></td>
@@ -1992,382 +2142,522 @@ cos^2_{im}=\frac{f_{im}^2}{\sum_{h} f_{ih}^2}.
 <span id="cb23-22"><a href="#cb23-22" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb23-23"><a href="#cb23-23" aria-hidden="true" tabindex="-1"></a>Una tabla puede leerse directamente, pero cuando hay muchas filas o columnas cuesta ver qué categorías se asocian. El análisis de correspondencias simple, CA, transforma la tabla en un mapa factorial donde filas y columnas se representan como puntos.</span>
 <span id="cb23-24"><a href="#cb23-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-25"><a href="#cb23-25" aria-hidden="true" tabindex="-1"></a>::: {.callout-warning}</span>
-<span id="cb23-26"><a href="#cb23-26" aria-hidden="true" tabindex="-1"></a>El análisis de correspondencias representa desviaciones respecto a la independencia, no relaciones causales ni frecuencias brutas.</span>
-<span id="cb23-27"><a href="#cb23-27" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb23-28"><a href="#cb23-28" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-29"><a href="#cb23-29" aria-hidden="true" tabindex="-1"></a><span class="fu">### De una tabla a una pregunta geométrica</span></span>
+<span id="cb23-25"><a href="#cb23-25" aria-hidden="true" tabindex="-1"></a>CA resulta especialmente útil en tablas como marcas por atributos, regiones por preferencias, documentos por términos, lugares por especies o grupos sociales por respuestas. No sustituye a la tabla original: la reorganiza para responder tres preguntas relacionadas:</span>
+<span id="cb23-26"><a href="#cb23-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-27"><a href="#cb23-27" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>¿Existe asociación entre las dos variables?</span>
+<span id="cb23-28"><a href="#cb23-28" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>¿Qué combinaciones se apartan más de la independencia?</span>
+<span id="cb23-29"><a href="#cb23-29" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>¿Podemos resumir esas desviaciones mediante unas pocas dimensiones interpretables?</span>
 <span id="cb23-30"><a href="#cb23-30" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-31"><a href="#cb23-31" aria-hidden="true" tabindex="-1"></a>Supongamos una tabla de contingencia $N=(n_{ij})$ con $I$ filas y $J$ columnas. El total de la tabla es:</span>
-<span id="cb23-32"><a href="#cb23-32" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-33"><a href="#cb23-33" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb23-34"><a href="#cb23-34" aria-hidden="true" tabindex="-1"></a>n = \sum_{i=1}^{I}\sum_{j=1}^{J} n_{ij}.</span>
-<span id="cb23-35"><a href="#cb23-35" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb23-31"><a href="#cb23-31" aria-hidden="true" tabindex="-1"></a>::: {.callout-warning}</span>
+<span id="cb23-32"><a href="#cb23-32" aria-hidden="true" tabindex="-1"></a>El análisis de correspondencias representa desviaciones respecto a la independencia, no relaciones causales ni frecuencias brutas.</span>
+<span id="cb23-33"><a href="#cb23-33" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb23-34"><a href="#cb23-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-35"><a href="#cb23-35" aria-hidden="true" tabindex="-1"></a><span class="fu">### De una tabla a una pregunta geométrica</span></span>
 <span id="cb23-36"><a href="#cb23-36" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-37"><a href="#cb23-37" aria-hidden="true" tabindex="-1"></a>La matriz de frecuencias relativas es:</span>
+<span id="cb23-37"><a href="#cb23-37" aria-hidden="true" tabindex="-1"></a>Supongamos una tabla de contingencia $N=(n_{ij})$ con $I$ filas y $J$ columnas. El total de la tabla es:</span>
 <span id="cb23-38"><a href="#cb23-38" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb23-39"><a href="#cb23-39" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb23-40"><a href="#cb23-40" aria-hidden="true" tabindex="-1"></a>P = \frac{1}{n}N.</span>
+<span id="cb23-40"><a href="#cb23-40" aria-hidden="true" tabindex="-1"></a>n = \sum_{i=1}^{I}\sum_{j=1}^{J} n_{ij}.</span>
 <span id="cb23-41"><a href="#cb23-41" aria-hidden="true" tabindex="-1"></a>$$</span>
 <span id="cb23-42"><a href="#cb23-42" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-43"><a href="#cb23-43" aria-hidden="true" tabindex="-1"></a>La masa de la fila $i$ es:</span>
+<span id="cb23-43"><a href="#cb23-43" aria-hidden="true" tabindex="-1"></a>La matriz de frecuencias relativas es:</span>
 <span id="cb23-44"><a href="#cb23-44" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb23-45"><a href="#cb23-45" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb23-46"><a href="#cb23-46" aria-hidden="true" tabindex="-1"></a>r_i = \sum_{j=1}^{J} p_{ij},</span>
+<span id="cb23-46"><a href="#cb23-46" aria-hidden="true" tabindex="-1"></a>P = \frac{1}{n}N.</span>
 <span id="cb23-47"><a href="#cb23-47" aria-hidden="true" tabindex="-1"></a>$$</span>
 <span id="cb23-48"><a href="#cb23-48" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-49"><a href="#cb23-49" aria-hidden="true" tabindex="-1"></a>y la masa de la columna $j$ es:</span>
+<span id="cb23-49"><a href="#cb23-49" aria-hidden="true" tabindex="-1"></a>La masa de la fila $i$ es:</span>
 <span id="cb23-50"><a href="#cb23-50" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb23-51"><a href="#cb23-51" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb23-52"><a href="#cb23-52" aria-hidden="true" tabindex="-1"></a>c_j = \sum_{i=1}^{I} p_{ij}.</span>
+<span id="cb23-52"><a href="#cb23-52" aria-hidden="true" tabindex="-1"></a>r_i = \sum_{j=1}^{J} p_{ij},</span>
 <span id="cb23-53"><a href="#cb23-53" aria-hidden="true" tabindex="-1"></a>$$</span>
 <span id="cb23-54"><a href="#cb23-54" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-55"><a href="#cb23-55" aria-hidden="true" tabindex="-1"></a>Las masas son pesos. Una fila con mucha frecuencia total tiene más peso en la geometría que una fila rara.</span>
+<span id="cb23-55"><a href="#cb23-55" aria-hidden="true" tabindex="-1"></a>y la masa de la columna $j$ es:</span>
 <span id="cb23-56"><a href="#cb23-56" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-57"><a href="#cb23-57" aria-hidden="true" tabindex="-1"></a><span class="fu">### Tabla de contingencia</span></span>
-<span id="cb23-58"><a href="#cb23-58" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-59"><a href="#cb23-59" aria-hidden="true" tabindex="-1"></a>Usamos <span class="in">`Titanic`</span> para estudiar asociación entre clase y supervivencia.</span>
+<span id="cb23-57"><a href="#cb23-57" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb23-58"><a href="#cb23-58" aria-hidden="true" tabindex="-1"></a>c_j = \sum_{i=1}^{I} p_{ij}.</span>
+<span id="cb23-59"><a href="#cb23-59" aria-hidden="true" tabindex="-1"></a>$$</span>
 <span id="cb23-60"><a href="#cb23-60" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-63"><a href="#cb23-63" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb23-64"><a href="#cb23-64" aria-hidden="true" tabindex="-1"></a>titanic <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(Titanic)</span>
-<span id="cb23-65"><a href="#cb23-65" aria-hidden="true" tabindex="-1"></a>tab <span class="ot">&lt;-</span> <span class="fu">xtabs</span>(Freq <span class="sc">~</span> Class <span class="sc">+</span> Survived, <span class="at">data =</span> titanic)</span>
-<span id="cb23-66"><a href="#cb23-66" aria-hidden="true" tabindex="-1"></a>resumen_tabla <span class="ot">&lt;-</span> <span class="fu">resumir_tabla_contingencia</span>(tab)</span>
-<span id="cb23-67"><a href="#cb23-67" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(resumen_tabla<span class="sc">$</span>frecuencias)</span>
-<span id="cb23-68"><a href="#cb23-68" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(<span class="fu">round</span>(resumen_tabla<span class="sc">$</span>proporciones, <span class="dv">3</span>))</span>
-<span id="cb23-69"><a href="#cb23-69" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb23-70"><a href="#cb23-70" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-71"><a href="#cb23-71" aria-hidden="true" tabindex="-1"></a>La tabla absoluta permite ver tamaños. La tabla relativa permite leer proporciones sobre el total.</span>
-<span id="cb23-72"><a href="#cb23-72" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-73"><a href="#cb23-73" aria-hidden="true" tabindex="-1"></a><span class="fu">### Independencia</span></span>
-<span id="cb23-74"><a href="#cb23-74" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-75"><a href="#cb23-75" aria-hidden="true" tabindex="-1"></a>Dos variables categóricas son independientes si la probabilidad conjunta se factoriza como producto de marginales:</span>
+<span id="cb23-61"><a href="#cb23-61" aria-hidden="true" tabindex="-1"></a>Las masas son pesos. Una fila con mucha frecuencia total tiene más peso en la geometría que una fila rara.</span>
+<span id="cb23-62"><a href="#cb23-62" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-63"><a href="#cb23-63" aria-hidden="true" tabindex="-1"></a><span class="fu">### Tabla de contingencia</span></span>
+<span id="cb23-64"><a href="#cb23-64" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-65"><a href="#cb23-65" aria-hidden="true" tabindex="-1"></a>Usamos <span class="in">`Titanic`</span> para estudiar asociación entre clase y supervivencia.</span>
+<span id="cb23-66"><a href="#cb23-66" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-69"><a href="#cb23-69" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb23-70"><a href="#cb23-70" aria-hidden="true" tabindex="-1"></a>titanic <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(Titanic)</span>
+<span id="cb23-71"><a href="#cb23-71" aria-hidden="true" tabindex="-1"></a>tab <span class="ot">&lt;-</span> <span class="fu">xtabs</span>(Freq <span class="sc">~</span> Class <span class="sc">+</span> Survived, <span class="at">data =</span> titanic)</span>
+<span id="cb23-72"><a href="#cb23-72" aria-hidden="true" tabindex="-1"></a>resumen_tabla <span class="ot">&lt;-</span> <span class="fu">resumir_tabla_contingencia</span>(tab)</span>
+<span id="cb23-73"><a href="#cb23-73" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(resumen_tabla<span class="sc">$</span>frecuencias)</span>
+<span id="cb23-74"><a href="#cb23-74" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(<span class="fu">round</span>(resumen_tabla<span class="sc">$</span>proporciones, <span class="dv">3</span>))</span>
+<span id="cb23-75"><a href="#cb23-75" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb23-76"><a href="#cb23-76" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-77"><a href="#cb23-77" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb23-78"><a href="#cb23-78" aria-hidden="true" tabindex="-1"></a>p_{ij}=r_i c_j.</span>
-<span id="cb23-79"><a href="#cb23-79" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb23-77"><a href="#cb23-77" aria-hidden="true" tabindex="-1"></a>La tabla absoluta permite ver tamaños. La tabla relativa permite leer proporciones sobre el total.</span>
+<span id="cb23-78"><a href="#cb23-78" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-79"><a href="#cb23-79" aria-hidden="true" tabindex="-1"></a><span class="fu">### Independencia</span></span>
 <span id="cb23-80"><a href="#cb23-80" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-81"><a href="#cb23-81" aria-hidden="true" tabindex="-1"></a>Bajo independencia, el valor esperado de la celda $(i,j)$ es:</span>
+<span id="cb23-81"><a href="#cb23-81" aria-hidden="true" tabindex="-1"></a>Dos variables categóricas son independientes si la probabilidad conjunta se factoriza como producto de marginales:</span>
 <span id="cb23-82"><a href="#cb23-82" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb23-83"><a href="#cb23-83" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb23-84"><a href="#cb23-84" aria-hidden="true" tabindex="-1"></a>e_{ij}=\frac{n_{i+}n_{+j}}{n}.</span>
+<span id="cb23-84"><a href="#cb23-84" aria-hidden="true" tabindex="-1"></a>p_{ij}=r_i c_j.</span>
 <span id="cb23-85"><a href="#cb23-85" aria-hidden="true" tabindex="-1"></a>$$</span>
 <span id="cb23-86"><a href="#cb23-86" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-87"><a href="#cb23-87" aria-hidden="true" tabindex="-1"></a>En CA, lo importante no son solo las frecuencias observadas, sino cuánto se apartan de lo que esperaríamos bajo independencia.</span>
+<span id="cb23-87"><a href="#cb23-87" aria-hidden="true" tabindex="-1"></a>Bajo independencia, el valor esperado de la celda $(i,j)$ es:</span>
 <span id="cb23-88"><a href="#cb23-88" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-91"><a href="#cb23-91" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb23-92"><a href="#cb23-92" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(resumen_tabla<span class="sc">$</span>prueba_chi2, <span class="at">digits =</span> <span class="dv">4</span>)</span>
-<span id="cb23-93"><a href="#cb23-93" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(<span class="fu">round</span>(resumen_tabla<span class="sc">$</span>esperadas, <span class="dv">1</span>))</span>
-<span id="cb23-94"><a href="#cb23-94" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb23-95"><a href="#cb23-95" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-96"><a href="#cb23-96" aria-hidden="true" tabindex="-1"></a><span class="fu">### Residuos $\chi^2$</span></span>
-<span id="cb23-97"><a href="#cb23-97" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-98"><a href="#cb23-98" aria-hidden="true" tabindex="-1"></a>Los residuos estandarizados comparan observado y esperado:</span>
-<span id="cb23-99"><a href="#cb23-99" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-100"><a href="#cb23-100" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb23-101"><a href="#cb23-101" aria-hidden="true" tabindex="-1"></a>res_{ij}=\frac{n_{ij}-e_{ij}}{\sqrt{e_{ij}}}.</span>
-<span id="cb23-102"><a href="#cb23-102" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb23-103"><a href="#cb23-103" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-104"><a href="#cb23-104" aria-hidden="true" tabindex="-1"></a>Residuos positivos indican más casos de los esperados bajo independencia; residuos negativos indican menos.</span>
-<span id="cb23-105"><a href="#cb23-105" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-108"><a href="#cb23-108" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb23-109"><a href="#cb23-109" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
-<span id="cb23-110"><a href="#cb23-110" aria-hidden="true" tabindex="-1"></a><span class="fu">visualizar_residuos_correspondencias</span>(tab)</span>
-<span id="cb23-111"><a href="#cb23-111" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb23-89"><a href="#cb23-89" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb23-90"><a href="#cb23-90" aria-hidden="true" tabindex="-1"></a>e_{ij}=\frac{n_{i+}n_{+j}}{n}.</span>
+<span id="cb23-91"><a href="#cb23-91" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb23-92"><a href="#cb23-92" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-93"><a href="#cb23-93" aria-hidden="true" tabindex="-1"></a>Esta expresión no supone que conozcamos las probabilidades marginales. Las estimamos con las proporciones observadas $n_{i+}/n$ y $n_{+j}/n$. En CA, lo importante no son solo las frecuencias observadas, sino cuánto se apartan de lo que esperaríamos bajo independencia.</span>
+<span id="cb23-94"><a href="#cb23-94" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-97"><a href="#cb23-97" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb23-98"><a href="#cb23-98" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(<span class="fu">round</span>(resumen_tabla<span class="sc">$</span>esperadas, <span class="dv">1</span>))</span>
+<span id="cb23-99"><a href="#cb23-99" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb23-100"><a href="#cb23-100" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-101"><a href="#cb23-101" aria-hidden="true" tabindex="-1"></a><span class="fu">### Contraste $\chi^2$ de Pearson</span></span>
+<span id="cb23-102"><a href="#cb23-102" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-103"><a href="#cb23-103" aria-hidden="true" tabindex="-1"></a>El estadístico de Pearson acumula las diferencias entre frecuencias observadas y esperadas, expresadas en relación con el tamaño esperado de cada celda:</span>
+<span id="cb23-104"><a href="#cb23-104" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-105"><a href="#cb23-105" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb23-106"><a href="#cb23-106" aria-hidden="true" tabindex="-1"></a>X^2=</span>
+<span id="cb23-107"><a href="#cb23-107" aria-hidden="true" tabindex="-1"></a>\sum_{i=1}^{I}\sum_{j=1}^{J}</span>
+<span id="cb23-108"><a href="#cb23-108" aria-hidden="true" tabindex="-1"></a>\frac{(n_{ij}-e_{ij})^2}{e_{ij}}.</span>
+<span id="cb23-109"><a href="#cb23-109" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb23-110"><a href="#cb23-110" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-111"><a href="#cb23-111" aria-hidden="true" tabindex="-1"></a>Si las variables fueran independientes, las diferencias no serían exactamente cero por el azar del muestreo. El contraste pregunta si son demasiado grandes para atribuirlas razonablemente a ese azar.</span>
 <span id="cb23-112"><a href="#cb23-112" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-113"><a href="#cb23-113" aria-hidden="true" tabindex="-1"></a>Estos residuos son una primera lectura local de la asociación. CA construye una representación global de esas desviaciones.</span>
+<span id="cb23-113"><a href="#cb23-113" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Por qué aparece una distribución $\chi^2$</span></span>
 <span id="cb23-114"><a href="#cb23-114" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-115"><a href="#cb23-115" aria-hidden="true" tabindex="-1"></a><span class="fu">### Perfiles fila y columna</span></span>
+<span id="cb23-115"><a href="#cb23-115" aria-hidden="true" tabindex="-1"></a>El resultado es asintótico: no afirmamos que $X^2$ tenga exactamente una distribución $\chi^2$ en cualquier muestra. La idea de la demostración es la siguiente:</span>
 <span id="cb23-116"><a href="#cb23-116" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-117"><a href="#cb23-117" aria-hidden="true" tabindex="-1"></a>El perfil fila de la fila $i$ es la distribución condicional sobre columnas:</span>
-<span id="cb23-118"><a href="#cb23-118" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-119"><a href="#cb23-119" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb23-120"><a href="#cb23-120" aria-hidden="true" tabindex="-1"></a>f_{ij}=\frac{p_{ij}}{r_i}.</span>
-<span id="cb23-121"><a href="#cb23-121" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb23-117"><a href="#cb23-117" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>Los recuentos de las $IJ$ celdas tienen conjuntamente una distribución multinomial.</span>
+<span id="cb23-118"><a href="#cb23-118" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>Bajo independencia y para una muestra grande, el teorema central del límite hace que sus desviaciones estandarizadas sean aproximadamente normales.</span>
+<span id="cb23-119"><a href="#cb23-119" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>No todas esas desviaciones pueden variar libremente. El total suma $n$ y, además, estimamos los marginales de filas y columnas.</span>
+<span id="cb23-120"><a href="#cb23-120" aria-hidden="true" tabindex="-1"></a><span class="ss">4. </span>Después de eliminar esas restricciones quedan $(I-1)(J-1)$ direcciones independientes.</span>
+<span id="cb23-121"><a href="#cb23-121" aria-hidden="true" tabindex="-1"></a><span class="ss">5. </span>$X^2$ es, asintóticamente, la longitud al cuadrado de una normal estándar proyectada sobre ese subespacio.</span>
 <span id="cb23-122"><a href="#cb23-122" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-123"><a href="#cb23-123" aria-hidden="true" tabindex="-1"></a>El perfil columna de la columna $j$ es:</span>
+<span id="cb23-123"><a href="#cb23-123" aria-hidden="true" tabindex="-1"></a>Como la suma de cuadrados de $d$ normales estándar independientes sigue una distribución $\chi^2_d$, bajo $H_0$:</span>
 <span id="cb23-124"><a href="#cb23-124" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb23-125"><a href="#cb23-125" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb23-126"><a href="#cb23-126" aria-hidden="true" tabindex="-1"></a>g_{ij}=\frac{p_{ij}}{c_j}.</span>
+<span id="cb23-126"><a href="#cb23-126" aria-hidden="true" tabindex="-1"></a>X^2 \xrightarrow{d} \chi^2_{(I-1)(J-1)}.</span>
 <span id="cb23-127"><a href="#cb23-127" aria-hidden="true" tabindex="-1"></a>$$</span>
 <span id="cb23-128"><a href="#cb23-128" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-131"><a href="#cb23-131" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb23-132"><a href="#cb23-132" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(<span class="fu">round</span>(resumen_tabla<span class="sc">$</span>perfiles_fila, <span class="dv">3</span>), <span class="at">caption =</span> <span class="st">"Perfiles fila"</span>)</span>
-<span id="cb23-133"><a href="#cb23-133" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(<span class="fu">round</span>(resumen_tabla<span class="sc">$</span>perfiles_columna, <span class="dv">3</span>), <span class="at">caption =</span> <span class="st">"Perfiles columna"</span>)</span>
-<span id="cb23-134"><a href="#cb23-134" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(resumen_tabla<span class="sc">$</span>masas_fila, <span class="at">digits =</span> <span class="dv">3</span>, <span class="at">caption =</span> <span class="st">"Masas fila"</span>)</span>
-<span id="cb23-135"><a href="#cb23-135" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(resumen_tabla<span class="sc">$</span>masas_columna, <span class="at">digits =</span> <span class="dv">3</span>, <span class="at">caption =</span> <span class="st">"Masas columna"</span>)</span>
-<span id="cb23-136"><a href="#cb23-136" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb23-137"><a href="#cb23-137" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-138"><a href="#cb23-138" aria-hidden="true" tabindex="-1"></a>Las filas se comparan por sus perfiles, no por sus frecuencias absolutas. Dos filas son parecidas si distribuyen sus frecuencias entre columnas de forma parecida.</span>
-<span id="cb23-139"><a href="#cb23-139" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-140"><a href="#cb23-140" aria-hidden="true" tabindex="-1"></a><span class="fu">### Distancia $\chi^2$ entre perfiles</span></span>
-<span id="cb23-141"><a href="#cb23-141" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-142"><a href="#cb23-142" aria-hidden="true" tabindex="-1"></a>La distancia $\chi^2$ entre dos perfiles fila $i$ e $i'$ es:</span>
-<span id="cb23-143"><a href="#cb23-143" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-144"><a href="#cb23-144" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb23-145"><a href="#cb23-145" aria-hidden="true" tabindex="-1"></a>d^2(i,i')=</span>
-<span id="cb23-146"><a href="#cb23-146" aria-hidden="true" tabindex="-1"></a>\sum_{j=1}^{J}\frac{1}{c_j}</span>
-<span id="cb23-147"><a href="#cb23-147" aria-hidden="true" tabindex="-1"></a>\left(</span>
-<span id="cb23-148"><a href="#cb23-148" aria-hidden="true" tabindex="-1"></a>\frac{p_{ij}}{r_i}</span>
-<span id="cb23-149"><a href="#cb23-149" aria-hidden="true" tabindex="-1"></a>-</span>
-<span id="cb23-150"><a href="#cb23-150" aria-hidden="true" tabindex="-1"></a>\frac{p_{i'j}}{r_{i'}}</span>
-<span id="cb23-151"><a href="#cb23-151" aria-hidden="true" tabindex="-1"></a>\right)^2.</span>
-<span id="cb23-152"><a href="#cb23-152" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb23-153"><a href="#cb23-153" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-154"><a href="#cb23-154" aria-hidden="true" tabindex="-1"></a>Las columnas con masa pequeña pesan más porque diferencias en categorías raras son más informativas geométricamente. Esto también implica una advertencia: categorías raras pueden generar puntos extremos.</span>
-<span id="cb23-155"><a href="#cb23-155" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-156"><a href="#cb23-156" aria-hidden="true" tabindex="-1"></a>Para columnas se define una distancia análoga ponderando por masas fila:</span>
-<span id="cb23-157"><a href="#cb23-157" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-158"><a href="#cb23-158" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb23-159"><a href="#cb23-159" aria-hidden="true" tabindex="-1"></a>d^2(j,j')=</span>
-<span id="cb23-160"><a href="#cb23-160" aria-hidden="true" tabindex="-1"></a>\sum_{i=1}^{I}\frac{1}{r_i}</span>
-<span id="cb23-161"><a href="#cb23-161" aria-hidden="true" tabindex="-1"></a>\left(</span>
-<span id="cb23-162"><a href="#cb23-162" aria-hidden="true" tabindex="-1"></a>\frac{p_{ij}}{c_j}</span>
-<span id="cb23-163"><a href="#cb23-163" aria-hidden="true" tabindex="-1"></a>-</span>
-<span id="cb23-164"><a href="#cb23-164" aria-hidden="true" tabindex="-1"></a>\frac{p_{ij'}}{c_{j'}}</span>
-<span id="cb23-165"><a href="#cb23-165" aria-hidden="true" tabindex="-1"></a>\right)^2.</span>
-<span id="cb23-166"><a href="#cb23-166" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb23-167"><a href="#cb23-167" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-170"><a href="#cb23-170" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb23-171"><a href="#cb23-171" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(<span class="fu">round</span>(<span class="fu">as.matrix</span>(<span class="fu">distancias_chi2</span>(tab, <span class="st">"filas"</span>)), <span class="dv">3</span>))</span>
-<span id="cb23-172"><a href="#cb23-172" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb23-173"><a href="#cb23-173" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-176"><a href="#cb23-176" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb23-177"><a href="#cb23-177" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
-<span id="cb23-178"><a href="#cb23-178" aria-hidden="true" tabindex="-1"></a><span class="fu">visualizar_distancias_chi2</span>(tab, <span class="st">"filas"</span>)</span>
-<span id="cb23-179"><a href="#cb23-179" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb23-180"><a href="#cb23-180" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-181"><a href="#cb23-181" aria-hidden="true" tabindex="-1"></a>La distancia entre clases no compara cuántos pasajeros había en cada clase, sino cómo se distribuyó la supervivencia dentro de cada clase.</span>
-<span id="cb23-182"><a href="#cb23-182" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-183"><a href="#cb23-183" aria-hidden="true" tabindex="-1"></a><span class="fu">### Inercia total</span></span>
-<span id="cb23-184"><a href="#cb23-184" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-185"><a href="#cb23-185" aria-hidden="true" tabindex="-1"></a>La inercia total de CA mide desviación global respecto a independencia. Está relacionada con el estadístico $\chi^2$:</span>
-<span id="cb23-186"><a href="#cb23-186" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-187"><a href="#cb23-187" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb23-188"><a href="#cb23-188" aria-hidden="true" tabindex="-1"></a>Inercia = \sum_{i=1}^{I}\sum_{j=1}^{J}</span>
-<span id="cb23-189"><a href="#cb23-189" aria-hidden="true" tabindex="-1"></a>\frac{(p_{ij}-r_ic_j)^2}{r_ic_j}</span>
-<span id="cb23-190"><a href="#cb23-190" aria-hidden="true" tabindex="-1"></a>=\frac{\chi^2}{n}.</span>
-<span id="cb23-191"><a href="#cb23-191" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb23-129"><a href="#cb23-129" aria-hidden="true" tabindex="-1"></a>Los grados de libertad también pueden obtenerse contando parámetros. Una distribución conjunta sobre $IJ$ celdas tiene $IJ-1$ parámetros libres. Bajo independencia necesitamos solo $(I-1)$ probabilidades de fila y $(J-1)$ probabilidades de columna. La diferencia es:</span>
+<span id="cb23-130"><a href="#cb23-130" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-131"><a href="#cb23-131" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb23-132"><a href="#cb23-132" aria-hidden="true" tabindex="-1"></a>(IJ-1)-<span class="co">[</span><span class="ot">(I-1)+(J-1)</span><span class="co">]</span>=(I-1)(J-1).</span>
+<span id="cb23-133"><a href="#cb23-133" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb23-134"><a href="#cb23-134" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-135"><a href="#cb23-135" aria-hidden="true" tabindex="-1"></a>Por ejemplo, en una tabla $2\times3$ hay $(2-1)(3-1)=2$ grados de libertad. Si fijamos los marginales y elegimos dos celdas de la primera fila, las restantes quedan determinadas.</span>
+<span id="cb23-136"><a href="#cb23-136" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-139"><a href="#cb23-139" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb23-140"><a href="#cb23-140" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(resumen_tabla<span class="sc">$</span>prueba_chi2, <span class="at">digits =</span> <span class="dv">4</span>)</span>
+<span id="cb23-141"><a href="#cb23-141" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb23-142"><a href="#cb23-142" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-143"><a href="#cb23-143" aria-hidden="true" tabindex="-1"></a>Un p-valor pequeño aporta evidencia contra la independencia, pero no mide la intensidad de la asociación. El coeficiente $V$ de Cramér normaliza el estadístico:</span>
+<span id="cb23-144"><a href="#cb23-144" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-145"><a href="#cb23-145" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb23-146"><a href="#cb23-146" aria-hidden="true" tabindex="-1"></a>V=\sqrt{\frac{X^2}{n\min(I-1,J-1)}}.</span>
+<span id="cb23-147"><a href="#cb23-147" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb23-148"><a href="#cb23-148" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-149"><a href="#cb23-149" aria-hidden="true" tabindex="-1"></a>Toma valores entre 0 y 1. Debe interpretarse en el contexto de la tabla, no mediante umbrales universales.</span>
+<span id="cb23-150"><a href="#cb23-150" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-151"><a href="#cb23-151" aria-hidden="true" tabindex="-1"></a>::: {.callout-warning title="Cuándo es fiable la aproximación"}</span>
+<span id="cb23-152"><a href="#cb23-152" aria-hidden="true" tabindex="-1"></a>La aproximación $\chi^2$ necesita suficiente información en las celdas. Conviene revisar la frecuencia esperada mínima y el porcentaje de esperadas menores que 5. Si hay muchas celdas pequeñas, puede ser preferible reagrupar categorías con justificación sustantiva o utilizar una prueba exacta o simulada. Un cero estructural, una combinación imposible por definición, tampoco debe tratarse como un cero de muestreo ordinario.</span>
+<span id="cb23-153"><a href="#cb23-153" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb23-154"><a href="#cb23-154" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-155"><a href="#cb23-155" aria-hidden="true" tabindex="-1"></a><span class="fu">### Residuos de Pearson y residuos ajustados</span></span>
+<span id="cb23-156"><a href="#cb23-156" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-157"><a href="#cb23-157" aria-hidden="true" tabindex="-1"></a>Los residuos de Pearson comparan observado y esperado:</span>
+<span id="cb23-158"><a href="#cb23-158" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-159"><a href="#cb23-159" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb23-160"><a href="#cb23-160" aria-hidden="true" tabindex="-1"></a>r_{ij}=\frac{n_{ij}-e_{ij}}{\sqrt{e_{ij}}}.</span>
+<span id="cb23-161"><a href="#cb23-161" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb23-162"><a href="#cb23-162" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-163"><a href="#cb23-163" aria-hidden="true" tabindex="-1"></a>Residuos positivos indican más casos de los esperados bajo independencia; residuos negativos indican menos. Además, cada $r_{ij}^2$ es la contribución de la celda al estadístico y, por tanto,</span>
+<span id="cb23-164"><a href="#cb23-164" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-165"><a href="#cb23-165" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb23-166"><a href="#cb23-166" aria-hidden="true" tabindex="-1"></a>X^2=\sum_{i,j}r_{ij}^2.</span>
+<span id="cb23-167"><a href="#cb23-167" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb23-168"><a href="#cb23-168" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-171"><a href="#cb23-171" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb23-172"><a href="#cb23-172" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb23-173"><a href="#cb23-173" aria-hidden="true" tabindex="-1"></a><span class="fu">visualizar_residuos_correspondencias</span>(tab, <span class="at">tipo =</span> <span class="st">"pearson"</span>)</span>
+<span id="cb23-174"><a href="#cb23-174" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb23-175"><a href="#cb23-175" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-176"><a href="#cb23-176" aria-hidden="true" tabindex="-1"></a>Los residuos de Pearson son los más conectados con la descomposición global de $X^2$. Para examinar una celda concreta también son útiles los residuos ajustados:</span>
+<span id="cb23-177"><a href="#cb23-177" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-178"><a href="#cb23-178" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb23-179"><a href="#cb23-179" aria-hidden="true" tabindex="-1"></a>r^{aj}_{ij}=</span>
+<span id="cb23-180"><a href="#cb23-180" aria-hidden="true" tabindex="-1"></a>\frac{n_{ij}-e_{ij}}</span>
+<span id="cb23-181"><a href="#cb23-181" aria-hidden="true" tabindex="-1"></a>{\sqrt{e_{ij}(1-r_i)(1-c_j)}}.</span>
+<span id="cb23-182"><a href="#cb23-182" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb23-183"><a href="#cb23-183" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-184"><a href="#cb23-184" aria-hidden="true" tabindex="-1"></a>La corrección tiene en cuenta las masas marginales y hace que, bajo independencia, estos residuos se comporten aproximadamente como puntuaciones normales estándar. Valores absolutos grandes señalan celdas especialmente incompatibles con la independencia, aunque una búsqueda entre muchas celdas introduce un problema de comparaciones múltiples.</span>
+<span id="cb23-185"><a href="#cb23-185" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-188"><a href="#cb23-188" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb23-189"><a href="#cb23-189" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb23-190"><a href="#cb23-190" aria-hidden="true" tabindex="-1"></a><span class="fu">visualizar_residuos_correspondencias</span>(tab, <span class="at">tipo =</span> <span class="st">"ajustados"</span>)</span>
+<span id="cb23-191"><a href="#cb23-191" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb23-192"><a href="#cb23-192" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-195"><a href="#cb23-195" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb23-196"><a href="#cb23-196" aria-hidden="true" tabindex="-1"></a>resumen_tabla<span class="sc">$</span>prueba_chi2<span class="sc">$</span>inercia</span>
-<span id="cb23-197"><a href="#cb23-197" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb23-193"><a href="#cb23-193" aria-hidden="true" tabindex="-1"></a>Los residuos ofrecen una lectura local de la asociación. CA construye una representación global de esas mismas desviaciones.</span>
+<span id="cb23-194"><a href="#cb23-194" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-195"><a href="#cb23-195" aria-hidden="true" tabindex="-1"></a><span class="fu">### Perfiles fila y columna</span></span>
+<span id="cb23-196"><a href="#cb23-196" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-197"><a href="#cb23-197" aria-hidden="true" tabindex="-1"></a>El perfil fila de la fila $i$ es la distribución condicional sobre columnas:</span>
 <span id="cb23-198"><a href="#cb23-198" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-199"><a href="#cb23-199" aria-hidden="true" tabindex="-1"></a>Si la tabla está muy cerca de independencia, la inercia será pequeña y el mapa tendrá poca estructura que representar.</span>
-<span id="cb23-200"><a href="#cb23-200" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-201"><a href="#cb23-201" aria-hidden="true" tabindex="-1"></a>El contraste y la inercia responden a preguntas diferentes. Con una muestra muy grande, una asociación pequeña puede ser estadísticamente significativa; la inercia describe el tamaño geométrico de la desviación. Debemos mirar ambos resultados y no equiparar automáticamente significación con importancia.</span>
+<span id="cb23-199"><a href="#cb23-199" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb23-200"><a href="#cb23-200" aria-hidden="true" tabindex="-1"></a>f_{ij}=\frac{p_{ij}}{r_i}.</span>
+<span id="cb23-201"><a href="#cb23-201" aria-hidden="true" tabindex="-1"></a>$$</span>
 <span id="cb23-202"><a href="#cb23-202" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-203"><a href="#cb23-203" aria-hidden="true" tabindex="-1"></a><span class="fu">## Construcción algebraica del mapa</span></span>
+<span id="cb23-203"><a href="#cb23-203" aria-hidden="true" tabindex="-1"></a>El perfil columna de la columna $j$ es:</span>
 <span id="cb23-204"><a href="#cb23-204" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-205"><a href="#cb23-205" aria-hidden="true" tabindex="-1"></a><span class="fu">### Matriz de residuos estandarizados</span></span>
-<span id="cb23-206"><a href="#cb23-206" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-207"><a href="#cb23-207" aria-hidden="true" tabindex="-1"></a>CA aplica una descomposición en valores singulares a la matriz de desviaciones estandarizadas:</span>
+<span id="cb23-205"><a href="#cb23-205" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb23-206"><a href="#cb23-206" aria-hidden="true" tabindex="-1"></a>g_{ij}=\frac{p_{ij}}{c_j}.</span>
+<span id="cb23-207"><a href="#cb23-207" aria-hidden="true" tabindex="-1"></a>$$</span>
 <span id="cb23-208"><a href="#cb23-208" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-209"><a href="#cb23-209" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb23-210"><a href="#cb23-210" aria-hidden="true" tabindex="-1"></a>S = D_r^{-1/2}(P-rc^\top)D_c^{-1/2},</span>
-<span id="cb23-211"><a href="#cb23-211" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb23-212"><a href="#cb23-212" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-213"><a href="#cb23-213" aria-hidden="true" tabindex="-1"></a>donde $D_r$ y $D_c$ son matrices diagonales con masas fila y columna. Esta matriz contiene desviaciones respecto a independencia expresadas en la geometría $\chi^2$.</span>
-<span id="cb23-214"><a href="#cb23-214" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-217"><a href="#cb23-217" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb23-218"><a href="#cb23-218" aria-hidden="true" tabindex="-1"></a>P <span class="ot">&lt;-</span> tab <span class="sc">/</span> <span class="fu">sum</span>(tab)</span>
-<span id="cb23-219"><a href="#cb23-219" aria-hidden="true" tabindex="-1"></a>r <span class="ot">&lt;-</span> <span class="fu">rowSums</span>(P)</span>
-<span id="cb23-220"><a href="#cb23-220" aria-hidden="true" tabindex="-1"></a>c <span class="ot">&lt;-</span> <span class="fu">colSums</span>(P)</span>
-<span id="cb23-221"><a href="#cb23-221" aria-hidden="true" tabindex="-1"></a>Dr_inv_sqrt <span class="ot">&lt;-</span> <span class="fu">diag</span>(<span class="dv">1</span> <span class="sc">/</span> <span class="fu">sqrt</span>(r))</span>
-<span id="cb23-222"><a href="#cb23-222" aria-hidden="true" tabindex="-1"></a>Dc_inv_sqrt <span class="ot">&lt;-</span> <span class="fu">diag</span>(<span class="dv">1</span> <span class="sc">/</span> <span class="fu">sqrt</span>(c))</span>
-<span id="cb23-223"><a href="#cb23-223" aria-hidden="true" tabindex="-1"></a>S <span class="ot">&lt;-</span> Dr_inv_sqrt <span class="sc">%*%</span> (P <span class="sc">-</span> r <span class="sc">%*%</span> <span class="fu">t</span>(c)) <span class="sc">%*%</span> Dc_inv_sqrt</span>
-<span id="cb23-224"><a href="#cb23-224" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(<span class="fu">round</span>(S, <span class="dv">4</span>))</span>
-<span id="cb23-225"><a href="#cb23-225" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb23-226"><a href="#cb23-226" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-227"><a href="#cb23-227" aria-hidden="true" tabindex="-1"></a>La descomposición:</span>
-<span id="cb23-228"><a href="#cb23-228" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-229"><a href="#cb23-229" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb23-230"><a href="#cb23-230" aria-hidden="true" tabindex="-1"></a>S = UDV^\top</span>
-<span id="cb23-231"><a href="#cb23-231" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb23-232"><a href="#cb23-232" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-233"><a href="#cb23-233" aria-hidden="true" tabindex="-1"></a>produce dimensiones factoriales. Los valores singulares al cuadrado son inercias principales:</span>
-<span id="cb23-234"><a href="#cb23-234" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-235"><a href="#cb23-235" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb23-236"><a href="#cb23-236" aria-hidden="true" tabindex="-1"></a>\lambda_m = d_m^2.</span>
-<span id="cb23-237"><a href="#cb23-237" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb23-238"><a href="#cb23-238" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-239"><a href="#cb23-239" aria-hidden="true" tabindex="-1"></a>La SVD busca ejes ortogonales que recojan sucesivamente la mayor parte posible de la inercia. Es la misma idea geométrica de una proyección de baja dimensión, pero aplicada a desviaciones respecto a independencia y con la métrica $\chi^2$, no a variables numéricas estandarizadas ordinarias.</span>
-<span id="cb23-240"><a href="#cb23-240" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-241"><a href="#cb23-241" aria-hidden="true" tabindex="-1"></a><span class="fu">### Coordenadas principales</span></span>
-<span id="cb23-242"><a href="#cb23-242" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-243"><a href="#cb23-243" aria-hidden="true" tabindex="-1"></a>Las coordenadas principales de filas son:</span>
-<span id="cb23-244"><a href="#cb23-244" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-245"><a href="#cb23-245" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb23-246"><a href="#cb23-246" aria-hidden="true" tabindex="-1"></a>F = D_r^{-1/2}UD.</span>
-<span id="cb23-247"><a href="#cb23-247" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb23-248"><a href="#cb23-248" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-249"><a href="#cb23-249" aria-hidden="true" tabindex="-1"></a>Las coordenadas principales de columnas son:</span>
-<span id="cb23-250"><a href="#cb23-250" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-251"><a href="#cb23-251" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb23-252"><a href="#cb23-252" aria-hidden="true" tabindex="-1"></a>G = D_c^{-1/2}VD.</span>
-<span id="cb23-253"><a href="#cb23-253" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb23-254"><a href="#cb23-254" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-257"><a href="#cb23-257" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb23-258"><a href="#cb23-258" aria-hidden="true" tabindex="-1"></a>sv <span class="ot">&lt;-</span> <span class="fu">svd</span>(S)</span>
-<span id="cb23-259"><a href="#cb23-259" aria-hidden="true" tabindex="-1"></a>row_coord <span class="ot">&lt;-</span> <span class="fu">diag</span>(<span class="dv">1</span> <span class="sc">/</span> <span class="fu">sqrt</span>(r)) <span class="sc">%*%</span> sv<span class="sc">$</span>u <span class="sc">%*%</span> <span class="fu">diag</span>(sv<span class="sc">$</span>d)</span>
-<span id="cb23-260"><a href="#cb23-260" aria-hidden="true" tabindex="-1"></a>col_coord <span class="ot">&lt;-</span> <span class="fu">diag</span>(<span class="dv">1</span> <span class="sc">/</span> <span class="fu">sqrt</span>(c)) <span class="sc">%*%</span> sv<span class="sc">$</span>v <span class="sc">%*%</span> <span class="fu">diag</span>(sv<span class="sc">$</span>d)</span>
-<span id="cb23-261"><a href="#cb23-261" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(row_coord) <span class="ot">&lt;-</span> <span class="fu">rownames</span>(tab)</span>
-<span id="cb23-262"><a href="#cb23-262" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(col_coord) <span class="ot">&lt;-</span> <span class="fu">colnames</span>(tab)</span>
-<span id="cb23-263"><a href="#cb23-263" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(row_coord) <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">"Dim"</span>, <span class="fu">seq_len</span>(<span class="fu">ncol</span>(row_coord)))</span>
-<span id="cb23-264"><a href="#cb23-264" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(col_coord) <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">"Dim"</span>, <span class="fu">seq_len</span>(<span class="fu">ncol</span>(col_coord)))</span>
-<span id="cb23-265"><a href="#cb23-265" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-266"><a href="#cb23-266" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(<span class="at">dimension =</span> <span class="fu">paste0</span>(<span class="st">"Dim"</span>, <span class="fu">seq_along</span>(sv<span class="sc">$</span>d)), <span class="at">inercia =</span> <span class="fu">round</span>(sv<span class="sc">$</span>d<span class="sc">^</span><span class="dv">2</span>, <span class="dv">5</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb23-267"><a href="#cb23-267" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>()</span>
-<span id="cb23-268"><a href="#cb23-268" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(<span class="fu">round</span>(row_coord[, <span class="dv">1</span>, <span class="at">drop =</span> <span class="cn">FALSE</span>], <span class="dv">3</span>), <span class="at">caption =</span> <span class="st">"Coordenadas fila"</span>)</span>
-<span id="cb23-269"><a href="#cb23-269" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(<span class="fu">round</span>(col_coord[, <span class="dv">1</span>, <span class="at">drop =</span> <span class="cn">FALSE</span>], <span class="dv">3</span>), <span class="at">caption =</span> <span class="st">"Coordenadas columna"</span>)</span>
-<span id="cb23-270"><a href="#cb23-270" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb23-271"><a href="#cb23-271" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-272"><a href="#cb23-272" aria-hidden="true" tabindex="-1"></a>Con dos columnas solo hay una dimensión no trivial, porque el rango máximo es $\min(I-1,J-1)$.</span>
-<span id="cb23-273"><a href="#cb23-273" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-274"><a href="#cb23-274" aria-hidden="true" tabindex="-1"></a><span class="fu">### Ejemplo con dos dimensiones</span></span>
-<span id="cb23-275"><a href="#cb23-275" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-276"><a href="#cb23-276" aria-hidden="true" tabindex="-1"></a>Para visualizar dos dimensiones, usamos una tabla más rica: clase por combinación de sexo y supervivencia.</span>
-<span id="cb23-277"><a href="#cb23-277" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-280"><a href="#cb23-280" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb23-281"><a href="#cb23-281" aria-hidden="true" tabindex="-1"></a>tab2 <span class="ot">&lt;-</span> <span class="fu">xtabs</span>(Freq <span class="sc">~</span> Class <span class="sc">+</span> <span class="fu">interaction</span>(Sex, Survived), <span class="at">data =</span> titanic)</span>
-<span id="cb23-282"><a href="#cb23-282" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(tab2)</span>
-<span id="cb23-283"><a href="#cb23-283" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb23-284"><a href="#cb23-284" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-287"><a href="#cb23-287" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb23-288"><a href="#cb23-288" aria-hidden="true" tabindex="-1"></a>ca2 <span class="ot">&lt;-</span> FactoMineR<span class="sc">::</span><span class="fu">CA</span>(tab2, <span class="at">graph =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb23-289"><a href="#cb23-289" aria-hidden="true" tabindex="-1"></a>resumen_ca <span class="ot">&lt;-</span> <span class="fu">resumir_correspondencias</span>(ca2)</span>
-<span id="cb23-290"><a href="#cb23-290" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(resumen_ca<span class="sc">$</span>autovalores, <span class="at">digits =</span> <span class="dv">3</span>)</span>
-<span id="cb23-291"><a href="#cb23-291" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb23-292"><a href="#cb23-292" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-295"><a href="#cb23-295" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb23-296"><a href="#cb23-296" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
-<span id="cb23-297"><a href="#cb23-297" aria-hidden="true" tabindex="-1"></a><span class="fu">visualizar_inercia_correspondencias</span>(ca2)</span>
-<span id="cb23-298"><a href="#cb23-298" aria-hidden="true" tabindex="-1"></a><span class="fu">visualizar_correspondencias</span>(ca2)</span>
-<span id="cb23-299"><a href="#cb23-299" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb23-300"><a href="#cb23-300" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-301"><a href="#cb23-301" aria-hidden="true" tabindex="-1"></a>El mapa debe leerse como representación de asociaciones. Una clase cercana a una categoría columna sugiere asociación relativa, no necesariamente frecuencia absoluta alta.</span>
-<span id="cb23-302"><a href="#cb23-302" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-303"><a href="#cb23-303" aria-hidden="true" tabindex="-1"></a><span class="fu">## Interpretación del mapa</span></span>
-<span id="cb23-304"><a href="#cb23-304" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-305"><a href="#cb23-305" aria-hidden="true" tabindex="-1"></a><span class="fu">### Contribuciones</span></span>
-<span id="cb23-306"><a href="#cb23-306" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-307"><a href="#cb23-307" aria-hidden="true" tabindex="-1"></a>La contribución de una fila $i$ a la dimensión $m$ mide cuánto participa en la construcción de ese eje:</span>
-<span id="cb23-308"><a href="#cb23-308" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-309"><a href="#cb23-309" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb23-310"><a href="#cb23-310" aria-hidden="true" tabindex="-1"></a>ctr_{im}=\frac{r_i f_{im}^2}{\lambda_m}.</span>
-<span id="cb23-311"><a href="#cb23-311" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb23-312"><a href="#cb23-312" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-313"><a href="#cb23-313" aria-hidden="true" tabindex="-1"></a>Para columnas:</span>
-<span id="cb23-314"><a href="#cb23-314" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-315"><a href="#cb23-315" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb23-316"><a href="#cb23-316" aria-hidden="true" tabindex="-1"></a>ctr_{jm}=\frac{c_j g_{jm}^2}{\lambda_m}.</span>
-<span id="cb23-317"><a href="#cb23-317" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb23-318"><a href="#cb23-318" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-321"><a href="#cb23-321" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb23-322"><a href="#cb23-322" aria-hidden="true" tabindex="-1"></a>contrib_filas <span class="ot">&lt;-</span> <span class="fu">contribuciones_correspondencias</span>(ca2, <span class="st">"filas"</span>, <span class="at">dimension =</span> <span class="dv">1</span>)</span>
-<span id="cb23-323"><a href="#cb23-323" aria-hidden="true" tabindex="-1"></a>contrib_columnas <span class="ot">&lt;-</span> <span class="fu">contribuciones_correspondencias</span>(ca2, <span class="st">"columnas"</span>, <span class="at">dimension =</span> <span class="dv">1</span>)</span>
-<span id="cb23-324"><a href="#cb23-324" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(contrib_filas<span class="sc">$</span>tabla, <span class="at">digits =</span> <span class="dv">3</span>, <span class="at">caption =</span> <span class="st">"Contribuciones de filas a la dimensión 1"</span>)</span>
-<span id="cb23-325"><a href="#cb23-325" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(contrib_columnas<span class="sc">$</span>tabla, <span class="at">digits =</span> <span class="dv">3</span>, <span class="at">caption =</span> <span class="st">"Contribuciones de columnas a la dimensión 1"</span>)</span>
-<span id="cb23-326"><a href="#cb23-326" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb23-211"><a href="#cb23-211" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb23-212"><a href="#cb23-212" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(<span class="fu">round</span>(resumen_tabla<span class="sc">$</span>perfiles_fila, <span class="dv">3</span>), <span class="at">caption =</span> <span class="st">"Perfiles fila"</span>)</span>
+<span id="cb23-213"><a href="#cb23-213" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(<span class="fu">round</span>(resumen_tabla<span class="sc">$</span>perfiles_columna, <span class="dv">3</span>), <span class="at">caption =</span> <span class="st">"Perfiles columna"</span>)</span>
+<span id="cb23-214"><a href="#cb23-214" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(resumen_tabla<span class="sc">$</span>masas_fila, <span class="at">digits =</span> <span class="dv">3</span>, <span class="at">caption =</span> <span class="st">"Masas fila"</span>)</span>
+<span id="cb23-215"><a href="#cb23-215" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(resumen_tabla<span class="sc">$</span>masas_columna, <span class="at">digits =</span> <span class="dv">3</span>, <span class="at">caption =</span> <span class="st">"Masas columna"</span>)</span>
+<span id="cb23-216"><a href="#cb23-216" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb23-217"><a href="#cb23-217" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-218"><a href="#cb23-218" aria-hidden="true" tabindex="-1"></a>Las filas se comparan por sus perfiles, no por sus frecuencias absolutas. Dos filas son parecidas si distribuyen sus frecuencias entre columnas de forma parecida.</span>
+<span id="cb23-219"><a href="#cb23-219" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-220"><a href="#cb23-220" aria-hidden="true" tabindex="-1"></a><span class="fu">### Distancia $\chi^2$ entre perfiles</span></span>
+<span id="cb23-221"><a href="#cb23-221" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-222"><a href="#cb23-222" aria-hidden="true" tabindex="-1"></a>La distancia $\chi^2$ entre dos perfiles fila $i$ e $i'$ es:</span>
+<span id="cb23-223"><a href="#cb23-223" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-224"><a href="#cb23-224" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb23-225"><a href="#cb23-225" aria-hidden="true" tabindex="-1"></a>d^2(i,i')=</span>
+<span id="cb23-226"><a href="#cb23-226" aria-hidden="true" tabindex="-1"></a>\sum_{j=1}^{J}\frac{1}{c_j}</span>
+<span id="cb23-227"><a href="#cb23-227" aria-hidden="true" tabindex="-1"></a>\left(</span>
+<span id="cb23-228"><a href="#cb23-228" aria-hidden="true" tabindex="-1"></a>\frac{p_{ij}}{r_i}</span>
+<span id="cb23-229"><a href="#cb23-229" aria-hidden="true" tabindex="-1"></a>-</span>
+<span id="cb23-230"><a href="#cb23-230" aria-hidden="true" tabindex="-1"></a>\frac{p_{i'j}}{r_{i'}}</span>
+<span id="cb23-231"><a href="#cb23-231" aria-hidden="true" tabindex="-1"></a>\right)^2.</span>
+<span id="cb23-232"><a href="#cb23-232" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb23-233"><a href="#cb23-233" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-234"><a href="#cb23-234" aria-hidden="true" tabindex="-1"></a>Las columnas con masa pequeña pesan más porque diferencias en categorías raras son más informativas geométricamente. Esto también implica una advertencia: categorías raras pueden generar puntos extremos.</span>
+<span id="cb23-235"><a href="#cb23-235" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-236"><a href="#cb23-236" aria-hidden="true" tabindex="-1"></a>Para columnas se define una distancia análoga ponderando por masas fila:</span>
+<span id="cb23-237"><a href="#cb23-237" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-238"><a href="#cb23-238" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb23-239"><a href="#cb23-239" aria-hidden="true" tabindex="-1"></a>d^2(j,j')=</span>
+<span id="cb23-240"><a href="#cb23-240" aria-hidden="true" tabindex="-1"></a>\sum_{i=1}^{I}\frac{1}{r_i}</span>
+<span id="cb23-241"><a href="#cb23-241" aria-hidden="true" tabindex="-1"></a>\left(</span>
+<span id="cb23-242"><a href="#cb23-242" aria-hidden="true" tabindex="-1"></a>\frac{p_{ij}}{c_j}</span>
+<span id="cb23-243"><a href="#cb23-243" aria-hidden="true" tabindex="-1"></a>-</span>
+<span id="cb23-244"><a href="#cb23-244" aria-hidden="true" tabindex="-1"></a>\frac{p_{ij'}}{c_{j'}}</span>
+<span id="cb23-245"><a href="#cb23-245" aria-hidden="true" tabindex="-1"></a>\right)^2.</span>
+<span id="cb23-246"><a href="#cb23-246" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb23-247"><a href="#cb23-247" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-250"><a href="#cb23-250" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb23-251"><a href="#cb23-251" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(<span class="fu">round</span>(<span class="fu">as.matrix</span>(<span class="fu">distancias_chi2</span>(tab, <span class="st">"filas"</span>)), <span class="dv">3</span>))</span>
+<span id="cb23-252"><a href="#cb23-252" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb23-253"><a href="#cb23-253" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-256"><a href="#cb23-256" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb23-257"><a href="#cb23-257" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb23-258"><a href="#cb23-258" aria-hidden="true" tabindex="-1"></a><span class="fu">visualizar_distancias_chi2</span>(tab, <span class="st">"filas"</span>)</span>
+<span id="cb23-259"><a href="#cb23-259" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb23-260"><a href="#cb23-260" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-261"><a href="#cb23-261" aria-hidden="true" tabindex="-1"></a>La distancia entre clases no compara cuántos pasajeros había en cada clase, sino cómo se distribuyó la supervivencia dentro de cada clase.</span>
+<span id="cb23-262"><a href="#cb23-262" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-263"><a href="#cb23-263" aria-hidden="true" tabindex="-1"></a><span class="fu">### Inercia total</span></span>
+<span id="cb23-264"><a href="#cb23-264" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-265"><a href="#cb23-265" aria-hidden="true" tabindex="-1"></a>La inercia total de CA mide desviación global respecto a independencia. Está relacionada con el estadístico $\chi^2$:</span>
+<span id="cb23-266"><a href="#cb23-266" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-267"><a href="#cb23-267" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb23-268"><a href="#cb23-268" aria-hidden="true" tabindex="-1"></a>Inercia = \sum_{i=1}^{I}\sum_{j=1}^{J}</span>
+<span id="cb23-269"><a href="#cb23-269" aria-hidden="true" tabindex="-1"></a>\frac{(p_{ij}-r_ic_j)^2}{r_ic_j}</span>
+<span id="cb23-270"><a href="#cb23-270" aria-hidden="true" tabindex="-1"></a>=\frac{\chi^2}{n}.</span>
+<span id="cb23-271"><a href="#cb23-271" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb23-272"><a href="#cb23-272" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-275"><a href="#cb23-275" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb23-276"><a href="#cb23-276" aria-hidden="true" tabindex="-1"></a>resumen_tabla<span class="sc">$</span>prueba_chi2<span class="sc">$</span>inercia</span>
+<span id="cb23-277"><a href="#cb23-277" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb23-278"><a href="#cb23-278" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-279"><a href="#cb23-279" aria-hidden="true" tabindex="-1"></a>Si la tabla está muy cerca de independencia, la inercia será pequeña y el mapa tendrá poca estructura que representar. La conexión completa que desarrollaremos a continuación es:</span>
+<span id="cb23-280"><a href="#cb23-280" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-281"><a href="#cb23-281" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb23-282"><a href="#cb23-282" aria-hidden="true" tabindex="-1"></a>\frac{X^2}{n}=\operatorname{Inercia}=\lVert S\rVert_F^2</span>
+<span id="cb23-283"><a href="#cb23-283" aria-hidden="true" tabindex="-1"></a>=\sum_m\lambda_m.</span>
+<span id="cb23-284"><a href="#cb23-284" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb23-285"><a href="#cb23-285" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-286"><a href="#cb23-286" aria-hidden="true" tabindex="-1"></a>Por tanto, CA no analiza una propiedad diferente del contraste: reparte la desviación total respecto a la independencia entre dimensiones ortogonales.</span>
+<span id="cb23-287"><a href="#cb23-287" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-288"><a href="#cb23-288" aria-hidden="true" tabindex="-1"></a>El contraste y la inercia ofrecen lecturas complementarias. Con una muestra muy grande, una asociación pequeña puede ser estadísticamente significativa; la inercia y $V$ de Cramér describen su magnitud. Debemos mirar ambos resultados y no equiparar automáticamente significación con importancia.</span>
+<span id="cb23-289"><a href="#cb23-289" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-290"><a href="#cb23-290" aria-hidden="true" tabindex="-1"></a><span class="fu">## Construcción algebraica del mapa</span></span>
+<span id="cb23-291"><a href="#cb23-291" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-292"><a href="#cb23-292" aria-hidden="true" tabindex="-1"></a><span class="fu">### Matriz de residuos estandarizados</span></span>
+<span id="cb23-293"><a href="#cb23-293" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-294"><a href="#cb23-294" aria-hidden="true" tabindex="-1"></a>CA aplica una descomposición en valores singulares a la matriz de desviaciones estandarizadas:</span>
+<span id="cb23-295"><a href="#cb23-295" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-296"><a href="#cb23-296" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb23-297"><a href="#cb23-297" aria-hidden="true" tabindex="-1"></a>S = D_r^{-1/2}(P-rc^\top)D_c^{-1/2},</span>
+<span id="cb23-298"><a href="#cb23-298" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb23-299"><a href="#cb23-299" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-300"><a href="#cb23-300" aria-hidden="true" tabindex="-1"></a>donde $D_r$ y $D_c$ son matrices diagonales con masas fila y columna. Esta matriz contiene desviaciones respecto a independencia expresadas en la geometría $\chi^2$.</span>
+<span id="cb23-301"><a href="#cb23-301" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-304"><a href="#cb23-304" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb23-305"><a href="#cb23-305" aria-hidden="true" tabindex="-1"></a>P <span class="ot">&lt;-</span> tab <span class="sc">/</span> <span class="fu">sum</span>(tab)</span>
+<span id="cb23-306"><a href="#cb23-306" aria-hidden="true" tabindex="-1"></a>r <span class="ot">&lt;-</span> <span class="fu">rowSums</span>(P)</span>
+<span id="cb23-307"><a href="#cb23-307" aria-hidden="true" tabindex="-1"></a>c <span class="ot">&lt;-</span> <span class="fu">colSums</span>(P)</span>
+<span id="cb23-308"><a href="#cb23-308" aria-hidden="true" tabindex="-1"></a>Dr_inv_sqrt <span class="ot">&lt;-</span> <span class="fu">diag</span>(<span class="dv">1</span> <span class="sc">/</span> <span class="fu">sqrt</span>(r))</span>
+<span id="cb23-309"><a href="#cb23-309" aria-hidden="true" tabindex="-1"></a>Dc_inv_sqrt <span class="ot">&lt;-</span> <span class="fu">diag</span>(<span class="dv">1</span> <span class="sc">/</span> <span class="fu">sqrt</span>(c))</span>
+<span id="cb23-310"><a href="#cb23-310" aria-hidden="true" tabindex="-1"></a>S <span class="ot">&lt;-</span> Dr_inv_sqrt <span class="sc">%*%</span> (P <span class="sc">-</span> r <span class="sc">%*%</span> <span class="fu">t</span>(c)) <span class="sc">%*%</span> Dc_inv_sqrt</span>
+<span id="cb23-311"><a href="#cb23-311" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(<span class="fu">round</span>(S, <span class="dv">4</span>))</span>
+<span id="cb23-312"><a href="#cb23-312" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb23-313"><a href="#cb23-313" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-314"><a href="#cb23-314" aria-hidden="true" tabindex="-1"></a>La descomposición:</span>
+<span id="cb23-315"><a href="#cb23-315" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-316"><a href="#cb23-316" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb23-317"><a href="#cb23-317" aria-hidden="true" tabindex="-1"></a>S = UDV^\top</span>
+<span id="cb23-318"><a href="#cb23-318" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb23-319"><a href="#cb23-319" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-320"><a href="#cb23-320" aria-hidden="true" tabindex="-1"></a>produce dimensiones factoriales. Los valores singulares al cuadrado son inercias principales:</span>
+<span id="cb23-321"><a href="#cb23-321" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-322"><a href="#cb23-322" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb23-323"><a href="#cb23-323" aria-hidden="true" tabindex="-1"></a>\lambda_m = d_m^2.</span>
+<span id="cb23-324"><a href="#cb23-324" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb23-325"><a href="#cb23-325" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-326"><a href="#cb23-326" aria-hidden="true" tabindex="-1"></a>La SVD busca ejes ortogonales que recojan sucesivamente la mayor parte posible de la inercia. Es la misma idea geométrica de una proyección de baja dimensión, pero aplicada a desviaciones respecto a independencia y con la métrica $\chi^2$, no a variables numéricas estandarizadas ordinarias.</span>
 <span id="cb23-327"><a href="#cb23-327" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-330"><a href="#cb23-330" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb23-331"><a href="#cb23-331" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
-<span id="cb23-332"><a href="#cb23-332" aria-hidden="true" tabindex="-1"></a>contrib_filas<span class="sc">$</span>grafico</span>
-<span id="cb23-333"><a href="#cb23-333" aria-hidden="true" tabindex="-1"></a>contrib_columnas<span class="sc">$</span>grafico</span>
-<span id="cb23-334"><a href="#cb23-334" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb23-328"><a href="#cb23-328" aria-hidden="true" tabindex="-1"></a>La matriz está centrada respecto a los marginales. En particular,</span>
+<span id="cb23-329"><a href="#cb23-329" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-330"><a href="#cb23-330" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb23-331"><a href="#cb23-331" aria-hidden="true" tabindex="-1"></a>S\sqrt{c}=0,</span>
+<span id="cb23-332"><a href="#cb23-332" aria-hidden="true" tabindex="-1"></a>\qquad</span>
+<span id="cb23-333"><a href="#cb23-333" aria-hidden="true" tabindex="-1"></a>S^\top\sqrt{r}=0.</span>
+<span id="cb23-334"><a href="#cb23-334" aria-hidden="true" tabindex="-1"></a>$$</span>
 <span id="cb23-335"><a href="#cb23-335" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-336"><a href="#cb23-336" aria-hidden="true" tabindex="-1"></a>Una categoría con alta contribución ayuda a definir la dimensión. Una categoría con baja contribución no debería protagonizar la interpretación del eje.</span>
+<span id="cb23-336"><a href="#cb23-336" aria-hidden="true" tabindex="-1"></a>Por ello siempre existe al menos una dirección trivial y el número máximo de dimensiones con inercia positiva es:</span>
 <span id="cb23-337"><a href="#cb23-337" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-338"><a href="#cb23-338" aria-hidden="true" tabindex="-1"></a>La contribución reparte la construcción del eje entre categorías y suma 100% dentro de cada dimensión. Por eso depende tanto de la coordenada como de la masa: un punto lejano con masa casi nula no necesariamente domina el eje.</span>
-<span id="cb23-339"><a href="#cb23-339" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-340"><a href="#cb23-340" aria-hidden="true" tabindex="-1"></a><span class="fu">### Cos² o calidad de representación</span></span>
+<span id="cb23-338"><a href="#cb23-338" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb23-339"><a href="#cb23-339" aria-hidden="true" tabindex="-1"></a>\min(I-1,J-1).</span>
+<span id="cb23-340"><a href="#cb23-340" aria-hidden="true" tabindex="-1"></a>$$</span>
 <span id="cb23-341"><a href="#cb23-341" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-342"><a href="#cb23-342" aria-hidden="true" tabindex="-1"></a>El cos² mide qué proporción de la distancia de un punto al origen queda representada en una dimensión o conjunto de dimensiones. Para una fila:</span>
+<span id="cb23-342"><a href="#cb23-342" aria-hidden="true" tabindex="-1"></a><span class="fu">### Coordenadas principales</span></span>
 <span id="cb23-343"><a href="#cb23-343" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-344"><a href="#cb23-344" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb23-345"><a href="#cb23-345" aria-hidden="true" tabindex="-1"></a>cos^2_{im}=\frac{f_{im}^2}{\sum_{h} f_{ih}^2}.</span>
+<span id="cb23-344"><a href="#cb23-344" aria-hidden="true" tabindex="-1"></a>Las coordenadas principales de filas son:</span>
+<span id="cb23-345"><a href="#cb23-345" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb23-346"><a href="#cb23-346" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb23-347"><a href="#cb23-347" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-350"><a href="#cb23-350" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb23-351"><a href="#cb23-351" aria-hidden="true" tabindex="-1"></a>calidad_filas <span class="ot">&lt;-</span> <span class="fu">calidad_correspondencias</span>(ca2, <span class="st">"filas"</span>)</span>
-<span id="cb23-352"><a href="#cb23-352" aria-hidden="true" tabindex="-1"></a>calidad_columnas <span class="ot">&lt;-</span> <span class="fu">calidad_correspondencias</span>(ca2, <span class="st">"columnas"</span>)</span>
-<span id="cb23-353"><a href="#cb23-353" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(calidad_filas<span class="sc">$</span>tabla, <span class="at">digits =</span> <span class="dv">3</span>, <span class="at">caption =</span> <span class="st">"Cos² de filas en el plano"</span>)</span>
-<span id="cb23-354"><a href="#cb23-354" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(calidad_columnas<span class="sc">$</span>tabla, <span class="at">digits =</span> <span class="dv">3</span>, <span class="at">caption =</span> <span class="st">"Cos² de columnas en el plano"</span>)</span>
-<span id="cb23-355"><a href="#cb23-355" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb23-356"><a href="#cb23-356" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-357"><a href="#cb23-357" aria-hidden="true" tabindex="-1"></a>Un punto puede estar visualmente lejos, pero si está mal representado en el plano mostrado, conviene no interpretarlo demasiado.</span>
-<span id="cb23-358"><a href="#cb23-358" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-359"><a href="#cb23-359" aria-hidden="true" tabindex="-1"></a>Geométricamente, el cos² compara la longitud de la proyección sobre el eje con la distancia total al origen. Contribución y cos² no son intercambiables: la primera pregunta quién construye el eje; el segundo, si el eje representa bien a ese punto.</span>
-<span id="cb23-360"><a href="#cb23-360" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-361"><a href="#cb23-361" aria-hidden="true" tabindex="-1"></a><span class="fu">### El mapa es una aproximación de las distancias</span></span>
-<span id="cb23-362"><a href="#cb23-362" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-363"><a href="#cb23-363" aria-hidden="true" tabindex="-1"></a>Con todas las dimensiones no triviales, las distancias euclídeas entre coordenadas principales reproducen las distancias $\chi^2$ entre perfiles del mismo tipo. Al mostrar solo dos dimensiones proyectamos esa geometría y aceptamos pérdida. Por eso la inercia retenida y el cos² deben acompañar al mapa.</span>
-<span id="cb23-364"><a href="#cb23-364" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-365"><a href="#cb23-365" aria-hidden="true" tabindex="-1"></a>Las coordenadas fila y columna no viven originalmente en el mismo espacio métrico. Un mapa conjunto superpone dos representaciones útiles, pero la distancia directa entre un punto fila y uno columna no tiene la misma interpretación rigurosa que la distancia entre dos filas o entre dos columnas.</span>
+<span id="cb23-347"><a href="#cb23-347" aria-hidden="true" tabindex="-1"></a>F = D_r^{-1/2}UD.</span>
+<span id="cb23-348"><a href="#cb23-348" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb23-349"><a href="#cb23-349" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-350"><a href="#cb23-350" aria-hidden="true" tabindex="-1"></a>Las coordenadas principales de columnas son:</span>
+<span id="cb23-351"><a href="#cb23-351" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-352"><a href="#cb23-352" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb23-353"><a href="#cb23-353" aria-hidden="true" tabindex="-1"></a>G = D_c^{-1/2}VD.</span>
+<span id="cb23-354"><a href="#cb23-354" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb23-355"><a href="#cb23-355" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-358"><a href="#cb23-358" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb23-359"><a href="#cb23-359" aria-hidden="true" tabindex="-1"></a>sv <span class="ot">&lt;-</span> <span class="fu">svd</span>(S)</span>
+<span id="cb23-360"><a href="#cb23-360" aria-hidden="true" tabindex="-1"></a>row_coord <span class="ot">&lt;-</span> <span class="fu">diag</span>(<span class="dv">1</span> <span class="sc">/</span> <span class="fu">sqrt</span>(r)) <span class="sc">%*%</span> sv<span class="sc">$</span>u <span class="sc">%*%</span> <span class="fu">diag</span>(sv<span class="sc">$</span>d)</span>
+<span id="cb23-361"><a href="#cb23-361" aria-hidden="true" tabindex="-1"></a>col_coord <span class="ot">&lt;-</span> <span class="fu">diag</span>(<span class="dv">1</span> <span class="sc">/</span> <span class="fu">sqrt</span>(c)) <span class="sc">%*%</span> sv<span class="sc">$</span>v <span class="sc">%*%</span> <span class="fu">diag</span>(sv<span class="sc">$</span>d)</span>
+<span id="cb23-362"><a href="#cb23-362" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(row_coord) <span class="ot">&lt;-</span> <span class="fu">rownames</span>(tab)</span>
+<span id="cb23-363"><a href="#cb23-363" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(col_coord) <span class="ot">&lt;-</span> <span class="fu">colnames</span>(tab)</span>
+<span id="cb23-364"><a href="#cb23-364" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(row_coord) <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">"Dim"</span>, <span class="fu">seq_len</span>(<span class="fu">ncol</span>(row_coord)))</span>
+<span id="cb23-365"><a href="#cb23-365" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(col_coord) <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">"Dim"</span>, <span class="fu">seq_len</span>(<span class="fu">ncol</span>(col_coord)))</span>
 <span id="cb23-366"><a href="#cb23-366" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-367"><a href="#cb23-367" aria-hidden="true" tabindex="-1"></a><span class="fu">### Interpretación correcta de proximidades</span></span>
-<span id="cb23-368"><a href="#cb23-368" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-369"><a href="#cb23-369" aria-hidden="true" tabindex="-1"></a>Al interpretar un mapa CA:</span>
-<span id="cb23-370"><a href="#cb23-370" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-371"><a href="#cb23-371" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>proximidad entre una fila y una columna sugiere asociación relativa;</span>
-<span id="cb23-372"><a href="#cb23-372" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>proximidad entre filas significa perfiles columna parecidos;</span>
-<span id="cb23-373"><a href="#cb23-373" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>proximidad entre columnas significa perfiles fila parecidos;</span>
-<span id="cb23-374"><a href="#cb23-374" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>el origen representa comportamiento medio;</span>
-<span id="cb23-375"><a href="#cb23-375" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>puntos alejados del origen se apartan más de la independencia;</span>
-<span id="cb23-376"><a href="#cb23-376" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>masas, contribuciones y cos² deben acompañar siempre la lectura visual.</span>
-<span id="cb23-377"><a href="#cb23-377" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-378"><a href="#cb23-378" aria-hidden="true" tabindex="-1"></a>La proximidad entre categorías de la misma variable debe interpretarse con cautela. Lo central es cómo filas y columnas se asocian a las dimensiones y qué calidad tiene la representación.</span>
-<span id="cb23-379"><a href="#cb23-379" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-380"><a href="#cb23-380" aria-hidden="true" tabindex="-1"></a><span class="fu">### Categorías raras y puntos extremos</span></span>
-<span id="cb23-381"><a href="#cb23-381" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-382"><a href="#cb23-382" aria-hidden="true" tabindex="-1"></a>Categorías con masa baja pueden aparecer muy alejadas y dominar visualmente el mapa. Antes de interpretar un punto extremo hay que revisar:</span>
-<span id="cb23-383"><a href="#cb23-383" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-384"><a href="#cb23-384" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>su frecuencia;</span>
-<span id="cb23-385"><a href="#cb23-385" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>su contribución;</span>
-<span id="cb23-386"><a href="#cb23-386" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>su cos²;</span>
-<span id="cb23-387"><a href="#cb23-387" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>si responde a una estructura estable o a un recuento pequeño.</span>
-<span id="cb23-388"><a href="#cb23-388" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-389"><a href="#cb23-389" aria-hidden="true" tabindex="-1"></a><span class="fu">## Decisiones y limitaciones</span></span>
-<span id="cb23-390"><a href="#cb23-390" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-391"><a href="#cb23-391" aria-hidden="true" tabindex="-1"></a><span class="fu">### Protocolo de decisión</span></span>
+<span id="cb23-367"><a href="#cb23-367" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(<span class="at">dimension =</span> <span class="fu">paste0</span>(<span class="st">"Dim"</span>, <span class="fu">seq_along</span>(sv<span class="sc">$</span>d)), <span class="at">inercia =</span> <span class="fu">round</span>(sv<span class="sc">$</span>d<span class="sc">^</span><span class="dv">2</span>, <span class="dv">5</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb23-368"><a href="#cb23-368" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>()</span>
+<span id="cb23-369"><a href="#cb23-369" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(<span class="fu">round</span>(row_coord[, <span class="dv">1</span>, <span class="at">drop =</span> <span class="cn">FALSE</span>], <span class="dv">3</span>), <span class="at">caption =</span> <span class="st">"Coordenadas fila"</span>)</span>
+<span id="cb23-370"><a href="#cb23-370" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(<span class="fu">round</span>(col_coord[, <span class="dv">1</span>, <span class="at">drop =</span> <span class="cn">FALSE</span>], <span class="dv">3</span>), <span class="at">caption =</span> <span class="st">"Coordenadas columna"</span>)</span>
+<span id="cb23-371"><a href="#cb23-371" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb23-372"><a href="#cb23-372" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-373"><a href="#cb23-373" aria-hidden="true" tabindex="-1"></a>Con dos columnas solo hay una dimensión no trivial, porque el rango máximo es $\min(I-1,J-1)$.</span>
+<span id="cb23-374"><a href="#cb23-374" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-375"><a href="#cb23-375" aria-hidden="true" tabindex="-1"></a><span class="fu">### Propiedad baricéntrica</span></span>
+<span id="cb23-376"><a href="#cb23-376" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-377"><a href="#cb23-377" aria-hidden="true" tabindex="-1"></a>Definamos las coordenadas estándar de filas y columnas:</span>
+<span id="cb23-378"><a href="#cb23-378" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-379"><a href="#cb23-379" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb23-380"><a href="#cb23-380" aria-hidden="true" tabindex="-1"></a>\Phi=D_r^{-1/2}U,</span>
+<span id="cb23-381"><a href="#cb23-381" aria-hidden="true" tabindex="-1"></a>\qquad</span>
+<span id="cb23-382"><a href="#cb23-382" aria-hidden="true" tabindex="-1"></a>\Gamma=D_c^{-1/2}V.</span>
+<span id="cb23-383"><a href="#cb23-383" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb23-384"><a href="#cb23-384" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-385"><a href="#cb23-385" aria-hidden="true" tabindex="-1"></a>Las coordenadas principales son entonces $F=\Phi D$ y $G=\Gamma D$. A partir de la SVD se obtienen las relaciones de transición:</span>
+<span id="cb23-386"><a href="#cb23-386" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-387"><a href="#cb23-387" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb23-388"><a href="#cb23-388" aria-hidden="true" tabindex="-1"></a>F=D_r^{-1}P\Gamma,</span>
+<span id="cb23-389"><a href="#cb23-389" aria-hidden="true" tabindex="-1"></a>\qquad</span>
+<span id="cb23-390"><a href="#cb23-390" aria-hidden="true" tabindex="-1"></a>G=D_c^{-1}P^\top\Phi.</span>
+<span id="cb23-391"><a href="#cb23-391" aria-hidden="true" tabindex="-1"></a>$$</span>
 <span id="cb23-392"><a href="#cb23-392" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-393"><a href="#cb23-393" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>Definir qué representan las filas, las columnas y la población contada.</span>
-<span id="cb23-394"><a href="#cb23-394" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>Revisar frecuencias, ceros, categorías raras y valores esperados.</span>
-<span id="cb23-395"><a href="#cb23-395" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>Interpretar primero perfiles y residuos respecto a independencia.</span>
-<span id="cb23-396"><a href="#cb23-396" aria-hidden="true" tabindex="-1"></a><span class="ss">4. </span>Comprobar la magnitud de la inercia, no solo el p-valor del contraste.</span>
-<span id="cb23-397"><a href="#cb23-397" aria-hidden="true" tabindex="-1"></a><span class="ss">5. </span>Elegir el número de dimensiones según inercia retenida y objetivo de la representación.</span>
-<span id="cb23-398"><a href="#cb23-398" aria-hidden="true" tabindex="-1"></a><span class="ss">6. </span>Construir cada eje con las categorías de mayor contribución.</span>
-<span id="cb23-399"><a href="#cb23-399" aria-hidden="true" tabindex="-1"></a><span class="ss">7. </span>Interpretar solo puntos con cos² suficiente en el plano mostrado.</span>
-<span id="cb23-400"><a href="#cb23-400" aria-hidden="true" tabindex="-1"></a><span class="ss">8. </span>Leer rigurosamente distancias entre puntos del mismo tipo y ser prudente con proximidades fila--columna.</span>
-<span id="cb23-401"><a href="#cb23-401" aria-hidden="true" tabindex="-1"></a><span class="ss">9. </span>Comprobar que las conclusiones no dependan de categorías con muy poca masa.</span>
+<span id="cb23-393"><a href="#cb23-393" aria-hidden="true" tabindex="-1"></a>La primera igualdad dice que cada punto fila, en coordenadas principales, es el baricentro de las coordenadas estándar de las columnas, ponderadas por su perfil fila:</span>
+<span id="cb23-394"><a href="#cb23-394" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-395"><a href="#cb23-395" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb23-396"><a href="#cb23-396" aria-hidden="true" tabindex="-1"></a>f_i=\sum_j\frac{p_{ij}}{r_i}\,\gamma_j.</span>
+<span id="cb23-397"><a href="#cb23-397" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb23-398"><a href="#cb23-398" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-399"><a href="#cb23-399" aria-hidden="true" tabindex="-1"></a>Por eso una fila se desplaza hacia las columnas que están relativamente más presentes en su perfil. De forma dual, una columna es el baricentro de las filas ponderadas por su perfil columna. Esta relación proporciona una interpretación más precisa que afirmar simplemente que dos puntos de distinto tipo están «cerca».</span>
+<span id="cb23-400"><a href="#cb23-400" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-401"><a href="#cb23-401" aria-hidden="true" tabindex="-1"></a>Hay varios escalados posibles:</span>
 <span id="cb23-402"><a href="#cb23-402" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-403"><a href="#cb23-403" aria-hidden="true" tabindex="-1"></a><span class="fu">### Errores frecuentes</span></span>
-<span id="cb23-404"><a href="#cb23-404" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-405"><a href="#cb23-405" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Interpretar el mapa como si mostrara frecuencias absolutas.</span>
-<span id="cb23-406"><a href="#cb23-406" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Confundir asociación con causalidad.</span>
-<span id="cb23-407"><a href="#cb23-407" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Ignorar masas, contribuciones y cos².</span>
-<span id="cb23-408"><a href="#cb23-408" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Dar importancia a categorías raras sin comprobar su peso.</span>
-<span id="cb23-409"><a href="#cb23-409" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Leer distancias entre puntos mal representados.</span>
-<span id="cb23-410"><a href="#cb23-410" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Olvidar que CA representa desviaciones respecto a independencia.</span>
-<span id="cb23-411"><a href="#cb23-411" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-412"><a href="#cb23-412" aria-hidden="true" tabindex="-1"></a><span class="fu">### Resumen del capítulo</span></span>
-<span id="cb23-413"><a href="#cb23-413" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-414"><a href="#cb23-414" aria-hidden="true" tabindex="-1"></a>CA convierte una tabla de contingencia en un mapa de perfiles. Parte de la independencia, mide desviaciones mediante la distancia $\chi^2$ y descompone la inercia en dimensiones factoriales. Su interpretación se basa en perfiles, masas, inercia, contribuciones, cos² y cautela ante categorías raras.</span>
-<span id="cb23-415"><a href="#cb23-415" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-416"><a href="#cb23-416" aria-hidden="true" tabindex="-1"></a><span class="fu">## Funciones utilizadas</span></span>
+<span id="cb23-403"><a href="#cb23-403" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>en el mapa **simétrico**, filas y columnas usan coordenadas principales; resulta equilibrado, pero una distancia fila--columna no es una distancia métrica;</span>
+<span id="cb23-404"><a href="#cb23-404" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>en el mapa **de filas**, las filas usan coordenadas principales y las columnas coordenadas estándar; conserva la interpretación baricéntrica de las filas;</span>
+<span id="cb23-405"><a href="#cb23-405" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>en el mapa **de columnas** se intercambian ambos papeles.</span>
+<span id="cb23-406"><a href="#cb23-406" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-407"><a href="#cb23-407" aria-hidden="true" tabindex="-1"></a><span class="fu">### Ejemplo con dos dimensiones</span></span>
+<span id="cb23-408"><a href="#cb23-408" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-409"><a href="#cb23-409" aria-hidden="true" tabindex="-1"></a>Para visualizar dos dimensiones, usamos una tabla más rica: clase por combinación de sexo y supervivencia.</span>
+<span id="cb23-410"><a href="#cb23-410" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-413"><a href="#cb23-413" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb23-414"><a href="#cb23-414" aria-hidden="true" tabindex="-1"></a>tab2 <span class="ot">&lt;-</span> <span class="fu">xtabs</span>(Freq <span class="sc">~</span> Class <span class="sc">+</span> <span class="fu">interaction</span>(Sex, Survived), <span class="at">data =</span> titanic)</span>
+<span id="cb23-415"><a href="#cb23-415" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(tab2)</span>
+<span id="cb23-416"><a href="#cb23-416" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb23-417"><a href="#cb23-417" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-418"><a href="#cb23-418" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Función <span class="pp">|</span> Para qué se usa <span class="pp">|</span> Uso básico <span class="pp">|</span></span>
-<span id="cb23-419"><a href="#cb23-419" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|---|</span></span>
-<span id="cb23-420"><a href="#cb23-420" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`xtabs()`</span> <span class="pp">|</span> Construir una tabla de contingencia desde datos largos. <span class="pp">|</span> <span class="in">`xtabs(Freq ~ fila + columna, datos)`</span> <span class="pp">|</span></span>
-<span id="cb23-421"><a href="#cb23-421" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`FactoMineR::CA()`</span> <span class="pp">|</span> Ajustar el análisis de correspondencias. <span class="pp">|</span> <span class="in">`FactoMineR::CA(tabla, graph = FALSE)`</span> <span class="pp">|</span></span>
-<span id="cb23-422"><a href="#cb23-422" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`resumir_tabla_contingencia()`</span> <span class="pp">|</span> Obtener proporciones, perfiles, masas, esperadas, residuos, contraste e inercia. <span class="pp">|</span> <span class="in">`resumen &lt;- resumir_tabla_contingencia(tabla)`</span> <span class="pp">|</span></span>
-<span id="cb23-423"><a href="#cb23-423" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`distancias_chi2()`</span> <span class="pp">|</span> Calcular distancias $\chi^2$ entre perfiles fila o columna. <span class="pp">|</span> <span class="in">`distancias_chi2(tabla, "filas")`</span> <span class="pp">|</span></span>
-<span id="cb23-424"><a href="#cb23-424" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`visualizar_distancias_chi2()`</span> <span class="pp">|</span> Mostrar esas distancias como mapa de calor. <span class="pp">|</span> <span class="in">`visualizar_distancias_chi2(tabla, "filas")`</span> <span class="pp">|</span></span>
-<span id="cb23-425"><a href="#cb23-425" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`visualizar_residuos_correspondencias()`</span> <span class="pp">|</span> Localizar desviaciones respecto a independencia. <span class="pp">|</span> <span class="in">`visualizar_residuos_correspondencias(tabla)`</span> <span class="pp">|</span></span>
-<span id="cb23-426"><a href="#cb23-426" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`resumir_correspondencias()`</span> <span class="pp">|</span> Reunir inercia, coordenadas, contribuciones y cos². <span class="pp">|</span> <span class="in">`resumen &lt;- resumir_correspondencias(ajuste)`</span> <span class="pp">|</span></span>
-<span id="cb23-427"><a href="#cb23-427" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`visualizar_inercia_correspondencias()`</span> <span class="pp">|</span> Representar el porcentaje de inercia por dimensión. <span class="pp">|</span> <span class="in">`visualizar_inercia_correspondencias(ajuste)`</span> <span class="pp">|</span></span>
-<span id="cb23-428"><a href="#cb23-428" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`visualizar_correspondencias()`</span> <span class="pp">|</span> Dibujar filas, columnas o el mapa conjunto. <span class="pp">|</span> <span class="in">`visualizar_correspondencias(ajuste, "ambos")`</span> <span class="pp">|</span></span>
-<span id="cb23-429"><a href="#cb23-429" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`contribuciones_correspondencias()`</span> <span class="pp">|</span> Identificar categorías que construyen una dimensión. <span class="pp">|</span> <span class="in">`contribuciones_correspondencias(ajuste, "filas", 1)`</span> <span class="pp">|</span></span>
-<span id="cb23-430"><a href="#cb23-430" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`calidad_correspondencias()`</span> <span class="pp">|</span> Evaluar el cos² acumulado en los ejes elegidos. <span class="pp">|</span> <span class="in">`calidad_correspondencias(ajuste, "columnas", c(1, 2))`</span> <span class="pp">|</span></span>
+<span id="cb23-420"><a href="#cb23-420" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb23-421"><a href="#cb23-421" aria-hidden="true" tabindex="-1"></a>ca2 <span class="ot">&lt;-</span> FactoMineR<span class="sc">::</span><span class="fu">CA</span>(tab2, <span class="at">graph =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb23-422"><a href="#cb23-422" aria-hidden="true" tabindex="-1"></a>resumen_ca <span class="ot">&lt;-</span> <span class="fu">resumir_correspondencias</span>(ca2)</span>
+<span id="cb23-423"><a href="#cb23-423" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(resumen_ca<span class="sc">$</span>autovalores, <span class="at">digits =</span> <span class="dv">3</span>)</span>
+<span id="cb23-424"><a href="#cb23-424" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb23-425"><a href="#cb23-425" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-428"><a href="#cb23-428" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb23-429"><a href="#cb23-429" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb23-430"><a href="#cb23-430" aria-hidden="true" tabindex="-1"></a><span class="fu">visualizar_inercia_correspondencias</span>(ca2)</span>
+<span id="cb23-431"><a href="#cb23-431" aria-hidden="true" tabindex="-1"></a><span class="fu">visualizar_correspondencias</span>(ca2, <span class="at">escalado =</span> <span class="st">"simetrico"</span>)</span>
+<span id="cb23-432"><a href="#cb23-432" aria-hidden="true" tabindex="-1"></a><span class="fu">visualizar_correspondencias</span>(ca2, <span class="at">escalado =</span> <span class="st">"filas"</span>)</span>
+<span id="cb23-433"><a href="#cb23-433" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb23-434"><a href="#cb23-434" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-435"><a href="#cb23-435" aria-hidden="true" tabindex="-1"></a>El primer mapa ofrece una representación simétrica. El segundo conserva la geometría de las filas y muestra las columnas en coordenadas estándar: cada clase puede leerse como un baricentro de las categorías columna. En ambos casos hablamos de asociaciones relativas respecto a los marginales, no necesariamente de frecuencias absolutas altas.</span>
+<span id="cb23-436"><a href="#cb23-436" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-437"><a href="#cb23-437" aria-hidden="true" tabindex="-1"></a><span class="fu">## Interpretación del mapa</span></span>
+<span id="cb23-438"><a href="#cb23-438" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-439"><a href="#cb23-439" aria-hidden="true" tabindex="-1"></a><span class="fu">### Contribuciones</span></span>
+<span id="cb23-440"><a href="#cb23-440" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-441"><a href="#cb23-441" aria-hidden="true" tabindex="-1"></a>La contribución de una fila $i$ a la dimensión $m$ mide cuánto participa en la construcción de ese eje:</span>
+<span id="cb23-442"><a href="#cb23-442" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-443"><a href="#cb23-443" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb23-444"><a href="#cb23-444" aria-hidden="true" tabindex="-1"></a>ctr_{im}=\frac{r_i f_{im}^2}{\lambda_m}.</span>
+<span id="cb23-445"><a href="#cb23-445" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb23-446"><a href="#cb23-446" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-447"><a href="#cb23-447" aria-hidden="true" tabindex="-1"></a>Para columnas:</span>
+<span id="cb23-448"><a href="#cb23-448" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-449"><a href="#cb23-449" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb23-450"><a href="#cb23-450" aria-hidden="true" tabindex="-1"></a>ctr_{jm}=\frac{c_j g_{jm}^2}{\lambda_m}.</span>
+<span id="cb23-451"><a href="#cb23-451" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb23-452"><a href="#cb23-452" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-455"><a href="#cb23-455" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb23-456"><a href="#cb23-456" aria-hidden="true" tabindex="-1"></a>contrib_filas <span class="ot">&lt;-</span> <span class="fu">contribuciones_correspondencias</span>(ca2, <span class="st">"filas"</span>, <span class="at">dimension =</span> <span class="dv">1</span>)</span>
+<span id="cb23-457"><a href="#cb23-457" aria-hidden="true" tabindex="-1"></a>contrib_columnas <span class="ot">&lt;-</span> <span class="fu">contribuciones_correspondencias</span>(ca2, <span class="st">"columnas"</span>, <span class="at">dimension =</span> <span class="dv">1</span>)</span>
+<span id="cb23-458"><a href="#cb23-458" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(contrib_filas<span class="sc">$</span>tabla, <span class="at">digits =</span> <span class="dv">3</span>, <span class="at">caption =</span> <span class="st">"Contribuciones de filas a la dimensión 1"</span>)</span>
+<span id="cb23-459"><a href="#cb23-459" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(contrib_columnas<span class="sc">$</span>tabla, <span class="at">digits =</span> <span class="dv">3</span>, <span class="at">caption =</span> <span class="st">"Contribuciones de columnas a la dimensión 1"</span>)</span>
+<span id="cb23-460"><a href="#cb23-460" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb23-461"><a href="#cb23-461" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-464"><a href="#cb23-464" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb23-465"><a href="#cb23-465" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb23-466"><a href="#cb23-466" aria-hidden="true" tabindex="-1"></a>contrib_filas<span class="sc">$</span>grafico</span>
+<span id="cb23-467"><a href="#cb23-467" aria-hidden="true" tabindex="-1"></a>contrib_columnas<span class="sc">$</span>grafico</span>
+<span id="cb23-468"><a href="#cb23-468" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb23-469"><a href="#cb23-469" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-470"><a href="#cb23-470" aria-hidden="true" tabindex="-1"></a>Una categoría con alta contribución ayuda a definir la dimensión. Una categoría con baja contribución no debería protagonizar la interpretación del eje.</span>
+<span id="cb23-471"><a href="#cb23-471" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-472"><a href="#cb23-472" aria-hidden="true" tabindex="-1"></a>La contribución reparte la construcción del eje entre categorías y suma 100% dentro de cada dimensión. Por eso depende tanto de la coordenada como de la masa: un punto lejano con masa casi nula no necesariamente domina el eje.</span>
+<span id="cb23-473"><a href="#cb23-473" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-474"><a href="#cb23-474" aria-hidden="true" tabindex="-1"></a><span class="fu">### Cos² o calidad de representación</span></span>
+<span id="cb23-475"><a href="#cb23-475" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-476"><a href="#cb23-476" aria-hidden="true" tabindex="-1"></a>El cos² mide qué proporción de la distancia de un punto al origen queda representada en una dimensión o conjunto de dimensiones. Para una fila:</span>
+<span id="cb23-477"><a href="#cb23-477" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-478"><a href="#cb23-478" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb23-479"><a href="#cb23-479" aria-hidden="true" tabindex="-1"></a>cos^2_{im}=\frac{f_{im}^2}{\sum_{h} f_{ih}^2}.</span>
+<span id="cb23-480"><a href="#cb23-480" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb23-481"><a href="#cb23-481" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-484"><a href="#cb23-484" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb23-485"><a href="#cb23-485" aria-hidden="true" tabindex="-1"></a>calidad_filas <span class="ot">&lt;-</span> <span class="fu">calidad_correspondencias</span>(ca2, <span class="st">"filas"</span>)</span>
+<span id="cb23-486"><a href="#cb23-486" aria-hidden="true" tabindex="-1"></a>calidad_columnas <span class="ot">&lt;-</span> <span class="fu">calidad_correspondencias</span>(ca2, <span class="st">"columnas"</span>)</span>
+<span id="cb23-487"><a href="#cb23-487" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(calidad_filas<span class="sc">$</span>tabla, <span class="at">digits =</span> <span class="dv">3</span>, <span class="at">caption =</span> <span class="st">"Cos² de filas en el plano"</span>)</span>
+<span id="cb23-488"><a href="#cb23-488" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(calidad_columnas<span class="sc">$</span>tabla, <span class="at">digits =</span> <span class="dv">3</span>, <span class="at">caption =</span> <span class="st">"Cos² de columnas en el plano"</span>)</span>
+<span id="cb23-489"><a href="#cb23-489" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb23-490"><a href="#cb23-490" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-491"><a href="#cb23-491" aria-hidden="true" tabindex="-1"></a>Un punto puede estar visualmente lejos, pero si está mal representado en el plano mostrado, conviene no interpretarlo demasiado.</span>
+<span id="cb23-492"><a href="#cb23-492" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-493"><a href="#cb23-493" aria-hidden="true" tabindex="-1"></a>Geométricamente, el cos² compara la longitud de la proyección sobre el eje con la distancia total al origen. Contribución y cos² no son intercambiables: la primera pregunta quién construye el eje; el segundo, si el eje representa bien a ese punto.</span>
+<span id="cb23-494"><a href="#cb23-494" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-495"><a href="#cb23-495" aria-hidden="true" tabindex="-1"></a><span class="fu">### El mapa es una aproximación de las distancias</span></span>
+<span id="cb23-496"><a href="#cb23-496" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-497"><a href="#cb23-497" aria-hidden="true" tabindex="-1"></a>Con todas las dimensiones no triviales, las distancias euclídeas entre coordenadas principales reproducen las distancias $\chi^2$ entre perfiles del mismo tipo. Al mostrar solo dos dimensiones proyectamos esa geometría y aceptamos pérdida. Por eso la inercia retenida y el cos² deben acompañar al mapa.</span>
+<span id="cb23-498"><a href="#cb23-498" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-499"><a href="#cb23-499" aria-hidden="true" tabindex="-1"></a>Las coordenadas fila y columna no viven originalmente en el mismo espacio métrico. Un mapa conjunto superpone dos representaciones útiles, pero la distancia directa entre un punto fila y uno columna no tiene la misma interpretación rigurosa que la distancia entre dos filas o entre dos columnas.</span>
+<span id="cb23-500"><a href="#cb23-500" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-501"><a href="#cb23-501" aria-hidden="true" tabindex="-1"></a><span class="fu">### Interpretación correcta de proximidades</span></span>
+<span id="cb23-502"><a href="#cb23-502" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-503"><a href="#cb23-503" aria-hidden="true" tabindex="-1"></a>Al interpretar un mapa CA:</span>
+<span id="cb23-504"><a href="#cb23-504" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-505"><a href="#cb23-505" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>proximidad entre filas significa perfiles columna parecidos;</span>
+<span id="cb23-506"><a href="#cb23-506" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>proximidad entre columnas significa perfiles fila parecidos;</span>
+<span id="cb23-507"><a href="#cb23-507" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>en un mapa asimétrico, una fila orientada hacia una columna tiene esa categoría relativamente sobrerrepresentada;</span>
+<span id="cb23-508"><a href="#cb23-508" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>en un mapa simétrico, la dirección y la oposición respecto al origen son más fiables que la distancia directa fila--columna;</span>
+<span id="cb23-509"><a href="#cb23-509" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>el origen representa comportamiento medio;</span>
+<span id="cb23-510"><a href="#cb23-510" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>puntos alejados del origen se apartan más de la independencia;</span>
+<span id="cb23-511"><a href="#cb23-511" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>masas, contribuciones y cos² deben acompañar siempre la lectura visual.</span>
+<span id="cb23-512"><a href="#cb23-512" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-513"><a href="#cb23-513" aria-hidden="true" tabindex="-1"></a>La proximidad entre categorías de la misma variable debe interpretarse con cautela. Lo central es cómo filas y columnas se asocian a las dimensiones y qué calidad tiene la representación.</span>
+<span id="cb23-514"><a href="#cb23-514" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-515"><a href="#cb23-515" aria-hidden="true" tabindex="-1"></a><span class="fu">### Categorías raras y puntos extremos</span></span>
+<span id="cb23-516"><a href="#cb23-516" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-517"><a href="#cb23-517" aria-hidden="true" tabindex="-1"></a>Categorías con masa baja pueden aparecer muy alejadas y dominar visualmente el mapa. Antes de interpretar un punto extremo hay que revisar:</span>
+<span id="cb23-518"><a href="#cb23-518" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-519"><a href="#cb23-519" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>su frecuencia;</span>
+<span id="cb23-520"><a href="#cb23-520" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>su contribución;</span>
+<span id="cb23-521"><a href="#cb23-521" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>su cos²;</span>
+<span id="cb23-522"><a href="#cb23-522" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>si responde a una estructura estable o a un recuento pequeño.</span>
+<span id="cb23-523"><a href="#cb23-523" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-524"><a href="#cb23-524" aria-hidden="true" tabindex="-1"></a><span class="fu">### Filas y columnas suplementarias</span></span>
+<span id="cb23-525"><a href="#cb23-525" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-526"><a href="#cb23-526" aria-hidden="true" tabindex="-1"></a>En ocasiones interesa representar una categoría sin permitir que determine los ejes. Una fila o columna suplementaria se proyecta sobre el espacio construido por las categorías activas, pero no contribuye a su orientación ni a sus autovalores.</span>
+<span id="cb23-527"><a href="#cb23-527" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-528"><a href="#cb23-528" aria-hidden="true" tabindex="-1"></a>Esto resulta útil para grupos de comparación, categorías con un papel distinto o información recogida después. La decisión de hacer una categoría suplementaria debe responder al objetivo del análisis, no utilizarse únicamente para ocultar un resultado incómodo.</span>
+<span id="cb23-529"><a href="#cb23-529" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-530"><a href="#cb23-530" aria-hidden="true" tabindex="-1"></a><span class="fu">## Decisiones y limitaciones</span></span>
+<span id="cb23-531"><a href="#cb23-531" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-532"><a href="#cb23-532" aria-hidden="true" tabindex="-1"></a><span class="fu">### Protocolo de decisión</span></span>
+<span id="cb23-533"><a href="#cb23-533" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-534"><a href="#cb23-534" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>Definir qué representan las filas, las columnas y la población contada.</span>
+<span id="cb23-535"><a href="#cb23-535" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>Revisar frecuencias, ceros estructurales, categorías raras y valores esperados.</span>
+<span id="cb23-536"><a href="#cb23-536" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>Examinar conjuntamente $X^2$, p-valor y $V$ de Cramér.</span>
+<span id="cb23-537"><a href="#cb23-537" aria-hidden="true" tabindex="-1"></a><span class="ss">4. </span>Localizar las desviaciones mediante perfiles, residuos de Pearson y residuos ajustados.</span>
+<span id="cb23-538"><a href="#cb23-538" aria-hidden="true" tabindex="-1"></a><span class="ss">5. </span>Comprobar la magnitud de la inercia y relacionarla con $X^2/n$.</span>
+<span id="cb23-539"><a href="#cb23-539" aria-hidden="true" tabindex="-1"></a><span class="ss">6. </span>Elegir el número de dimensiones según inercia retenida y objetivo de la representación.</span>
+<span id="cb23-540"><a href="#cb23-540" aria-hidden="true" tabindex="-1"></a><span class="ss">7. </span>Construir cada eje con las categorías de mayor contribución.</span>
+<span id="cb23-541"><a href="#cb23-541" aria-hidden="true" tabindex="-1"></a><span class="ss">8. </span>Interpretar solo puntos con cos² suficiente en el plano mostrado.</span>
+<span id="cb23-542"><a href="#cb23-542" aria-hidden="true" tabindex="-1"></a><span class="ss">9. </span>Leer rigurosamente distancias entre puntos del mismo tipo y usar la propiedad baricéntrica para relacionar filas y columnas.</span>
+<span id="cb23-543"><a href="#cb23-543" aria-hidden="true" tabindex="-1"></a><span class="ss">10. </span>Comprobar que las conclusiones no dependan de categorías con muy poca masa.</span>
+<span id="cb23-544"><a href="#cb23-544" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-545"><a href="#cb23-545" aria-hidden="true" tabindex="-1"></a><span class="fu">### Errores frecuentes</span></span>
+<span id="cb23-546"><a href="#cb23-546" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-547"><a href="#cb23-547" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Interpretar el mapa como si mostrara frecuencias absolutas.</span>
+<span id="cb23-548"><a href="#cb23-548" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Considerar que un p-valor pequeño implica una asociación importante.</span>
+<span id="cb23-549"><a href="#cb23-549" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Confundir asociación con causalidad.</span>
+<span id="cb23-550"><a href="#cb23-550" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Ignorar masas, contribuciones y cos².</span>
+<span id="cb23-551"><a href="#cb23-551" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Dar importancia a categorías raras sin comprobar su peso.</span>
+<span id="cb23-552"><a href="#cb23-552" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Leer distancias entre puntos mal representados.</span>
+<span id="cb23-553"><a href="#cb23-553" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Interpretar la distancia directa fila--columna como una distancia ordinaria.</span>
+<span id="cb23-554"><a href="#cb23-554" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Olvidar que CA representa desviaciones respecto a independencia.</span>
+<span id="cb23-555"><a href="#cb23-555" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-556"><a href="#cb23-556" aria-hidden="true" tabindex="-1"></a><span class="fu">### Resumen del capítulo</span></span>
+<span id="cb23-557"><a href="#cb23-557" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-558"><a href="#cb23-558" aria-hidden="true" tabindex="-1"></a>CA convierte una tabla de contingencia en un mapa de perfiles. El contraste $\chi^2$ detecta asociación, sus residuos localizan desviaciones y CA descompone $X^2/n$ en dimensiones factoriales. Su interpretación se basa en perfiles, masas, propiedad baricéntrica, contribuciones, cos² y cautela ante categorías raras.</span>
+<span id="cb23-559"><a href="#cb23-559" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-560"><a href="#cb23-560" aria-hidden="true" tabindex="-1"></a><span class="fu">## Funciones utilizadas</span></span>
+<span id="cb23-561"><a href="#cb23-561" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-562"><a href="#cb23-562" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Función <span class="pp">|</span> Para qué se usa <span class="pp">|</span> Uso básico <span class="pp">|</span></span>
+<span id="cb23-563"><a href="#cb23-563" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|---|</span></span>
+<span id="cb23-564"><a href="#cb23-564" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`xtabs()`</span> <span class="pp">|</span> Construir una tabla de contingencia desde datos largos. <span class="pp">|</span> <span class="in">`xtabs(Freq ~ fila + columna, datos)`</span> <span class="pp">|</span></span>
+<span id="cb23-565"><a href="#cb23-565" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`FactoMineR::CA()`</span> <span class="pp">|</span> Ajustar el análisis de correspondencias. <span class="pp">|</span> <span class="in">`FactoMineR::CA(tabla, graph = FALSE)`</span> <span class="pp">|</span></span>
+<span id="cb23-566"><a href="#cb23-566" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`resumir_tabla_contingencia()`</span> <span class="pp">|</span> Obtener perfiles, masas, esperadas, residuos, contraste, $V$ de Cramér e inercia. <span class="pp">|</span> <span class="in">`resumen &lt;- resumir_tabla_contingencia(tabla)`</span> <span class="pp">|</span></span>
+<span id="cb23-567"><a href="#cb23-567" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`distancias_chi2()`</span> <span class="pp">|</span> Calcular distancias $\chi^2$ entre perfiles fila o columna. <span class="pp">|</span> <span class="in">`distancias_chi2(tabla, "filas")`</span> <span class="pp">|</span></span>
+<span id="cb23-568"><a href="#cb23-568" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`visualizar_distancias_chi2()`</span> <span class="pp">|</span> Mostrar esas distancias como mapa de calor. <span class="pp">|</span> <span class="in">`visualizar_distancias_chi2(tabla, "filas")`</span> <span class="pp">|</span></span>
+<span id="cb23-569"><a href="#cb23-569" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`visualizar_residuos_correspondencias()`</span> <span class="pp">|</span> Mostrar residuos de Pearson o ajustados, con números opcionales. <span class="pp">|</span> <span class="in">`visualizar_residuos_correspondencias(tabla, "ajustados", FALSE)`</span> <span class="pp">|</span></span>
+<span id="cb23-570"><a href="#cb23-570" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`resumir_correspondencias()`</span> <span class="pp">|</span> Reunir inercia, coordenadas, contribuciones y cos². <span class="pp">|</span> <span class="in">`resumen &lt;- resumir_correspondencias(ajuste)`</span> <span class="pp">|</span></span>
+<span id="cb23-571"><a href="#cb23-571" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`visualizar_inercia_correspondencias()`</span> <span class="pp">|</span> Representar el porcentaje de inercia por dimensión. <span class="pp">|</span> <span class="in">`visualizar_inercia_correspondencias(ajuste)`</span> <span class="pp">|</span></span>
+<span id="cb23-572"><a href="#cb23-572" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`visualizar_correspondencias()`</span> <span class="pp">|</span> Dibujar mapas simétricos o asimétricos de filas y columnas. <span class="pp">|</span> <span class="in">`visualizar_correspondencias(ajuste, escalado = "filas")`</span> <span class="pp">|</span></span>
+<span id="cb23-573"><a href="#cb23-573" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`contribuciones_correspondencias()`</span> <span class="pp">|</span> Identificar categorías que construyen una dimensión. <span class="pp">|</span> <span class="in">`contribuciones_correspondencias(ajuste, "filas", 1)`</span> <span class="pp">|</span></span>
+<span id="cb23-574"><a href="#cb23-574" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`calidad_correspondencias()`</span> <span class="pp">|</span> Evaluar el cos² acumulado en los ejes elegidos. <span class="pp">|</span> <span class="in">`calidad_correspondencias(ajuste, "columnas", c(1, 2))`</span> <span class="pp">|</span></span>
 </code></pre></div><button title="Copiar al portapapeles" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->

@@ -5,356 +5,509 @@
 #| message: false
 library(tidyverse)
 library(knitr)
+source("FuncionesCorrespondencias.R")
+source("FuncionesMCA.R")
 ```
 
-## Motivación aplicada
-
-CA estudia la asociación entre dos variables categóricas. Pero muchos problemas aplicados tienen más de dos: clase, sexo, edad, supervivencia, país, tipo de producto, nivel educativo, respuesta a varias preguntas, etc.
-
-El análisis de correspondencias múltiples, MCA, extiende la lógica de CA a individuos descritos por varias variables categóricas. En lugar de estudiar una única tabla de contingencia, representa perfiles categóricos completos.
-
-::: {.callout-note}
-MCA permite segmentar individuos descritos por variables categóricas sin reducirlos a una única etiqueta.
+::: {.callout-note title="Requisitos de las funciones auxiliares"}
+Los datos deben contener individuos en filas y variables categóricas en columnas. Las variables activas deben ser factores sin niveles vacíos; las variables suplementarias también deben identificarse antes del ajuste. El análisis central se realiza con `FactoMineR::MCA(datos, graph = FALSE)` y las funciones auxiliares simplifican matrices, resúmenes y gráficos.
 :::
 
-## De CA a MCA
+## Objetivo del MCA
 
-En CA partíamos de una tabla de contingencia. En MCA partimos de una tabla de individuos por variables categóricas. La transformamos en una tabla indicadora completa, también llamada matriz disyuntiva completa.
+El análisis de correspondencias múltiples, MCA, representa individuos descritos por varias variables categóricas. Busca resumir qué modalidades suelen aparecer en perfiles parecidos y qué diferencias separan a los individuos.
 
-Si tenemos $Q$ variables categóricas y en total $K$ modalidades, la tabla indicadora $G$ tiene:
+Por ejemplo, en una encuesta sobre consumo de té podemos observar simultáneamente el tipo de té, el formato, el lugar de compra, el precio y la frecuencia de consumo. Una colección de tablas cruzadas estudia las variables de dos en dos; MCA construye un espacio común para explorar su estructura conjunta.
 
-- una fila por individuo;
-- una columna por modalidad;
-- valor 1 si el individuo tiene esa modalidad;
-- valor 0 en caso contrario.
+### Diferencia entre PCA, CA y MCA
 
-Cada fila de $G$ suma $Q$, porque cada individuo pertenece a una modalidad de cada variable.
+| Método | Datos de entrada | Estructura que resume | Elementos representados |
+|---|---|---|---|
+| PCA | Individuos por variables numéricas | Correlaciones o covarianzas | Individuos y variables |
+| CA | Una tabla de contingencia | Desviaciones respecto a la independencia entre dos variables | Categorías fila y columna |
+| MCA | Individuos por varias variables categóricas | Asociaciones entre perfiles de modalidades | Individuos, modalidades y variables |
 
-## Titanic expandido
+MCA no asigna por sí mismo segmentos ni demuestra relaciones causales. Proporciona dimensiones descriptivas sobre las que podemos interpretar perfiles, proyectar información suplementaria o realizar posteriormente un clustering.
 
-`Titanic` está agregado. Para MCA necesitamos individuos, así que expandimos cada fila según su frecuencia.
+### Usos habituales
+
+MCA aparece con frecuencia en:
+
+- encuestas de hábitos, actitudes y preferencias;
+- investigación de mercados;
+- perfiles sociales y demográficos;
+- cuestionarios con respuestas nominales u ordinales tratadas como categorías;
+- datos clínicos formados por síntomas o diagnósticos categóricos;
+- preparación de coordenadas numéricas para clustering de perfiles categóricos.
+
+## Datos y decisiones previas
+
+Usaremos los datos `tea` de `FactoMineR`, que contienen respuestas individuales sobre hábitos de consumo de té. Seleccionamos siete variables activas y dos suplementarias.
 
 ```{r}
-titanic_ag <- as.data.frame(Titanic)
-titanic_ind <- titanic_ag[rep(seq_len(nrow(titanic_ag)), titanic_ag$Freq), c("Class", "Sex", "Age", "Survived")]
-rownames(titanic_ind) <- NULL
-head(titanic_ind) |>
-  kable()
-tibble(individuos = nrow(titanic_ind), variables = ncol(titanic_ind)) |>
+data(tea, package = "FactoMineR")
+
+datos_mca <- tea |>
+  transmute(
+    tipo_te = Tea,
+    acompanamiento = How,
+    azucar = sugar,
+    formato = how,
+    compra = where,
+    precio = price,
+    frecuencia = frequency,
+    sexo = sex,
+    edad = age_Q
+  )
+
+head(datos_mca) |>
   kable()
 ```
 
-Cada fila representa una persona del Titanic descrita por cuatro variables categóricas.
-
-## Tabla indicadora completa
-
-Construimos una matriz indicadora con una columna por modalidad.
+Las siete primeras variables construirán los ejes. `sexo` y `edad` serán suplementarias: podremos relacionarlas con el mapa, pero no modificarán su orientación.
 
 ```{r}
-make_indicator <- function(df) {
-  bloques <- lapply(names(df), function(v) {
-    mm <- model.matrix(~ x - 1, data = data.frame(x = df[[v]]))
-    colnames(mm) <- paste(v, levels(df[[v]]), sep = "_")
-    mm
-  })
-  do.call(cbind, bloques)
-}
+resumen_modalidades <- tibble(
+  variable = names(datos_mca),
+  modalidades = vapply(datos_mca, nlevels, integer(1))
+)
+kable(resumen_modalidades)
+```
 
-G <- make_indicator(titanic_ind)
-G <- G[, colSums(G) > 0]
-dim(G)
-tibble(filas = nrow(G), columnas = ncol(G)) |>
-  kable()
-head(G) |>
-  kable()
-tibble(individuo = 1:6, suma_fila = rowSums(G)[1:6]) |>
+Antes de ajustar MCA debemos decidir:
+
+1. qué variables responden al objetivo del análisis;
+2. cuáles deben ser activas o suplementarias;
+3. si las categorías raras tienen significado propio;
+4. cómo tratar valores ausentes;
+5. si una variable ordinal se interpretará únicamente como categórica o requiere otro método.
+
+::: {.callout-warning}
+Una categoría rara puede quedar muy lejos del origen porque la distancia $\chi^2$ le concede mucho peso. No debe reagruparse automáticamente: primero hay que decidir si representa información sustantiva, ruido de muestreo o un problema de codificación.
+:::
+
+## De variables a modalidades
+
+### Matriz indicadora completa
+
+Supongamos que tenemos $n$ individuos, $Q$ variables categóricas y un total de $K$ modalidades. MCA transforma los datos en la matriz indicadora completa:
+
+$$
+Z=(z_{ik})\in\{0,1\}^{n\times K},
+$$
+
+donde $z_{ik}=1$ si el individuo $i$ presenta la modalidad $k$ y vale 0 en caso contrario.
+
+```{r}
+datos_activos <- datos_mca[, 1:7]
+Z <- crear_indicadora_mca(datos_activos)
+
+kable(Z[1:6, 1:12])
+tibble(
+  individuos = nrow(Z),
+  variables_activas = ncol(datos_activos),
+  modalidades = ncol(Z),
+  suma_primera_fila = rowSums(Z)[1]
+) |>
   kable()
 ```
 
-Si hay $Q=4$ variables, cada fila suma 4. Esta propiedad distingue la tabla indicadora de una matriz de variables numéricas ordinaria.
-
-## MCA como CA de la tabla indicadora
-
-MCA puede entenderse como un CA aplicado a la tabla indicadora completa. La matriz de frecuencias relativas es:
+Cada individuo selecciona exactamente una modalidad de cada variable. Por tanto,
 
 $$
-P = \frac{1}{nQ}G.
+\sum_{k=1}^{K}z_{ik}=Q.
 $$
 
-La masa de cada individuo es:
+Las columnas aparecen organizadas en bloques: un bloque por variable. Dentro de cada bloque solo puede aparecer un 1 por fila.
+
+### Tabla de Burt
+
+La tabla de Burt cruza todas las modalidades entre sí:
+
+$$
+B=Z^\top Z.
+$$
+
+```{r}
+B <- crear_burt_mca(datos_activos)
+kable(B[1:8, 1:8])
+```
+
+Los bloques fuera de la diagonal son tablas de contingencia entre pares de variables. Los bloques diagonales contienen las frecuencias de cada modalidad: dos modalidades distintas de una misma variable nunca pueden aparecer simultáneamente.
+
+La formulación mediante $Z$ conserva la conexión con los individuos; Burt enfatiza las asociaciones entre modalidades. No son dos análisis independientes, sino dos representaciones relacionadas del mismo problema.
+
+## MCA como análisis de correspondencias
+
+MCA puede entenderse como un CA aplicado a la matriz indicadora $Z$. Como cada una de las $n$ filas suma $Q$, el total es $nQ$ y la matriz de frecuencias relativas es:
+
+$$
+P=\frac{1}{nQ}Z.
+$$
+
+La masa de cada individuo es la misma:
 
 $$
 r_i=\frac{1}{n}.
 $$
 
-La masa de una modalidad $k$ es:
+Si la modalidad $k$ aparece en $n_k$ individuos, su masa es:
 
 $$
-c_k=\frac{n_k}{nQ},
+c_k=\frac{n_k}{nQ}.
 $$
 
-donde $n_k$ es el número de individuos que tienen esa modalidad.
+Cada variable activa tiene masa total $1/Q$, con independencia de su número de modalidades. Sin embargo, una variable con muchas modalidades genera más direcciones posibles y suele aportar más inercia estructural.
 
-La distancia entre individuos es una distancia $\chi^2$ sobre perfiles categóricos. Dos individuos son cercanos si comparten modalidades o si sus diferencias se producen en modalidades frecuentes. Diferir en una modalidad rara puede tener más peso.
+### Distancia entre individuos
+
+El perfil del individuo $i$ contiene el valor $z_{ik}/Q$ en cada modalidad. La distancia $\chi^2$ entre dos individuos es:
+
+$$
+d^2(i,i')=
+\sum_{k=1}^{K}\frac{1}{c_k}
+\left(\frac{z_{ik}}{Q}-\frac{z_{i'k}}{Q}\right)^2.
+$$
+
+Si escribimos $p_k=n_k/n$, obtenemos:
+
+$$
+d^2(i,i')=
+\frac{1}{Q}\sum_{k=1}^{K}
+\frac{(z_{ik}-z_{i'k})^2}{p_k}.
+$$
+
+Dos individuos son cercanos cuando comparten modalidades. Una diferencia en una modalidad rara, con $p_k$ pequeño, pesa más que una diferencia en una modalidad habitual. Esta propiedad puede revelar perfiles distintivos, pero también amplificar categorías inestables.
+
+### Matriz analizada y descomposición
+
+Como en CA, estandarizamos las desviaciones respecto a la independencia:
+
+$$
+S=D_r^{-1/2}(P-rc^\top)D_c^{-1/2}.
+$$
+
+La descomposición en valores singulares,
+
+$$
+S=UDV^\top,
+$$
+
+produce ejes ortogonales. Los autovalores son:
+
+$$
+\lambda_m=d_m^2.
+$$
+
+Las coordenadas principales de individuos y modalidades son:
+
+$$
+F=D_r^{-1/2}UD,
+\qquad
+G=D_c^{-1/2}VD.
+$$
+
+Debido a que las modalidades de cada variable suman 1 para todos los individuos, existen dependencias lineales entre las columnas de $Z$. El número máximo de dimensiones no triviales es:
+
+$$
+\min(n-1,K-Q).
+$$
+
+## Ajuste del modelo
+
+Los estudiantes deben ajustar el modelo explícitamente. Las funciones auxiliares se ocupan de organizar e interpretar el resultado.
+
+```{r}
+ajuste_mca <- FactoMineR::MCA(
+  datos_mca,
+  quali.sup = 8:9,
+  ncp = 10,
+  graph = FALSE
+)
+
+resumen_mca <- resumir_mca(ajuste_mca)
+kable(head(resumen_mca$autovalores, 8), digits = 3)
+```
+
+`ncp` indica cuántas dimensiones se guardan en las coordenadas. Conviene conservar más dimensiones que las dos que se mostrarán en el mapa: decidir usando únicamente una figura bidimensional confundiría representación con estructura completa.
 
 ## Inercia en MCA
 
-La inercia total de MCA depende del número total de modalidades y del número de variables. Para una tabla indicadora completa con $K$ modalidades y $Q$ variables:
+### Inercia total
+
+En una matriz indicadora completa, la inercia total tiene una forma especialmente sencilla:
 
 $$
-I_{total} = \frac{K}{Q} - 1.
+I_{total}=\frac{K}{Q}-1=\frac{K-Q}{Q}.
 $$
 
-Esta inercia suele estar distribuida en muchas dimensiones, por lo que los porcentajes explicados por las primeras dimensiones pueden parecer bajos comparados con PCA.
-
 ```{r}
-n <- nrow(G)
-Q <- ncol(titanic_ind)
-K <- ncol(G)
-inercia_mca_teorica <- K / Q - 1
-tibble(n = n, Q = Q, K = K, inercia_total = inercia_mca_teorica) |>
-  kable()
-```
+n <- nrow(Z)
+Q <- ncol(datos_activos)
+K <- ncol(Z)
 
-Esta es una razón por la que MCA requiere cautela al interpretar porcentajes de inercia.
-
-## Descomposición manual
-
-Aplicamos la misma lógica de CA sobre $G$.
-
-```{r}
-mca_manual <- function(G, Q) {
-  P <- G / (nrow(G) * Q)
-  r <- rowSums(P)
-  c <- colSums(P)
-  S <- diag(1 / sqrt(r)) %*% (P - r %*% t(c)) %*% diag(1 / sqrt(c))
-  sv <- svd(S)
-  nf <- min(nrow(G) - 1, ncol(G) - 1)
-  row_coord <- diag(1 / sqrt(r)) %*% sv$u[, seq_len(nf), drop = FALSE] %*% diag(sv$d[seq_len(nf)], nf)
-  col_coord <- diag(1 / sqrt(c)) %*% sv$v[, seq_len(nf), drop = FALSE] %*% diag(sv$d[seq_len(nf)], nf)
-  rownames(row_coord) <- rownames(G)
-  rownames(col_coord) <- colnames(G)
-  colnames(row_coord) <- paste0("Dim", seq_len(nf))
-  colnames(col_coord) <- paste0("Dim", seq_len(nf))
-  list(P = P, r = r, c = c, d = sv$d[seq_len(nf)], row = row_coord, col = col_coord)
-}
-
-mca_base <- mca_manual(G, Q)
 tibble(
-  dimension = paste0("Dim", 1:6),
-  inercia = round(mca_base$d[1:6]^2, 4),
-  proporcion = round((mca_base$d[1:6]^2) / sum(mca_base$d^2), 3)
+  n = n,
+  Q = Q,
+  K = K,
+  dimensiones_maximas = min(n - 1, K - Q),
+  inercia_total = K / Q - 1
 ) |>
-  kable()
+  kable(digits = 3)
 ```
 
-Los autovalores son inercias principales. La proporción explicada por cada dimensión debe leerse con el contexto de MCA.
+Este resultado explica una diferencia importante con PCA. En MCA, parte de la inercia se debe inevitablemente a codificar cada variable mediante varias columnas mutuamente excluyentes. Por eso la inercia suele repartirse entre muchas dimensiones y los porcentajes brutos de los primeros ejes parecen bajos.
 
-## Corrección de Benzécri como referencia
+```{r}
+#| echo: false
+visualizar_inercia_mca(ajuste_mca, "bruta")
+```
 
-En MCA, los porcentajes de inercia brutos pueden subestimar la importancia de las primeras dimensiones. Una corrección clásica es la de Benzécri, que ajusta autovalores mayores que $1/Q$:
+La línea discontinua corresponde al autovalor medio estructural $1/Q$, expresado como porcentaje de la inercia total. No es una regla automática para elegir dimensiones, pero ayuda a identificar ejes que sobresalen de la codificación disyuntiva básica.
+
+### Corrección de Benzécri
+
+La corrección de Benzécri conserva únicamente autovalores superiores a $1/Q$ y los transforma mediante:
 
 $$
-\lambda_m^* =
+\lambda_m^*=
 \left(\frac{Q}{Q-1}\right)^2
-\left(\lambda_m-\frac{1}{Q}\right)^2
-\quad \text{si } \lambda_m > \frac{1}{Q}.
+\left(\lambda_m-\frac{1}{Q}\right)^2,
+\qquad \lambda_m>\frac{1}{Q}.
 $$
 
-No es obligatorio usarla siempre, pero ayuda a recordar que la inercia en MCA no se interpreta igual que en PCA.
-
 ```{r}
-lambda <- mca_base$d^2
-lambda_benz <- ifelse(lambda > 1 / Q, (Q / (Q - 1))^2 * (lambda - 1 / Q)^2, 0)
-tibble(dimension = paste0("Dim", 1:6), proporcion_benzecri = round(lambda_benz[1:6] / sum(lambda_benz), 3)) |>
-  kable()
+kable(
+  head(resumir_inercia_mca(ajuste_mca, "benzecri"), 8),
+  digits = 3
+)
 ```
 
-## Individuos en el mapa
-
 ```{r}
-coords <- as.data.frame(mca_base$row[, 1:2])
-coords |>
-  mutate(Survived = titanic_ind$Survived) |>
-  ggplot(aes(Dim1, Dim2, color = Survived)) +
-  geom_point(size = 1.4, alpha = 0.35) +
-  labs(title = "Individuos de Titanic en MCA", x = "Dimensión 1", y = "Dimensión 2", color = "Supervivencia") +
-  theme_minimal()
+#| echo: false
+visualizar_inercia_mca(ajuste_mca, "benzecri")
 ```
 
-Cada punto es un individuo. Muchos individuos comparten el mismo perfil categórico, por lo que pueden superponerse.
+La corrección no modifica las coordenadas ni descubre nuevos ejes. Cambia la referencia con la que resumimos su importancia. Es útil para interpretar la estructura sustantiva, pero conviene indicar siempre si se presentan porcentajes brutos o corregidos.
 
-## Categorías en el mapa
+La decisión sobre cuántas dimensiones interpretar debe combinar:
 
-Las coordenadas de modalidades permiten interpretar dimensiones. Modalidades próximas tienden a aparecer en perfiles parecidos.
+- autovalores brutos y corregidos;
+- caída entre dimensiones consecutivas;
+- contribuciones y cos²;
+- estabilidad e interpretabilidad de los ejes;
+- finalidad del análisis.
+
+## Geometría de individuos y modalidades
+
+### Propiedad baricéntrica
+
+Al ser un CA de la matriz indicadora, MCA hereda la propiedad baricéntrica. Las coordenadas principales de un individuo son el baricentro de las coordenadas estándar de sus $Q$ modalidades. Por tanto, su posición resume su perfil categórico completo.
+
+De forma dual, una modalidad se sitúa según el centro de los individuos que la presentan. Dos modalidades de variables distintas aparecen en una dirección parecida cuando caracterizan perfiles de individuos parecidos.
+
+::: {.callout-warning}
+Dos modalidades de la misma variable son mutuamente excluyentes: nunca coaparecen en un individuo. Su proximidad no debe interpretarse como coocurrencia. Además, en un mapa simétrico la distancia directa individuo--modalidad tampoco es una distancia ordinaria.
+:::
+
+### Mapa de modalidades
 
 ```{r}
-cat_coord <- mca_base$col[, 1:2]
-as_tibble(cat_coord, rownames = "modalidad") |>
-  ggplot(aes(Dim1, Dim2, label = modalidad)) +
-  geom_hline(yintercept = 0, linetype = "dashed", color = "gray60") +
-  geom_vline(xintercept = 0, linetype = "dashed", color = "gray60") +
-  geom_point(shape = 17, size = 3, color = "#d73027") +
-  geom_text(nudge_y = 0.03, size = 3) +
-  labs(title = "Modalidades en MCA", x = "Dimensión 1", y = "Dimensión 2") +
-  theme_minimal()
+#| echo: false
+visualizar_mca(ajuste_mca, tipo = "modalidades")
 ```
 
-El origen representa el perfil medio. Modalidades alejadas del origen se apartan más del comportamiento medio, pero pueden estar influidas por masas pequeñas.
+El origen representa el perfil medio. Una modalidad alejada caracteriza un conjunto más específico de individuos, aunque debemos comprobar su frecuencia, contribución y calidad de representación antes de interpretarla.
 
-## Contribuciones de modalidades
+Modalidades situadas en lados opuestos de un eje caracterizan perfiles diferentes. Para nombrar la dimensión no basta con observar las etiquetas más alejadas: hay que comprobar cuáles construyen realmente el eje.
 
-La contribución de una modalidad $k$ a una dimensión $m$ es:
+### Mapa de individuos
+
+```{r}
+#| echo: false
+visualizar_mca(
+  ajuste_mca,
+  tipo = "individuos",
+  grupo = datos_mca$sexo
+)
+```
+
+Cada punto representa un individuo. Personas con el mismo perfil activo ocupan exactamente la misma posición y pueden superponerse. El color por sexo ayuda a interpretar el mapa, pero `sexo` no ha intervenido en su construcción porque fue declarado suplementario.
+
+## Cómo interpretar una dimensión
+
+### Contribuciones de las modalidades
+
+La contribución de la modalidad $k$ a la dimensión $m$ es:
 
 $$
 ctr_{km}=\frac{c_k g_{km}^2}{\lambda_m}.
 $$
 
-```{r}
-lambda <- mca_base$d^2
-ctr_cat <- sweep(mca_base$col^2, 2, lambda, "/") * as.numeric(mca_base$c)
-rownames(ctr_cat) <- colnames(G)
-kable(round(ctr_cat[, 1:2], 3))
-```
-
-Para interpretar un eje, conviene mirar las modalidades que más contribuyen, no solo las que están visualmente lejos.
+Las contribuciones de todas las modalidades suman 1, o 100%, dentro de una dimensión. Una modalidad contribuye mucho si combina una coordenada alejada con masa suficiente.
 
 ```{r}
-tibble(modalidad = names(ctr_cat[, 1]), contribucion = round(ctr_cat[, 1], 3)) |>
-  arrange(desc(contribucion)) |>
-  slice_head(n = 8) |>
-  kable(caption = "Dimensión 1")
-tibble(modalidad = names(ctr_cat[, 2]), contribucion = round(ctr_cat[, 2], 3)) |>
-  arrange(desc(contribucion)) |>
-  slice_head(n = 8) |>
-  kable(caption = "Dimensión 2")
+dimension_1 <- resumir_dimension_mca(ajuste_mca, dimension = 1, n = 10)
+dimension_1$modalidades |>
+  select(etiqueta, coordenada, contribucion, cos2) |>
+  kable(digits = 3)
 ```
 
-## Cos² de modalidades
+```{r}
+#| echo: false
+visualizar_contribuciones_mca(ajuste_mca, dimension = 1, n = 10)
+```
 
-El cos² mide calidad de representación:
+En este ejemplo, la primera dimensión contrapone principalmente compra en tienda especializada, té sin envasar y precio alto frente a bolsa de té, compra en cadena y precios de marca. La interpretación surge del conjunto de modalidades y de sus signos, no de una sola etiqueta.
+
+### Cos² o calidad de representación
+
+Para una modalidad, el cos² sobre una dimensión es:
 
 $$
 cos^2_{km}=\frac{g_{km}^2}{\sum_h g_{kh}^2}.
 $$
 
+La suma sobre las dimensiones mostradas mide qué proporción de su distancia al origen queda recogida en ese plano.
+
 ```{r}
-cos2_cat <- mca_base$col^2 / rowSums(mca_base$col^2)
-kable(round(cos2_cat[, 1:2], 3))
+calidad_modalidades <- calidad_mca(ajuste_mca, ejes = c(1, 2))
+calidad_modalidades$tabla |>
+  select(etiqueta, cos2_plano) |>
+  head(10) |>
+  kable(digits = 3)
 ```
 
-Una modalidad con bajo cos² en el plano Dim1-Dim2 no debe interpretarse demasiado en ese plano.
+```{r}
+#| echo: false
+calidad_modalidades$grafico
+```
 
-## Tabla de Burt
+La contribución pregunta **quién construye el eje**. El cos² pregunta **si el plano representa bien a esa modalidad**. Una modalidad puede contribuir a una dimensión concreta y, sin embargo, necesitar otras dimensiones para quedar bien representada globalmente.
 
-La tabla de Burt cruza todas las modalidades con todas las modalidades:
+### Capacidad discriminante de las variables
+
+Para interpretar una variable completa, no basta con revisar sus modalidades por separado. La razón de correlación $\eta^2$ mide qué parte de la variabilidad de las coordenadas de los individuos queda explicada por los grupos definidos por esa variable:
 
 $$
-B = G^\top G.
+\eta^2_{qm}=
+\frac{\sum_k n_k(\bar f_{km}-\bar f_m)^2}
+{\sum_i(f_{im}-\bar f_m)^2}.
 $$
 
-Contiene en sus bloques las tablas de contingencia entre pares de variables. En la diagonal aparecen frecuencias de modalidades.
+Un valor próximo a 1 indica que las modalidades de la variable separan claramente a los individuos en esa dimensión. Un valor próximo a 0 indica poca capacidad discriminante.
 
 ```{r}
-B <- t(G) %*% G
-kable(B[1:6, 1:6])
+kable(dimension_1$variables, digits = 3)
 ```
-
-MCA puede formularse a partir de la tabla indicadora o de la tabla de Burt. La tabla indicadora conserva la conexión directa con individuos; Burt enfatiza asociaciones entre modalidades.
-
-## Variables activas y suplementarias
-
-Podemos usar todas las variables como activas o reservar una como suplementaria. Por ejemplo, `Survived` puede proyectarse para interpretar perfiles sin construir los ejes directamente.
 
 ```{r}
-activas <- titanic_ind[, c("Class", "Sex", "Age")]
-G_act <- make_indicator(activas)
-mca_act <- mca_manual(G_act, Q = ncol(activas))
-coords_act <- as.data.frame(mca_act$row[, 1:2])
-coords_act |>
-  mutate(Survived = titanic_ind$Survived) |>
-  ggplot(aes(Dim1, Dim2, color = Survived)) +
-  geom_point(size = 1.4, alpha = 0.35) +
-  labs(title = "MCA con Survived suplementaria", x = "Dimensión 1", y = "Dimensión 2", color = "Supervivencia") +
-  theme_minimal()
+#| echo: false
+visualizar_discriminacion_mca(ajuste_mca, ejes = c(1, 2))
 ```
 
-Aquí `Survived` no construye el mapa, pero ayuda a leer si los perfiles de clase, sexo y edad se asocian con supervivencia.
+Aquí `compra`, `formato` y `precio` son las variables más relacionadas con las dos primeras dimensiones. Esta información confirma y organiza la lectura obtenida a partir de las modalidades.
 
-## MCA con FactoMineR si está disponible
+## Variables suplementarias
+
+Una variable suplementaria se proyecta después de construir los ejes. Sus modalidades reciben coordenadas y cos², pero no contribuciones: no han participado en la optimización.
 
 ```{r}
-mca <- FactoMineR::MCA(titanic_ind, graph = FALSE, ncp = 5)
-kable(mca$eig[1:5, ], digits = 3)
-kable(mca$var$contrib[, 1:2], digits = 3)
+resumen_mca$variables_suplementarias |>
+  filter(dimension %in% c("Dim 1", "Dim 2")) |>
+  pivot_wider(names_from = dimension, values_from = eta2) |>
+  kable(digits = 3)
 ```
+
+En este análisis, la edad presenta cierta relación con la primera dimensión, mientras que el sexo apenas discrimina en ella. Esto es una descripción del mapa construido con hábitos de consumo; no demuestra que edad o sexo causen esos hábitos.
+
+Las variables suplementarias son especialmente útiles para:
+
+- describir posteriormente los ejes;
+- evitar que una variable resultado construya la representación;
+- comparar grupos externos;
+- conservar información demográfica con un papel interpretativo distinto.
+
+## Volver a las tablas originales
+
+MCA resume muchas asociaciones a la vez, pero no sustituye su comprobación en los datos. Después de proponer una interpretación conviene volver a tablas de contingencia concretas.
+
+```{r}
+tabla_formato_compra <- table(
+  formato = datos_mca$formato,
+  compra = datos_mca$compra
+)
+resumen_formato_compra <- resumir_tabla_contingencia(tabla_formato_compra)
+kable(resumen_formato_compra$perfiles_fila, digits = 3)
+```
+
+```{r}
+#| echo: false
+visualizar_residuos_correspondencias(
+  tabla_formato_compra,
+  tipo = "ajustados"
+)
+```
+
+Los residuos y perfiles permiten comprobar si la oposición observada en el eje corresponde realmente a combinaciones sobrerrepresentadas.
 
 ## Clustering sobre coordenadas MCA
 
-Las coordenadas factoriales pueden alimentar un clustering de perfiles categóricos. Es frecuente usar varias dimensiones, no solo las dos del mapa.
+Las coordenadas de los individuos pueden utilizarse como entrada de un clustering. Normalmente se emplean varias dimensiones, no solo las dos dibujadas. La selección debe conservar estructura relevante sin introducir todas las dimensiones de baja importancia.
 
-```{r}
-set.seed(123)
-cl <- kmeans(mca_base$row[, 1:3], centers = 3, nstart = 25)$cluster
-kable(table(cluster = cl, supervivencia = titanic_ind$Survived))
-kable(table(cluster = cl, clase = titanic_ind$Class))
-```
+Después de formar los clusters hay que caracterizarlos con las variables categóricas originales. Las funciones `resumir_particion()` y `tabla_composicion_clusters()` pueden reutilizarse para tamaños y composición; MCA no sustituye esa interpretación.
 
-## Caracterización de perfiles
+## Decisiones y limitaciones
 
-Una caracterización útil cruza clusters con variables originales. Así evitamos interpretar solo coordenadas abstractas.
+### Protocolo de decisión
 
-```{r}
-kable(round(prop.table(table(cl, titanic_ind$Sex), 1), 3))
-kable(round(prop.table(table(cl, titanic_ind$Age), 1), 3))
-kable(round(prop.table(table(cl, titanic_ind$Class), 1), 3))
-```
+1. Definir qué perfil categórico se quiere estudiar.
+2. Elegir variables activas y suplementarias según su papel, no según el resultado obtenido.
+3. Revisar valores ausentes, niveles vacíos y modalidades raras.
+4. Examinar $Q$, $K$, la inercia total y el número máximo de dimensiones.
+5. Comparar inercia bruta y corregida sin convertir $1/Q$ en una regla automática.
+6. Interpretar cada eje mediante contribuciones, signos y $\eta^2$.
+7. Comprobar el cos² antes de leer una modalidad en el plano.
+8. Usar la propiedad baricéntrica y evitar distancias impropias entre tipos de puntos.
+9. Relacionar variables suplementarias sin atribuirles causalidad.
+10. Volver a tablas y perfiles originales para validar la interpretación.
 
-Nombrar clusters a partir de MCA exige volver a las categorías originales.
+### Valores ausentes y categorías raras
 
-## Interpretación de dimensiones
+Un valor ausente solo debe convertirse en una modalidad si su ausencia tiene significado. En otro caso hay que estudiar el mecanismo de ausencia y elegir una estrategia coherente de imputación o exclusión.
 
-Para interpretar una dimensión de MCA:
+Agrupar categorías raras puede estabilizar el mapa, pero modifica la pregunta. Solo deben combinarse categorías sustantivamente próximas; una agrupación motivada únicamente por obtener una figura más limpia puede ocultar estructura real.
 
-- mirar modalidades con alta contribución;
-- revisar cos² de esas modalidades;
-- observar oposición de modalidades en los lados del eje;
-- comprobar masas para evitar sobreinterpretar categorías raras;
-- volver a tablas cruzadas para confirmar la lectura.
+### Errores frecuentes
 
-Un eje no se nombra por una sola modalidad llamativa, sino por el conjunto de modalidades que lo construyen.
-
-## Limitaciones
-
-MCA puede verse afectado por categorías raras, variables con muchas modalidades y asociaciones dominadas por una variable muy fuerte. Además, las dimensiones pueden ser menos intuitivas que en PCA.
-
-Limitaciones importantes:
-
-- porcentajes de inercia brutos pueden parecer bajos;
-- categorías raras pueden quedar lejos del origen;
-- variables con muchas modalidades pueden influir mucho;
-- individuos con el mismo perfil se superponen;
-- la interpretación depende de variables activas;
-- los mapas no sustituyen tablas cruzadas.
-
-## Errores frecuentes
-
-- Usar datos agregados como si fueran individuos sin ponderar frecuencias.
-- Interpretar categorías raras solo por estar lejos.
-- Ignorar qué variables fueron activas.
-- Nombrar perfiles sin volver a tablas cruzadas.
-- Leer proximidades en planos con baja calidad de representación.
-- Interpretar MCA como causalidad entre categorías.
+- Introducir variables numéricas como si fueran categorías sin justificar la discretización.
+- Hacer activa una variable resultado y después interpretarla como validación externa.
+- Comparar porcentajes de inercia de MCA directamente con los de PCA.
+- Elegir dimensiones únicamente con el umbral $1/Q$.
+- Interpretar modalidades raras solo porque están lejos del origen.
+- Confundir contribución con cos².
+- Interpretar como coocurrencia la cercanía entre modalidades de una misma variable.
+- Nombrar dimensiones sin volver a las tablas originales.
+- Realizar clustering usando únicamente las dos dimensiones del dibujo.
 
 ## Resumen del capítulo
 
-MCA representa individuos descritos por varias variables categóricas. Puede entenderse como CA de la tabla indicadora completa. Su interpretación usa la misma familia de ideas que CA: masas, distancia $\chi^2$, inercia, contribuciones, cos² y cautela ante categorías raras. Es una herramienta útil para explorar perfiles categóricos y preparar clustering sobre coordenadas factoriales.
+MCA aplica la geometría de CA a la matriz indicadora de varias variables categóricas. La distancia $\chi^2$ compara perfiles de modalidades, la SVD descompone la inercia y las dimensiones se interpretan mediante contribuciones, cos² y $\eta^2$. Las variables suplementarias ayudan a describir el espacio sin construirlo. Una interpretación fiable combina el mapa con frecuencias, categorías raras y tablas de contingencia originales.
 
-## Ejercicios propuestos
+## Funciones utilizadas
 
-1. Repite el análisis usando `Survived` como variable suplementaria.
-2. Calcula proporciones por cluster para `Class`, `Sex` y `Age`.
-3. Explica la diferencia entre tabla indicadora y tabla de Burt.
-4. Identifica las modalidades que más contribuyen a la primera dimensión.
-5. Compara el mapa de individuos con el mapa de modalidades.
-6. Explica por qué la inercia en MCA suele repartirse en más dimensiones que en PCA.
+| Función | Para qué se usa | Uso básico |
+|---|---|---|
+| `FactoMineR::MCA()` | Ajustar el análisis MCA y declarar variables suplementarias. | `FactoMineR::MCA(datos, quali.sup = indices, graph = FALSE)` |
+| `crear_indicadora_mca()` | Construir la matriz disyuntiva completa. | `Z <- crear_indicadora_mca(datos_activos)` |
+| `crear_burt_mca()` | Construir la tabla de Burt. | `B <- crear_burt_mca(datos_activos)` |
+| `resumir_inercia_mca()` | Obtener inercia bruta o corregida por Benzécri. | `resumir_inercia_mca(ajuste, "benzecri")` |
+| `resumir_mca()` | Reunir autovalores, individuos, modalidades y variables. | `resumen <- resumir_mca(ajuste)` |
+| `visualizar_inercia_mca()` | Representar la importancia de las dimensiones. | `visualizar_inercia_mca(ajuste, "bruta")` |
+| `visualizar_mca()` | Dibujar individuos o modalidades. | `visualizar_mca(ajuste, "modalidades")` |
+| `resumir_dimension_mca()` | Ordenar modalidades por contribución y variables por $\eta^2$. | `resumir_dimension_mca(ajuste, 1)` |
+| `visualizar_contribuciones_mca()` | Mostrar las modalidades que construyen un eje. | `visualizar_contribuciones_mca(ajuste, 1)` |
+| `calidad_mca()` | Evaluar el cos² acumulado de las modalidades. | `calidad_mca(ajuste, c(1, 2))` |
+| `visualizar_discriminacion_mca()` | Mostrar el $\eta^2$ de las variables en los ejes. | `visualizar_discriminacion_mca(ajuste)` |
+| `resumir_tabla_contingencia()` | Volver a perfiles y diagnósticos de una tabla concreta. | `resumir_tabla_contingencia(tabla)` |
+| `visualizar_residuos_correspondencias()` | Comprobar asociaciones locales entre dos variables. | `visualizar_residuos_correspondencias(tabla, "ajustados")` |

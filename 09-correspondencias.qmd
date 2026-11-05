@@ -20,6 +20,12 @@ Cuando tenemos dos variables categóricas, una tabla de contingencia muestra cu�
 
 Una tabla puede leerse directamente, pero cuando hay muchas filas o columnas cuesta ver qué categorías se asocian. El análisis de correspondencias simple, CA, transforma la tabla en un mapa factorial donde filas y columnas se representan como puntos.
 
+CA resulta especialmente útil en tablas como marcas por atributos, regiones por preferencias, documentos por términos, lugares por especies o grupos sociales por respuestas. No sustituye a la tabla original: la reorganiza para responder tres preguntas relacionadas:
+
+1. ¿Existe asociación entre las dos variables?
+2. ¿Qué combinaciones se apartan más de la independencia?
+3. ¿Podemos resumir esas desviaciones mediante unas pocas dimensiones interpretables?
+
 ::: {.callout-warning}
 El análisis de correspondencias representa desviaciones respecto a la independencia, no relaciones causales ni frecuencias brutas.
 :::
@@ -80,29 +86,99 @@ $$
 e_{ij}=\frac{n_{i+}n_{+j}}{n}.
 $$
 
-En CA, lo importante no son solo las frecuencias observadas, sino cuánto se apartan de lo que esperaríamos bajo independencia.
+Esta expresión no supone que conozcamos las probabilidades marginales. Las estimamos con las proporciones observadas $n_{i+}/n$ y $n_{+j}/n$. En CA, lo importante no son solo las frecuencias observadas, sino cuánto se apartan de lo que esperaríamos bajo independencia.
 
 ```{r}
-kable(resumen_tabla$prueba_chi2, digits = 4)
 kable(round(resumen_tabla$esperadas, 1))
 ```
 
-### Residuos $\chi^2$
+### Contraste $\chi^2$ de Pearson
 
-Los residuos estandarizados comparan observado y esperado:
+El estadístico de Pearson acumula las diferencias entre frecuencias observadas y esperadas, expresadas en relación con el tamaño esperado de cada celda:
 
 $$
-res_{ij}=\frac{n_{ij}-e_{ij}}{\sqrt{e_{ij}}}.
+X^2=
+\sum_{i=1}^{I}\sum_{j=1}^{J}
+\frac{(n_{ij}-e_{ij})^2}{e_{ij}}.
 $$
 
-Residuos positivos indican más casos de los esperados bajo independencia; residuos negativos indican menos.
+Si las variables fueran independientes, las diferencias no serían exactamente cero por el azar del muestreo. El contraste pregunta si son demasiado grandes para atribuirlas razonablemente a ese azar.
+
+#### Por qué aparece una distribución $\chi^2$
+
+El resultado es asintótico: no afirmamos que $X^2$ tenga exactamente una distribución $\chi^2$ en cualquier muestra. La idea de la demostración es la siguiente:
+
+1. Los recuentos de las $IJ$ celdas tienen conjuntamente una distribución multinomial.
+2. Bajo independencia y para una muestra grande, el teorema central del límite hace que sus desviaciones estandarizadas sean aproximadamente normales.
+3. No todas esas desviaciones pueden variar libremente. El total suma $n$ y, además, estimamos los marginales de filas y columnas.
+4. Después de eliminar esas restricciones quedan $(I-1)(J-1)$ direcciones independientes.
+5. $X^2$ es, asintóticamente, la longitud al cuadrado de una normal estándar proyectada sobre ese subespacio.
+
+Como la suma de cuadrados de $d$ normales estándar independientes sigue una distribución $\chi^2_d$, bajo $H_0$:
+
+$$
+X^2 \xrightarrow{d} \chi^2_{(I-1)(J-1)}.
+$$
+
+Los grados de libertad también pueden obtenerse contando parámetros. Una distribución conjunta sobre $IJ$ celdas tiene $IJ-1$ parámetros libres. Bajo independencia necesitamos solo $(I-1)$ probabilidades de fila y $(J-1)$ probabilidades de columna. La diferencia es:
+
+$$
+(IJ-1)-[(I-1)+(J-1)]=(I-1)(J-1).
+$$
+
+Por ejemplo, en una tabla $2\times3$ hay $(2-1)(3-1)=2$ grados de libertad. Si fijamos los marginales y elegimos dos celdas de la primera fila, las restantes quedan determinadas.
+
+```{r}
+kable(resumen_tabla$prueba_chi2, digits = 4)
+```
+
+Un p-valor pequeño aporta evidencia contra la independencia, pero no mide la intensidad de la asociación. El coeficiente $V$ de Cramér normaliza el estadístico:
+
+$$
+V=\sqrt{\frac{X^2}{n\min(I-1,J-1)}}.
+$$
+
+Toma valores entre 0 y 1. Debe interpretarse en el contexto de la tabla, no mediante umbrales universales.
+
+::: {.callout-warning title="Cuándo es fiable la aproximación"}
+La aproximación $\chi^2$ necesita suficiente información en las celdas. Conviene revisar la frecuencia esperada mínima y el porcentaje de esperadas menores que 5. Si hay muchas celdas pequeñas, puede ser preferible reagrupar categorías con justificación sustantiva o utilizar una prueba exacta o simulada. Un cero estructural, una combinación imposible por definición, tampoco debe tratarse como un cero de muestreo ordinario.
+:::
+
+### Residuos de Pearson y residuos ajustados
+
+Los residuos de Pearson comparan observado y esperado:
+
+$$
+r_{ij}=\frac{n_{ij}-e_{ij}}{\sqrt{e_{ij}}}.
+$$
+
+Residuos positivos indican más casos de los esperados bajo independencia; residuos negativos indican menos. Además, cada $r_{ij}^2$ es la contribución de la celda al estadístico y, por tanto,
+
+$$
+X^2=\sum_{i,j}r_{ij}^2.
+$$
 
 ```{r}
 #| echo: false
-visualizar_residuos_correspondencias(tab)
+visualizar_residuos_correspondencias(tab, tipo = "pearson")
 ```
 
-Estos residuos son una primera lectura local de la asociación. CA construye una representación global de esas desviaciones.
+Los residuos de Pearson son los más conectados con la descomposición global de $X^2$. Para examinar una celda concreta también son útiles los residuos ajustados:
+
+$$
+r^{aj}_{ij}=
+\frac{n_{ij}-e_{ij}}
+{\sqrt{e_{ij}(1-r_i)(1-c_j)}}.
+$$
+
+La corrección tiene en cuenta las masas marginales y hace que, bajo independencia, estos residuos se comporten aproximadamente como puntuaciones normales estándar. Valores absolutos grandes señalan celdas especialmente incompatibles con la independencia, aunque una búsqueda entre muchas celdas introduce un problema de comparaciones múltiples.
+
+```{r}
+#| echo: false
+visualizar_residuos_correspondencias(tab, tipo = "ajustados")
+```
+
+Los residuos ofrecen una lectura local de la asociación. CA construye una representación global de esas mismas desviaciones.
 
 ### Perfiles fila y columna
 
@@ -180,9 +256,16 @@ $$
 resumen_tabla$prueba_chi2$inercia
 ```
 
-Si la tabla está muy cerca de independencia, la inercia será pequeña y el mapa tendrá poca estructura que representar.
+Si la tabla está muy cerca de independencia, la inercia será pequeña y el mapa tendrá poca estructura que representar. La conexión completa que desarrollaremos a continuación es:
 
-El contraste y la inercia responden a preguntas diferentes. Con una muestra muy grande, una asociación pequeña puede ser estadísticamente significativa; la inercia describe el tamaño geométrico de la desviación. Debemos mirar ambos resultados y no equiparar automáticamente significación con importancia.
+$$
+\frac{X^2}{n}=\operatorname{Inercia}=\lVert S\rVert_F^2
+=\sum_m\lambda_m.
+$$
+
+Por tanto, CA no analiza una propiedad diferente del contraste: reparte la desviación total respecto a la independencia entre dimensiones ortogonales.
+
+El contraste y la inercia ofrecen lecturas complementarias. Con una muestra muy grande, una asociación pequeña puede ser estadísticamente significativa; la inercia y $V$ de Cramér describen su magnitud. Debemos mirar ambos resultados y no equiparar automáticamente significación con importancia.
 
 ## Construcción algebraica del mapa
 
@@ -220,6 +303,20 @@ $$
 
 La SVD busca ejes ortogonales que recojan sucesivamente la mayor parte posible de la inercia. Es la misma idea geométrica de una proyección de baja dimensión, pero aplicada a desviaciones respecto a independencia y con la métrica $\chi^2$, no a variables numéricas estandarizadas ordinarias.
 
+La matriz está centrada respecto a los marginales. En particular,
+
+$$
+S\sqrt{c}=0,
+\qquad
+S^\top\sqrt{r}=0.
+$$
+
+Por ello siempre existe al menos una dirección trivial y el número máximo de dimensiones con inercia positiva es:
+
+$$
+\min(I-1,J-1).
+$$
+
 ### Coordenadas principales
 
 Las coordenadas principales de filas son:
@@ -251,6 +348,38 @@ kable(round(col_coord[, 1, drop = FALSE], 3), caption = "Coordenadas columna")
 
 Con dos columnas solo hay una dimensión no trivial, porque el rango máximo es $\min(I-1,J-1)$.
 
+### Propiedad baricéntrica
+
+Definamos las coordenadas estándar de filas y columnas:
+
+$$
+\Phi=D_r^{-1/2}U,
+\qquad
+\Gamma=D_c^{-1/2}V.
+$$
+
+Las coordenadas principales son entonces $F=\Phi D$ y $G=\Gamma D$. A partir de la SVD se obtienen las relaciones de transición:
+
+$$
+F=D_r^{-1}P\Gamma,
+\qquad
+G=D_c^{-1}P^\top\Phi.
+$$
+
+La primera igualdad dice que cada punto fila, en coordenadas principales, es el baricentro de las coordenadas estándar de las columnas, ponderadas por su perfil fila:
+
+$$
+f_i=\sum_j\frac{p_{ij}}{r_i}\,\gamma_j.
+$$
+
+Por eso una fila se desplaza hacia las columnas que están relativamente más presentes en su perfil. De forma dual, una columna es el baricentro de las filas ponderadas por su perfil columna. Esta relación proporciona una interpretación más precisa que afirmar simplemente que dos puntos de distinto tipo están «cerca».
+
+Hay varios escalados posibles:
+
+- en el mapa **simétrico**, filas y columnas usan coordenadas principales; resulta equilibrado, pero una distancia fila--columna no es una distancia métrica;
+- en el mapa **de filas**, las filas usan coordenadas principales y las columnas coordenadas estándar; conserva la interpretación baricéntrica de las filas;
+- en el mapa **de columnas** se intercambian ambos papeles.
+
 ### Ejemplo con dos dimensiones
 
 Para visualizar dos dimensiones, usamos una tabla más rica: clase por combinación de sexo y supervivencia.
@@ -269,10 +398,11 @@ kable(resumen_ca$autovalores, digits = 3)
 ```{r}
 #| echo: false
 visualizar_inercia_correspondencias(ca2)
-visualizar_correspondencias(ca2)
+visualizar_correspondencias(ca2, escalado = "simetrico")
+visualizar_correspondencias(ca2, escalado = "filas")
 ```
 
-El mapa debe leerse como representación de asociaciones. Una clase cercana a una categoría columna sugiere asociación relativa, no necesariamente frecuencia absoluta alta.
+El primer mapa ofrece una representación simétrica. El segundo conserva la geometría de las filas y muestra las columnas en coordenadas estándar: cada clase puede leerse como un baricentro de las categorías columna. En ambos casos hablamos de asociaciones relativas respecto a los marginales, no necesariamente de frecuencias absolutas altas.
 
 ## Interpretación del mapa
 
@@ -336,9 +466,10 @@ Las coordenadas fila y columna no viven originalmente en el mismo espacio métri
 
 Al interpretar un mapa CA:
 
-- proximidad entre una fila y una columna sugiere asociación relativa;
 - proximidad entre filas significa perfiles columna parecidos;
 - proximidad entre columnas significa perfiles fila parecidos;
+- en un mapa asimétrico, una fila orientada hacia una columna tiene esa categoría relativamente sobrerrepresentada;
+- en un mapa simétrico, la dirección y la oposición respecto al origen son más fiables que la distancia directa fila--columna;
 - el origen representa comportamiento medio;
 - puntos alejados del origen se apartan más de la independencia;
 - masas, contribuciones y cos² deben acompañar siempre la lectura visual.
@@ -354,32 +485,41 @@ Categorías con masa baja pueden aparecer muy alejadas y dominar visualmente el 
 - su cos²;
 - si responde a una estructura estable o a un recuento pequeño.
 
+### Filas y columnas suplementarias
+
+En ocasiones interesa representar una categoría sin permitir que determine los ejes. Una fila o columna suplementaria se proyecta sobre el espacio construido por las categorías activas, pero no contribuye a su orientación ni a sus autovalores.
+
+Esto resulta útil para grupos de comparación, categorías con un papel distinto o información recogida después. La decisión de hacer una categoría suplementaria debe responder al objetivo del análisis, no utilizarse únicamente para ocultar un resultado incómodo.
+
 ## Decisiones y limitaciones
 
 ### Protocolo de decisión
 
 1. Definir qué representan las filas, las columnas y la población contada.
-2. Revisar frecuencias, ceros, categorías raras y valores esperados.
-3. Interpretar primero perfiles y residuos respecto a independencia.
-4. Comprobar la magnitud de la inercia, no solo el p-valor del contraste.
-5. Elegir el número de dimensiones según inercia retenida y objetivo de la representación.
-6. Construir cada eje con las categorías de mayor contribución.
-7. Interpretar solo puntos con cos² suficiente en el plano mostrado.
-8. Leer rigurosamente distancias entre puntos del mismo tipo y ser prudente con proximidades fila--columna.
-9. Comprobar que las conclusiones no dependan de categorías con muy poca masa.
+2. Revisar frecuencias, ceros estructurales, categorías raras y valores esperados.
+3. Examinar conjuntamente $X^2$, p-valor y $V$ de Cramér.
+4. Localizar las desviaciones mediante perfiles, residuos de Pearson y residuos ajustados.
+5. Comprobar la magnitud de la inercia y relacionarla con $X^2/n$.
+6. Elegir el número de dimensiones según inercia retenida y objetivo de la representación.
+7. Construir cada eje con las categorías de mayor contribución.
+8. Interpretar solo puntos con cos² suficiente en el plano mostrado.
+9. Leer rigurosamente distancias entre puntos del mismo tipo y usar la propiedad baricéntrica para relacionar filas y columnas.
+10. Comprobar que las conclusiones no dependan de categorías con muy poca masa.
 
 ### Errores frecuentes
 
 - Interpretar el mapa como si mostrara frecuencias absolutas.
+- Considerar que un p-valor pequeño implica una asociación importante.
 - Confundir asociación con causalidad.
 - Ignorar masas, contribuciones y cos².
 - Dar importancia a categorías raras sin comprobar su peso.
 - Leer distancias entre puntos mal representados.
+- Interpretar la distancia directa fila--columna como una distancia ordinaria.
 - Olvidar que CA representa desviaciones respecto a independencia.
 
 ### Resumen del capítulo
 
-CA convierte una tabla de contingencia en un mapa de perfiles. Parte de la independencia, mide desviaciones mediante la distancia $\chi^2$ y descompone la inercia en dimensiones factoriales. Su interpretación se basa en perfiles, masas, inercia, contribuciones, cos² y cautela ante categorías raras.
+CA convierte una tabla de contingencia en un mapa de perfiles. El contraste $\chi^2$ detecta asociación, sus residuos localizan desviaciones y CA descompone $X^2/n$ en dimensiones factoriales. Su interpretación se basa en perfiles, masas, propiedad baricéntrica, contribuciones, cos² y cautela ante categorías raras.
 
 ## Funciones utilizadas
 
@@ -387,12 +527,12 @@ CA convierte una tabla de contingencia en un mapa de perfiles. Parte de la indep
 |---|---|---|
 | `xtabs()` | Construir una tabla de contingencia desde datos largos. | `xtabs(Freq ~ fila + columna, datos)` |
 | `FactoMineR::CA()` | Ajustar el análisis de correspondencias. | `FactoMineR::CA(tabla, graph = FALSE)` |
-| `resumir_tabla_contingencia()` | Obtener proporciones, perfiles, masas, esperadas, residuos, contraste e inercia. | `resumen <- resumir_tabla_contingencia(tabla)` |
+| `resumir_tabla_contingencia()` | Obtener perfiles, masas, esperadas, residuos, contraste, $V$ de Cramér e inercia. | `resumen <- resumir_tabla_contingencia(tabla)` |
 | `distancias_chi2()` | Calcular distancias $\chi^2$ entre perfiles fila o columna. | `distancias_chi2(tabla, "filas")` |
 | `visualizar_distancias_chi2()` | Mostrar esas distancias como mapa de calor. | `visualizar_distancias_chi2(tabla, "filas")` |
-| `visualizar_residuos_correspondencias()` | Localizar desviaciones respecto a independencia. | `visualizar_residuos_correspondencias(tabla)` |
+| `visualizar_residuos_correspondencias()` | Mostrar residuos de Pearson o ajustados, con números opcionales. | `visualizar_residuos_correspondencias(tabla, "ajustados", FALSE)` |
 | `resumir_correspondencias()` | Reunir inercia, coordenadas, contribuciones y cos². | `resumen <- resumir_correspondencias(ajuste)` |
 | `visualizar_inercia_correspondencias()` | Representar el porcentaje de inercia por dimensión. | `visualizar_inercia_correspondencias(ajuste)` |
-| `visualizar_correspondencias()` | Dibujar filas, columnas o el mapa conjunto. | `visualizar_correspondencias(ajuste, "ambos")` |
+| `visualizar_correspondencias()` | Dibujar mapas simétricos o asimétricos de filas y columnas. | `visualizar_correspondencias(ajuste, escalado = "filas")` |
 | `contribuciones_correspondencias()` | Identificar categorías que construyen una dimensión. | `contribuciones_correspondencias(ajuste, "filas", 1)` |
 | `calidad_correspondencias()` | Evaluar el cos² acumulado en los ejes elegidos. | `calidad_correspondencias(ajuste, "columnas", c(1, 2))` |
