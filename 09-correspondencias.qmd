@@ -374,11 +374,52 @@ $$
 
 Por eso una fila se desplaza hacia las columnas que están relativamente más presentes en su perfil. De forma dual, una columna es el baricentro de las filas ponderadas por su perfil columna. Esta relación proporciona una interpretación más precisa que afirmar simplemente que dos puntos de distinto tipo están «cerca».
 
-Hay varios escalados posibles:
+Estas dos igualdades explican por qué existen distintos mapas. No se trata solo de cambiar la escala del dibujo: cada elección responde a una pregunta diferente.
 
-- en el mapa **simétrico**, filas y columnas usan coordenadas principales; resulta equilibrado, pero una distancia fila--columna no es una distancia métrica;
-- en el mapa **de filas**, las filas usan coordenadas principales y las columnas coordenadas estándar; conserva la interpretación baricéntrica de las filas;
-- en el mapa **de columnas** se intercambian ambos papeles.
+| Mapa | Coordenadas de filas | Coordenadas de columnas | Lectura principal |
+|---|---:|---:|---|
+| Simétrico | $F$ | $G$ | Explorar conjuntamente la asociación y comparar filas entre sí y columnas entre sí. |
+| Asimétrico de filas | $F$ | $\Gamma$ | Entender las filas a partir de sus distribuciones sobre las columnas. |
+| Asimétrico de columnas | $\Phi$ | $G$ | Entender las columnas a partir de sus distribuciones sobre las filas. |
+
+#### Mapa asimétrico de filas: $F$ y $\Gamma$
+
+La relación
+
+$$
+F=D_r^{-1}P\Gamma
+$$
+
+se representa directamente. Cada fila $f_i$ es exactamente el baricentro de los puntos columna $\gamma_j$, con pesos $p_{ij}/r_i$ dados por su perfil fila. Las coordenadas principales $F$ conservan, si se mantienen todas las dimensiones, las distancias $\chi^2$ entre perfiles fila. Las columnas estándar $\Gamma$ funcionan como referencias para interpretar hacia qué categorías se orienta cada fila; sus distancias entre sí no son las distancias $\chi^2$ entre columnas.
+
+Este mapa es el más adecuado cuando la pregunta es, por ejemplo, **cómo se caracterizan las clases de pasajeros por sus distribuciones de sexo y supervivencia**.
+
+#### Mapa asimétrico de columnas: $\Phi$ y $G$
+
+La relación dual
+
+$$
+G=D_c^{-1}P^\top\Phi
+$$
+
+indica que cada columna $g_j$ es exactamente el baricentro de los puntos fila $\phi_i$, ponderados por su perfil columna. Ahora son las coordenadas principales $G$ las que conservan la geometría $\chi^2$ de las columnas, mientras que $\Phi$ proporciona las referencias para interpretarlas.
+
+Este mapa responde a la pregunta inversa: **cómo se caracterizan las categorías columna a partir de su distribución entre las filas**.
+
+#### Mapa simétrico: $F$ y $G$
+
+En el mapa simétrico ambos conjuntos aparecen en coordenadas principales. Es una representación equilibrada y cómoda para observar la estructura global: permite comparar correctamente filas con filas y columnas con columnas, salvo la pérdida producida al conservar pocas dimensiones.
+
+Sin embargo, la propiedad baricéntrica ya no se representa de forma exacta. Como $G=\Gamma D$, en la dimensión $m$ se tiene
+
+$$
+f_{im}
+=\frac{1}{d_m}\sum_j\frac{p_{ij}}{r_i}g_{jm}.
+$$
+
+Por tanto, $f_{im}$ es un baricentro de las coordenadas principales de las columnas dilatado por $1/d_m$. La dilatación es distinta en cada dimensión. Análogamente, las columnas son baricentros dilatados de las filas principales. Esto permite leer direcciones, oposiciones y asociaciones generales, pero no interpretar la distancia directa entre una fila y una columna como una distancia métrica ni como una medida de intensidad de la asociación.
+
+En resumen, el mapa simétrico es apropiado para una primera exploración conjunta. Los mapas asimétricos son preferibles cuando la interpretación tiene una dirección clara: explicar filas mediante columnas o columnas mediante filas.
 
 ### Ejemplo con dos dimensiones
 
@@ -408,13 +449,25 @@ El primer mapa ofrece una representación simétrica. El segundo conserva la geo
 
 ### Contribuciones
 
-La contribución de una fila $i$ a la dimensión $m$ mide cuánto participa en la construcción de ese eje:
+La inercia de la dimensión $m$ puede descomponerse entre las filas:
+
+$$
+\lambda_m=\sum_i r_i f_{im}^2.
+$$
+
+Cada término $r_i f_{im}^2$ es la parte de la inercia del eje asociada a la fila $i$: combina su masa con su distancia al origen sobre esa dimensión. Al dividir por la inercia total del eje obtenemos su contribución:
 
 $$
 ctr_{im}=\frac{r_i f_{im}^2}{\lambda_m}.
 $$
 
-Para columnas:
+La misma inercia también puede descomponerse entre las columnas,
+
+$$
+\lambda_m=\sum_j c_j g_{jm}^2,
+$$
+
+por lo que:
 
 $$
 ctr_{jm}=\frac{c_j g_{jm}^2}{\lambda_m}.
@@ -435,15 +488,33 @@ contrib_columnas$grafico
 
 Una categoría con alta contribución ayuda a definir la dimensión. Una categoría con baja contribución no debería protagonizar la interpretación del eje.
 
-La contribución reparte la construcción del eje entre categorías y suma 100% dentro de cada dimensión. Por eso depende tanto de la coordenada como de la masa: un punto lejano con masa casi nula no necesariamente domina el eje.
+Las contribuciones suman 1, o 100% cuando se expresan como porcentajes, dentro de cada dimensión. Si todas las filas contribuyeran por igual, cada una aportaría $1/I$; para las columnas la referencia sería $1/J$. Estas referencias ayudan a detectar categorías relevantes, aunque no sustituyen la interpretación sustantiva. Un punto lejano con una masa casi nula no necesariamente domina el eje, mientras que una categoría con masa grande puede contribuir mucho con una coordenada menos extrema.
 
 ### Cos² o calidad de representación
 
-El cos² mide qué proporción de la distancia de un punto al origen queda representada en una dimensión o conjunto de dimensiones. Para una fila:
+El perfil de una fila puede representarse mediante el vector de sus coordenadas principales $(f_{i1},\ldots,f_{iH})$. Como los ejes factoriales son ortogonales, su distancia $\chi^2$ al perfil medio cumple:
 
 $$
-cos^2_{im}=\frac{f_{im}^2}{\sum_{h} f_{ih}^2}.
+d_{\chi^2}^2(i,\bar i)=\sum_h f_{ih}^2.
 $$
+
+La coordenada $f_{im}$ es la longitud con signo de la proyección de ese vector sobre el eje $m$. Si $\theta_{im}$ es el ángulo entre el vector del punto y el eje, la definición geométrica del coseno da:
+
+$$
+\cos^2(\theta_{im})
+=\frac{\text{longitud proyectada}^2}{\text{longitud total}^2}
+=\frac{f_{im}^2}{\sum_h f_{ih}^2}.
+$$
+
+Por eso el cos² mide la proporción de la distancia del punto al origen que queda representada por una dimensión. Para un plano formado por las dimensiones 1 y 2, las proyecciones son ortogonales y basta sumar:
+
+$$
+\cos^2(i,\text{plano }1\text{--}2)
+=\frac{f_{i1}^2+f_{i2}^2}{\sum_h f_{ih}^2}
+=\cos^2(i,1)+\cos^2(i,2).
+$$
+
+Las mismas expresiones se aplican a las columnas sustituyendo $f_{im}$ por $g_{jm}$.
 
 ```{r}
 calidad_filas <- calidad_correspondencias(ca2, "filas")
@@ -452,9 +523,9 @@ kable(calidad_filas$tabla, digits = 3, caption = "Cos² de filas en el plano")
 kable(calidad_columnas$tabla, digits = 3, caption = "Cos² de columnas en el plano")
 ```
 
-Un punto puede estar visualmente lejos, pero si está mal representado en el plano mostrado, conviene no interpretarlo demasiado.
+Un punto puede estar visualmente lejos, pero si está mal representado en el plano mostrado, conviene no interpretarlo demasiado. Un cos² alto en el plano indica que su posición y su dirección se reproducen bien; no implica que el punto haya sido importante para construir los ejes.
 
-Geométricamente, el cos² compara la longitud de la proyección sobre el eje con la distancia total al origen. Contribución y cos² no son intercambiables: la primera pregunta quién construye el eje; el segundo, si el eje representa bien a ese punto.
+Contribución y cos² no son intercambiables: la contribución pregunta **quién construye el eje**; el cos² pregunta **si el eje o el plano representa bien a ese punto**. Una categoría puede tener cos² alto y contribución pequeña, o contribuir mucho a un eje que solo representa una parte moderada de su distancia total.
 
 ### El mapa es una aproximación de las distancias
 

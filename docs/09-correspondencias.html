@@ -1201,12 +1201,72 @@ G=D_c^{-1}P^\top\Phi.
 f_i=\sum_j\frac{p_{ij}}{r_i}\,\gamma_j.
 \]</span></p>
 <p>Por eso una fila se desplaza hacia las columnas que están relativamente más presentes en su perfil. De forma dual, una columna es el baricentro de las filas ponderadas por su perfil columna. Esta relación proporciona una interpretación más precisa que afirmar simplemente que dos puntos de distinto tipo están «cerca».</p>
-<p>Hay varios escalados posibles:</p>
-<ul>
-<li>en el mapa <strong>simétrico</strong>, filas y columnas usan coordenadas principales; resulta equilibrado, pero una distancia fila–columna no es una distancia métrica;</li>
-<li>en el mapa <strong>de filas</strong>, las filas usan coordenadas principales y las columnas coordenadas estándar; conserva la interpretación baricéntrica de las filas;</li>
-<li>en el mapa <strong>de columnas</strong> se intercambian ambos papeles.</li>
-</ul>
+<p>Estas dos igualdades explican por qué existen distintos mapas. No se trata solo de cambiar la escala del dibujo: cada elección responde a una pregunta diferente.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 21%">
+<col style="width: 28%">
+<col style="width: 28%">
+<col style="width: 21%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Mapa</th>
+<th style="text-align: right;">Coordenadas de filas</th>
+<th style="text-align: right;">Coordenadas de columnas</th>
+<th>Lectura principal</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Simétrico</td>
+<td style="text-align: right;"><span class="math inline">\(F\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(G\)</span></td>
+<td>Explorar conjuntamente la asociación y comparar filas entre sí y columnas entre sí.</td>
+</tr>
+<tr class="even">
+<td>Asimétrico de filas</td>
+<td style="text-align: right;"><span class="math inline">\(F\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(\Gamma\)</span></td>
+<td>Entender las filas a partir de sus distribuciones sobre las columnas.</td>
+</tr>
+<tr class="odd">
+<td>Asimétrico de columnas</td>
+<td style="text-align: right;"><span class="math inline">\(\Phi\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(G\)</span></td>
+<td>Entender las columnas a partir de sus distribuciones sobre las filas.</td>
+</tr>
+</tbody>
+</table>
+<section id="mapa-asimétrico-de-filas-f-y-gamma" class="level4" data-number="11.2.3.1">
+<h4 data-number="11.2.3.1" class="anchored" data-anchor-id="mapa-asimétrico-de-filas-f-y-gamma"><span class="header-section-number">11.2.3.1</span> Mapa asimétrico de filas: <span class="math inline">\(F\)</span> y <span class="math inline">\(\Gamma\)</span></h4>
+<p>La relación</p>
+<p><span class="math display">\[
+F=D_r^{-1}P\Gamma
+\]</span></p>
+<p>se representa directamente. Cada fila <span class="math inline">\(f_i\)</span> es exactamente el baricentro de los puntos columna <span class="math inline">\(\gamma_j\)</span>, con pesos <span class="math inline">\(p_{ij}/r_i\)</span> dados por su perfil fila. Las coordenadas principales <span class="math inline">\(F\)</span> conservan, si se mantienen todas las dimensiones, las distancias <span class="math inline">\(\chi^2\)</span> entre perfiles fila. Las columnas estándar <span class="math inline">\(\Gamma\)</span> funcionan como referencias para interpretar hacia qué categorías se orienta cada fila; sus distancias entre sí no son las distancias <span class="math inline">\(\chi^2\)</span> entre columnas.</p>
+<p>Este mapa es el más adecuado cuando la pregunta es, por ejemplo, <strong>cómo se caracterizan las clases de pasajeros por sus distribuciones de sexo y supervivencia</strong>.</p>
+</section>
+<section id="mapa-asimétrico-de-columnas-phi-y-g" class="level4" data-number="11.2.3.2">
+<h4 data-number="11.2.3.2" class="anchored" data-anchor-id="mapa-asimétrico-de-columnas-phi-y-g"><span class="header-section-number">11.2.3.2</span> Mapa asimétrico de columnas: <span class="math inline">\(\Phi\)</span> y <span class="math inline">\(G\)</span></h4>
+<p>La relación dual</p>
+<p><span class="math display">\[
+G=D_c^{-1}P^\top\Phi
+\]</span></p>
+<p>indica que cada columna <span class="math inline">\(g_j\)</span> es exactamente el baricentro de los puntos fila <span class="math inline">\(\phi_i\)</span>, ponderados por su perfil columna. Ahora son las coordenadas principales <span class="math inline">\(G\)</span> las que conservan la geometría <span class="math inline">\(\chi^2\)</span> de las columnas, mientras que <span class="math inline">\(\Phi\)</span> proporciona las referencias para interpretarlas.</p>
+<p>Este mapa responde a la pregunta inversa: <strong>cómo se caracterizan las categorías columna a partir de su distribución entre las filas</strong>.</p>
+</section>
+<section id="mapa-simétrico-f-y-g" class="level4" data-number="11.2.3.3">
+<h4 data-number="11.2.3.3" class="anchored" data-anchor-id="mapa-simétrico-f-y-g"><span class="header-section-number">11.2.3.3</span> Mapa simétrico: <span class="math inline">\(F\)</span> y <span class="math inline">\(G\)</span></h4>
+<p>En el mapa simétrico ambos conjuntos aparecen en coordenadas principales. Es una representación equilibrada y cómoda para observar la estructura global: permite comparar correctamente filas con filas y columnas con columnas, salvo la pérdida producida al conservar pocas dimensiones.</p>
+<p>Sin embargo, la propiedad baricéntrica ya no se representa de forma exacta. Como <span class="math inline">\(G=\Gamma D\)</span>, en la dimensión <span class="math inline">\(m\)</span> se tiene</p>
+<p><span class="math display">\[
+f_{im}
+=\frac{1}{d_m}\sum_j\frac{p_{ij}}{r_i}g_{jm}.
+\]</span></p>
+<p>Por tanto, <span class="math inline">\(f_{im}\)</span> es un baricentro de las coordenadas principales de las columnas dilatado por <span class="math inline">\(1/d_m\)</span>. La dilatación es distinta en cada dimensión. Análogamente, las columnas son baricentros dilatados de las filas principales. Esto permite leer direcciones, oposiciones y asociaciones generales, pero no interpretar la distancia directa entre una fila y una columna como una distancia métrica ni como una medida de intensidad de la asociación.</p>
+<p>En resumen, el mapa simétrico es apropiado para una primera exploración conjunta. Los mapas asimétricos son preferibles cuando la interpretación tiene una dirección clara: explicar filas mediante columnas o columnas mediante filas.</p>
+</section>
 </section>
 <section id="ejemplo-con-dos-dimensiones" class="level3" data-number="11.2.4">
 <h3 data-number="11.2.4" class="anchored" data-anchor-id="ejemplo-con-dos-dimensiones"><span class="header-section-number">11.2.4</span> Ejemplo con dos dimensiones</h3>
@@ -1331,11 +1391,19 @@ f_i=\sum_j\frac{p_{ij}}{r_i}\,\gamma_j.
 <h2 data-number="11.3" class="anchored" data-anchor-id="interpretación-del-mapa"><span class="header-section-number">11.3</span> Interpretación del mapa</h2>
 <section id="contribuciones" class="level3" data-number="11.3.1">
 <h3 data-number="11.3.1" class="anchored" data-anchor-id="contribuciones"><span class="header-section-number">11.3.1</span> Contribuciones</h3>
-<p>La contribución de una fila <span class="math inline">\(i\)</span> a la dimensión <span class="math inline">\(m\)</span> mide cuánto participa en la construcción de ese eje:</p>
+<p>La inercia de la dimensión <span class="math inline">\(m\)</span> puede descomponerse entre las filas:</p>
+<p><span class="math display">\[
+\lambda_m=\sum_i r_i f_{im}^2.
+\]</span></p>
+<p>Cada término <span class="math inline">\(r_i f_{im}^2\)</span> es la parte de la inercia del eje asociada a la fila <span class="math inline">\(i\)</span>: combina su masa con su distancia al origen sobre esa dimensión. Al dividir por la inercia total del eje obtenemos su contribución:</p>
 <p><span class="math display">\[
 ctr_{im}=\frac{r_i f_{im}^2}{\lambda_m}.
 \]</span></p>
-<p>Para columnas:</p>
+<p>La misma inercia también puede descomponerse entre las columnas,</p>
+<p><span class="math display">\[
+\lambda_m=\sum_j c_j g_{jm}^2,
+\]</span></p>
+<p>por lo que:</p>
 <p><span class="math display">\[
 ctr_{jm}=\frac{c_j g_{jm}^2}{\lambda_m}.
 \]</span></p>
@@ -1426,14 +1494,27 @@ ctr_{jm}=\frac{c_j g_{jm}^2}{\lambda_m}.
 </div>
 </div>
 <p>Una categoría con alta contribución ayuda a definir la dimensión. Una categoría con baja contribución no debería protagonizar la interpretación del eje.</p>
-<p>La contribución reparte la construcción del eje entre categorías y suma 100% dentro de cada dimensión. Por eso depende tanto de la coordenada como de la masa: un punto lejano con masa casi nula no necesariamente domina el eje.</p>
+<p>Las contribuciones suman 1, o 100% cuando se expresan como porcentajes, dentro de cada dimensión. Si todas las filas contribuyeran por igual, cada una aportaría <span class="math inline">\(1/I\)</span>; para las columnas la referencia sería <span class="math inline">\(1/J\)</span>. Estas referencias ayudan a detectar categorías relevantes, aunque no sustituyen la interpretación sustantiva. Un punto lejano con una masa casi nula no necesariamente domina el eje, mientras que una categoría con masa grande puede contribuir mucho con una coordenada menos extrema.</p>
 </section>
 <section id="cos²-o-calidad-de-representación" class="level3" data-number="11.3.2">
 <h3 data-number="11.3.2" class="anchored" data-anchor-id="cos²-o-calidad-de-representación"><span class="header-section-number">11.3.2</span> Cos² o calidad de representación</h3>
-<p>El cos² mide qué proporción de la distancia de un punto al origen queda representada en una dimensión o conjunto de dimensiones. Para una fila:</p>
+<p>El perfil de una fila puede representarse mediante el vector de sus coordenadas principales <span class="math inline">\((f_{i1},\ldots,f_{iH})\)</span>. Como los ejes factoriales son ortogonales, su distancia <span class="math inline">\(\chi^2\)</span> al perfil medio cumple:</p>
 <p><span class="math display">\[
-cos^2_{im}=\frac{f_{im}^2}{\sum_{h} f_{ih}^2}.
+d_{\chi^2}^2(i,\bar i)=\sum_h f_{ih}^2.
 \]</span></p>
+<p>La coordenada <span class="math inline">\(f_{im}\)</span> es la longitud con signo de la proyección de ese vector sobre el eje <span class="math inline">\(m\)</span>. Si <span class="math inline">\(\theta_{im}\)</span> es el ángulo entre el vector del punto y el eje, la definición geométrica del coseno da:</p>
+<p><span class="math display">\[
+\cos^2(\theta_{im})
+=\frac{\text{longitud proyectada}^2}{\text{longitud total}^2}
+=\frac{f_{im}^2}{\sum_h f_{ih}^2}.
+\]</span></p>
+<p>Por eso el cos² mide la proporción de la distancia del punto al origen que queda representada por una dimensión. Para un plano formado por las dimensiones 1 y 2, las proyecciones son ortogonales y basta sumar:</p>
+<p><span class="math display">\[
+\cos^2(i,\text{plano }1\text{--}2)
+=\frac{f_{i1}^2+f_{i2}^2}{\sum_h f_{ih}^2}
+=\cos^2(i,1)+\cos^2(i,2).
+\]</span></p>
+<p>Las mismas expresiones se aplican a las columnas sustituyendo <span class="math inline">\(f_{im}\)</span> por <span class="math inline">\(g_{jm}\)</span>.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Código</summary>
@@ -1504,8 +1585,8 @@ cos^2_{im}=\frac{f_{im}^2}{\sum_{h} f_{ih}^2}.
 </table>
 </div>
 </div>
-<p>Un punto puede estar visualmente lejos, pero si está mal representado en el plano mostrado, conviene no interpretarlo demasiado.</p>
-<p>Geométricamente, el cos² compara la longitud de la proyección sobre el eje con la distancia total al origen. Contribución y cos² no son intercambiables: la primera pregunta quién construye el eje; el segundo, si el eje representa bien a ese punto.</p>
+<p>Un punto puede estar visualmente lejos, pero si está mal representado en el plano mostrado, conviene no interpretarlo demasiado. Un cos² alto en el plano indica que su posición y su dirección se reproducen bien; no implica que el punto haya sido importante para construir los ejes.</p>
+<p>Contribución y cos² no son intercambiables: la contribución pregunta <strong>quién construye el eje</strong>; el cos² pregunta <strong>si el eje o el plano representa bien a ese punto</strong>. Una categoría puede tener cos² alto y contribución pequeña, o contribuir mucho a un eje que solo representa una parte moderada de su distancia total.</p>
 </section>
 <section id="el-mapa-es-una-aproximación-de-las-distancias" class="level3" data-number="11.3.3">
 <h3 data-number="11.3.3" class="anchored" data-anchor-id="el-mapa-es-una-aproximación-de-las-distancias"><span class="header-section-number">11.3.3</span> El mapa es una aproximación de las distancias</h3>
@@ -2496,168 +2577,239 @@ cos^2_{im}=\frac{f_{im}^2}{\sum_{h} f_{ih}^2}.
 <span id="cb23-398"><a href="#cb23-398" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb23-399"><a href="#cb23-399" aria-hidden="true" tabindex="-1"></a>Por eso una fila se desplaza hacia las columnas que están relativamente más presentes en su perfil. De forma dual, una columna es el baricentro de las filas ponderadas por su perfil columna. Esta relación proporciona una interpretación más precisa que afirmar simplemente que dos puntos de distinto tipo están «cerca».</span>
 <span id="cb23-400"><a href="#cb23-400" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-401"><a href="#cb23-401" aria-hidden="true" tabindex="-1"></a>Hay varios escalados posibles:</span>
+<span id="cb23-401"><a href="#cb23-401" aria-hidden="true" tabindex="-1"></a>Estas dos igualdades explican por qué existen distintos mapas. No se trata solo de cambiar la escala del dibujo: cada elección responde a una pregunta diferente.</span>
 <span id="cb23-402"><a href="#cb23-402" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-403"><a href="#cb23-403" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>en el mapa **simétrico**, filas y columnas usan coordenadas principales; resulta equilibrado, pero una distancia fila--columna no es una distancia métrica;</span>
-<span id="cb23-404"><a href="#cb23-404" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>en el mapa **de filas**, las filas usan coordenadas principales y las columnas coordenadas estándar; conserva la interpretación baricéntrica de las filas;</span>
-<span id="cb23-405"><a href="#cb23-405" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>en el mapa **de columnas** se intercambian ambos papeles.</span>
-<span id="cb23-406"><a href="#cb23-406" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-407"><a href="#cb23-407" aria-hidden="true" tabindex="-1"></a><span class="fu">### Ejemplo con dos dimensiones</span></span>
+<span id="cb23-403"><a href="#cb23-403" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Mapa <span class="pp">|</span> Coordenadas de filas <span class="pp">|</span> Coordenadas de columnas <span class="pp">|</span> Lectura principal <span class="pp">|</span></span>
+<span id="cb23-404"><a href="#cb23-404" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---:|---:|---|</span></span>
+<span id="cb23-405"><a href="#cb23-405" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Simétrico <span class="pp">|</span> $F$ <span class="pp">|</span> $G$ <span class="pp">|</span> Explorar conjuntamente la asociación y comparar filas entre sí y columnas entre sí. <span class="pp">|</span></span>
+<span id="cb23-406"><a href="#cb23-406" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Asimétrico de filas <span class="pp">|</span> $F$ <span class="pp">|</span> $\Gamma$ <span class="pp">|</span> Entender las filas a partir de sus distribuciones sobre las columnas. <span class="pp">|</span></span>
+<span id="cb23-407"><a href="#cb23-407" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Asimétrico de columnas <span class="pp">|</span> $\Phi$ <span class="pp">|</span> $G$ <span class="pp">|</span> Entender las columnas a partir de sus distribuciones sobre las filas. <span class="pp">|</span></span>
 <span id="cb23-408"><a href="#cb23-408" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-409"><a href="#cb23-409" aria-hidden="true" tabindex="-1"></a>Para visualizar dos dimensiones, usamos una tabla más rica: clase por combinación de sexo y supervivencia.</span>
+<span id="cb23-409"><a href="#cb23-409" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Mapa asimétrico de filas: $F$ y $\Gamma$</span></span>
 <span id="cb23-410"><a href="#cb23-410" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-413"><a href="#cb23-413" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb23-414"><a href="#cb23-414" aria-hidden="true" tabindex="-1"></a>tab2 <span class="ot">&lt;-</span> <span class="fu">xtabs</span>(Freq <span class="sc">~</span> Class <span class="sc">+</span> <span class="fu">interaction</span>(Sex, Survived), <span class="at">data =</span> titanic)</span>
-<span id="cb23-415"><a href="#cb23-415" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(tab2)</span>
-<span id="cb23-416"><a href="#cb23-416" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb23-417"><a href="#cb23-417" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-420"><a href="#cb23-420" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb23-421"><a href="#cb23-421" aria-hidden="true" tabindex="-1"></a>ca2 <span class="ot">&lt;-</span> FactoMineR<span class="sc">::</span><span class="fu">CA</span>(tab2, <span class="at">graph =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb23-422"><a href="#cb23-422" aria-hidden="true" tabindex="-1"></a>resumen_ca <span class="ot">&lt;-</span> <span class="fu">resumir_correspondencias</span>(ca2)</span>
-<span id="cb23-423"><a href="#cb23-423" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(resumen_ca<span class="sc">$</span>autovalores, <span class="at">digits =</span> <span class="dv">3</span>)</span>
-<span id="cb23-424"><a href="#cb23-424" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb23-425"><a href="#cb23-425" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-428"><a href="#cb23-428" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb23-429"><a href="#cb23-429" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
-<span id="cb23-430"><a href="#cb23-430" aria-hidden="true" tabindex="-1"></a><span class="fu">visualizar_inercia_correspondencias</span>(ca2)</span>
-<span id="cb23-431"><a href="#cb23-431" aria-hidden="true" tabindex="-1"></a><span class="fu">visualizar_correspondencias</span>(ca2, <span class="at">escalado =</span> <span class="st">"simetrico"</span>)</span>
-<span id="cb23-432"><a href="#cb23-432" aria-hidden="true" tabindex="-1"></a><span class="fu">visualizar_correspondencias</span>(ca2, <span class="at">escalado =</span> <span class="st">"filas"</span>)</span>
-<span id="cb23-433"><a href="#cb23-433" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb23-411"><a href="#cb23-411" aria-hidden="true" tabindex="-1"></a>La relación</span>
+<span id="cb23-412"><a href="#cb23-412" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-413"><a href="#cb23-413" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb23-414"><a href="#cb23-414" aria-hidden="true" tabindex="-1"></a>F=D_r^{-1}P\Gamma</span>
+<span id="cb23-415"><a href="#cb23-415" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb23-416"><a href="#cb23-416" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-417"><a href="#cb23-417" aria-hidden="true" tabindex="-1"></a>se representa directamente. Cada fila $f_i$ es exactamente el baricentro de los puntos columna $\gamma_j$, con pesos $p_{ij}/r_i$ dados por su perfil fila. Las coordenadas principales $F$ conservan, si se mantienen todas las dimensiones, las distancias $\chi^2$ entre perfiles fila. Las columnas estándar $\Gamma$ funcionan como referencias para interpretar hacia qué categorías se orienta cada fila; sus distancias entre sí no son las distancias $\chi^2$ entre columnas.</span>
+<span id="cb23-418"><a href="#cb23-418" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-419"><a href="#cb23-419" aria-hidden="true" tabindex="-1"></a>Este mapa es el más adecuado cuando la pregunta es, por ejemplo, **cómo se caracterizan las clases de pasajeros por sus distribuciones de sexo y supervivencia**.</span>
+<span id="cb23-420"><a href="#cb23-420" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-421"><a href="#cb23-421" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Mapa asimétrico de columnas: $\Phi$ y $G$</span></span>
+<span id="cb23-422"><a href="#cb23-422" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-423"><a href="#cb23-423" aria-hidden="true" tabindex="-1"></a>La relación dual</span>
+<span id="cb23-424"><a href="#cb23-424" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-425"><a href="#cb23-425" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb23-426"><a href="#cb23-426" aria-hidden="true" tabindex="-1"></a>G=D_c^{-1}P^\top\Phi</span>
+<span id="cb23-427"><a href="#cb23-427" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb23-428"><a href="#cb23-428" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-429"><a href="#cb23-429" aria-hidden="true" tabindex="-1"></a>indica que cada columna $g_j$ es exactamente el baricentro de los puntos fila $\phi_i$, ponderados por su perfil columna. Ahora son las coordenadas principales $G$ las que conservan la geometría $\chi^2$ de las columnas, mientras que $\Phi$ proporciona las referencias para interpretarlas.</span>
+<span id="cb23-430"><a href="#cb23-430" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-431"><a href="#cb23-431" aria-hidden="true" tabindex="-1"></a>Este mapa responde a la pregunta inversa: **cómo se caracterizan las categorías columna a partir de su distribución entre las filas**.</span>
+<span id="cb23-432"><a href="#cb23-432" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-433"><a href="#cb23-433" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Mapa simétrico: $F$ y $G$</span></span>
 <span id="cb23-434"><a href="#cb23-434" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-435"><a href="#cb23-435" aria-hidden="true" tabindex="-1"></a>El primer mapa ofrece una representación simétrica. El segundo conserva la geometría de las filas y muestra las columnas en coordenadas estándar: cada clase puede leerse como un baricentro de las categorías columna. En ambos casos hablamos de asociaciones relativas respecto a los marginales, no necesariamente de frecuencias absolutas altas.</span>
+<span id="cb23-435"><a href="#cb23-435" aria-hidden="true" tabindex="-1"></a>En el mapa simétrico ambos conjuntos aparecen en coordenadas principales. Es una representación equilibrada y cómoda para observar la estructura global: permite comparar correctamente filas con filas y columnas con columnas, salvo la pérdida producida al conservar pocas dimensiones.</span>
 <span id="cb23-436"><a href="#cb23-436" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-437"><a href="#cb23-437" aria-hidden="true" tabindex="-1"></a><span class="fu">## Interpretación del mapa</span></span>
+<span id="cb23-437"><a href="#cb23-437" aria-hidden="true" tabindex="-1"></a>Sin embargo, la propiedad baricéntrica ya no se representa de forma exacta. Como $G=\Gamma D$, en la dimensión $m$ se tiene</span>
 <span id="cb23-438"><a href="#cb23-438" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-439"><a href="#cb23-439" aria-hidden="true" tabindex="-1"></a><span class="fu">### Contribuciones</span></span>
-<span id="cb23-440"><a href="#cb23-440" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-441"><a href="#cb23-441" aria-hidden="true" tabindex="-1"></a>La contribución de una fila $i$ a la dimensión $m$ mide cuánto participa en la construcción de ese eje:</span>
-<span id="cb23-442"><a href="#cb23-442" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-443"><a href="#cb23-443" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb23-444"><a href="#cb23-444" aria-hidden="true" tabindex="-1"></a>ctr_{im}=\frac{r_i f_{im}^2}{\lambda_m}.</span>
-<span id="cb23-445"><a href="#cb23-445" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb23-446"><a href="#cb23-446" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-447"><a href="#cb23-447" aria-hidden="true" tabindex="-1"></a>Para columnas:</span>
-<span id="cb23-448"><a href="#cb23-448" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-449"><a href="#cb23-449" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb23-450"><a href="#cb23-450" aria-hidden="true" tabindex="-1"></a>ctr_{jm}=\frac{c_j g_{jm}^2}{\lambda_m}.</span>
-<span id="cb23-451"><a href="#cb23-451" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb23-452"><a href="#cb23-452" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-455"><a href="#cb23-455" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb23-456"><a href="#cb23-456" aria-hidden="true" tabindex="-1"></a>contrib_filas <span class="ot">&lt;-</span> <span class="fu">contribuciones_correspondencias</span>(ca2, <span class="st">"filas"</span>, <span class="at">dimension =</span> <span class="dv">1</span>)</span>
-<span id="cb23-457"><a href="#cb23-457" aria-hidden="true" tabindex="-1"></a>contrib_columnas <span class="ot">&lt;-</span> <span class="fu">contribuciones_correspondencias</span>(ca2, <span class="st">"columnas"</span>, <span class="at">dimension =</span> <span class="dv">1</span>)</span>
-<span id="cb23-458"><a href="#cb23-458" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(contrib_filas<span class="sc">$</span>tabla, <span class="at">digits =</span> <span class="dv">3</span>, <span class="at">caption =</span> <span class="st">"Contribuciones de filas a la dimensión 1"</span>)</span>
-<span id="cb23-459"><a href="#cb23-459" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(contrib_columnas<span class="sc">$</span>tabla, <span class="at">digits =</span> <span class="dv">3</span>, <span class="at">caption =</span> <span class="st">"Contribuciones de columnas a la dimensión 1"</span>)</span>
-<span id="cb23-460"><a href="#cb23-460" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb23-461"><a href="#cb23-461" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-464"><a href="#cb23-464" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb23-465"><a href="#cb23-465" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
-<span id="cb23-466"><a href="#cb23-466" aria-hidden="true" tabindex="-1"></a>contrib_filas<span class="sc">$</span>grafico</span>
-<span id="cb23-467"><a href="#cb23-467" aria-hidden="true" tabindex="-1"></a>contrib_columnas<span class="sc">$</span>grafico</span>
-<span id="cb23-468"><a href="#cb23-468" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb23-469"><a href="#cb23-469" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-470"><a href="#cb23-470" aria-hidden="true" tabindex="-1"></a>Una categoría con alta contribución ayuda a definir la dimensión. Una categoría con baja contribución no debería protagonizar la interpretación del eje.</span>
-<span id="cb23-471"><a href="#cb23-471" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-472"><a href="#cb23-472" aria-hidden="true" tabindex="-1"></a>La contribución reparte la construcción del eje entre categorías y suma 100% dentro de cada dimensión. Por eso depende tanto de la coordenada como de la masa: un punto lejano con masa casi nula no necesariamente domina el eje.</span>
-<span id="cb23-473"><a href="#cb23-473" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-474"><a href="#cb23-474" aria-hidden="true" tabindex="-1"></a><span class="fu">### Cos² o calidad de representación</span></span>
+<span id="cb23-439"><a href="#cb23-439" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb23-440"><a href="#cb23-440" aria-hidden="true" tabindex="-1"></a>f_{im}</span>
+<span id="cb23-441"><a href="#cb23-441" aria-hidden="true" tabindex="-1"></a>=\frac{1}{d_m}\sum_j\frac{p_{ij}}{r_i}g_{jm}.</span>
+<span id="cb23-442"><a href="#cb23-442" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb23-443"><a href="#cb23-443" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-444"><a href="#cb23-444" aria-hidden="true" tabindex="-1"></a>Por tanto, $f_{im}$ es un baricentro de las coordenadas principales de las columnas dilatado por $1/d_m$. La dilatación es distinta en cada dimensión. Análogamente, las columnas son baricentros dilatados de las filas principales. Esto permite leer direcciones, oposiciones y asociaciones generales, pero no interpretar la distancia directa entre una fila y una columna como una distancia métrica ni como una medida de intensidad de la asociación.</span>
+<span id="cb23-445"><a href="#cb23-445" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-446"><a href="#cb23-446" aria-hidden="true" tabindex="-1"></a>En resumen, el mapa simétrico es apropiado para una primera exploración conjunta. Los mapas asimétricos son preferibles cuando la interpretación tiene una dirección clara: explicar filas mediante columnas o columnas mediante filas.</span>
+<span id="cb23-447"><a href="#cb23-447" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-448"><a href="#cb23-448" aria-hidden="true" tabindex="-1"></a><span class="fu">### Ejemplo con dos dimensiones</span></span>
+<span id="cb23-449"><a href="#cb23-449" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-450"><a href="#cb23-450" aria-hidden="true" tabindex="-1"></a>Para visualizar dos dimensiones, usamos una tabla más rica: clase por combinación de sexo y supervivencia.</span>
+<span id="cb23-451"><a href="#cb23-451" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-454"><a href="#cb23-454" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb23-455"><a href="#cb23-455" aria-hidden="true" tabindex="-1"></a>tab2 <span class="ot">&lt;-</span> <span class="fu">xtabs</span>(Freq <span class="sc">~</span> Class <span class="sc">+</span> <span class="fu">interaction</span>(Sex, Survived), <span class="at">data =</span> titanic)</span>
+<span id="cb23-456"><a href="#cb23-456" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(tab2)</span>
+<span id="cb23-457"><a href="#cb23-457" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb23-458"><a href="#cb23-458" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-461"><a href="#cb23-461" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb23-462"><a href="#cb23-462" aria-hidden="true" tabindex="-1"></a>ca2 <span class="ot">&lt;-</span> FactoMineR<span class="sc">::</span><span class="fu">CA</span>(tab2, <span class="at">graph =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb23-463"><a href="#cb23-463" aria-hidden="true" tabindex="-1"></a>resumen_ca <span class="ot">&lt;-</span> <span class="fu">resumir_correspondencias</span>(ca2)</span>
+<span id="cb23-464"><a href="#cb23-464" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(resumen_ca<span class="sc">$</span>autovalores, <span class="at">digits =</span> <span class="dv">3</span>)</span>
+<span id="cb23-465"><a href="#cb23-465" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb23-466"><a href="#cb23-466" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-469"><a href="#cb23-469" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb23-470"><a href="#cb23-470" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb23-471"><a href="#cb23-471" aria-hidden="true" tabindex="-1"></a><span class="fu">visualizar_inercia_correspondencias</span>(ca2)</span>
+<span id="cb23-472"><a href="#cb23-472" aria-hidden="true" tabindex="-1"></a><span class="fu">visualizar_correspondencias</span>(ca2, <span class="at">escalado =</span> <span class="st">"simetrico"</span>)</span>
+<span id="cb23-473"><a href="#cb23-473" aria-hidden="true" tabindex="-1"></a><span class="fu">visualizar_correspondencias</span>(ca2, <span class="at">escalado =</span> <span class="st">"filas"</span>)</span>
+<span id="cb23-474"><a href="#cb23-474" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb23-475"><a href="#cb23-475" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-476"><a href="#cb23-476" aria-hidden="true" tabindex="-1"></a>El cos² mide qué proporción de la distancia de un punto al origen queda representada en una dimensión o conjunto de dimensiones. Para una fila:</span>
+<span id="cb23-476"><a href="#cb23-476" aria-hidden="true" tabindex="-1"></a>El primer mapa ofrece una representación simétrica. El segundo conserva la geometría de las filas y muestra las columnas en coordenadas estándar: cada clase puede leerse como un baricentro de las categorías columna. En ambos casos hablamos de asociaciones relativas respecto a los marginales, no necesariamente de frecuencias absolutas altas.</span>
 <span id="cb23-477"><a href="#cb23-477" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-478"><a href="#cb23-478" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb23-479"><a href="#cb23-479" aria-hidden="true" tabindex="-1"></a>cos^2_{im}=\frac{f_{im}^2}{\sum_{h} f_{ih}^2}.</span>
-<span id="cb23-480"><a href="#cb23-480" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb23-478"><a href="#cb23-478" aria-hidden="true" tabindex="-1"></a><span class="fu">## Interpretación del mapa</span></span>
+<span id="cb23-479"><a href="#cb23-479" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-480"><a href="#cb23-480" aria-hidden="true" tabindex="-1"></a><span class="fu">### Contribuciones</span></span>
 <span id="cb23-481"><a href="#cb23-481" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-484"><a href="#cb23-484" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb23-485"><a href="#cb23-485" aria-hidden="true" tabindex="-1"></a>calidad_filas <span class="ot">&lt;-</span> <span class="fu">calidad_correspondencias</span>(ca2, <span class="st">"filas"</span>)</span>
-<span id="cb23-486"><a href="#cb23-486" aria-hidden="true" tabindex="-1"></a>calidad_columnas <span class="ot">&lt;-</span> <span class="fu">calidad_correspondencias</span>(ca2, <span class="st">"columnas"</span>)</span>
-<span id="cb23-487"><a href="#cb23-487" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(calidad_filas<span class="sc">$</span>tabla, <span class="at">digits =</span> <span class="dv">3</span>, <span class="at">caption =</span> <span class="st">"Cos² de filas en el plano"</span>)</span>
-<span id="cb23-488"><a href="#cb23-488" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(calidad_columnas<span class="sc">$</span>tabla, <span class="at">digits =</span> <span class="dv">3</span>, <span class="at">caption =</span> <span class="st">"Cos² de columnas en el plano"</span>)</span>
-<span id="cb23-489"><a href="#cb23-489" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb23-490"><a href="#cb23-490" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-491"><a href="#cb23-491" aria-hidden="true" tabindex="-1"></a>Un punto puede estar visualmente lejos, pero si está mal representado en el plano mostrado, conviene no interpretarlo demasiado.</span>
-<span id="cb23-492"><a href="#cb23-492" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-493"><a href="#cb23-493" aria-hidden="true" tabindex="-1"></a>Geométricamente, el cos² compara la longitud de la proyección sobre el eje con la distancia total al origen. Contribución y cos² no son intercambiables: la primera pregunta quién construye el eje; el segundo, si el eje representa bien a ese punto.</span>
-<span id="cb23-494"><a href="#cb23-494" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-495"><a href="#cb23-495" aria-hidden="true" tabindex="-1"></a><span class="fu">### El mapa es una aproximación de las distancias</span></span>
-<span id="cb23-496"><a href="#cb23-496" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-497"><a href="#cb23-497" aria-hidden="true" tabindex="-1"></a>Con todas las dimensiones no triviales, las distancias euclídeas entre coordenadas principales reproducen las distancias $\chi^2$ entre perfiles del mismo tipo. Al mostrar solo dos dimensiones proyectamos esa geometría y aceptamos pérdida. Por eso la inercia retenida y el cos² deben acompañar al mapa.</span>
-<span id="cb23-498"><a href="#cb23-498" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-499"><a href="#cb23-499" aria-hidden="true" tabindex="-1"></a>Las coordenadas fila y columna no viven originalmente en el mismo espacio métrico. Un mapa conjunto superpone dos representaciones útiles, pero la distancia directa entre un punto fila y uno columna no tiene la misma interpretación rigurosa que la distancia entre dos filas o entre dos columnas.</span>
-<span id="cb23-500"><a href="#cb23-500" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-501"><a href="#cb23-501" aria-hidden="true" tabindex="-1"></a><span class="fu">### Interpretación correcta de proximidades</span></span>
-<span id="cb23-502"><a href="#cb23-502" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-503"><a href="#cb23-503" aria-hidden="true" tabindex="-1"></a>Al interpretar un mapa CA:</span>
-<span id="cb23-504"><a href="#cb23-504" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-505"><a href="#cb23-505" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>proximidad entre filas significa perfiles columna parecidos;</span>
-<span id="cb23-506"><a href="#cb23-506" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>proximidad entre columnas significa perfiles fila parecidos;</span>
-<span id="cb23-507"><a href="#cb23-507" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>en un mapa asimétrico, una fila orientada hacia una columna tiene esa categoría relativamente sobrerrepresentada;</span>
-<span id="cb23-508"><a href="#cb23-508" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>en un mapa simétrico, la dirección y la oposición respecto al origen son más fiables que la distancia directa fila--columna;</span>
-<span id="cb23-509"><a href="#cb23-509" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>el origen representa comportamiento medio;</span>
-<span id="cb23-510"><a href="#cb23-510" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>puntos alejados del origen se apartan más de la independencia;</span>
-<span id="cb23-511"><a href="#cb23-511" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>masas, contribuciones y cos² deben acompañar siempre la lectura visual.</span>
-<span id="cb23-512"><a href="#cb23-512" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-513"><a href="#cb23-513" aria-hidden="true" tabindex="-1"></a>La proximidad entre categorías de la misma variable debe interpretarse con cautela. Lo central es cómo filas y columnas se asocian a las dimensiones y qué calidad tiene la representación.</span>
+<span id="cb23-482"><a href="#cb23-482" aria-hidden="true" tabindex="-1"></a>La inercia de la dimensión $m$ puede descomponerse entre las filas:</span>
+<span id="cb23-483"><a href="#cb23-483" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-484"><a href="#cb23-484" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb23-485"><a href="#cb23-485" aria-hidden="true" tabindex="-1"></a>\lambda_m=\sum_i r_i f_{im}^2.</span>
+<span id="cb23-486"><a href="#cb23-486" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb23-487"><a href="#cb23-487" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-488"><a href="#cb23-488" aria-hidden="true" tabindex="-1"></a>Cada término $r_i f_{im}^2$ es la parte de la inercia del eje asociada a la fila $i$: combina su masa con su distancia al origen sobre esa dimensión. Al dividir por la inercia total del eje obtenemos su contribución:</span>
+<span id="cb23-489"><a href="#cb23-489" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-490"><a href="#cb23-490" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb23-491"><a href="#cb23-491" aria-hidden="true" tabindex="-1"></a>ctr_{im}=\frac{r_i f_{im}^2}{\lambda_m}.</span>
+<span id="cb23-492"><a href="#cb23-492" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb23-493"><a href="#cb23-493" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-494"><a href="#cb23-494" aria-hidden="true" tabindex="-1"></a>La misma inercia también puede descomponerse entre las columnas,</span>
+<span id="cb23-495"><a href="#cb23-495" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-496"><a href="#cb23-496" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb23-497"><a href="#cb23-497" aria-hidden="true" tabindex="-1"></a>\lambda_m=\sum_j c_j g_{jm}^2,</span>
+<span id="cb23-498"><a href="#cb23-498" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb23-499"><a href="#cb23-499" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-500"><a href="#cb23-500" aria-hidden="true" tabindex="-1"></a>por lo que:</span>
+<span id="cb23-501"><a href="#cb23-501" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-502"><a href="#cb23-502" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb23-503"><a href="#cb23-503" aria-hidden="true" tabindex="-1"></a>ctr_{jm}=\frac{c_j g_{jm}^2}{\lambda_m}.</span>
+<span id="cb23-504"><a href="#cb23-504" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb23-505"><a href="#cb23-505" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-508"><a href="#cb23-508" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb23-509"><a href="#cb23-509" aria-hidden="true" tabindex="-1"></a>contrib_filas <span class="ot">&lt;-</span> <span class="fu">contribuciones_correspondencias</span>(ca2, <span class="st">"filas"</span>, <span class="at">dimension =</span> <span class="dv">1</span>)</span>
+<span id="cb23-510"><a href="#cb23-510" aria-hidden="true" tabindex="-1"></a>contrib_columnas <span class="ot">&lt;-</span> <span class="fu">contribuciones_correspondencias</span>(ca2, <span class="st">"columnas"</span>, <span class="at">dimension =</span> <span class="dv">1</span>)</span>
+<span id="cb23-511"><a href="#cb23-511" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(contrib_filas<span class="sc">$</span>tabla, <span class="at">digits =</span> <span class="dv">3</span>, <span class="at">caption =</span> <span class="st">"Contribuciones de filas a la dimensión 1"</span>)</span>
+<span id="cb23-512"><a href="#cb23-512" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(contrib_columnas<span class="sc">$</span>tabla, <span class="at">digits =</span> <span class="dv">3</span>, <span class="at">caption =</span> <span class="st">"Contribuciones de columnas a la dimensión 1"</span>)</span>
+<span id="cb23-513"><a href="#cb23-513" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb23-514"><a href="#cb23-514" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-515"><a href="#cb23-515" aria-hidden="true" tabindex="-1"></a><span class="fu">### Categorías raras y puntos extremos</span></span>
-<span id="cb23-516"><a href="#cb23-516" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-517"><a href="#cb23-517" aria-hidden="true" tabindex="-1"></a>Categorías con masa baja pueden aparecer muy alejadas y dominar visualmente el mapa. Antes de interpretar un punto extremo hay que revisar:</span>
-<span id="cb23-518"><a href="#cb23-518" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-519"><a href="#cb23-519" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>su frecuencia;</span>
-<span id="cb23-520"><a href="#cb23-520" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>su contribución;</span>
-<span id="cb23-521"><a href="#cb23-521" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>su cos²;</span>
-<span id="cb23-522"><a href="#cb23-522" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>si responde a una estructura estable o a un recuento pequeño.</span>
-<span id="cb23-523"><a href="#cb23-523" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-524"><a href="#cb23-524" aria-hidden="true" tabindex="-1"></a><span class="fu">### Filas y columnas suplementarias</span></span>
-<span id="cb23-525"><a href="#cb23-525" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-526"><a href="#cb23-526" aria-hidden="true" tabindex="-1"></a>En ocasiones interesa representar una categoría sin permitir que determine los ejes. Una fila o columna suplementaria se proyecta sobre el espacio construido por las categorías activas, pero no contribuye a su orientación ni a sus autovalores.</span>
-<span id="cb23-527"><a href="#cb23-527" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-528"><a href="#cb23-528" aria-hidden="true" tabindex="-1"></a>Esto resulta útil para grupos de comparación, categorías con un papel distinto o información recogida después. La decisión de hacer una categoría suplementaria debe responder al objetivo del análisis, no utilizarse únicamente para ocultar un resultado incómodo.</span>
-<span id="cb23-529"><a href="#cb23-529" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-530"><a href="#cb23-530" aria-hidden="true" tabindex="-1"></a><span class="fu">## Decisiones y limitaciones</span></span>
-<span id="cb23-531"><a href="#cb23-531" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-532"><a href="#cb23-532" aria-hidden="true" tabindex="-1"></a><span class="fu">### Protocolo de decisión</span></span>
-<span id="cb23-533"><a href="#cb23-533" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-534"><a href="#cb23-534" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>Definir qué representan las filas, las columnas y la población contada.</span>
-<span id="cb23-535"><a href="#cb23-535" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>Revisar frecuencias, ceros estructurales, categorías raras y valores esperados.</span>
-<span id="cb23-536"><a href="#cb23-536" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>Examinar conjuntamente $X^2$, p-valor y $V$ de Cramér.</span>
-<span id="cb23-537"><a href="#cb23-537" aria-hidden="true" tabindex="-1"></a><span class="ss">4. </span>Localizar las desviaciones mediante perfiles, residuos de Pearson y residuos ajustados.</span>
-<span id="cb23-538"><a href="#cb23-538" aria-hidden="true" tabindex="-1"></a><span class="ss">5. </span>Comprobar la magnitud de la inercia y relacionarla con $X^2/n$.</span>
-<span id="cb23-539"><a href="#cb23-539" aria-hidden="true" tabindex="-1"></a><span class="ss">6. </span>Elegir el número de dimensiones según inercia retenida y objetivo de la representación.</span>
-<span id="cb23-540"><a href="#cb23-540" aria-hidden="true" tabindex="-1"></a><span class="ss">7. </span>Construir cada eje con las categorías de mayor contribución.</span>
-<span id="cb23-541"><a href="#cb23-541" aria-hidden="true" tabindex="-1"></a><span class="ss">8. </span>Interpretar solo puntos con cos² suficiente en el plano mostrado.</span>
-<span id="cb23-542"><a href="#cb23-542" aria-hidden="true" tabindex="-1"></a><span class="ss">9. </span>Leer rigurosamente distancias entre puntos del mismo tipo y usar la propiedad baricéntrica para relacionar filas y columnas.</span>
-<span id="cb23-543"><a href="#cb23-543" aria-hidden="true" tabindex="-1"></a><span class="ss">10. </span>Comprobar que las conclusiones no dependan de categorías con muy poca masa.</span>
+<span id="cb23-517"><a href="#cb23-517" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb23-518"><a href="#cb23-518" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb23-519"><a href="#cb23-519" aria-hidden="true" tabindex="-1"></a>contrib_filas<span class="sc">$</span>grafico</span>
+<span id="cb23-520"><a href="#cb23-520" aria-hidden="true" tabindex="-1"></a>contrib_columnas<span class="sc">$</span>grafico</span>
+<span id="cb23-521"><a href="#cb23-521" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb23-522"><a href="#cb23-522" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-523"><a href="#cb23-523" aria-hidden="true" tabindex="-1"></a>Una categoría con alta contribución ayuda a definir la dimensión. Una categoría con baja contribución no debería protagonizar la interpretación del eje.</span>
+<span id="cb23-524"><a href="#cb23-524" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-525"><a href="#cb23-525" aria-hidden="true" tabindex="-1"></a>Las contribuciones suman 1, o 100% cuando se expresan como porcentajes, dentro de cada dimensión. Si todas las filas contribuyeran por igual, cada una aportaría $1/I$; para las columnas la referencia sería $1/J$. Estas referencias ayudan a detectar categorías relevantes, aunque no sustituyen la interpretación sustantiva. Un punto lejano con una masa casi nula no necesariamente domina el eje, mientras que una categoría con masa grande puede contribuir mucho con una coordenada menos extrema.</span>
+<span id="cb23-526"><a href="#cb23-526" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-527"><a href="#cb23-527" aria-hidden="true" tabindex="-1"></a><span class="fu">### Cos² o calidad de representación</span></span>
+<span id="cb23-528"><a href="#cb23-528" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-529"><a href="#cb23-529" aria-hidden="true" tabindex="-1"></a>El perfil de una fila puede representarse mediante el vector de sus coordenadas principales $(f_{i1},\ldots,f_{iH})$. Como los ejes factoriales son ortogonales, su distancia $\chi^2$ al perfil medio cumple:</span>
+<span id="cb23-530"><a href="#cb23-530" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-531"><a href="#cb23-531" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb23-532"><a href="#cb23-532" aria-hidden="true" tabindex="-1"></a>d_{\chi^2}^2(i,\bar i)=\sum_h f_{ih}^2.</span>
+<span id="cb23-533"><a href="#cb23-533" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb23-534"><a href="#cb23-534" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-535"><a href="#cb23-535" aria-hidden="true" tabindex="-1"></a>La coordenada $f_{im}$ es la longitud con signo de la proyección de ese vector sobre el eje $m$. Si $\theta_{im}$ es el ángulo entre el vector del punto y el eje, la definición geométrica del coseno da:</span>
+<span id="cb23-536"><a href="#cb23-536" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-537"><a href="#cb23-537" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb23-538"><a href="#cb23-538" aria-hidden="true" tabindex="-1"></a>\cos^2(\theta_{im})</span>
+<span id="cb23-539"><a href="#cb23-539" aria-hidden="true" tabindex="-1"></a>=\frac{\text{longitud proyectada}^2}{\text{longitud total}^2}</span>
+<span id="cb23-540"><a href="#cb23-540" aria-hidden="true" tabindex="-1"></a>=\frac{f_{im}^2}{\sum_h f_{ih}^2}.</span>
+<span id="cb23-541"><a href="#cb23-541" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb23-542"><a href="#cb23-542" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-543"><a href="#cb23-543" aria-hidden="true" tabindex="-1"></a>Por eso el cos² mide la proporción de la distancia del punto al origen que queda representada por una dimensión. Para un plano formado por las dimensiones 1 y 2, las proyecciones son ortogonales y basta sumar:</span>
 <span id="cb23-544"><a href="#cb23-544" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-545"><a href="#cb23-545" aria-hidden="true" tabindex="-1"></a><span class="fu">### Errores frecuentes</span></span>
-<span id="cb23-546"><a href="#cb23-546" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-547"><a href="#cb23-547" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Interpretar el mapa como si mostrara frecuencias absolutas.</span>
-<span id="cb23-548"><a href="#cb23-548" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Considerar que un p-valor pequeño implica una asociación importante.</span>
-<span id="cb23-549"><a href="#cb23-549" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Confundir asociación con causalidad.</span>
-<span id="cb23-550"><a href="#cb23-550" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Ignorar masas, contribuciones y cos².</span>
-<span id="cb23-551"><a href="#cb23-551" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Dar importancia a categorías raras sin comprobar su peso.</span>
-<span id="cb23-552"><a href="#cb23-552" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Leer distancias entre puntos mal representados.</span>
-<span id="cb23-553"><a href="#cb23-553" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Interpretar la distancia directa fila--columna como una distancia ordinaria.</span>
-<span id="cb23-554"><a href="#cb23-554" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Olvidar que CA representa desviaciones respecto a independencia.</span>
-<span id="cb23-555"><a href="#cb23-555" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-556"><a href="#cb23-556" aria-hidden="true" tabindex="-1"></a><span class="fu">### Resumen del capítulo</span></span>
-<span id="cb23-557"><a href="#cb23-557" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-558"><a href="#cb23-558" aria-hidden="true" tabindex="-1"></a>CA convierte una tabla de contingencia en un mapa de perfiles. El contraste $\chi^2$ detecta asociación, sus residuos localizan desviaciones y CA descompone $X^2/n$ en dimensiones factoriales. Su interpretación se basa en perfiles, masas, propiedad baricéntrica, contribuciones, cos² y cautela ante categorías raras.</span>
-<span id="cb23-559"><a href="#cb23-559" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-560"><a href="#cb23-560" aria-hidden="true" tabindex="-1"></a><span class="fu">## Funciones utilizadas</span></span>
+<span id="cb23-545"><a href="#cb23-545" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb23-546"><a href="#cb23-546" aria-hidden="true" tabindex="-1"></a>\cos^2(i,\text{plano }1\text{--}2)</span>
+<span id="cb23-547"><a href="#cb23-547" aria-hidden="true" tabindex="-1"></a>=\frac{f_{i1}^2+f_{i2}^2}{\sum_h f_{ih}^2}</span>
+<span id="cb23-548"><a href="#cb23-548" aria-hidden="true" tabindex="-1"></a>=\cos^2(i,1)+\cos^2(i,2).</span>
+<span id="cb23-549"><a href="#cb23-549" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb23-550"><a href="#cb23-550" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-551"><a href="#cb23-551" aria-hidden="true" tabindex="-1"></a>Las mismas expresiones se aplican a las columnas sustituyendo $f_{im}$ por $g_{jm}$.</span>
+<span id="cb23-552"><a href="#cb23-552" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-555"><a href="#cb23-555" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb23-556"><a href="#cb23-556" aria-hidden="true" tabindex="-1"></a>calidad_filas <span class="ot">&lt;-</span> <span class="fu">calidad_correspondencias</span>(ca2, <span class="st">"filas"</span>)</span>
+<span id="cb23-557"><a href="#cb23-557" aria-hidden="true" tabindex="-1"></a>calidad_columnas <span class="ot">&lt;-</span> <span class="fu">calidad_correspondencias</span>(ca2, <span class="st">"columnas"</span>)</span>
+<span id="cb23-558"><a href="#cb23-558" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(calidad_filas<span class="sc">$</span>tabla, <span class="at">digits =</span> <span class="dv">3</span>, <span class="at">caption =</span> <span class="st">"Cos² de filas en el plano"</span>)</span>
+<span id="cb23-559"><a href="#cb23-559" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(calidad_columnas<span class="sc">$</span>tabla, <span class="at">digits =</span> <span class="dv">3</span>, <span class="at">caption =</span> <span class="st">"Cos² de columnas en el plano"</span>)</span>
+<span id="cb23-560"><a href="#cb23-560" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb23-561"><a href="#cb23-561" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-562"><a href="#cb23-562" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Función <span class="pp">|</span> Para qué se usa <span class="pp">|</span> Uso básico <span class="pp">|</span></span>
-<span id="cb23-563"><a href="#cb23-563" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|---|</span></span>
-<span id="cb23-564"><a href="#cb23-564" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`xtabs()`</span> <span class="pp">|</span> Construir una tabla de contingencia desde datos largos. <span class="pp">|</span> <span class="in">`xtabs(Freq ~ fila + columna, datos)`</span> <span class="pp">|</span></span>
-<span id="cb23-565"><a href="#cb23-565" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`FactoMineR::CA()`</span> <span class="pp">|</span> Ajustar el análisis de correspondencias. <span class="pp">|</span> <span class="in">`FactoMineR::CA(tabla, graph = FALSE)`</span> <span class="pp">|</span></span>
-<span id="cb23-566"><a href="#cb23-566" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`resumir_tabla_contingencia()`</span> <span class="pp">|</span> Obtener perfiles, masas, esperadas, residuos, contraste, $V$ de Cramér e inercia. <span class="pp">|</span> <span class="in">`resumen &lt;- resumir_tabla_contingencia(tabla)`</span> <span class="pp">|</span></span>
-<span id="cb23-567"><a href="#cb23-567" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`distancias_chi2()`</span> <span class="pp">|</span> Calcular distancias $\chi^2$ entre perfiles fila o columna. <span class="pp">|</span> <span class="in">`distancias_chi2(tabla, "filas")`</span> <span class="pp">|</span></span>
-<span id="cb23-568"><a href="#cb23-568" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`visualizar_distancias_chi2()`</span> <span class="pp">|</span> Mostrar esas distancias como mapa de calor. <span class="pp">|</span> <span class="in">`visualizar_distancias_chi2(tabla, "filas")`</span> <span class="pp">|</span></span>
-<span id="cb23-569"><a href="#cb23-569" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`visualizar_residuos_correspondencias()`</span> <span class="pp">|</span> Mostrar residuos de Pearson o ajustados, con números opcionales. <span class="pp">|</span> <span class="in">`visualizar_residuos_correspondencias(tabla, "ajustados", FALSE)`</span> <span class="pp">|</span></span>
-<span id="cb23-570"><a href="#cb23-570" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`resumir_correspondencias()`</span> <span class="pp">|</span> Reunir inercia, coordenadas, contribuciones y cos². <span class="pp">|</span> <span class="in">`resumen &lt;- resumir_correspondencias(ajuste)`</span> <span class="pp">|</span></span>
-<span id="cb23-571"><a href="#cb23-571" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`visualizar_inercia_correspondencias()`</span> <span class="pp">|</span> Representar el porcentaje de inercia por dimensión. <span class="pp">|</span> <span class="in">`visualizar_inercia_correspondencias(ajuste)`</span> <span class="pp">|</span></span>
-<span id="cb23-572"><a href="#cb23-572" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`visualizar_correspondencias()`</span> <span class="pp">|</span> Dibujar mapas simétricos o asimétricos de filas y columnas. <span class="pp">|</span> <span class="in">`visualizar_correspondencias(ajuste, escalado = "filas")`</span> <span class="pp">|</span></span>
-<span id="cb23-573"><a href="#cb23-573" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`contribuciones_correspondencias()`</span> <span class="pp">|</span> Identificar categorías que construyen una dimensión. <span class="pp">|</span> <span class="in">`contribuciones_correspondencias(ajuste, "filas", 1)`</span> <span class="pp">|</span></span>
-<span id="cb23-574"><a href="#cb23-574" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`calidad_correspondencias()`</span> <span class="pp">|</span> Evaluar el cos² acumulado en los ejes elegidos. <span class="pp">|</span> <span class="in">`calidad_correspondencias(ajuste, "columnas", c(1, 2))`</span> <span class="pp">|</span></span>
+<span id="cb23-562"><a href="#cb23-562" aria-hidden="true" tabindex="-1"></a>Un punto puede estar visualmente lejos, pero si está mal representado en el plano mostrado, conviene no interpretarlo demasiado. Un cos² alto en el plano indica que su posición y su dirección se reproducen bien; no implica que el punto haya sido importante para construir los ejes.</span>
+<span id="cb23-563"><a href="#cb23-563" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-564"><a href="#cb23-564" aria-hidden="true" tabindex="-1"></a>Contribución y cos² no son intercambiables: la contribución pregunta **quién construye el eje**; el cos² pregunta **si el eje o el plano representa bien a ese punto**. Una categoría puede tener cos² alto y contribución pequeña, o contribuir mucho a un eje que solo representa una parte moderada de su distancia total.</span>
+<span id="cb23-565"><a href="#cb23-565" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-566"><a href="#cb23-566" aria-hidden="true" tabindex="-1"></a><span class="fu">### El mapa es una aproximación de las distancias</span></span>
+<span id="cb23-567"><a href="#cb23-567" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-568"><a href="#cb23-568" aria-hidden="true" tabindex="-1"></a>Con todas las dimensiones no triviales, las distancias euclídeas entre coordenadas principales reproducen las distancias $\chi^2$ entre perfiles del mismo tipo. Al mostrar solo dos dimensiones proyectamos esa geometría y aceptamos pérdida. Por eso la inercia retenida y el cos² deben acompañar al mapa.</span>
+<span id="cb23-569"><a href="#cb23-569" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-570"><a href="#cb23-570" aria-hidden="true" tabindex="-1"></a>Las coordenadas fila y columna no viven originalmente en el mismo espacio métrico. Un mapa conjunto superpone dos representaciones útiles, pero la distancia directa entre un punto fila y uno columna no tiene la misma interpretación rigurosa que la distancia entre dos filas o entre dos columnas.</span>
+<span id="cb23-571"><a href="#cb23-571" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-572"><a href="#cb23-572" aria-hidden="true" tabindex="-1"></a><span class="fu">### Interpretación correcta de proximidades</span></span>
+<span id="cb23-573"><a href="#cb23-573" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-574"><a href="#cb23-574" aria-hidden="true" tabindex="-1"></a>Al interpretar un mapa CA:</span>
+<span id="cb23-575"><a href="#cb23-575" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-576"><a href="#cb23-576" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>proximidad entre filas significa perfiles columna parecidos;</span>
+<span id="cb23-577"><a href="#cb23-577" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>proximidad entre columnas significa perfiles fila parecidos;</span>
+<span id="cb23-578"><a href="#cb23-578" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>en un mapa asimétrico, una fila orientada hacia una columna tiene esa categoría relativamente sobrerrepresentada;</span>
+<span id="cb23-579"><a href="#cb23-579" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>en un mapa simétrico, la dirección y la oposición respecto al origen son más fiables que la distancia directa fila--columna;</span>
+<span id="cb23-580"><a href="#cb23-580" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>el origen representa comportamiento medio;</span>
+<span id="cb23-581"><a href="#cb23-581" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>puntos alejados del origen se apartan más de la independencia;</span>
+<span id="cb23-582"><a href="#cb23-582" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>masas, contribuciones y cos² deben acompañar siempre la lectura visual.</span>
+<span id="cb23-583"><a href="#cb23-583" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-584"><a href="#cb23-584" aria-hidden="true" tabindex="-1"></a>La proximidad entre categorías de la misma variable debe interpretarse con cautela. Lo central es cómo filas y columnas se asocian a las dimensiones y qué calidad tiene la representación.</span>
+<span id="cb23-585"><a href="#cb23-585" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-586"><a href="#cb23-586" aria-hidden="true" tabindex="-1"></a><span class="fu">### Categorías raras y puntos extremos</span></span>
+<span id="cb23-587"><a href="#cb23-587" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-588"><a href="#cb23-588" aria-hidden="true" tabindex="-1"></a>Categorías con masa baja pueden aparecer muy alejadas y dominar visualmente el mapa. Antes de interpretar un punto extremo hay que revisar:</span>
+<span id="cb23-589"><a href="#cb23-589" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-590"><a href="#cb23-590" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>su frecuencia;</span>
+<span id="cb23-591"><a href="#cb23-591" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>su contribución;</span>
+<span id="cb23-592"><a href="#cb23-592" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>su cos²;</span>
+<span id="cb23-593"><a href="#cb23-593" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>si responde a una estructura estable o a un recuento pequeño.</span>
+<span id="cb23-594"><a href="#cb23-594" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-595"><a href="#cb23-595" aria-hidden="true" tabindex="-1"></a><span class="fu">### Filas y columnas suplementarias</span></span>
+<span id="cb23-596"><a href="#cb23-596" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-597"><a href="#cb23-597" aria-hidden="true" tabindex="-1"></a>En ocasiones interesa representar una categoría sin permitir que determine los ejes. Una fila o columna suplementaria se proyecta sobre el espacio construido por las categorías activas, pero no contribuye a su orientación ni a sus autovalores.</span>
+<span id="cb23-598"><a href="#cb23-598" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-599"><a href="#cb23-599" aria-hidden="true" tabindex="-1"></a>Esto resulta útil para grupos de comparación, categorías con un papel distinto o información recogida después. La decisión de hacer una categoría suplementaria debe responder al objetivo del análisis, no utilizarse únicamente para ocultar un resultado incómodo.</span>
+<span id="cb23-600"><a href="#cb23-600" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-601"><a href="#cb23-601" aria-hidden="true" tabindex="-1"></a><span class="fu">## Decisiones y limitaciones</span></span>
+<span id="cb23-602"><a href="#cb23-602" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-603"><a href="#cb23-603" aria-hidden="true" tabindex="-1"></a><span class="fu">### Protocolo de decisión</span></span>
+<span id="cb23-604"><a href="#cb23-604" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-605"><a href="#cb23-605" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>Definir qué representan las filas, las columnas y la población contada.</span>
+<span id="cb23-606"><a href="#cb23-606" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>Revisar frecuencias, ceros estructurales, categorías raras y valores esperados.</span>
+<span id="cb23-607"><a href="#cb23-607" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>Examinar conjuntamente $X^2$, p-valor y $V$ de Cramér.</span>
+<span id="cb23-608"><a href="#cb23-608" aria-hidden="true" tabindex="-1"></a><span class="ss">4. </span>Localizar las desviaciones mediante perfiles, residuos de Pearson y residuos ajustados.</span>
+<span id="cb23-609"><a href="#cb23-609" aria-hidden="true" tabindex="-1"></a><span class="ss">5. </span>Comprobar la magnitud de la inercia y relacionarla con $X^2/n$.</span>
+<span id="cb23-610"><a href="#cb23-610" aria-hidden="true" tabindex="-1"></a><span class="ss">6. </span>Elegir el número de dimensiones según inercia retenida y objetivo de la representación.</span>
+<span id="cb23-611"><a href="#cb23-611" aria-hidden="true" tabindex="-1"></a><span class="ss">7. </span>Construir cada eje con las categorías de mayor contribución.</span>
+<span id="cb23-612"><a href="#cb23-612" aria-hidden="true" tabindex="-1"></a><span class="ss">8. </span>Interpretar solo puntos con cos² suficiente en el plano mostrado.</span>
+<span id="cb23-613"><a href="#cb23-613" aria-hidden="true" tabindex="-1"></a><span class="ss">9. </span>Leer rigurosamente distancias entre puntos del mismo tipo y usar la propiedad baricéntrica para relacionar filas y columnas.</span>
+<span id="cb23-614"><a href="#cb23-614" aria-hidden="true" tabindex="-1"></a><span class="ss">10. </span>Comprobar que las conclusiones no dependan de categorías con muy poca masa.</span>
+<span id="cb23-615"><a href="#cb23-615" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-616"><a href="#cb23-616" aria-hidden="true" tabindex="-1"></a><span class="fu">### Errores frecuentes</span></span>
+<span id="cb23-617"><a href="#cb23-617" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-618"><a href="#cb23-618" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Interpretar el mapa como si mostrara frecuencias absolutas.</span>
+<span id="cb23-619"><a href="#cb23-619" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Considerar que un p-valor pequeño implica una asociación importante.</span>
+<span id="cb23-620"><a href="#cb23-620" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Confundir asociación con causalidad.</span>
+<span id="cb23-621"><a href="#cb23-621" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Ignorar masas, contribuciones y cos².</span>
+<span id="cb23-622"><a href="#cb23-622" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Dar importancia a categorías raras sin comprobar su peso.</span>
+<span id="cb23-623"><a href="#cb23-623" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Leer distancias entre puntos mal representados.</span>
+<span id="cb23-624"><a href="#cb23-624" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Interpretar la distancia directa fila--columna como una distancia ordinaria.</span>
+<span id="cb23-625"><a href="#cb23-625" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Olvidar que CA representa desviaciones respecto a independencia.</span>
+<span id="cb23-626"><a href="#cb23-626" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-627"><a href="#cb23-627" aria-hidden="true" tabindex="-1"></a><span class="fu">### Resumen del capítulo</span></span>
+<span id="cb23-628"><a href="#cb23-628" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-629"><a href="#cb23-629" aria-hidden="true" tabindex="-1"></a>CA convierte una tabla de contingencia en un mapa de perfiles. El contraste $\chi^2$ detecta asociación, sus residuos localizan desviaciones y CA descompone $X^2/n$ en dimensiones factoriales. Su interpretación se basa en perfiles, masas, propiedad baricéntrica, contribuciones, cos² y cautela ante categorías raras.</span>
+<span id="cb23-630"><a href="#cb23-630" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-631"><a href="#cb23-631" aria-hidden="true" tabindex="-1"></a><span class="fu">## Funciones utilizadas</span></span>
+<span id="cb23-632"><a href="#cb23-632" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-633"><a href="#cb23-633" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Función <span class="pp">|</span> Para qué se usa <span class="pp">|</span> Uso básico <span class="pp">|</span></span>
+<span id="cb23-634"><a href="#cb23-634" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|---|</span></span>
+<span id="cb23-635"><a href="#cb23-635" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`xtabs()`</span> <span class="pp">|</span> Construir una tabla de contingencia desde datos largos. <span class="pp">|</span> <span class="in">`xtabs(Freq ~ fila + columna, datos)`</span> <span class="pp">|</span></span>
+<span id="cb23-636"><a href="#cb23-636" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`FactoMineR::CA()`</span> <span class="pp">|</span> Ajustar el análisis de correspondencias. <span class="pp">|</span> <span class="in">`FactoMineR::CA(tabla, graph = FALSE)`</span> <span class="pp">|</span></span>
+<span id="cb23-637"><a href="#cb23-637" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`resumir_tabla_contingencia()`</span> <span class="pp">|</span> Obtener perfiles, masas, esperadas, residuos, contraste, $V$ de Cramér e inercia. <span class="pp">|</span> <span class="in">`resumen &lt;- resumir_tabla_contingencia(tabla)`</span> <span class="pp">|</span></span>
+<span id="cb23-638"><a href="#cb23-638" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`distancias_chi2()`</span> <span class="pp">|</span> Calcular distancias $\chi^2$ entre perfiles fila o columna. <span class="pp">|</span> <span class="in">`distancias_chi2(tabla, "filas")`</span> <span class="pp">|</span></span>
+<span id="cb23-639"><a href="#cb23-639" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`visualizar_distancias_chi2()`</span> <span class="pp">|</span> Mostrar esas distancias como mapa de calor. <span class="pp">|</span> <span class="in">`visualizar_distancias_chi2(tabla, "filas")`</span> <span class="pp">|</span></span>
+<span id="cb23-640"><a href="#cb23-640" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`visualizar_residuos_correspondencias()`</span> <span class="pp">|</span> Mostrar residuos de Pearson o ajustados, con números opcionales. <span class="pp">|</span> <span class="in">`visualizar_residuos_correspondencias(tabla, "ajustados", FALSE)`</span> <span class="pp">|</span></span>
+<span id="cb23-641"><a href="#cb23-641" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`resumir_correspondencias()`</span> <span class="pp">|</span> Reunir inercia, coordenadas, contribuciones y cos². <span class="pp">|</span> <span class="in">`resumen &lt;- resumir_correspondencias(ajuste)`</span> <span class="pp">|</span></span>
+<span id="cb23-642"><a href="#cb23-642" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`visualizar_inercia_correspondencias()`</span> <span class="pp">|</span> Representar el porcentaje de inercia por dimensión. <span class="pp">|</span> <span class="in">`visualizar_inercia_correspondencias(ajuste)`</span> <span class="pp">|</span></span>
+<span id="cb23-643"><a href="#cb23-643" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`visualizar_correspondencias()`</span> <span class="pp">|</span> Dibujar mapas simétricos o asimétricos de filas y columnas. <span class="pp">|</span> <span class="in">`visualizar_correspondencias(ajuste, escalado = "filas")`</span> <span class="pp">|</span></span>
+<span id="cb23-644"><a href="#cb23-644" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`contribuciones_correspondencias()`</span> <span class="pp">|</span> Identificar categorías que construyen una dimensión. <span class="pp">|</span> <span class="in">`contribuciones_correspondencias(ajuste, "filas", 1)`</span> <span class="pp">|</span></span>
+<span id="cb23-645"><a href="#cb23-645" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`calidad_correspondencias()`</span> <span class="pp">|</span> Evaluar el cos² acumulado en los ejes elegidos. <span class="pp">|</span> <span class="in">`calidad_correspondencias(ajuste, "columnas", c(1, 2))`</span> <span class="pp">|</span></span>
 </code></pre></div><button title="Copiar al portapapeles" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
